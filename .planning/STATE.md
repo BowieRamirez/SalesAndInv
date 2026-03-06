@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.4
 milestone_name: milestone
-status: planning
-stopped_at: Completed 01-01-PLAN.md — monorepo bootstrap + packages/config
-last_updated: "2026-03-06T15:31:00.252Z"
-last_activity: 2026-03-06 — Roadmap created; 60 requirements mapped to 6 phases
+status: executing
+stopped_at: Completed 01-02-PLAN.md — Zod schemas and mock fixtures
+last_updated: "2026-03-06T15:38:54.718Z"
+last_activity: 2026-03-06 — Completed 01-01-PLAN.md (monorepo bootstrap + packages/config)
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 3
   percent: 25
 ---
 
@@ -50,6 +50,7 @@ Progress: [███░░░░░░░] 25%
 - Trend: Baseline established
 
 *Updated after each plan completion*
+| Phase 01 P02 | 5 | 2 tasks | 20 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Turborepo 2.x requires packageManager field in package.json — pinned to pnpm@10.30.3
 - [Phase 01]: tsconfig.json required in each non-config package for tsc --noEmit; each extends @furnitrack/config/typescript/base.json
 - [Phase 01]: Tailwind v4 @theme CSS-first syntax used in tokens.css — to be validated by smoke test in Plan 04
+- [Phase 01]: import type in fixture files — prevents circular dep risks, keeps @furnitrack/db a pure data package with no runtime Zod
+- [Phase 01]: MOCK_KPIS exported as single Kpi object (not array) — KPI data represents dashboard snapshot, not collection
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-06T15:31:00.250Z
-Stopped at: Completed 01-01-PLAN.md — monorepo bootstrap + packages/config
+Last session: 2026-03-06T15:38:54.716Z
+Stopped at: Completed 01-02-PLAN.md — Zod schemas and mock fixtures
 Resume file: None
