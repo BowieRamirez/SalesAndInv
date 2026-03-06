@@ -7,7 +7,8 @@
     "./mock": "./src/mock/index.ts"
   },
   "devDependencies": {
-    "@furnitrack/config": "workspace:*"
+    "@furnitrack/config": "workspace:*",
+    "prisma": "^6.19.2"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
