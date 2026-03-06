@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Search, ShoppingBag, User } from "lucide-react"
+import { Search, User } from "lucide-react"
 
 export function Navbar() {
   return (

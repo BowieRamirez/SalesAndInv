@@ -5,6 +5,15 @@
 
 @layer base {
   :root {
+    /* Brand color tokens — mirrors @theme so [--color-X] arbitrary values work */
+    --color-navy: #1a1a2e;
+    --color-coral: #e74c3c;
+    --color-gold: #c9a84c;
+    --color-beige: #f5f0e8;
+    --color-charcoal: #2d2d2d;
+    --color-muted: #9ca3af;
+    --color-white: #ffffff;
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
