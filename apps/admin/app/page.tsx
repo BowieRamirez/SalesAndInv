@@ -4,8 +4,8 @@ export default function HomePage() {
       <h1 className="text-navy text-4xl font-bold p-8">FurniTrack Admin</h1>
       <p className="text-charcoal p-8">
         Phase 2 builds the full admin shell. Visit{" "}
-        <a href="/design-system" className="text-gold underline">
-          /design-system
+        <a href="/ui-preview" className="text-gold underline">
+          /ui-preview
         </a>{" "}
         to verify the Phase 1 design system.
       </p>
