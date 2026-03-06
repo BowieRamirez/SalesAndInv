@@ -1,10 +1,10 @@
 /*
  * FurniTrack brand design tokens
  * Single source of truth — both apps import this file in globals.css
- * Usage: @import "@furnitrack/config/tailwind/tokens.css";
+ * Usage: @import "tailwindcss"; then @import "@furnitrack/config/tailwind/tokens.css";
+ * NOTE: @import "tailwindcss" must be done in the app's own globals.css
+ * so Turbopack resolves tailwindcss from the app's node_modules.
  */
-
-@import "tailwindcss";
 
 @theme {
   /* Brand colors */
