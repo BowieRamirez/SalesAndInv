@@ -6,7 +6,9 @@
     ".": "./src/index.ts"
   },
   "devDependencies": {
-    "@furnitrack/config": "workspace:*"
+    "@furnitrack/config": "workspace:*",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
