@@ -11,8 +11,8 @@ Requirements for the UI mockup milestone. All screens navigable with static/mock
 
 ### Foundation
 
-- [ ] **FOUN-01**: Monorepo is bootstrapped with pnpm workspaces, Turborepo, and all four shared packages (`packages/config`, `packages/validators`, `packages/ui`, `packages/db`)
-- [ ] **FOUN-02**: `packages/config` exports shared TypeScript base config, ESLint flat config, and Tailwind base CSS; all apps extend from it
+- [x] **FOUN-01**: Monorepo is bootstrapped with pnpm workspaces, Turborepo, and all four shared packages (`packages/config`, `packages/validators`, `packages/ui`, `packages/db`)
+- [x] **FOUN-02**: `packages/config` exports shared TypeScript base config, ESLint flat config, and Tailwind base CSS; all apps extend from it
 - [ ] **FOUN-03**: `packages/validators` exports Zod schemas for all domain entities (Product, Order, Quotation, Lead, StockItem, Payment, User, KPI)
 - [ ] **FOUN-04**: `packages/db/src/mock/` contains all typed fixture files (products, orders, stock, leads, payments, users, KPIs, warehouses); both apps import from `@furnitrack/db/mock`
 - [ ] **FOUN-05**: `packages/ui` exports shared component library: Button, Input, Select, Card, Badge, DataTable, StatCard, ChartWrapper, Modal, Tabs, Sidebar, Notification, and form primitives — all built on shadcn/ui and shared Tailwind design tokens
@@ -165,8 +165,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | Phase 1 | Pending |
-| FOUN-02 | Phase 1 | Pending |
+| FOUN-01 | Phase 1 | Complete |
+| FOUN-02 | Phase 1 | Complete |
 | FOUN-03 | Phase 1 | Pending |
 | FOUN-04 | Phase 1 | Pending |
 | FOUN-05 | Phase 1 | Pending |
