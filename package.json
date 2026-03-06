@@ -1,0 +1,19 @@
+{
+  "name": "furnitrack",
+  "private": true,
+  "engines": { "pnpm": ">=9.0.0", "node": ">=20.0.0" },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\" --ignore-path .gitignore"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0",
+    "prettier-plugin-tailwindcss": "latest",
+    "eslint": "^9.0.0"
+  }
+}
