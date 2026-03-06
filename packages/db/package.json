@@ -12,5 +12,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "echo 'No build step — transpilePackages'"
+  },
+  "dependencies": {
+    "@furnitrack/validators": "workspace:*"
   }
 }
