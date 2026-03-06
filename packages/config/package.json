@@ -1,0 +1,15 @@
+{
+  "name": "@furnitrack/config",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    "./typescript/base.json": "./typescript/base.json",
+    "./typescript/nextjs.json": "./typescript/nextjs.json",
+    "./eslint/base": "./eslint/base.mjs",
+    "./tailwind/tokens.css": "./tailwind/tokens.css"
+  },
+  "scripts": {
+    "typecheck": "echo 'No typecheck for config package'",
+    "build": "echo 'No build step for config package'"
+  }
+}

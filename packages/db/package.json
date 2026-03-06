@@ -1,0 +1,16 @@
+{
+  "name": "@furnitrack/db",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./mock": "./src/mock/index.ts"
+  },
+  "devDependencies": {
+    "@furnitrack/config": "workspace:*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "echo 'No build step — transpilePackages'"
+  }
+}

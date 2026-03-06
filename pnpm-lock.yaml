@@ -24,6 +24,26 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
+  packages/config: {}
+
+  packages/db:
+    devDependencies:
+      '@furnitrack/config':
+        specifier: workspace:*
+        version: link:../config
+
+  packages/ui:
+    devDependencies:
+      '@furnitrack/config':
+        specifier: workspace:*
+        version: link:../config
+
+  packages/validators:
+    devDependencies:
+      '@furnitrack/config':
+        specifier: workspace:*
+        version: link:../config
+
 packages:
 
   '@eslint-community/eslint-utils@4.9.1':

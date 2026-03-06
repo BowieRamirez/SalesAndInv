@@ -1,0 +1,25 @@
+/*
+ * FurniTrack brand design tokens
+ * Single source of truth — both apps import this file in globals.css
+ * Usage: @import "@furnitrack/config/tailwind/tokens.css";
+ */
+
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-navy: #1a1a2e;
+  --color-coral: #e74c3c;
+  --color-gold: #c9a84c;
+  --color-beige: #f5f0e8;
+  --color-charcoal: #2d2d2d;
+  --color-muted: #9ca3af;
+  --color-white: #ffffff;
+
+  /* Typography */
+  --font-family-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Layout spacing */
+  --spacing-sidebar: 16rem;
+  --spacing-topbar: 4rem;
+}
