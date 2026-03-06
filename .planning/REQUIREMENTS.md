@@ -15,8 +15,8 @@ Requirements for the UI mockup milestone. All screens navigable with static/mock
 - [x] **FOUN-02**: `packages/config` exports shared TypeScript base config, ESLint flat config, and Tailwind base CSS; all apps extend from it
 - [x] **FOUN-03**: `packages/validators` exports Zod schemas for all domain entities (Product, Order, Quotation, Lead, StockItem, Payment, User, KPI)
 - [x] **FOUN-04**: `packages/db/src/mock/` contains all typed fixture files (products, orders, stock, leads, payments, users, KPIs, warehouses); both apps import from `@furnitrack/db/mock`
-- [ ] **FOUN-05**: `packages/ui` exports shared component library: Button, Input, Select, Card, Badge, DataTable, StatCard, ChartWrapper, Modal, Tabs, Sidebar, Notification, and form primitives — all built on shadcn/ui and shared Tailwind design tokens
-- [ ] **FOUN-06**: Design tokens (brand colors, semantic colors, font sizes, spacing) are defined as CSS variables in shared Tailwind config and consumed by both apps
+- [x] **FOUN-05**: `packages/ui` exports shared component library: Button, Input, Select, Card, Badge, DataTable, StatCard, ChartWrapper, Modal, Tabs, Sidebar, Notification, and form primitives — all built on shadcn/ui and shared Tailwind design tokens
+- [x] **FOUN-06**: Design tokens (brand colors, semantic colors, font sizes, spacing) are defined as CSS variables in shared Tailwind config and consumed by both apps
 - [ ] **FOUN-07**: Turborepo pipeline runs `typecheck` and `build` successfully across all workspaces
 - [ ] **FOUN-08**: Tailwind v4 + shadcn/ui compatibility is verified; fallback decision to Tailwind v3.4.x is made and documented if incompatible
 - [ ] **FOUN-09**: `packages/db/prisma/schema.prisma` defines the full DB schema as a reference document (not connected; no migrations run); mock fixture shapes align with Prisma-generated types
@@ -169,8 +169,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | FOUN-02 | Phase 1 | Complete |
 | FOUN-03 | Phase 1 | Complete |
 | FOUN-04 | Phase 1 | Complete |
-| FOUN-05 | Phase 1 | Pending |
-| FOUN-06 | Phase 1 | Pending |
+| FOUN-05 | Phase 1 | Complete |
+| FOUN-06 | Phase 1 | Complete |
 | FOUN-07 | Phase 1 | Pending |
 | FOUN-08 | Phase 1 | Pending |
 | FOUN-09 | Phase 1 | Pending |
