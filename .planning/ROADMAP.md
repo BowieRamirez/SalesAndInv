@@ -31,7 +31,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A smoke-test component using shared Tailwind design tokens renders with correct brand colors and spacing in both apps (confirming CSS purging is not stripping shared package styles)
   4. The Tailwind v4 + shadcn/ui compatibility decision is documented in PROJECT.md (either confirmed working or pinned to v3.4.x with rationale)
   5. All mock fixture files cover every domain entity (products, orders, quotations, leads, stock, payments, users, KPIs, warehouses) with enough realistic records for every downstream screen
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Bootstrap monorepo root and packages/config (workspace, turbo pipeline, TypeScript configs, brand tokens)
+- [ ] 01-02-PLAN.md — Zod validators (8 entity schemas) and mock fixture data (all 8 entities, typed)
+- [ ] 01-03-PLAN.md — packages/ui: shadcn/ui init + Button/Badge/Card/Input wrappers
+- [ ] 01-04-PLAN.md — Prisma reference schema, both Next.js apps scaffolded, smoke-test pages, full build verification
 
 ### Phase 2: App Shells
 **Goal**: Both apps have navigable structural shells — the admin app has a working role switcher and sidebar that updates for all five roles, and the storefront has its layout, navigation, and routing structure in place — so all subsequent screen work has a home to land in.
@@ -96,7 +102,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Monorepo Foundation | 0/TBD | Not started | - |
+| 1. Monorepo Foundation | 0/4 | In progress | - |
 | 2. App Shells | 0/TBD | Not started | - |
 | 3. Management Dashboard and Storefront Catalog | 0/TBD | Not started | - |
 | 4. Sales Workflow | 0/TBD | Not started | - |
