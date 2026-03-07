@@ -3,21 +3,21 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronRight } from "lucide-react"
 import { MOCK_PRODUCTS } from "@furnitrack/db"
-import { Navbar } from "../../../components/Navbar"
 import { Footer } from "../../../components/Footer"
 import { ProductCard } from "../../../components/ProductCard"
 import { ProductClient } from "./ProductClient"
 
 interface ProductPageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export function generateStaticParams() {
   return MOCK_PRODUCTS.map((p) => ({ slug: p.slug }))
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  const product = MOCK_PRODUCTS.find((p) => p.slug === params.slug)
+export default async function ProductPage({ params }: ProductPageProps) {
+  const resolvedParams = await params;
+  const product = MOCK_PRODUCTS.find((p) => p.slug === resolvedParams.slug)
   if (!product) notFound()
 
   const related = MOCK_PRODUCTS.filter(
@@ -25,86 +25,58 @@ export default function ProductPage({ params }: ProductPageProps) {
   ).slice(0, 4)
 
   return (
-    <div className="min-h-screen bg-[--color-beige] flex flex-col">
-      <Navbar />
-
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-8">
+    <div className="min-h-screen bg-white flex flex-col font-['var(--font-inter)']">
+      <main className="flex-1 max-w-[1336px] mx-auto w-full px-6 py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-sm text-[--color-muted] mb-8">
-          <Link href="/" className="hover:text-[--color-charcoal] transition-colors">
+        <nav className="flex items-center gap-[6px] text-[13px] text-[#6a7282] mb-[32px]">
+          <Link href="/" className="hover:text-[#1a1a2e] transition-colors">
             Home
           </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <Link href="/shop" className="hover:text-[--color-charcoal] transition-colors">
+          <ChevronRight className="w-[12px] h-[12px]" />
+          <Link href="/shop" className="hover:text-[#1a1a2e] transition-colors">
             Shop
           </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
+          <ChevronRight className="w-[12px] h-[12px]" />
           <Link
             href={`/shop?category=${encodeURIComponent(product.category)}`}
-            className="hover:text-[--color-charcoal] transition-colors"
+            className="hover:text-[#1a1a2e] transition-colors"
           >
             {product.category}
           </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[--color-charcoal] font-medium truncate max-w-[200px]">
+          <ChevronRight className="w-[12px] h-[12px]" />
+          <span className="text-[#1a1a2e] font-medium truncate max-w-[200px]">
             {product.name}
           </span>
         </nav>
 
         {/* Product layout */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 mb-16">
-          {/* Image — 60% */}
-          <div className="md:col-span-3">
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-white shadow-sm border border-[--color-beige]">
+        <div className="flex flex-col md:flex-row gap-[40px] lg:gap-[92px] mb-[128px]">
+          {/* Image — Left */}
+          <div className="flex-1">
+            <div className="relative w-full aspect-square rounded-[12px] overflow-hidden bg-[#f9fafb] border border-[#e5e7eb]">
               <Image
-                src={`https://placehold.co/800x600/f5f0e8/2d2d2d?text=${encodeURIComponent(product.name)}`}
+                src={`https://placehold.co/800x800/f5f0e8/2d2d2d?text=${encodeURIComponent(product.name)}`}
                 alt={product.name}
                 fill
                 className="object-cover"
                 priority
               />
             </div>
-            {/* Thumbnail strip */}
-            <div className="flex gap-3 mt-3">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className={`relative w-20 h-16 rounded-lg overflow-hidden border-2 cursor-pointer ${
-                    i === 1 ? "border-[--color-navy]" : "border-[--color-beige] hover:border-[--color-muted]"
-                  }`}
-                >
-                  <Image
-                    src={`https://placehold.co/160x128/f5f0e8/2d2d2d?text=View+${i}`}
-                    alt={`View ${i}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
           </div>
 
-          {/* Details — 40% */}
-          <div className="md:col-span-2">
+          {/* Details — Right */}
+          <div className="flex-1 flex flex-col justify-center">
             <ProductClient product={product} />
           </div>
         </div>
 
         {/* Related products */}
         {related.length > 0 && (
-          <section>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-[--color-charcoal]">
-                You May Also Like
-              </h2>
-              <Link
-                href={`/shop?category=${encodeURIComponent(product.category)}`}
-                className="text-sm text-[--color-navy] hover:underline"
-              >
-                View all {product.category} →
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <section className="mb-[64px]">
+            <h2 className="text-[32px] font-medium font-['var(--font-playfair)'] text-[#1a1a2e] leading-[38.4px] mb-[40px]">
+              You May Also Like
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[24px]">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

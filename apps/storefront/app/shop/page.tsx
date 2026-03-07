@@ -2,7 +2,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight, SlidersHorizontal } from "lucide-react"
 import { MOCK_PRODUCTS } from "@furnitrack/db"
-import { Navbar } from "../../components/Navbar"
 import { Footer } from "../../components/Footer"
 import { ProductCard } from "../../components/ProductCard"
 
@@ -43,7 +42,6 @@ export default function ShopPage({
 
   return (
     <div className="min-h-screen bg-[--color-beige] flex flex-col">
-      <Navbar />
 
       {/* Hero Banner */}
       <div className="relative h-48 md:h-64 bg-[--color-navy] overflow-hidden">
