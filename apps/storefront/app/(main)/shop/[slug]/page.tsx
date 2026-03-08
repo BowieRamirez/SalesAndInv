@@ -3,8 +3,8 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronRight } from "lucide-react"
 import { MOCK_PRODUCTS } from "@furnitrack/db"
-import { Footer } from "../../../components/Footer"
-import { ProductCard } from "../../../components/ProductCard"
+import { Footer } from "../../../../components/Footer"
+import { ProductCard } from "../../../../components/ProductCard"
 import { ProductClient } from "./ProductClient"
 
 interface ProductPageProps {

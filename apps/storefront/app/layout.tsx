@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   description: "Premium furniture for every space",
 }
 
-import { Navbar } from "../components/Navbar"
 
 export default function RootLayout({
   children,
@@ -29,7 +28,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="font-sans antialiased">
-        <Navbar />
         {children}
       </body>
     </html>

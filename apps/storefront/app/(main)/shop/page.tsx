@@ -2,8 +2,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight, SlidersHorizontal } from "lucide-react"
 import { MOCK_PRODUCTS } from "@furnitrack/db"
-import { Footer } from "../../components/Footer"
-import { ProductCard } from "../../components/ProductCard"
+import { Footer } from "../../../components/Footer"
+import { ProductCard } from "../../../components/ProductCard"
 
 const CATEGORIES = ["Living Room", "Bedroom", "Dining", "Office", "Storage", "Lighting"]
 const MATERIALS = ["Solid Oak", "Solid Wood", "Engineered Wood", "MDF", "Fabric / Solid Wood", "Steel / Solid Wood", "Tempered Glass / Steel", "Metal / Glass", "Mahogany", "Metal"]

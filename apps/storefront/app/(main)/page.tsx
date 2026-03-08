@@ -2,8 +2,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Sparkles, Star, Flame } from "lucide-react"
 import { MOCK_PRODUCTS } from "@furnitrack/db"
-import { Footer } from "../components/Footer"
-import { ProductCard } from "../components/ProductCard"
+import { Footer } from "../../components/Footer"
+import { ProductCard } from "../../components/ProductCard"
 
 export default function HomePage() {
   const newArrivals = MOCK_PRODUCTS.slice(0, 4)

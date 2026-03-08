@@ -1,7 +1,25 @@
-import Link from "next/link"
-import { Search, MapPin, Globe, User } from "lucide-react"
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { Search, MapPin, Globe, User, LogOut } from "lucide-react";
 
 export function Navbar() {
+  const [customerEmail, setCustomerEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const session = localStorage.getItem("customerSession");
+      setCustomerEmail(session);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("customerSession");
+      setCustomerEmail(null);
+    }
+  };
   return (
     <header className="w-full bg-[#1a1a2e] text-white">
       <div className="max-w-[1336px] mx-auto px-[38px] h-[64px] flex items-center justify-between gap-[32px]">
@@ -44,14 +62,34 @@ export function Navbar() {
             <span className="text-[11px] text-white leading-[16.5px]">English</span>
           </div>
           
-          <Link href="/sign-in" className="flex items-center gap-[6px] border-l border-white/20 pl-[20px] hover:opacity-80 transition-opacity">
-            <User className="w-[16px] h-[16px] text-white" />
-            <span className="text-[11px] font-medium text-white/80 leading-[16.5px]">Sign in</span>
-          </Link>
-          
-          <Link href="/sign-up" className="bg-[#c9a96e] h-[28px] px-[16px] ml-2 flex items-center justify-center text-[11px] font-medium text-[#1a1a2e] hover:bg-[#c9a96e]/90 transition-colors">
-            Create account
-          </Link>
+          {customerEmail ? (
+            <>
+              <div className="flex items-center gap-[6px] border-l border-white/20 pl-[20px]">
+                <User className="w-[16px] h-[16px] text-white" />
+                <span className="text-[11px] font-medium text-white/80 leading-[16.5px]">
+                  {customerEmail.split('@')[0]}
+                </span>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="bg-transparent border border-white/20 h-[28px] px-[16px] ml-2 flex items-center justify-center gap-[6px] text-[11px] font-medium text-white/80 hover:bg-white/5 transition-colors rounded"
+              >
+                <LogOut className="w-[12px] h-[12px]" />
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/sign-in" className="flex items-center gap-[6px] border-l border-white/20 pl-[20px] hover:opacity-80 transition-opacity">
+                <User className="w-[16px] h-[16px] text-white" />
+                <span className="text-[11px] font-medium text-white/80 leading-[16.5px]">Sign in</span>
+              </Link>
+              
+              <Link href="/sign-up" className="bg-[#c9a96e] h-[28px] px-[16px] ml-2 flex items-center justify-center text-[11px] font-medium text-[#1a1a2e] hover:bg-[#c9a96e]/90 transition-colors">
+                Create account
+              </Link>
+            </>
+          )}
 
         </div>
       </div>
