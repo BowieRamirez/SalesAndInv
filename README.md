@@ -63,6 +63,21 @@ furnitrack/
 
 ---
 
+## Test Accounts
+
+You can use the following mock accounts to test the role-based dashboard redirection:
+
+| Role / Dashboard | Email                  | Password      |
+|------------------|------------------------|---------------|
+| Executive / Admin| `admin@sims.com`       | *any password*|
+| Sales            | `sales@sims.com`       | *any password*|
+| Accounting       | `accounting@sims.com`  | *any password*|
+| Inventory        | `inventory@sims.com`   | *any password*|
+| Analytics        | `analytics@sims.com`   | *any password*|
+| Customer         | `customer@sims.com`    | *any password*|
+
+---
+
 ## Prerequisites
 
 - **Node.js** `>=20`

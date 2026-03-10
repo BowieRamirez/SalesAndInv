@@ -2,7 +2,7 @@
 
 import React from "react";
 import { 
-  Box, LogOut, Bell, LayoutDashboard, UserSquare2, RefreshCcw,
+  Box, Bell, RefreshCcw,
   DollarSign, ShoppingBag, ArrowUpRight, ArrowDownRight, Package,
   AlertTriangle, Clock, MapPin
 } from "lucide-react";
@@ -38,60 +38,7 @@ export default function ExecutiveDashboard() {
   return (
     <div className="min-h-screen flex bg-[#fcfcfc] text-[#2d2d2d] font-sans">
       {/* Sidebar */}
-      <aside className="w-[260px] bg-white border-r border-[#e5e7eb] flex flex-col justify-between hidden md:flex">
-        <div>
-          {/* Logo Area */}
-          <div className="h-[64px] px-6 flex items-center border-b border-[#e5e7eb]">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-navy rounded-lg flex items-center justify-center shrink-0">
-                <span className="text-white text-[11px] font-bold tracking-wider">S&I</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[13px] font-semibold leading-tight text-navy block">Sales & Inventory</span>
-                <span className="text-[10px] text-muted">Management System</span>
-              </div>
-            </div>
-          </div>
 
-          {/* User Profile Info */}
-          <div className="px-6 py-6 border-b border-[#e5e7eb]">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-                <span className="text-indigo-600 font-bold text-[13px]">KA</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[14px] font-semibold text-charcoal leading-tight">Karen Alonzo</span>
-                <span className="text-[11px] text-muted">Executive & Management</span>
-              </div>
-            </div>
-            <div className="w-full bg-indigo-50 border border-indigo-100 rounded-md py-2 px-3 flex items-center space-x-2 text-indigo-600">
-              <UserSquare2 className="w-4 h-4 shrink-0" />
-              <span className="text-[12px] font-medium text-indigo-700">Executive Access</span>
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <div className="px-4 py-6">
-            <span className="text-[10px] font-semibold text-muted uppercase tracking-wider px-2 mb-3 block">
-              Your Dashboard
-            </span>
-            <nav className="space-y-1">
-              <a href="#" className="flex items-center space-x-3 bg-navy text-white px-3 py-2.5 rounded-lg group transition-colors">
-                <LayoutDashboard className="w-[18px] h-[18px] opacity-90" />
-                <span className="text-[13px] font-medium">Executive Dashboard</span>
-              </a>
-            </nav>
-          </div>
-        </div>
-
-        {/* Footer Sidebar */}
-        <div className="px-6 py-5 border-t border-[#e5e7eb]">
-          <a href="http://localhost:3000/sign-in" className="flex items-center space-x-3 text-coral hover:opacity-80 transition-opacity w-full">
-            <LogOut className="w-[18px] h-[18px]" />
-            <span className="text-[13px] font-medium">Sign Out</span>
-          </a>
-        </div>
-      </aside>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col overflow-hidden">
