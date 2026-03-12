@@ -53,28 +53,40 @@ furnitrack/
 
 ## User Roles
 
-| Role | Description |
-|------|-------------|
-| `ADMIN` | Full system access — user management and configuration |
-| `MANAGEMENT` | KPI dashboard, reports, and business overview |
-| `SALES` | Lead tracking, quotation creation, and order management |
-| `ACCOUNTING` | Payment verification, invoicing, and financial controls |
-| `INVENTORY` | Stock management, warehouse tracking, and transfer requests |
+| Role         | Description                                                 |
+| ------------ | ----------------------------------------------------------- |
+| `ADMIN`      | Full system access — user management and configuration      |
+| `MANAGEMENT` | KPI dashboard, reports, and business overview               |
+| `SALES`      | Lead tracking, quotation creation, and order management     |
+| `ACCOUNTING` | Payment verification, invoicing, and financial controls     |
+| `INVENTORY`  | Stock management, warehouse tracking, and transfer requests |
 
 ---
 
 ## Test Accounts
 
-You can use the following mock accounts to test the role-based dashboard redirection:
+Admin accounts are now managed via **Neon Auth** (powered by Better Auth) and stored in your Neon database — no hardcoded credentials.
 
-| Role / Dashboard | Email                  | Password      |
-|------------------|------------------------|---------------|
-| Executive / Admin| `admin@sims.com`       | *any password*|
-| Sales            | `sales@sims.com`       | *any password*|
-| Accounting       | `accounting@sims.com`  | *any password*|
-| Inventory        | `inventory@sims.com`   | *any password*|
-| Analytics        | `analytics@sims.com`   | *any password*|
-| Customer         | `customer@sims.com`    | *any password*|
+### Creating Admin Accounts
+
+1. Go to the [Neon Console](https://console.neon.tech) → your project → **Auth**
+2. Under **Users**, click **Add user** to create accounts for each role
+3. Set a `role` field in the user's metadata matching one of: `ADMIN`, `MANAGEMENT`, `SALES`, `ACCOUNTING`, `INVENTORY`, `ANALYTICS`
+
+| Role / Dashboard  | Suggested Email       | `role` metadata value |
+| ----------------- | --------------------- | --------------------- |
+| Executive / Admin | `admin@sims.com`      | `ADMIN`               |
+| Sales             | `sales@sims.com`      | `SALES`               |
+| Accounting        | `accounting@sims.com` | `ACCOUNTING`          |
+| Inventory         | `inventory@sims.com`  | `INVENTORY`           |
+| Analytics         | `analytics@sims.com`  | `ANALYTICS`           |
+
+### Customer Portal (`localhost:3000/sign-in`)
+
+| Role     | Email               | Password       |
+| -------- | ------------------- | -------------- |
+| Customer | `customer@sims.com` | *any password* |
+
 
 ---
 
@@ -128,11 +140,11 @@ pnpm turbo build
 
 ## Project Status
 
-| Phase | Name | Status |
-|-------|------|--------|
-| 1 | Monorepo Foundation | ✅ Complete |
-| 2 | Product Catalog & Storefront | 🔜 Next |
-| 3 | Sales & Quotation Workflow | ⏳ Planned |
-| 4 | Inventory & Warehouse Management | ⏳ Planned |
-| 5 | Accounting & Financial Controls | ⏳ Planned |
-| 6 | Reporting, Notifications & Polish | ⏳ Planned |
+| Phase | Name                              | Status     |
+| ----- | --------------------------------- | ---------- |
+| 1     | Monorepo Foundation               | ✅ Complete |
+| 2     | Product Catalog & Storefront      | 🔜 Next     |
+| 3     | Sales & Quotation Workflow        | ⏳ Planned  |
+| 4     | Inventory & Warehouse Management  | ⏳ Planned  |
+| 5     | Accounting & Financial Controls   | ⏳ Planned  |
+| 6     | Reporting, Notifications & Polish | ⏳ Planned  |

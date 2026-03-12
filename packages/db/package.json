@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@furnitrack/config": "workspace:*",
+    "@types/node": "^20.0.0",
     "prisma": "^6.19.2"
   },
   "scripts": {
@@ -15,6 +16,7 @@
     "build": "echo 'No build step — transpilePackages'"
   },
   "dependencies": {
-    "@furnitrack/validators": "workspace:*"
+    "@furnitrack/validators": "workspace:*",
+    "@prisma/client": "^6.19.2"
   }
 }

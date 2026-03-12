@@ -14,6 +14,7 @@
     "@furnitrack/db": "workspace:*",
     "@furnitrack/ui": "workspace:*",
     "@furnitrack/validators": "workspace:*",
+    "@neondatabase/auth": "0.2.0-beta.1",
     "lucide-react": "^0.577.0",
     "next": "^16.1.0",
     "react": "^19.0.0",
@@ -26,6 +27,8 @@
     "@types/node": "^20.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "dotenv": "^17.3.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.0.0"
   }
 }

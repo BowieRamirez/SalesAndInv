@@ -16,5 +16,8 @@
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "latest",
     "eslint": "^9.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@prisma/client", "@prisma/engines", "prisma", "sharp"]
   }
 }

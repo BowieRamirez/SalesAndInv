@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     "@furnitrack/ui",
     "@furnitrack/validators",
     "@furnitrack/db",
+    "@neondatabase/auth",
   ],
 }
 

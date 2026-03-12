@@ -1,8 +1,18 @@
 {
   "extends": "@furnitrack/config/typescript/nextjs.json",
   "compilerOptions": {
-    "paths": { "@/*": ["./src/*"] }
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,35 +1,47 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, CheckCircle2, BarChart3, Package, User, Lock, Eye, LogIn } from "lucide-react";
+import { Box, CheckCircle2, BarChart3, Package, User, Lock, Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
+
+// Known admin role keywords — any email containing these is blocked on the customer portal
+const ADMIN_KEYWORDS = ["sales", "accounting", "inventory", "analytics", "executive", "admin"];
+
+function isAdminEmail(email: string) {
+  const lower = email.toLowerCase();
+  return ADMIN_KEYWORDS.some((kw) => lower.includes(kw));
+}
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
-    // Map email prefixes to specific Admin Dashboards
+    // Block admin accounts from signing in here
+    if (isAdminEmail(email)) {
+      setError(
+        "This account belongs to the admin portal. Customer accounts only are permitted here."
+      );
+      return;
+    }
+
     const emailLower = email.toLowerCase();
-    
-    if (emailLower.includes("sales")) {
-      window.location.href = "http://localhost:3001/sales";
-    } else if (emailLower.includes("accounting")) {
-      window.location.href = "http://localhost:3001/accounting";
-    } else if (emailLower.includes("inventory")) {
-      window.location.href = "http://localhost:3001/inventory";
-    } else if (emailLower.includes("analytics")) {
-      window.location.href = "http://localhost:3001/analytics";
-    } else if (emailLower.includes("customer")) {
-      // Route customer to the storefront homepage
+
+    // Customer accounts route to storefront homepage
+    if (emailLower.includes("customer")) {
       if (typeof window !== "undefined") {
         localStorage.setItem("customerSession", emailLower);
       }
       window.location.href = "/";
     } else {
-      // Default / Executive admin
-      window.location.href = "http://localhost:3001/";
+      // Generic unrecognised email — still block and ask them to use the right portal
+      setError(
+        "Account not recognised as a customer account. Please check your email or use the Admin Portal."
+      );
     }
   };
 
@@ -48,8 +60,8 @@ export default function SignInPage() {
             <Box className="w-6 h-6 text-white" />
           </div>
           <div className="flex flex-col">
-             <h1 className="font-semibold text-[17px] tracking-wide leading-tight">Sales & Inventory</h1>
-             <p className="text-[11px] text-white/50 tracking-wider uppercase font-medium mt-0.5">Management System</p>
+            <h1 className="font-semibold text-[17px] tracking-wide leading-tight">Sales & Inventory</h1>
+            <p className="text-[11px] text-white/50 tracking-wider uppercase font-medium mt-0.5">Management System</p>
           </div>
         </div>
 
@@ -57,11 +69,11 @@ export default function SignInPage() {
         <div className="relative z-10 max-w-lg mt-16 mb-auto xl:pl-4">
           {/* Sparkle icon - approximate */}
           <div className="absolute -top-10 -left-6 text-coral opacity-90 animate-pulse">
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-               <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z"/>
-             </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z" />
+            </svg>
           </div>
-          
+
           <h2 className="text-[2.5rem] xl:text-[3.2rem] font-semibold leading-[1.1] mb-6 tracking-tight">
             Streamline your<br />business operations
           </h2>
@@ -97,16 +109,32 @@ export default function SignInPage() {
       <div className="flex-1 flex items-center justify-center p-8 lg:p-12 relative bg-white">
         {/* Subtle sparkle for form */}
         <div className="absolute top-[28%] right-[22%] text-coral opacity-60 pointer-events-none hidden lg:block">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-               <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z"/>
-             </svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z" />
+          </svg>
         </div>
-        
+
         <div className="w-full max-w-[400px]">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <h2 className="text-[28px] font-semibold text-navy mb-2.5 tracking-tight">Welcome back</h2>
-            <p className="text-[14px] text-muted">Sign in to your account to access your dashboard.</p>
+            <p className="text-[14px] text-muted">Sign in to your customer account to start shopping.</p>
           </div>
+
+          {/* Error banner */}
+          {error && (
+            <div className="mb-5 flex items-start space-x-2.5 bg-red-50 border border-red-200 rounded-[10px] px-4 py-3">
+              <AlertCircle className="w-[16px] h-[16px] text-red-500 mt-0.5 shrink-0" />
+              <div>
+                <p className="text-[13px] text-red-600 leading-snug">{error}</p>
+                <a
+                  href="http://localhost:3001/sign-in"
+                  className="text-[12px] text-red-500 font-medium hover:underline mt-1 inline-block"
+                >
+                  Go to Admin Portal →
+                </a>
+              </div>
+            </div>
+          )}
 
           <form className="space-y-5" onSubmit={handleSignIn}>
             <div className="space-y-2">
@@ -124,7 +152,7 @@ export default function SignInPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email (e.g. sales@sims.com)"
+                  placeholder="Enter your customer email"
                   className="block w-full pl-10 pr-4 py-3 border border-border/80 rounded-[10px] text-[14px] text-charcoal bg-white placeholder:text-muted/70 focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy transition-all"
                 />
               </div>
@@ -133,9 +161,9 @@ export default function SignInPage() {
             <div className="space-y-2 relative">
               {/* password sparkle */}
               <div className="absolute -top-1 left-[70px] text-[10px] text-coral opacity-80 pointer-events-none">
-                   <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                     <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z"/>
-                   </svg>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z" />
+                </svg>
               </div>
               <label className="text-[13px] font-medium text-charcoal/80" htmlFor="password">
                 Password
@@ -147,15 +175,23 @@ export default function SignInPage() {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="block w-full pl-10 pr-11 py-3 border border-border/80 rounded-[10px] text-[14px] text-charcoal bg-white placeholder:text-muted/70 focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy transition-all"
                 />
-                <button type="button" className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-muted/70 hover:text-charcoal transition-colors">
-                  <Eye className="h-[18px] w-[18px]" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-muted/70 hover:text-charcoal transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-[18px] w-[18px]" />
+                  ) : (
+                    <Eye className="h-[18px] w-[18px]" />
+                  )}
                 </button>
               </div>
             </div>
@@ -169,9 +205,15 @@ export default function SignInPage() {
             </button>
           </form>
 
-          <div className="mt-8 text-center pt-4">
-            <p className="text-[12px] text-muted hover:text-charcoal cursor-pointer transition-colors">
-              Login to Sales, Accounting, Inventory, Analytics, Executive, or Customer role.
+          <div className="mt-8 text-center pt-4 border-t border-border/40">
+            <p className="text-[12px] text-muted">
+              Are you an admin or staff member?{" "}
+              <a
+                href="http://localhost:3001/sign-in"
+                className="text-navy font-medium hover:underline"
+              >
+                Go to Admin Portal →
+              </a>
             </p>
           </div>
         </div>

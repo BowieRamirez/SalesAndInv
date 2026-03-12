@@ -1,0 +1,291 @@
+// FurniTrack Reference Schema — Phase 1
+// NOT connected to a database. Used as a type reference document only.
+// Run `prisma generate` to produce TypeScript types if needed.
+// Migrations are deferred to the backend milestone.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== ENUMS =====
+
+enum Role {
+  MANAGEMENT
+  SALES
+  ACCOUNTING
+  INVENTORY
+  ADMIN
+}
+
+enum StockStatus {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+}
+
+enum ProductBadge {
+  BEST_SELLER
+  SALE
+  HOT
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PRODUCTION
+  DELIVERED
+  CANCELLED
+}
+
+enum QuotationStatus {
+  DRAFT
+  SENT
+  IN_REVIEW
+  CONFIRMED
+  REJECTED
+}
+
+enum CrmStage {
+  NEW
+  QUOTED
+  NEGOTIATING
+  CONFIRMED
+  CLOSED
+}
+
+enum PaymentType {
+  DOWN_PAYMENT
+  PARTIAL
+  FULL
+}
+
+enum PaymentStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
+enum StockState {
+  AVAILABLE
+  RESERVED
+  IN_PRODUCTION
+  DELIVERED
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  TRANSFER
+  ADJUSTMENT
+  DAMAGED
+}
+
+// ===== MODELS =====
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  role      Role
+  branchId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Product {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  name          String
+  category      String
+  material      String
+  price         Decimal
+  originalPrice Decimal?
+  badge         ProductBadge?
+  stockStatus   StockStatus   @default(IN_STOCK)
+  description   String
+  images        String[]
+  rating        Decimal       @default(0)
+  reviewCount   Int           @default(0)
+  widthCm       Decimal
+  depthCm       Decimal
+  heightCm      Decimal
+  weightKg      Decimal
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  colorVariants  ProductColorVariant[]
+  stockItems     StockItem[]
+  quotationItems QuotationLineItem[]
+
+  @@map("products")
+}
+
+model ProductColorVariant {
+  id        String @id @default(cuid())
+  productId String
+  name      String
+  hex       String
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("product_color_variants")
+}
+
+model Warehouse {
+  id         String @id @default(cuid())
+  name       String
+  branchCode String @unique
+  address    String
+
+  stockItems    StockItem[]
+  transfersFrom StockTransfer[] @relation("TransferFrom")
+  transfersTo   StockTransfer[] @relation("TransferTo")
+
+  @@map("warehouses")
+}
+
+model StockItem {
+  id              String     @id @default(cuid())
+  productId       String
+  warehouseId     String
+  sku             String     @unique
+  qtyAvailable    Int        @default(0)
+  qtyReserved     Int        @default(0)
+  qtyInProduction Int        @default(0)
+  minThreshold    Int        @default(5)
+  state           StockState @default(AVAILABLE)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  product   Product         @relation(fields: [productId], references: [id])
+  warehouse Warehouse       @relation(fields: [warehouseId], references: [id])
+  movements StockMovement[]
+
+  @@map("stock_items")
+}
+
+model StockMovement {
+  id          String            @id @default(cuid())
+  stockItemId String
+  type        StockMovementType
+  quantity    Int
+  actor       String
+  reference   String?
+  createdAt   DateTime          @default(now())
+
+  stockItem StockItem @relation(fields: [stockItemId], references: [id])
+
+  @@map("stock_movements")
+}
+
+model StockTransfer {
+  id            String   @id @default(cuid())
+  fromWarehouse String
+  toWarehouse   String
+  productId     String
+  quantity      Int
+  reason        String?
+  status        String   @default("PENDING")
+  createdAt     DateTime @default(now())
+
+  from Warehouse @relation("TransferFrom", fields: [fromWarehouse], references: [id])
+  to   Warehouse @relation("TransferTo", fields: [toWarehouse], references: [id])
+
+  @@map("stock_transfers")
+}
+
+model Lead {
+  id           String    @id @default(cuid())
+  name         String
+  company      String
+  email        String
+  businessType String
+  budget       Decimal
+  targetDate   DateTime?
+  stage        CrmStage  @default(NEW)
+  createdAt    DateTime  @default(now())
+
+  quotations Quotation[]
+
+  @@map("leads")
+}
+
+model Quotation {
+  id          String          @id @default(cuid())
+  quoteNumber String          @unique
+  leadId      String
+  clientName  String
+  clientEmail String
+  status      QuotationStatus @default(DRAFT)
+  subtotal    Decimal
+  vatAmount   Decimal
+  total       Decimal
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  lead      Lead                @relation(fields: [leadId], references: [id])
+  lineItems QuotationLineItem[]
+  order     Order?
+
+  @@map("quotations")
+}
+
+model QuotationLineItem {
+  id          String  @id @default(cuid())
+  quotationId String
+  productId   String
+  productName String
+  quantity    Int
+  unitPrice   Decimal
+  dimensions  String?
+  finish      String?
+  total       Decimal
+
+  quotation Quotation @relation(fields: [quotationId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
+
+  @@map("quotation_line_items")
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  soNumber     String      @unique
+  poNumber     String?
+  quotationId  String      @unique
+  clientName   String
+  status       OrderStatus @default(PENDING)
+  rushOrder    Boolean     @default(false)
+  deliveryDate DateTime?
+  subtotal     Decimal
+  vatAmount    Decimal
+  total        Decimal
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  quotation Quotation @relation(fields: [quotationId], references: [id])
+  payments  Payment[]
+
+  @@map("orders")
+}
+
+model Payment {
+  id       String        @id @default(cuid())
+  orderId  String
+  type     PaymentType
+  amount   Decimal
+  status   PaymentStatus @default(PENDING)
+  proofUrl String?
+  date     DateTime      @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
+}

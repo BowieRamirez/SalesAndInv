@@ -3,13 +3,14 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { 
+import {
   LayoutDashboard, LogOut, Box,
   Calculator, Receipt, CheckSquare, FileText,
   Building2, ArrowLeftRight, History,
   FileEdit, ClipboardList, Search, ListTodo,
   BarChart, PieChart, LineChart
 } from "lucide-react";
+import { authClient } from "@/lib/auth/client";
 
 const navConfigs: Record<string, any> = {
   '/accounting': {
@@ -91,11 +92,10 @@ function SidebarContent() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors duration-200 group ${
-                      isActive 
-                        ? 'bg-[#252839] text-white' 
-                        : 'text-[#8b92a5] hover:bg-[#252839]/50 hover:text-white'
-                    }`}
+                    className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors duration-200 group ${isActive
+                      ? 'bg-[#252839] text-white'
+                      : 'text-[#8b92a5] hover:bg-[#252839]/50 hover:text-white'
+                      }`}
                   >
                     <item.icon className="w-[18px] h-[18px]" strokeWidth={2} />
                     <span className="text-[13px] font-medium tracking-wide">{item.name}</span>
@@ -120,16 +120,19 @@ function SidebarContent() {
           </div>
 
           {/* Logout Button */}
-          <Link 
-            href="http://localhost:3000/sign-in" 
+          <button
+            onClick={async () => {
+              await authClient.signOut();
+              window.location.href = "/sign-in";
+            }}
             className="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-[#8b92a5] hover:bg-[#252839] hover:text-white border border-transparent transition-colors w-full"
           >
             <LogOut className="w-[16px] h-[16px]" strokeWidth={2} />
             <span className="text-[13px] font-medium tracking-wide">Log out</span>
-          </Link>
+          </button>
         </div>
       </aside>
-      
+
       {/* Floating Help Icon */}
       <div className="fixed bottom-6 right-6 z-50">
         <button className="w-12 h-12 bg-[#1a1c29] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-[#252839] transition-colors border border-[#2a2c3d]">
