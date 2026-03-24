@@ -6,8 +6,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import {
   LayoutDashboard, LogOut, Box,
   Calculator, Receipt, CheckSquare, FileText,
-  Building2, ArrowLeftRight, History,
-  FileEdit, ClipboardList, Search, ListTodo,
+  Building2, ArrowLeftRight, History, PackagePlus, Boxes,
+  FileEdit, ClipboardList, ListTodo,
   BarChart, PieChart, LineChart
 } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
@@ -25,6 +25,8 @@ const navConfigs: Record<string, any> = {
   '/inventory': {
     links: [
       { name: 'Warehouse Locations', href: '/inventory?tab=locations', icon: Building2, tab: 'locations' },
+      { name: 'All Stocks', href: '/inventory?tab=all-stocks', icon: Boxes, tab: 'all-stocks' },
+      { name: 'Incoming Stocks', href: '/inventory?tab=stocks', icon: PackagePlus, tab: 'stocks' },
       { name: 'Stock Transfers', href: '/inventory?tab=transfers', icon: ArrowLeftRight, tab: 'transfers' },
       { name: 'Audit Logs', href: '/inventory?tab=audit', icon: History, tab: 'audit' }
     ],
@@ -34,7 +36,6 @@ const navConfigs: Record<string, any> = {
     links: [
       { name: 'Lead Intake', href: '/sales?tab=lead', icon: FileEdit, tab: 'lead' },
       { name: 'Quotations', href: '/sales?tab=quotes', icon: ClipboardList, tab: 'quotes' },
-      { name: 'Inventory Check', href: '/sales?tab=inventory', icon: Search, tab: 'inventory' },
       { name: 'CRM Tracker', href: '/sales?tab=crm', icon: ListTodo, tab: 'crm' }
     ],
     profile: { name: 'Genie Rose Gonzales', initials: 'GRG', role: 'Sales & Quotation', color: 'bg-emerald-500' }
@@ -67,14 +68,14 @@ function SidebarContent() {
       <aside className="w-[280px] bg-[#1a1c29] text-white flex flex-col justify-between hidden md:flex shrink-0 border-r border-[#2a2c3d]">
         <div>
           {/* Logo Area */}
-          <Link href="/" className="h-[72px] px-6 flex items-center justify-between border-b-0 border-transparent hover:opacity-90">
+          <div className="h-[72px] px-6 flex items-center justify-between border-b-0 border-transparent text-white cursor-default">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-slate-700 bg-slate-800">
                 <Box className="w-5 h-5 text-white" />
               </div>
               <span className="text-[14px] font-bold text-white tracking-widest uppercase">FURNITRACK</span>
             </div>
-          </Link>
+          </div>
 
           {/* Navigation Links */}
           <div className="px-4 py-8">

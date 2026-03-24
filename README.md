@@ -51,6 +51,30 @@ furnitrack/
 
 ---
 
+## Key Features
+
+### 🏢 Multi-Warehouse Inventory
+*   **Location Tracking:** Monitor stock levels across multiple warehouses and branches.
+*   **Real-time Stock Levels:** Instant visibility into product availability with SKU-level precision.
+*   **Low Stock Alerts:** Automated indicators for items requiring replenishment.
+*   **Capacity Management:** Visual tracking of warehouse storage utilization.
+
+### 👥 Role-Based Dashboards
+*   **Executive:** High-level KPIs, sales performance, and business health analytics.
+*   **Sales:** Lead management, quotation generation, and order processing.
+*   **Accounting:** Payment verification, invoice management, and financial reporting.
+*   **Inventory:** Dedicated tools for stock transfers, audits, and warehouse operations.
+
+### 🛍️ Integrated Storefront
+*   **Digital Catalog:** Modern, visually rich product browsing for customers.
+*   **Seamless Inquiries:** Direct integration between the storefront and internal sales workflows.
+
+### 🔐 Security & Reliability
+*   **Neon Auth:** Secure authentication with role-based metadata for granular access control.
+*   **Type-Safe Architecture:** Shared validators and business logic ensuring data integrity across both apps.
+
+---
+
 ## User Roles
 
 | Role         | Description                                                 |
