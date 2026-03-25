@@ -121,61 +121,147 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.CompanyScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  status: 'status',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  billingAddress: 'billingAddress',
+  shippingAddress: 'shippingAddress',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
+  authUserId: 'authUserId',
+  companyId: 'companyId',
   name: 'name',
   email: 'email',
   role: 'role',
-  branchId: 'branchId',
+  status: 'status',
+  accessStartsAt: 'accessStartsAt',
+  accessExpiresAt: 'accessExpiresAt',
+  lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProductScalarFieldEnum = {
+exports.Prisma.LeadScalarFieldEnum = {
   id: 'id',
-  slug: 'slug',
-  name: 'name',
-  category: 'category',
-  material: 'material',
-  price: 'price',
-  originalPrice: 'originalPrice',
-  badge: 'badge',
-  stockStatus: 'stockStatus',
+  companyId: 'companyId',
+  companyName: 'companyName',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  projectAddress: 'projectAddress',
+  status: 'status',
+  createdById: 'createdById',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuotationScalarFieldEnum = {
+  id: 'id',
+  quoteNumber: 'quoteNumber',
+  companyId: 'companyId',
+  leadId: 'leadId',
+  createdById: 'createdById',
+  orderType: 'orderType',
+  status: 'status',
+  internalApproval: 'internalApproval',
+  clientApproval: 'clientApproval',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  validUntil: 'validUntil',
+  subtotal: 'subtotal',
+  discountAmount: 'discountAmount',
+  vatAmount: 'vatAmount',
+  total: 'total',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuotationLineItemScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  itemCode: 'itemCode',
+  productName: 'productName',
   description: 'description',
-  images: 'images',
-  rating: 'rating',
-  reviewCount: 'reviewCount',
-  widthCm: 'widthCm',
-  depthCm: 'depthCm',
-  heightCm: 'heightCm',
-  weightKg: 'weightKg',
+  material: 'material',
+  specifications: 'specifications',
+  laborCost: 'laborCost',
+  serviceCost: 'serviceCost',
+  unitPrice: 'unitPrice',
+  quantity: 'quantity',
+  lineTotal: 'lineTotal',
+  imageUrl: 'imageUrl',
+  leadTimeDays: 'leadTimeDays',
+  requestedDate: 'requestedDate'
+};
+
+exports.Prisma.SalesOrderScalarFieldEnum = {
+  id: 'id',
+  soNumber: 'soNumber',
+  quotationId: 'quotationId',
+  companyId: 'companyId',
+  createdById: 'createdById',
+  orderType: 'orderType',
+  status: 'status',
+  inventoryStatus: 'inventoryStatus',
+  designStatus: 'designStatus',
+  accountingStatus: 'accountingStatus',
+  deliveryStatus: 'deliveryStatus',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  clientContactName: 'clientContactName',
+  clientContactEmail: 'clientContactEmail',
+  clientContactPhone: 'clientContactPhone',
+  projectAddress: 'projectAddress',
+  deliveryAddress: 'deliveryAddress',
+  requestedDeliveryAt: 'requestedDeliveryAt',
+  subtotal: 'subtotal',
+  discountAmount: 'discountAmount',
+  vatAmount: 'vatAmount',
+  total: 'total',
+  readyForDeliveryAt: 'readyForDeliveryAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProductColorVariantScalarFieldEnum = {
+exports.Prisma.SalesOrderLineItemScalarFieldEnum = {
   id: 'id',
-  productId: 'productId',
-  name: 'name',
-  hex: 'hex'
+  salesOrderId: 'salesOrderId',
+  quotationLineId: 'quotationLineId',
+  itemCode: 'itemCode',
+  productName: 'productName',
+  description: 'description',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  lineTotal: 'lineTotal'
 };
 
 exports.Prisma.WarehouseScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   name: 'name',
-  branchCode: 'branchCode',
-  address: 'address'
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.StockItemScalarFieldEnum = {
   id: 'id',
-  productId: 'productId',
   warehouseId: 'warehouseId',
   sku: 'sku',
-  qtyAvailable: 'qtyAvailable',
-  qtyReserved: 'qtyReserved',
-  qtyInProduction: 'qtyInProduction',
-  minThreshold: 'minThreshold',
+  itemName: 'itemName',
+  description: 'description',
+  unitOfMeasure: 'unitOfMeasure',
+  availableQty: 'availableQty',
+  reservedQty: 'reservedQty',
+  reorderThreshold: 'reorderThreshold',
   state: 'state',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -186,89 +272,121 @@ exports.Prisma.StockMovementScalarFieldEnum = {
   stockItemId: 'stockItemId',
   type: 'type',
   quantity: 'quantity',
-  actor: 'actor',
-  reference: 'reference',
+  requesterName: 'requesterName',
+  projectPurpose: 'projectPurpose',
+  referenceNumber: 'referenceNumber',
   createdAt: 'createdAt'
 };
 
-exports.Prisma.StockTransferScalarFieldEnum = {
+exports.Prisma.StockRequestScalarFieldEnum = {
   id: 'id',
-  fromWarehouse: 'fromWarehouse',
-  toWarehouse: 'toWarehouse',
-  productId: 'productId',
-  quantity: 'quantity',
-  reason: 'reason',
+  salesOrderId: 'salesOrderId',
+  requestedById: 'requestedById',
+  decidedById: 'decidedById',
   status: 'status',
-  createdAt: 'createdAt'
+  requestedAt: 'requestedAt',
+  decidedAt: 'decidedAt',
+  purpose: 'purpose',
+  deductionFormNumber: 'deductionFormNumber',
+  remarks: 'remarks'
 };
 
-exports.Prisma.LeadScalarFieldEnum = {
+exports.Prisma.StockRequestLineScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  company: 'company',
-  email: 'email',
-  businessType: 'businessType',
-  budget: 'budget',
-  targetDate: 'targetDate',
-  stage: 'stage',
-  createdAt: 'createdAt'
+  stockRequestId: 'stockRequestId',
+  stockItemId: 'stockItemId',
+  quantityRequested: 'quantityRequested',
+  quantityApproved: 'quantityApproved',
+  availability: 'availability'
 };
 
-exports.Prisma.QuotationScalarFieldEnum = {
+exports.Prisma.DesignRequestScalarFieldEnum = {
   id: 'id',
-  quoteNumber: 'quoteNumber',
-  leadId: 'leadId',
-  clientName: 'clientName',
-  clientEmail: 'clientEmail',
+  salesOrderId: 'salesOrderId',
+  requestedById: 'requestedById',
+  assignedToId: 'assignedToId',
   status: 'status',
-  subtotal: 'subtotal',
-  vatAmount: 'vatAmount',
-  total: 'total',
+  requestNotes: 'requestNotes',
+  finalSubmittedAt: 'finalSubmittedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.QuotationLineItemScalarFieldEnum = {
+exports.Prisma.DesignAssetScalarFieldEnum = {
   id: 'id',
-  quotationId: 'quotationId',
-  productId: 'productId',
-  productName: 'productName',
-  quantity: 'quantity',
-  unitPrice: 'unitPrice',
-  dimensions: 'dimensions',
-  finish: 'finish',
-  total: 'total'
+  designRequestId: 'designRequestId',
+  uploadedById: 'uploadedById',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  mimeType: 'mimeType',
+  assetType: 'assetType',
+  isFinal: 'isFinal',
+  createdAt: 'createdAt'
 };
 
-exports.Prisma.OrderScalarFieldEnum = {
+exports.Prisma.PaymentRecordScalarFieldEnum = {
   id: 'id',
-  soNumber: 'soNumber',
-  poNumber: 'poNumber',
+  salesOrderId: 'salesOrderId',
   quotationId: 'quotationId',
-  clientName: 'clientName',
+  recordedById: 'recordedById',
+  paymentType: 'paymentType',
   status: 'status',
-  rushOrder: 'rushOrder',
-  deliveryDate: 'deliveryDate',
-  subtotal: 'subtotal',
-  vatAmount: 'vatAmount',
-  total: 'total',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PaymentScalarFieldEnum = {
-  id: 'id',
-  orderId: 'orderId',
-  type: 'type',
   amount: 'amount',
+  remainingBalance: 'remainingBalance',
+  paymentDate: 'paymentDate',
+  referenceNumber: 'referenceNumber',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DeliveryScheduleScalarFieldEnum = {
+  id: 'id',
+  salesOrderId: 'salesOrderId',
+  companyId: 'companyId',
+  assignedById: 'assignedById',
+  confirmedById: 'confirmedById',
+  scheduledAt: 'scheduledAt',
   status: 'status',
-  proofUrl: 'proofUrl',
-  date: 'date'
+  readinessStatus: 'readinessStatus',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprovalHistoryScalarFieldEnum = {
+  id: 'id',
+  module: 'module',
+  recordId: 'recordId',
+  action: 'action',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  remarks: 'remarks',
+  actedById: 'actedById',
+  actedAt: 'actedAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  companyId: 'companyId',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -280,90 +398,222 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.Role = exports.$Enums.Role = {
-  MANAGEMENT: 'MANAGEMENT',
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.CompanyStatus = exports.$Enums.CompanyStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  BLOCKED: 'BLOCKED'
+};
+
+exports.UserRole = exports.$Enums.UserRole = {
+  ADMIN_MANAGEMENT: 'ADMIN_MANAGEMENT',
   SALES: 'SALES',
-  ACCOUNTING: 'ACCOUNTING',
   INVENTORY: 'INVENTORY',
-  ADMIN: 'ADMIN'
+  ACCOUNTING: 'ACCOUNTING',
+  OPERATIONS_DESIGN: 'OPERATIONS_DESIGN',
+  CLIENT: 'CLIENT'
 };
 
-exports.ProductBadge = exports.$Enums.ProductBadge = {
-  BEST_SELLER: 'BEST_SELLER',
-  SALE: 'SALE',
-  HOT: 'HOT'
+exports.AccountStatus = exports.$Enums.AccountStatus = {
+  ACTIVE: 'ACTIVE',
+  BLOCKED: 'BLOCKED',
+  EXPIRED: 'EXPIRED',
+  PENDING_ACTIVATION: 'PENDING_ACTIVATION'
 };
 
-exports.StockStatus = exports.$Enums.StockStatus = {
-  IN_STOCK: 'IN_STOCK',
-  LOW_STOCK: 'LOW_STOCK',
-  OUT_OF_STOCK: 'OUT_OF_STOCK'
+exports.LeadStatus = exports.$Enums.LeadStatus = {
+  NEW: 'NEW',
+  QUALIFIED: 'QUALIFIED',
+  QUOTED: 'QUOTED',
+  WON: 'WON',
+  LOST: 'LOST'
+};
+
+exports.OrderType = exports.$Enums.OrderType = {
+  CUSTOMIZED: 'CUSTOMIZED',
+  SUPPLY: 'SUPPLY'
+};
+
+exports.QuotationStatus = exports.$Enums.QuotationStatus = {
+  DRAFT: 'DRAFT',
+  FOR_INTERNAL_REVIEW: 'FOR_INTERNAL_REVIEW',
+  INTERNALLY_APPROVED: 'INTERNALLY_APPROVED',
+  SENT_TO_CLIENT: 'SENT_TO_CLIENT',
+  CLIENT_APPROVED: 'CLIENT_APPROVED',
+  CLIENT_REJECTED: 'CLIENT_REJECTED',
+  EXPIRED: 'EXPIRED',
+  CONVERTED_TO_SALES_ORDER: 'CONVERTED_TO_SALES_ORDER',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+exports.SalesOrderStatus = exports.$Enums.SalesOrderStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_FULFILLMENT: 'PENDING_FULFILLMENT',
+  PROCESSING: 'PROCESSING',
+  READY_FOR_DELIVERY: 'READY_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.InventoryRequestStatus = exports.$Enums.InventoryRequestStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  PARTIALLY_APPROVED: 'PARTIALLY_APPROVED',
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  REJECTED: 'REJECTED'
+};
+
+exports.DesignRequestStatus = exports.$Enums.DesignRequestStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  REVISION_REQUESTED: 'REVISION_REQUESTED',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.AccountingStatus = exports.$Enums.AccountingStatus = {
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  WAITING_FOR_DOWN_PAYMENT: 'WAITING_FOR_DOWN_PAYMENT',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  FULLY_PAID: 'FULLY_PAID',
+  FINANCIALLY_CLEARED: 'FINANCIALLY_CLEARED',
+  ON_HOLD: 'ON_HOLD'
+};
+
+exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
+  BLOCKED: 'BLOCKED',
+  SCHEDULED: 'SCHEDULED',
+  READY: 'READY',
+  IN_TRANSIT: 'IN_TRANSIT',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.StockState = exports.$Enums.StockState = {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
-  IN_PRODUCTION: 'IN_PRODUCTION',
-  DELIVERED: 'DELIVERED'
+  DAMAGED: 'DAMAGED',
+  ARCHIVED: 'ARCHIVED'
 };
 
 exports.StockMovementType = exports.$Enums.StockMovementType = {
   IN: 'IN',
   OUT: 'OUT',
-  TRANSFER: 'TRANSFER',
   ADJUSTMENT: 'ADJUSTMENT',
-  DAMAGED: 'DAMAGED'
+  TRANSFER: 'TRANSFER',
+  DAMAGE: 'DAMAGE'
 };
 
-exports.CrmStage = exports.$Enums.CrmStage = {
-  NEW: 'NEW',
-  QUOTED: 'QUOTED',
-  NEGOTIATING: 'NEGOTIATING',
-  CONFIRMED: 'CONFIRMED',
-  CLOSED: 'CLOSED'
+exports.StockAvailabilityStatus = exports.$Enums.StockAvailabilityStatus = {
+  AVAILABLE: 'AVAILABLE',
+  PARTIAL: 'PARTIAL',
+  OUT_OF_STOCK: 'OUT_OF_STOCK'
 };
 
-exports.QuotationStatus = exports.$Enums.QuotationStatus = {
-  DRAFT: 'DRAFT',
-  SENT: 'SENT',
-  IN_REVIEW: 'IN_REVIEW',
-  CONFIRMED: 'CONFIRMED',
-  REJECTED: 'REJECTED'
-};
-
-exports.OrderStatus = exports.$Enums.OrderStatus = {
-  PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
-  IN_PRODUCTION: 'IN_PRODUCTION',
-  DELIVERED: 'DELIVERED',
-  CANCELLED: 'CANCELLED'
+exports.DesignAssetType = exports.$Enums.DesignAssetType = {
+  IMAGE: 'IMAGE',
+  PDF: 'PDF',
+  DRAWING_2D: 'DRAWING_2D',
+  MODEL_3D: 'MODEL_3D'
 };
 
 exports.PaymentType = exports.$Enums.PaymentType = {
   DOWN_PAYMENT: 'DOWN_PAYMENT',
-  PARTIAL: 'PARTIAL',
-  FULL: 'FULL'
+  PARTIAL_PAYMENT: 'PARTIAL_PAYMENT',
+  FULL_PAYMENT: 'FULL_PAYMENT'
 };
 
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {
   PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
+  VERIFIED: 'VERIFIED',
   REJECTED: 'REJECTED'
 };
 
+exports.DeliveryReadinessStatus = exports.$Enums.DeliveryReadinessStatus = {
+  BLOCKED_BY_APPROVALS: 'BLOCKED_BY_APPROVALS',
+  BLOCKED_BY_PAYMENT: 'BLOCKED_BY_PAYMENT',
+  BLOCKED_BY_STOCK: 'BLOCKED_BY_STOCK',
+  BLOCKED_BY_DESIGN: 'BLOCKED_BY_DESIGN',
+  READY: 'READY'
+};
+
+exports.ApprovalModule = exports.$Enums.ApprovalModule = {
+  QUOTATION: 'QUOTATION',
+  SALES_ORDER: 'SALES_ORDER',
+  STOCK_REQUEST: 'STOCK_REQUEST',
+  PAYMENT: 'PAYMENT',
+  DESIGN_REQUEST: 'DESIGN_REQUEST',
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+};
+
+exports.ApprovalAction = exports.$Enums.ApprovalAction = {
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  RETURNED_FOR_REVISION: 'RETURNED_FOR_REVISION',
+  FINALIZED: 'FINALIZED'
+};
+
+exports.AuditAction = exports.$Enums.AuditAction = {
+  USER_CREATED: 'USER_CREATED',
+  USER_UPDATED: 'USER_UPDATED',
+  USER_BLOCKED: 'USER_BLOCKED',
+  USER_REMOVED: 'USER_REMOVED',
+  CLIENT_CREATED: 'CLIENT_CREATED',
+  COMPANY_CODE_ASSIGNED: 'COMPANY_CODE_ASSIGNED',
+  COMPANY_CODE_CHANGED: 'COMPANY_CODE_CHANGED',
+  QUOTATION_APPROVED: 'QUOTATION_APPROVED',
+  QUOTATION_REJECTED: 'QUOTATION_REJECTED',
+  STOCK_REQUEST_APPROVED: 'STOCK_REQUEST_APPROVED',
+  STOCK_REQUEST_REJECTED: 'STOCK_REQUEST_REJECTED',
+  PAYMENT_UPDATED: 'PAYMENT_UPDATED',
+  DELIVERY_SCHEDULE_CHANGED: 'DELIVERY_SCHEDULE_CHANGED'
+};
+
+exports.AuditEntityType = exports.$Enums.AuditEntityType = {
+  USER: 'USER',
+  COMPANY: 'COMPANY',
+  QUOTATION: 'QUOTATION',
+  SALES_ORDER: 'SALES_ORDER',
+  STOCK_REQUEST: 'STOCK_REQUEST',
+  PAYMENT: 'PAYMENT',
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+};
+
 exports.Prisma.ModelName = {
+  Company: 'Company',
   User: 'User',
-  Product: 'Product',
-  ProductColorVariant: 'ProductColorVariant',
-  Warehouse: 'Warehouse',
-  StockItem: 'StockItem',
-  StockMovement: 'StockMovement',
-  StockTransfer: 'StockTransfer',
   Lead: 'Lead',
   Quotation: 'Quotation',
   QuotationLineItem: 'QuotationLineItem',
-  Order: 'Order',
-  Payment: 'Payment'
+  SalesOrder: 'SalesOrder',
+  SalesOrderLineItem: 'SalesOrderLineItem',
+  Warehouse: 'Warehouse',
+  StockItem: 'StockItem',
+  StockMovement: 'StockMovement',
+  StockRequest: 'StockRequest',
+  StockRequestLine: 'StockRequestLine',
+  DesignRequest: 'DesignRequest',
+  DesignAsset: 'DesignAsset',
+  PaymentRecord: 'PaymentRecord',
+  DeliverySchedule: 'DeliverySchedule',
+  ApprovalHistory: 'ApprovalHistory',
+  AuditLog: 'AuditLog'
 };
 
 /**

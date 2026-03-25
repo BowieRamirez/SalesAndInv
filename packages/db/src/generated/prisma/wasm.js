@@ -93,61 +93,147 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.CompanyScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  status: 'status',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  billingAddress: 'billingAddress',
+  shippingAddress: 'shippingAddress',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
+  authUserId: 'authUserId',
+  companyId: 'companyId',
   name: 'name',
   email: 'email',
   role: 'role',
-  branchId: 'branchId',
+  status: 'status',
+  accessStartsAt: 'accessStartsAt',
+  accessExpiresAt: 'accessExpiresAt',
+  lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProductScalarFieldEnum = {
+exports.Prisma.LeadScalarFieldEnum = {
   id: 'id',
-  slug: 'slug',
-  name: 'name',
-  category: 'category',
-  material: 'material',
-  price: 'price',
-  originalPrice: 'originalPrice',
-  badge: 'badge',
-  stockStatus: 'stockStatus',
+  companyId: 'companyId',
+  companyName: 'companyName',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  projectAddress: 'projectAddress',
+  status: 'status',
+  createdById: 'createdById',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuotationScalarFieldEnum = {
+  id: 'id',
+  quoteNumber: 'quoteNumber',
+  companyId: 'companyId',
+  leadId: 'leadId',
+  createdById: 'createdById',
+  orderType: 'orderType',
+  status: 'status',
+  internalApproval: 'internalApproval',
+  clientApproval: 'clientApproval',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  validUntil: 'validUntil',
+  subtotal: 'subtotal',
+  discountAmount: 'discountAmount',
+  vatAmount: 'vatAmount',
+  total: 'total',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuotationLineItemScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  itemCode: 'itemCode',
+  productName: 'productName',
   description: 'description',
-  images: 'images',
-  rating: 'rating',
-  reviewCount: 'reviewCount',
-  widthCm: 'widthCm',
-  depthCm: 'depthCm',
-  heightCm: 'heightCm',
-  weightKg: 'weightKg',
+  material: 'material',
+  specifications: 'specifications',
+  laborCost: 'laborCost',
+  serviceCost: 'serviceCost',
+  unitPrice: 'unitPrice',
+  quantity: 'quantity',
+  lineTotal: 'lineTotal',
+  imageUrl: 'imageUrl',
+  leadTimeDays: 'leadTimeDays',
+  requestedDate: 'requestedDate'
+};
+
+exports.Prisma.SalesOrderScalarFieldEnum = {
+  id: 'id',
+  soNumber: 'soNumber',
+  quotationId: 'quotationId',
+  companyId: 'companyId',
+  createdById: 'createdById',
+  orderType: 'orderType',
+  status: 'status',
+  inventoryStatus: 'inventoryStatus',
+  designStatus: 'designStatus',
+  accountingStatus: 'accountingStatus',
+  deliveryStatus: 'deliveryStatus',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  clientContactName: 'clientContactName',
+  clientContactEmail: 'clientContactEmail',
+  clientContactPhone: 'clientContactPhone',
+  projectAddress: 'projectAddress',
+  deliveryAddress: 'deliveryAddress',
+  requestedDeliveryAt: 'requestedDeliveryAt',
+  subtotal: 'subtotal',
+  discountAmount: 'discountAmount',
+  vatAmount: 'vatAmount',
+  total: 'total',
+  readyForDeliveryAt: 'readyForDeliveryAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProductColorVariantScalarFieldEnum = {
+exports.Prisma.SalesOrderLineItemScalarFieldEnum = {
   id: 'id',
-  productId: 'productId',
-  name: 'name',
-  hex: 'hex'
+  salesOrderId: 'salesOrderId',
+  quotationLineId: 'quotationLineId',
+  itemCode: 'itemCode',
+  productName: 'productName',
+  description: 'description',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  lineTotal: 'lineTotal'
 };
 
 exports.Prisma.WarehouseScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   name: 'name',
-  branchCode: 'branchCode',
-  address: 'address'
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.StockItemScalarFieldEnum = {
   id: 'id',
-  productId: 'productId',
   warehouseId: 'warehouseId',
   sku: 'sku',
-  qtyAvailable: 'qtyAvailable',
-  qtyReserved: 'qtyReserved',
-  qtyInProduction: 'qtyInProduction',
-  minThreshold: 'minThreshold',
+  itemName: 'itemName',
+  description: 'description',
+  unitOfMeasure: 'unitOfMeasure',
+  availableQty: 'availableQty',
+  reservedQty: 'reservedQty',
+  reorderThreshold: 'reorderThreshold',
   state: 'state',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -158,89 +244,121 @@ exports.Prisma.StockMovementScalarFieldEnum = {
   stockItemId: 'stockItemId',
   type: 'type',
   quantity: 'quantity',
-  actor: 'actor',
-  reference: 'reference',
+  requesterName: 'requesterName',
+  projectPurpose: 'projectPurpose',
+  referenceNumber: 'referenceNumber',
   createdAt: 'createdAt'
 };
 
-exports.Prisma.StockTransferScalarFieldEnum = {
+exports.Prisma.StockRequestScalarFieldEnum = {
   id: 'id',
-  fromWarehouse: 'fromWarehouse',
-  toWarehouse: 'toWarehouse',
-  productId: 'productId',
-  quantity: 'quantity',
-  reason: 'reason',
+  salesOrderId: 'salesOrderId',
+  requestedById: 'requestedById',
+  decidedById: 'decidedById',
   status: 'status',
-  createdAt: 'createdAt'
+  requestedAt: 'requestedAt',
+  decidedAt: 'decidedAt',
+  purpose: 'purpose',
+  deductionFormNumber: 'deductionFormNumber',
+  remarks: 'remarks'
 };
 
-exports.Prisma.LeadScalarFieldEnum = {
+exports.Prisma.StockRequestLineScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  company: 'company',
-  email: 'email',
-  businessType: 'businessType',
-  budget: 'budget',
-  targetDate: 'targetDate',
-  stage: 'stage',
-  createdAt: 'createdAt'
+  stockRequestId: 'stockRequestId',
+  stockItemId: 'stockItemId',
+  quantityRequested: 'quantityRequested',
+  quantityApproved: 'quantityApproved',
+  availability: 'availability'
 };
 
-exports.Prisma.QuotationScalarFieldEnum = {
+exports.Prisma.DesignRequestScalarFieldEnum = {
   id: 'id',
-  quoteNumber: 'quoteNumber',
-  leadId: 'leadId',
-  clientName: 'clientName',
-  clientEmail: 'clientEmail',
+  salesOrderId: 'salesOrderId',
+  requestedById: 'requestedById',
+  assignedToId: 'assignedToId',
   status: 'status',
-  subtotal: 'subtotal',
-  vatAmount: 'vatAmount',
-  total: 'total',
+  requestNotes: 'requestNotes',
+  finalSubmittedAt: 'finalSubmittedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.QuotationLineItemScalarFieldEnum = {
+exports.Prisma.DesignAssetScalarFieldEnum = {
   id: 'id',
-  quotationId: 'quotationId',
-  productId: 'productId',
-  productName: 'productName',
-  quantity: 'quantity',
-  unitPrice: 'unitPrice',
-  dimensions: 'dimensions',
-  finish: 'finish',
-  total: 'total'
+  designRequestId: 'designRequestId',
+  uploadedById: 'uploadedById',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  mimeType: 'mimeType',
+  assetType: 'assetType',
+  isFinal: 'isFinal',
+  createdAt: 'createdAt'
 };
 
-exports.Prisma.OrderScalarFieldEnum = {
+exports.Prisma.PaymentRecordScalarFieldEnum = {
   id: 'id',
-  soNumber: 'soNumber',
-  poNumber: 'poNumber',
+  salesOrderId: 'salesOrderId',
   quotationId: 'quotationId',
-  clientName: 'clientName',
+  recordedById: 'recordedById',
+  paymentType: 'paymentType',
   status: 'status',
-  rushOrder: 'rushOrder',
-  deliveryDate: 'deliveryDate',
-  subtotal: 'subtotal',
-  vatAmount: 'vatAmount',
-  total: 'total',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PaymentScalarFieldEnum = {
-  id: 'id',
-  orderId: 'orderId',
-  type: 'type',
   amount: 'amount',
+  remainingBalance: 'remainingBalance',
+  paymentDate: 'paymentDate',
+  referenceNumber: 'referenceNumber',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DeliveryScheduleScalarFieldEnum = {
+  id: 'id',
+  salesOrderId: 'salesOrderId',
+  companyId: 'companyId',
+  assignedById: 'assignedById',
+  confirmedById: 'confirmedById',
+  scheduledAt: 'scheduledAt',
   status: 'status',
-  proofUrl: 'proofUrl',
-  date: 'date'
+  readinessStatus: 'readinessStatus',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprovalHistoryScalarFieldEnum = {
+  id: 'id',
+  module: 'module',
+  recordId: 'recordId',
+  action: 'action',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  remarks: 'remarks',
+  actedById: 'actedById',
+  actedAt: 'actedAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  companyId: 'companyId',
+  companyCodeSnapshot: 'companyCodeSnapshot',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -252,90 +370,222 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.Role = exports.$Enums.Role = {
-  MANAGEMENT: 'MANAGEMENT',
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.UserRole = exports.$Enums.UserRole = {
+  ADMIN_MANAGEMENT: 'ADMIN_MANAGEMENT',
   SALES: 'SALES',
-  ACCOUNTING: 'ACCOUNTING',
   INVENTORY: 'INVENTORY',
-  ADMIN: 'ADMIN'
+  ACCOUNTING: 'ACCOUNTING',
+  OPERATIONS_DESIGN: 'OPERATIONS_DESIGN',
+  CLIENT: 'CLIENT'
 };
 
-exports.StockStatus = exports.$Enums.StockStatus = {
-  IN_STOCK: 'IN_STOCK',
-  LOW_STOCK: 'LOW_STOCK',
-  OUT_OF_STOCK: 'OUT_OF_STOCK'
+exports.AccountStatus = exports.$Enums.AccountStatus = {
+  ACTIVE: 'ACTIVE',
+  BLOCKED: 'BLOCKED',
+  EXPIRED: 'EXPIRED',
+  PENDING_ACTIVATION: 'PENDING_ACTIVATION'
 };
 
-exports.ProductBadge = exports.$Enums.ProductBadge = {
-  BEST_SELLER: 'BEST_SELLER',
-  SALE: 'SALE',
-  HOT: 'HOT'
+exports.CompanyStatus = exports.$Enums.CompanyStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  BLOCKED: 'BLOCKED'
 };
 
-exports.OrderStatus = exports.$Enums.OrderStatus = {
+exports.LeadStatus = exports.$Enums.LeadStatus = {
+  NEW: 'NEW',
+  QUALIFIED: 'QUALIFIED',
+  QUOTED: 'QUOTED',
+  WON: 'WON',
+  LOST: 'LOST'
+};
+
+exports.OrderType = exports.$Enums.OrderType = {
+  CUSTOMIZED: 'CUSTOMIZED',
+  SUPPLY: 'SUPPLY'
+};
+
+exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
   PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
-  IN_PRODUCTION: 'IN_PRODUCTION',
-  DELIVERED: 'DELIVERED',
-  CANCELLED: 'CANCELLED'
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
 };
 
 exports.QuotationStatus = exports.$Enums.QuotationStatus = {
   DRAFT: 'DRAFT',
-  SENT: 'SENT',
-  IN_REVIEW: 'IN_REVIEW',
-  CONFIRMED: 'CONFIRMED',
+  FOR_INTERNAL_REVIEW: 'FOR_INTERNAL_REVIEW',
+  INTERNALLY_APPROVED: 'INTERNALLY_APPROVED',
+  SENT_TO_CLIENT: 'SENT_TO_CLIENT',
+  CLIENT_APPROVED: 'CLIENT_APPROVED',
+  CLIENT_REJECTED: 'CLIENT_REJECTED',
+  EXPIRED: 'EXPIRED',
+  CONVERTED_TO_SALES_ORDER: 'CONVERTED_TO_SALES_ORDER',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.SalesOrderStatus = exports.$Enums.SalesOrderStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_FULFILLMENT: 'PENDING_FULFILLMENT',
+  PROCESSING: 'PROCESSING',
+  READY_FOR_DELIVERY: 'READY_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.InventoryRequestStatus = exports.$Enums.InventoryRequestStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  PARTIALLY_APPROVED: 'PARTIALLY_APPROVED',
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
   REJECTED: 'REJECTED'
 };
 
-exports.CrmStage = exports.$Enums.CrmStage = {
-  NEW: 'NEW',
-  QUOTED: 'QUOTED',
-  NEGOTIATING: 'NEGOTIATING',
-  CONFIRMED: 'CONFIRMED',
-  CLOSED: 'CLOSED'
+exports.StockAvailabilityStatus = exports.$Enums.StockAvailabilityStatus = {
+  AVAILABLE: 'AVAILABLE',
+  PARTIAL: 'PARTIAL',
+  OUT_OF_STOCK: 'OUT_OF_STOCK'
+};
+
+exports.AccountingStatus = exports.$Enums.AccountingStatus = {
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  WAITING_FOR_DOWN_PAYMENT: 'WAITING_FOR_DOWN_PAYMENT',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  FULLY_PAID: 'FULLY_PAID',
+  FINANCIALLY_CLEARED: 'FINANCIALLY_CLEARED',
+  ON_HOLD: 'ON_HOLD'
 };
 
 exports.PaymentType = exports.$Enums.PaymentType = {
   DOWN_PAYMENT: 'DOWN_PAYMENT',
-  PARTIAL: 'PARTIAL',
-  FULL: 'FULL'
+  PARTIAL_PAYMENT: 'PARTIAL_PAYMENT',
+  FULL_PAYMENT: 'FULL_PAYMENT'
 };
 
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {
   PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
+  VERIFIED: 'VERIFIED',
   REJECTED: 'REJECTED'
+};
+
+exports.DesignRequestStatus = exports.$Enums.DesignRequestStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  REVISION_REQUESTED: 'REVISION_REQUESTED',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.DesignAssetType = exports.$Enums.DesignAssetType = {
+  IMAGE: 'IMAGE',
+  PDF: 'PDF',
+  DRAWING_2D: 'DRAWING_2D',
+  MODEL_3D: 'MODEL_3D'
+};
+
+exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
+  BLOCKED: 'BLOCKED',
+  SCHEDULED: 'SCHEDULED',
+  READY: 'READY',
+  IN_TRANSIT: 'IN_TRANSIT',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.DeliveryReadinessStatus = exports.$Enums.DeliveryReadinessStatus = {
+  BLOCKED_BY_APPROVALS: 'BLOCKED_BY_APPROVALS',
+  BLOCKED_BY_PAYMENT: 'BLOCKED_BY_PAYMENT',
+  BLOCKED_BY_STOCK: 'BLOCKED_BY_STOCK',
+  BLOCKED_BY_DESIGN: 'BLOCKED_BY_DESIGN',
+  READY: 'READY'
 };
 
 exports.StockState = exports.$Enums.StockState = {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
-  IN_PRODUCTION: 'IN_PRODUCTION',
-  DELIVERED: 'DELIVERED'
+  DAMAGED: 'DAMAGED',
+  ARCHIVED: 'ARCHIVED'
 };
 
 exports.StockMovementType = exports.$Enums.StockMovementType = {
   IN: 'IN',
   OUT: 'OUT',
-  TRANSFER: 'TRANSFER',
   ADJUSTMENT: 'ADJUSTMENT',
-  DAMAGED: 'DAMAGED'
+  TRANSFER: 'TRANSFER',
+  DAMAGE: 'DAMAGE'
+};
+
+exports.AuditAction = exports.$Enums.AuditAction = {
+  USER_CREATED: 'USER_CREATED',
+  USER_UPDATED: 'USER_UPDATED',
+  USER_BLOCKED: 'USER_BLOCKED',
+  USER_REMOVED: 'USER_REMOVED',
+  CLIENT_CREATED: 'CLIENT_CREATED',
+  COMPANY_CODE_ASSIGNED: 'COMPANY_CODE_ASSIGNED',
+  COMPANY_CODE_CHANGED: 'COMPANY_CODE_CHANGED',
+  QUOTATION_APPROVED: 'QUOTATION_APPROVED',
+  QUOTATION_REJECTED: 'QUOTATION_REJECTED',
+  STOCK_REQUEST_APPROVED: 'STOCK_REQUEST_APPROVED',
+  STOCK_REQUEST_REJECTED: 'STOCK_REQUEST_REJECTED',
+  PAYMENT_UPDATED: 'PAYMENT_UPDATED',
+  DELIVERY_SCHEDULE_CHANGED: 'DELIVERY_SCHEDULE_CHANGED'
+};
+
+exports.AuditEntityType = exports.$Enums.AuditEntityType = {
+  USER: 'USER',
+  COMPANY: 'COMPANY',
+  QUOTATION: 'QUOTATION',
+  SALES_ORDER: 'SALES_ORDER',
+  STOCK_REQUEST: 'STOCK_REQUEST',
+  PAYMENT: 'PAYMENT',
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+};
+
+exports.ApprovalModule = exports.$Enums.ApprovalModule = {
+  QUOTATION: 'QUOTATION',
+  SALES_ORDER: 'SALES_ORDER',
+  STOCK_REQUEST: 'STOCK_REQUEST',
+  PAYMENT: 'PAYMENT',
+  DESIGN_REQUEST: 'DESIGN_REQUEST',
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+};
+
+exports.ApprovalAction = exports.$Enums.ApprovalAction = {
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  RETURNED_FOR_REVISION: 'RETURNED_FOR_REVISION',
+  FINALIZED: 'FINALIZED'
 };
 
 exports.Prisma.ModelName = {
+  Company: 'Company',
   User: 'User',
-  Product: 'Product',
-  ProductColorVariant: 'ProductColorVariant',
-  Warehouse: 'Warehouse',
-  StockItem: 'StockItem',
-  StockMovement: 'StockMovement',
-  StockTransfer: 'StockTransfer',
   Lead: 'Lead',
   Quotation: 'Quotation',
   QuotationLineItem: 'QuotationLineItem',
-  Order: 'Order',
-  Payment: 'Payment'
+  SalesOrder: 'SalesOrder',
+  SalesOrderLineItem: 'SalesOrderLineItem',
+  Warehouse: 'Warehouse',
+  StockItem: 'StockItem',
+  StockMovement: 'StockMovement',
+  StockRequest: 'StockRequest',
+  StockRequestLine: 'StockRequestLine',
+  DesignRequest: 'DesignRequest',
+  DesignAsset: 'DesignAsset',
+  PaymentRecord: 'PaymentRecord',
+  DeliverySchedule: 'DeliverySchedule',
+  ApprovalHistory: 'ApprovalHistory',
+  AuditLog: 'AuditLog'
 };
 /**
  * Create the Client
@@ -366,7 +616,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
@@ -385,13 +635,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// FurniTrack Reference Schema — Phase 1\n// NOT connected to a database. Used as a type reference document only.\n// Run `prisma generate` to produce TypeScript types if needed.\n// Migrations are deferred to the backend milestone.\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// ===== ENUMS =====\n\nenum Role {\n  MANAGEMENT\n  SALES\n  ACCOUNTING\n  INVENTORY\n  ADMIN\n}\n\nenum StockStatus {\n  IN_STOCK\n  LOW_STOCK\n  OUT_OF_STOCK\n}\n\nenum ProductBadge {\n  BEST_SELLER\n  SALE\n  HOT\n}\n\nenum OrderStatus {\n  PENDING\n  CONFIRMED\n  IN_PRODUCTION\n  DELIVERED\n  CANCELLED\n}\n\nenum QuotationStatus {\n  DRAFT\n  SENT\n  IN_REVIEW\n  CONFIRMED\n  REJECTED\n}\n\nenum CrmStage {\n  NEW\n  QUOTED\n  NEGOTIATING\n  CONFIRMED\n  CLOSED\n}\n\nenum PaymentType {\n  DOWN_PAYMENT\n  PARTIAL\n  FULL\n}\n\nenum PaymentStatus {\n  PENDING\n  CONFIRMED\n  REJECTED\n}\n\nenum StockState {\n  AVAILABLE\n  RESERVED\n  IN_PRODUCTION\n  DELIVERED\n}\n\nenum StockMovementType {\n  IN\n  OUT\n  TRANSFER\n  ADJUSTMENT\n  DAMAGED\n}\n\n// ===== MODELS =====\n\nmodel User {\n  id        String   @id @default(cuid())\n  name      String\n  email     String   @unique\n  role      Role\n  branchId  String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map(\"users\")\n}\n\nmodel Product {\n  id            String        @id @default(cuid())\n  slug          String        @unique\n  name          String\n  category      String\n  material      String\n  price         Decimal\n  originalPrice Decimal?\n  badge         ProductBadge?\n  stockStatus   StockStatus   @default(IN_STOCK)\n  description   String\n  images        String[]\n  rating        Decimal       @default(0)\n  reviewCount   Int           @default(0)\n  widthCm       Decimal\n  depthCm       Decimal\n  heightCm      Decimal\n  weightKg      Decimal\n  createdAt     DateTime      @default(now())\n  updatedAt     DateTime      @updatedAt\n\n  colorVariants  ProductColorVariant[]\n  stockItems     StockItem[]\n  quotationItems QuotationLineItem[]\n\n  @@map(\"products\")\n}\n\nmodel ProductColorVariant {\n  id        String @id @default(cuid())\n  productId String\n  name      String\n  hex       String\n\n  product Product @relation(fields: [productId], references: [id])\n\n  @@map(\"product_color_variants\")\n}\n\nmodel Warehouse {\n  id         String @id @default(cuid())\n  name       String\n  branchCode String @unique\n  address    String\n\n  stockItems    StockItem[]\n  transfersFrom StockTransfer[] @relation(\"TransferFrom\")\n  transfersTo   StockTransfer[] @relation(\"TransferTo\")\n\n  @@map(\"warehouses\")\n}\n\nmodel StockItem {\n  id              String     @id @default(cuid())\n  productId       String\n  warehouseId     String\n  sku             String     @unique\n  qtyAvailable    Int        @default(0)\n  qtyReserved     Int        @default(0)\n  qtyInProduction Int        @default(0)\n  minThreshold    Int        @default(5)\n  state           StockState @default(AVAILABLE)\n  createdAt       DateTime   @default(now())\n  updatedAt       DateTime   @updatedAt\n\n  product   Product         @relation(fields: [productId], references: [id])\n  warehouse Warehouse       @relation(fields: [warehouseId], references: [id])\n  movements StockMovement[]\n\n  @@map(\"stock_items\")\n}\n\nmodel StockMovement {\n  id          String            @id @default(cuid())\n  stockItemId String\n  type        StockMovementType\n  quantity    Int\n  actor       String\n  reference   String?\n  createdAt   DateTime          @default(now())\n\n  stockItem StockItem @relation(fields: [stockItemId], references: [id])\n\n  @@map(\"stock_movements\")\n}\n\nmodel StockTransfer {\n  id            String   @id @default(cuid())\n  fromWarehouse String\n  toWarehouse   String\n  productId     String\n  quantity      Int\n  reason        String?\n  status        String   @default(\"PENDING\")\n  createdAt     DateTime @default(now())\n\n  from Warehouse @relation(\"TransferFrom\", fields: [fromWarehouse], references: [id])\n  to   Warehouse @relation(\"TransferTo\", fields: [toWarehouse], references: [id])\n\n  @@map(\"stock_transfers\")\n}\n\nmodel Lead {\n  id           String    @id @default(cuid())\n  name         String\n  company      String\n  email        String\n  businessType String\n  budget       Decimal\n  targetDate   DateTime?\n  stage        CrmStage  @default(NEW)\n  createdAt    DateTime  @default(now())\n\n  quotations Quotation[]\n\n  @@map(\"leads\")\n}\n\nmodel Quotation {\n  id          String          @id @default(cuid())\n  quoteNumber String          @unique\n  leadId      String\n  clientName  String\n  clientEmail String\n  status      QuotationStatus @default(DRAFT)\n  subtotal    Decimal\n  vatAmount   Decimal\n  total       Decimal\n  createdAt   DateTime        @default(now())\n  updatedAt   DateTime        @updatedAt\n\n  lead      Lead                @relation(fields: [leadId], references: [id])\n  lineItems QuotationLineItem[]\n  order     Order?\n\n  @@map(\"quotations\")\n}\n\nmodel QuotationLineItem {\n  id          String  @id @default(cuid())\n  quotationId String\n  productId   String\n  productName String\n  quantity    Int\n  unitPrice   Decimal\n  dimensions  String?\n  finish      String?\n  total       Decimal\n\n  quotation Quotation @relation(fields: [quotationId], references: [id])\n  product   Product   @relation(fields: [productId], references: [id])\n\n  @@map(\"quotation_line_items\")\n}\n\nmodel Order {\n  id           String      @id @default(cuid())\n  soNumber     String      @unique\n  poNumber     String?\n  quotationId  String      @unique\n  clientName   String\n  status       OrderStatus @default(PENDING)\n  rushOrder    Boolean     @default(false)\n  deliveryDate DateTime?\n  subtotal     Decimal\n  vatAmount    Decimal\n  total        Decimal\n  createdAt    DateTime    @default(now())\n  updatedAt    DateTime    @updatedAt\n\n  quotation Quotation @relation(fields: [quotationId], references: [id])\n  payments  Payment[]\n\n  @@map(\"orders\")\n}\n\nmodel Payment {\n  id       String        @id @default(cuid())\n  orderId  String\n  type     PaymentType\n  amount   Decimal\n  status   PaymentStatus @default(PENDING)\n  proofUrl String?\n  date     DateTime      @default(now())\n\n  order Order @relation(fields: [orderId], references: [id])\n\n  @@map(\"payments\")\n}\n",
-  "inlineSchemaHash": "12e5f21c8657c444480065763640db8e2c2077ce14dde991326ed9a46dbc706e",
+  "inlineSchema": "// FurniTrack reference schema for the minimized 6-role business system.\n// This schema is intended to guide the backend and migrations for the next phase.\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum UserRole {\n  ADMIN_MANAGEMENT\n  SALES\n  INVENTORY\n  ACCOUNTING\n  OPERATIONS_DESIGN\n  CLIENT\n}\n\nenum AccountStatus {\n  ACTIVE\n  BLOCKED\n  EXPIRED\n  PENDING_ACTIVATION\n}\n\nenum CompanyStatus {\n  ACTIVE\n  INACTIVE\n  BLOCKED\n}\n\nenum LeadStatus {\n  NEW\n  QUALIFIED\n  QUOTED\n  WON\n  LOST\n}\n\nenum OrderType {\n  CUSTOMIZED\n  SUPPLY\n}\n\nenum ApprovalStatus {\n  NOT_REQUIRED\n  PENDING\n  APPROVED\n  REJECTED\n}\n\nenum QuotationStatus {\n  DRAFT\n  FOR_INTERNAL_REVIEW\n  INTERNALLY_APPROVED\n  SENT_TO_CLIENT\n  CLIENT_APPROVED\n  CLIENT_REJECTED\n  EXPIRED\n  CONVERTED_TO_SALES_ORDER\n  CANCELLED\n}\n\nenum SalesOrderStatus {\n  DRAFT\n  PENDING_FULFILLMENT\n  PROCESSING\n  READY_FOR_DELIVERY\n  DELIVERED\n  CANCELLED\n}\n\nenum InventoryRequestStatus {\n  NOT_REQUIRED\n  PENDING\n  APPROVED\n  PARTIALLY_APPROVED\n  OUT_OF_STOCK\n  REJECTED\n}\n\nenum StockAvailabilityStatus {\n  AVAILABLE\n  PARTIAL\n  OUT_OF_STOCK\n}\n\nenum AccountingStatus {\n  PENDING_REVIEW\n  WAITING_FOR_DOWN_PAYMENT\n  PARTIALLY_PAID\n  FULLY_PAID\n  FINANCIALLY_CLEARED\n  ON_HOLD\n}\n\nenum PaymentType {\n  DOWN_PAYMENT\n  PARTIAL_PAYMENT\n  FULL_PAYMENT\n}\n\nenum PaymentStatus {\n  PENDING\n  VERIFIED\n  REJECTED\n}\n\nenum DesignRequestStatus {\n  NOT_REQUIRED\n  PENDING\n  IN_PROGRESS\n  REVISION_REQUESTED\n  SUBMITTED\n  APPROVED\n  CANCELLED\n}\n\nenum DesignAssetType {\n  IMAGE\n  PDF\n  DRAWING_2D\n  MODEL_3D\n}\n\nenum DeliveryStatus {\n  BLOCKED\n  SCHEDULED\n  READY\n  IN_TRANSIT\n  DELIVERED\n  CANCELLED\n}\n\nenum DeliveryReadinessStatus {\n  BLOCKED_BY_APPROVALS\n  BLOCKED_BY_PAYMENT\n  BLOCKED_BY_STOCK\n  BLOCKED_BY_DESIGN\n  READY\n}\n\nenum StockState {\n  AVAILABLE\n  RESERVED\n  DAMAGED\n  ARCHIVED\n}\n\nenum StockMovementType {\n  IN\n  OUT\n  ADJUSTMENT\n  TRANSFER\n  DAMAGE\n}\n\nenum AuditAction {\n  USER_CREATED\n  USER_UPDATED\n  USER_BLOCKED\n  USER_REMOVED\n  CLIENT_CREATED\n  COMPANY_CODE_ASSIGNED\n  COMPANY_CODE_CHANGED\n  QUOTATION_APPROVED\n  QUOTATION_REJECTED\n  STOCK_REQUEST_APPROVED\n  STOCK_REQUEST_REJECTED\n  PAYMENT_UPDATED\n  DELIVERY_SCHEDULE_CHANGED\n}\n\nenum AuditEntityType {\n  USER\n  COMPANY\n  QUOTATION\n  SALES_ORDER\n  STOCK_REQUEST\n  PAYMENT\n  DELIVERY_SCHEDULE\n}\n\nenum ApprovalModule {\n  QUOTATION\n  SALES_ORDER\n  STOCK_REQUEST\n  PAYMENT\n  DESIGN_REQUEST\n  DELIVERY_SCHEDULE\n}\n\nenum ApprovalAction {\n  SUBMITTED\n  APPROVED\n  REJECTED\n  RETURNED_FOR_REVISION\n  FINALIZED\n}\n\nmodel Company {\n  id              String        @id @default(cuid())\n  code            String        @unique\n  name            String\n  status          CompanyStatus @default(ACTIVE)\n  contactEmail    String?\n  contactPhone    String?\n  billingAddress  String?\n  shippingAddress String?\n  createdAt       DateTime      @default(now())\n  updatedAt       DateTime      @updatedAt\n\n  users             User[]\n  leads             Lead[]\n  quotations        Quotation[]\n  salesOrders       SalesOrder[]\n  deliverySchedules DeliverySchedule[]\n\n  @@map(\"companies\")\n}\n\nmodel User {\n  id              String        @id @default(cuid())\n  authUserId      String?       @unique\n  companyId       String?\n  name            String\n  email           String        @unique\n  role            UserRole\n  status          AccountStatus @default(ACTIVE)\n  accessStartsAt  DateTime?\n  accessExpiresAt DateTime?\n  lastLoginAt     DateTime?\n  createdAt       DateTime      @default(now())\n  updatedAt       DateTime      @updatedAt\n\n  company              Company?           @relation(fields: [companyId], references: [id])\n  leadsCreated         Lead[]             @relation(\"LeadCreatedBy\")\n  quotationsCreated    Quotation[]        @relation(\"QuotationCreatedBy\")\n  salesOrdersCreated   SalesOrder[]       @relation(\"SalesOrderCreatedBy\")\n  stockRequestsRaised  StockRequest[]     @relation(\"StockRequestRequestedBy\")\n  stockRequestsChecked StockRequest[]     @relation(\"StockRequestDecidedBy\")\n  paymentsRecorded     PaymentRecord[]    @relation(\"PaymentRecordedBy\")\n  designRequested      DesignRequest[]    @relation(\"DesignRequestedBy\")\n  designAssigned       DesignRequest[]    @relation(\"DesignAssignedTo\")\n  designAssetsUploaded DesignAsset[]      @relation(\"DesignAssetUploadedBy\")\n  deliveryAssigned     DeliverySchedule[] @relation(\"DeliveryAssignedBy\")\n  deliveryConfirmed    DeliverySchedule[] @relation(\"DeliveryConfirmedBy\")\n\n  @@index([companyId, role, status])\n  @@map(\"users\")\n}\n\nmodel Lead {\n  id             String     @id @default(cuid())\n  companyId      String?\n  companyName    String\n  contactName    String\n  email          String\n  phone          String?\n  projectAddress String?\n  status         LeadStatus @default(NEW)\n  createdById    String\n  notes          String?\n  createdAt      DateTime   @default(now())\n  updatedAt      DateTime   @updatedAt\n\n  company    Company?    @relation(fields: [companyId], references: [id])\n  createdBy  User        @relation(\"LeadCreatedBy\", fields: [createdById], references: [id])\n  quotations Quotation[]\n\n  @@index([companyId, status])\n  @@map(\"leads\")\n}\n\nmodel Quotation {\n  id                  String          @id @default(cuid())\n  quoteNumber         String          @unique\n  companyId           String\n  leadId              String?\n  createdById         String\n  orderType           OrderType\n  status              QuotationStatus @default(DRAFT)\n  internalApproval    ApprovalStatus  @default(PENDING)\n  clientApproval      ApprovalStatus  @default(PENDING)\n  companyCodeSnapshot String\n  validUntil          DateTime?\n  subtotal            Decimal\n  discountAmount      Decimal         @default(0)\n  vatAmount           Decimal         @default(0)\n  total               Decimal\n  remarks             String?\n  createdAt           DateTime        @default(now())\n  updatedAt           DateTime        @updatedAt\n\n  company        Company             @relation(fields: [companyId], references: [id])\n  lead           Lead?               @relation(fields: [leadId], references: [id])\n  createdBy      User                @relation(\"QuotationCreatedBy\", fields: [createdById], references: [id])\n  lineItems      QuotationLineItem[]\n  salesOrder     SalesOrder?\n  paymentRecords PaymentRecord[]\n\n  @@index([companyId, status, companyCodeSnapshot])\n  @@map(\"quotations\")\n}\n\nmodel QuotationLineItem {\n  id             String    @id @default(cuid())\n  quotationId    String\n  itemCode       String?\n  productName    String\n  description    String?\n  material       String?\n  specifications String?\n  laborCost      Decimal   @default(0)\n  serviceCost    Decimal   @default(0)\n  unitPrice      Decimal\n  quantity       Int\n  lineTotal      Decimal\n  imageUrl       String?\n  leadTimeDays   Int?\n  requestedDate  DateTime?\n\n  quotation Quotation @relation(fields: [quotationId], references: [id])\n\n  @@map(\"quotation_line_items\")\n}\n\nmodel SalesOrder {\n  id                  String                 @id @default(cuid())\n  soNumber            String                 @unique\n  quotationId         String?                @unique\n  companyId           String\n  createdById         String\n  orderType           OrderType\n  status              SalesOrderStatus       @default(DRAFT)\n  inventoryStatus     InventoryRequestStatus @default(NOT_REQUIRED)\n  designStatus        DesignRequestStatus    @default(NOT_REQUIRED)\n  accountingStatus    AccountingStatus       @default(PENDING_REVIEW)\n  deliveryStatus      DeliveryStatus         @default(BLOCKED)\n  companyCodeSnapshot String\n  clientContactName   String\n  clientContactEmail  String?\n  clientContactPhone  String?\n  projectAddress      String?\n  deliveryAddress     String?\n  requestedDeliveryAt DateTime?\n  subtotal            Decimal\n  discountAmount      Decimal                @default(0)\n  vatAmount           Decimal                @default(0)\n  total               Decimal\n  readyForDeliveryAt  DateTime?\n  createdAt           DateTime               @default(now())\n  updatedAt           DateTime               @updatedAt\n\n  company           Company              @relation(fields: [companyId], references: [id])\n  createdBy         User                 @relation(\"SalesOrderCreatedBy\", fields: [createdById], references: [id])\n  quotation         Quotation?           @relation(fields: [quotationId], references: [id])\n  lineItems         SalesOrderLineItem[]\n  stockRequests     StockRequest[]\n  designRequests    DesignRequest[]\n  paymentRecords    PaymentRecord[]\n  deliverySchedules DeliverySchedule[]\n\n  @@index([companyId, status, companyCodeSnapshot])\n  @@map(\"sales_orders\")\n}\n\nmodel SalesOrderLineItem {\n  id              String  @id @default(cuid())\n  salesOrderId    String\n  quotationLineId String?\n  itemCode        String?\n  productName     String\n  description     String?\n  quantity        Int\n  unitPrice       Decimal\n  lineTotal       Decimal\n\n  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])\n\n  @@map(\"sales_order_line_items\")\n}\n\nmodel Warehouse {\n  id        String   @id @default(cuid())\n  code      String   @unique\n  name      String\n  address   String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  stockItems StockItem[]\n\n  @@map(\"warehouses\")\n}\n\nmodel StockItem {\n  id               String     @id @default(cuid())\n  warehouseId      String\n  sku              String     @unique\n  itemName         String\n  description      String?\n  unitOfMeasure    String     @default(\"pcs\")\n  availableQty     Int        @default(0)\n  reservedQty      Int        @default(0)\n  reorderThreshold Int        @default(10)\n  state            StockState @default(AVAILABLE)\n  createdAt        DateTime   @default(now())\n  updatedAt        DateTime   @updatedAt\n\n  warehouse         Warehouse          @relation(fields: [warehouseId], references: [id])\n  stockMovements    StockMovement[]\n  stockRequestLines StockRequestLine[]\n\n  @@index([warehouseId, state])\n  @@map(\"stock_items\")\n}\n\nmodel StockMovement {\n  id              String            @id @default(cuid())\n  stockItemId     String\n  type            StockMovementType\n  quantity        Int\n  requesterName   String?\n  projectPurpose  String?\n  referenceNumber String?\n  createdAt       DateTime          @default(now())\n\n  stockItem StockItem @relation(fields: [stockItemId], references: [id])\n\n  @@map(\"stock_movements\")\n}\n\nmodel StockRequest {\n  id                  String                 @id @default(cuid())\n  salesOrderId        String\n  requestedById       String\n  decidedById         String?\n  status              InventoryRequestStatus @default(PENDING)\n  requestedAt         DateTime               @default(now())\n  decidedAt           DateTime?\n  purpose             String?\n  deductionFormNumber String?\n  remarks             String?\n\n  salesOrder  SalesOrder         @relation(fields: [salesOrderId], references: [id])\n  requestedBy User               @relation(\"StockRequestRequestedBy\", fields: [requestedById], references: [id])\n  decidedBy   User?              @relation(\"StockRequestDecidedBy\", fields: [decidedById], references: [id])\n  lineItems   StockRequestLine[]\n\n  @@index([salesOrderId, status])\n  @@map(\"stock_requests\")\n}\n\nmodel StockRequestLine {\n  id                String                  @id @default(cuid())\n  stockRequestId    String\n  stockItemId       String\n  quantityRequested Int\n  quantityApproved  Int                     @default(0)\n  availability      StockAvailabilityStatus @default(AVAILABLE)\n\n  stockRequest StockRequest @relation(fields: [stockRequestId], references: [id])\n  stockItem    StockItem    @relation(fields: [stockItemId], references: [id])\n\n  @@map(\"stock_request_line_items\")\n}\n\nmodel DesignRequest {\n  id               String              @id @default(cuid())\n  salesOrderId     String\n  requestedById    String\n  assignedToId     String?\n  status           DesignRequestStatus @default(PENDING)\n  requestNotes     String?\n  finalSubmittedAt DateTime?\n  createdAt        DateTime            @default(now())\n  updatedAt        DateTime            @updatedAt\n\n  salesOrder  SalesOrder    @relation(fields: [salesOrderId], references: [id])\n  requestedBy User          @relation(\"DesignRequestedBy\", fields: [requestedById], references: [id])\n  assignedTo  User?         @relation(\"DesignAssignedTo\", fields: [assignedToId], references: [id])\n  assets      DesignAsset[]\n\n  @@index([salesOrderId, status])\n  @@map(\"design_requests\")\n}\n\nmodel DesignAsset {\n  id              String          @id @default(cuid())\n  designRequestId String\n  uploadedById    String\n  fileName        String\n  fileUrl         String\n  mimeType        String\n  assetType       DesignAssetType\n  isFinal         Boolean         @default(false)\n  createdAt       DateTime        @default(now())\n\n  designRequest DesignRequest @relation(fields: [designRequestId], references: [id])\n  uploadedBy    User          @relation(\"DesignAssetUploadedBy\", fields: [uploadedById], references: [id])\n\n  @@map(\"design_assets\")\n}\n\nmodel PaymentRecord {\n  id               String        @id @default(cuid())\n  salesOrderId     String\n  quotationId      String?\n  recordedById     String\n  paymentType      PaymentType\n  status           PaymentStatus @default(PENDING)\n  amount           Decimal\n  remainingBalance Decimal\n  paymentDate      DateTime\n  referenceNumber  String?\n  remarks          String?\n  createdAt        DateTime      @default(now())\n  updatedAt        DateTime      @updatedAt\n\n  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])\n  quotation  Quotation? @relation(fields: [quotationId], references: [id])\n  recordedBy User       @relation(\"PaymentRecordedBy\", fields: [recordedById], references: [id])\n\n  @@index([salesOrderId, status, paymentDate])\n  @@map(\"payment_records\")\n}\n\nmodel DeliverySchedule {\n  id                  String                  @id @default(cuid())\n  salesOrderId        String\n  companyId           String\n  assignedById        String\n  confirmedById       String?\n  scheduledAt         DateTime\n  status              DeliveryStatus          @default(BLOCKED)\n  readinessStatus     DeliveryReadinessStatus @default(BLOCKED_BY_APPROVALS)\n  companyCodeSnapshot String\n  notes               String?\n  createdAt           DateTime                @default(now())\n  updatedAt           DateTime                @updatedAt\n\n  salesOrder  SalesOrder @relation(fields: [salesOrderId], references: [id])\n  company     Company    @relation(fields: [companyId], references: [id])\n  assignedBy  User       @relation(\"DeliveryAssignedBy\", fields: [assignedById], references: [id])\n  confirmedBy User?      @relation(\"DeliveryConfirmedBy\", fields: [confirmedById], references: [id])\n\n  @@index([companyId, status, companyCodeSnapshot])\n  @@map(\"delivery_schedules\")\n}\n\nmodel ApprovalHistory {\n  id         String         @id @default(cuid())\n  module     ApprovalModule\n  recordId   String\n  action     ApprovalAction\n  fromStatus String?\n  toStatus   String?\n  remarks    String?\n  actedById  String\n  actedAt    DateTime       @default(now())\n\n  @@index([module, recordId, actedAt])\n  @@map(\"approval_history\")\n}\n\nmodel AuditLog {\n  id                  String          @id @default(cuid())\n  actorId             String?\n  action              AuditAction\n  entityType          AuditEntityType\n  entityId            String\n  companyId           String?\n  companyCodeSnapshot String?\n  metadata            Json?\n  createdAt           DateTime        @default(now())\n\n  @@index([entityType, entityId, createdAt])\n  @@index([companyId, createdAt])\n  @@map(\"audit_logs\")\n}\n",
+  "inlineSchemaHash": "a43ec56963ff043d8039970a1015c53239bbb2d38843d930c96c93e984256fc6",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"branchId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"users\"},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"material\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"originalPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"badge\",\"kind\":\"enum\",\"type\":\"ProductBadge\"},{\"name\":\"stockStatus\",\"kind\":\"enum\",\"type\":\"StockStatus\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"images\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"reviewCount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"widthCm\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"depthCm\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"heightCm\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"weightKg\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"colorVariants\",\"kind\":\"object\",\"type\":\"ProductColorVariant\",\"relationName\":\"ProductToProductColorVariant\"},{\"name\":\"stockItems\",\"kind\":\"object\",\"type\":\"StockItem\",\"relationName\":\"ProductToStockItem\"},{\"name\":\"quotationItems\",\"kind\":\"object\",\"type\":\"QuotationLineItem\",\"relationName\":\"ProductToQuotationLineItem\"}],\"dbName\":\"products\"},\"ProductColorVariant\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hex\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToProductColorVariant\"}],\"dbName\":\"product_color_variants\"},\"Warehouse\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"branchCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stockItems\",\"kind\":\"object\",\"type\":\"StockItem\",\"relationName\":\"StockItemToWarehouse\"},{\"name\":\"transfersFrom\",\"kind\":\"object\",\"type\":\"StockTransfer\",\"relationName\":\"TransferFrom\"},{\"name\":\"transfersTo\",\"kind\":\"object\",\"type\":\"StockTransfer\",\"relationName\":\"TransferTo\"}],\"dbName\":\"warehouses\"},\"StockItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"warehouseId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"qtyAvailable\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"qtyReserved\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"qtyInProduction\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"minThreshold\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"state\",\"kind\":\"enum\",\"type\":\"StockState\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToStockItem\"},{\"name\":\"warehouse\",\"kind\":\"object\",\"type\":\"Warehouse\",\"relationName\":\"StockItemToWarehouse\"},{\"name\":\"movements\",\"kind\":\"object\",\"type\":\"StockMovement\",\"relationName\":\"StockItemToStockMovement\"}],\"dbName\":\"stock_items\"},\"StockMovement\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stockItemId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"StockMovementType\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"actor\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reference\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"stockItem\",\"kind\":\"object\",\"type\":\"StockItem\",\"relationName\":\"StockItemToStockMovement\"}],\"dbName\":\"stock_movements\"},\"StockTransfer\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fromWarehouse\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"toWarehouse\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"from\",\"kind\":\"object\",\"type\":\"Warehouse\",\"relationName\":\"TransferFrom\"},{\"name\":\"to\",\"kind\":\"object\",\"type\":\"Warehouse\",\"relationName\":\"TransferTo\"}],\"dbName\":\"stock_transfers\"},\"Lead\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"company\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"businessType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"budget\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"targetDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"stage\",\"kind\":\"enum\",\"type\":\"CrmStage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"quotations\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"LeadToQuotation\"}],\"dbName\":\"leads\"},\"Quotation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quoteNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"leadId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"QuotationStatus\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"vatAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lead\",\"kind\":\"object\",\"type\":\"Lead\",\"relationName\":\"LeadToQuotation\"},{\"name\":\"lineItems\",\"kind\":\"object\",\"type\":\"QuotationLineItem\",\"relationName\":\"QuotationToQuotationLineItem\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToQuotation\"}],\"dbName\":\"quotations\"},\"QuotationLineItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"unitPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"dimensions\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"finish\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationLineItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToQuotationLineItem\"}],\"dbName\":\"quotation_line_items\"},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"soNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"poNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"OrderStatus\"},{\"name\":\"rushOrder\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deliveryDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"vatAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"OrderToQuotation\"},{\"name\":\"payments\",\"kind\":\"object\",\"type\":\"Payment\",\"relationName\":\"OrderToPayment\"}],\"dbName\":\"orders\"},\"Payment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"PaymentType\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"PaymentStatus\"},{\"name\":\"proofUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToPayment\"}],\"dbName\":\"payments\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Company\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"CompanyStatus\"},{\"name\":\"contactEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"contactPhone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"billingAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shippingAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CompanyToUser\"},{\"name\":\"leads\",\"kind\":\"object\",\"type\":\"Lead\",\"relationName\":\"CompanyToLead\"},{\"name\":\"quotations\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"CompanyToQuotation\"},{\"name\":\"salesOrders\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"CompanyToSalesOrder\"},{\"name\":\"deliverySchedules\",\"kind\":\"object\",\"type\":\"DeliverySchedule\",\"relationName\":\"CompanyToDeliverySchedule\"}],\"dbName\":\"companies\"},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"authUserId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"UserRole\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"AccountStatus\"},{\"name\":\"accessStartsAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accessExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lastLoginAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"company\",\"kind\":\"object\",\"type\":\"Company\",\"relationName\":\"CompanyToUser\"},{\"name\":\"leadsCreated\",\"kind\":\"object\",\"type\":\"Lead\",\"relationName\":\"LeadCreatedBy\"},{\"name\":\"quotationsCreated\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationCreatedBy\"},{\"name\":\"salesOrdersCreated\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"SalesOrderCreatedBy\"},{\"name\":\"stockRequestsRaised\",\"kind\":\"object\",\"type\":\"StockRequest\",\"relationName\":\"StockRequestRequestedBy\"},{\"name\":\"stockRequestsChecked\",\"kind\":\"object\",\"type\":\"StockRequest\",\"relationName\":\"StockRequestDecidedBy\"},{\"name\":\"paymentsRecorded\",\"kind\":\"object\",\"type\":\"PaymentRecord\",\"relationName\":\"PaymentRecordedBy\"},{\"name\":\"designRequested\",\"kind\":\"object\",\"type\":\"DesignRequest\",\"relationName\":\"DesignRequestedBy\"},{\"name\":\"designAssigned\",\"kind\":\"object\",\"type\":\"DesignRequest\",\"relationName\":\"DesignAssignedTo\"},{\"name\":\"designAssetsUploaded\",\"kind\":\"object\",\"type\":\"DesignAsset\",\"relationName\":\"DesignAssetUploadedBy\"},{\"name\":\"deliveryAssigned\",\"kind\":\"object\",\"type\":\"DeliverySchedule\",\"relationName\":\"DeliveryAssignedBy\"},{\"name\":\"deliveryConfirmed\",\"kind\":\"object\",\"type\":\"DeliverySchedule\",\"relationName\":\"DeliveryConfirmedBy\"}],\"dbName\":\"users\"},\"Lead\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"contactName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"LeadStatus\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"company\",\"kind\":\"object\",\"type\":\"Company\",\"relationName\":\"CompanyToLead\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"LeadCreatedBy\"},{\"name\":\"quotations\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"LeadToQuotation\"}],\"dbName\":\"leads\"},\"Quotation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quoteNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"leadId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderType\",\"kind\":\"enum\",\"type\":\"OrderType\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"QuotationStatus\"},{\"name\":\"internalApproval\",\"kind\":\"enum\",\"type\":\"ApprovalStatus\"},{\"name\":\"clientApproval\",\"kind\":\"enum\",\"type\":\"ApprovalStatus\"},{\"name\":\"companyCodeSnapshot\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"validUntil\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discountAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"vatAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"remarks\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"company\",\"kind\":\"object\",\"type\":\"Company\",\"relationName\":\"CompanyToQuotation\"},{\"name\":\"lead\",\"kind\":\"object\",\"type\":\"Lead\",\"relationName\":\"LeadToQuotation\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"QuotationCreatedBy\"},{\"name\":\"lineItems\",\"kind\":\"object\",\"type\":\"QuotationLineItem\",\"relationName\":\"QuotationToQuotationLineItem\"},{\"name\":\"salesOrder\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"QuotationToSalesOrder\"},{\"name\":\"paymentRecords\",\"kind\":\"object\",\"type\":\"PaymentRecord\",\"relationName\":\"PaymentRecordToQuotation\"}],\"dbName\":\"quotations\"},\"QuotationLineItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"itemCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"material\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"specifications\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"laborCost\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"serviceCost\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"unitPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"lineTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"leadTimeDays\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"requestedDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToQuotationLineItem\"}],\"dbName\":\"quotation_line_items\"},\"SalesOrder\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"soNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderType\",\"kind\":\"enum\",\"type\":\"OrderType\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"SalesOrderStatus\"},{\"name\":\"inventoryStatus\",\"kind\":\"enum\",\"type\":\"InventoryRequestStatus\"},{\"name\":\"designStatus\",\"kind\":\"enum\",\"type\":\"DesignRequestStatus\"},{\"name\":\"accountingStatus\",\"kind\":\"enum\",\"type\":\"AccountingStatus\"},{\"name\":\"deliveryStatus\",\"kind\":\"enum\",\"type\":\"DeliveryStatus\"},{\"name\":\"companyCodeSnapshot\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientContactName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientContactEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientContactPhone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"deliveryAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"requestedDeliveryAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discountAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"vatAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"readyForDeliveryAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"company\",\"kind\":\"object\",\"type\":\"Company\",\"relationName\":\"CompanyToSalesOrder\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SalesOrderCreatedBy\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"QuotationToSalesOrder\"},{\"name\":\"lineItems\",\"kind\":\"object\",\"type\":\"SalesOrderLineItem\",\"relationName\":\"SalesOrderToSalesOrderLineItem\"},{\"name\":\"stockRequests\",\"kind\":\"object\",\"type\":\"StockRequest\",\"relationName\":\"SalesOrderToStockRequest\"},{\"name\":\"designRequests\",\"kind\":\"object\",\"type\":\"DesignRequest\",\"relationName\":\"DesignRequestToSalesOrder\"},{\"name\":\"paymentRecords\",\"kind\":\"object\",\"type\":\"PaymentRecord\",\"relationName\":\"PaymentRecordToSalesOrder\"},{\"name\":\"deliverySchedules\",\"kind\":\"object\",\"type\":\"DeliverySchedule\",\"relationName\":\"DeliveryScheduleToSalesOrder\"}],\"dbName\":\"sales_orders\"},\"SalesOrderLineItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salesOrderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationLineId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"itemCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"unitPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"lineTotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"salesOrder\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"SalesOrderToSalesOrderLineItem\"}],\"dbName\":\"sales_order_line_items\"},\"Warehouse\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"stockItems\",\"kind\":\"object\",\"type\":\"StockItem\",\"relationName\":\"StockItemToWarehouse\"}],\"dbName\":\"warehouses\"},\"StockItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"warehouseId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"itemName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"unitOfMeasure\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"availableQty\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"reservedQty\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"reorderThreshold\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"state\",\"kind\":\"enum\",\"type\":\"StockState\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"warehouse\",\"kind\":\"object\",\"type\":\"Warehouse\",\"relationName\":\"StockItemToWarehouse\"},{\"name\":\"stockMovements\",\"kind\":\"object\",\"type\":\"StockMovement\",\"relationName\":\"StockItemToStockMovement\"},{\"name\":\"stockRequestLines\",\"kind\":\"object\",\"type\":\"StockRequestLine\",\"relationName\":\"StockItemToStockRequestLine\"}],\"dbName\":\"stock_items\"},\"StockMovement\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stockItemId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"StockMovementType\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"requesterName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectPurpose\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"referenceNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"stockItem\",\"kind\":\"object\",\"type\":\"StockItem\",\"relationName\":\"StockItemToStockMovement\"}],\"dbName\":\"stock_movements\"},\"StockRequest\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salesOrderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"requestedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"decidedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"InventoryRequestStatus\"},{\"name\":\"requestedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"decidedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"purpose\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"deductionFormNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"remarks\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salesOrder\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"SalesOrderToStockRequest\"},{\"name\":\"requestedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"StockRequestRequestedBy\"},{\"name\":\"decidedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"StockRequestDecidedBy\"},{\"name\":\"lineItems\",\"kind\":\"object\",\"type\":\"StockRequestLine\",\"relationName\":\"StockRequestToStockRequestLine\"}],\"dbName\":\"stock_requests\"},\"StockRequestLine\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stockRequestId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stockItemId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantityRequested\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantityApproved\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"availability\",\"kind\":\"enum\",\"type\":\"StockAvailabilityStatus\"},{\"name\":\"stockRequest\",\"kind\":\"object\",\"type\":\"StockRequest\",\"relationName\":\"StockRequestToStockRequestLine\"},{\"name\":\"stockItem\",\"kind\":\"object\",\"type\":\"StockItem\",\"relationName\":\"StockItemToStockRequestLine\"}],\"dbName\":\"stock_request_line_items\"},\"DesignRequest\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salesOrderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"requestedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"assignedToId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"DesignRequestStatus\"},{\"name\":\"requestNotes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"finalSubmittedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"salesOrder\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"DesignRequestToSalesOrder\"},{\"name\":\"requestedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"DesignRequestedBy\"},{\"name\":\"assignedTo\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"DesignAssignedTo\"},{\"name\":\"assets\",\"kind\":\"object\",\"type\":\"DesignAsset\",\"relationName\":\"DesignAssetToDesignRequest\"}],\"dbName\":\"design_requests\"},\"DesignAsset\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"designRequestId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"uploadedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fileName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fileUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mimeType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"assetType\",\"kind\":\"enum\",\"type\":\"DesignAssetType\"},{\"name\":\"isFinal\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"designRequest\",\"kind\":\"object\",\"type\":\"DesignRequest\",\"relationName\":\"DesignAssetToDesignRequest\"},{\"name\":\"uploadedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"DesignAssetUploadedBy\"}],\"dbName\":\"design_assets\"},\"PaymentRecord\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salesOrderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quotationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"recordedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"paymentType\",\"kind\":\"enum\",\"type\":\"PaymentType\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"PaymentStatus\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"remainingBalance\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"paymentDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"referenceNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"remarks\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"salesOrder\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"PaymentRecordToSalesOrder\"},{\"name\":\"quotation\",\"kind\":\"object\",\"type\":\"Quotation\",\"relationName\":\"PaymentRecordToQuotation\"},{\"name\":\"recordedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PaymentRecordedBy\"}],\"dbName\":\"payment_records\"},\"DeliverySchedule\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salesOrderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"assignedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"confirmedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scheduledAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"DeliveryStatus\"},{\"name\":\"readinessStatus\",\"kind\":\"enum\",\"type\":\"DeliveryReadinessStatus\"},{\"name\":\"companyCodeSnapshot\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"salesOrder\",\"kind\":\"object\",\"type\":\"SalesOrder\",\"relationName\":\"DeliveryScheduleToSalesOrder\"},{\"name\":\"company\",\"kind\":\"object\",\"type\":\"Company\",\"relationName\":\"CompanyToDeliverySchedule\"},{\"name\":\"assignedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"DeliveryAssignedBy\"},{\"name\":\"confirmedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"DeliveryConfirmedBy\"}],\"dbName\":\"delivery_schedules\"},\"ApprovalHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"module\",\"kind\":\"enum\",\"type\":\"ApprovalModule\"},{\"name\":\"recordId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"enum\",\"type\":\"ApprovalAction\"},{\"name\":\"fromStatus\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"toStatus\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"remarks\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"approval_history\"},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"enum\",\"type\":\"AuditAction\"},{\"name\":\"entityType\",\"kind\":\"enum\",\"type\":\"AuditEntityType\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyCodeSnapshot\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"audit_logs\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

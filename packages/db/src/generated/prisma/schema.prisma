@@ -1,7 +1,5 @@
-// FurniTrack Reference Schema — Phase 1
-// NOT connected to a database. Used as a type reference document only.
-// Run `prisma generate` to produce TypeScript types if needed.
-// Migrations are deferred to the backend milestone.
+// FurniTrack reference schema for the minimized 6-role business system.
+// This schema is intended to guide the backend and migrations for the next phase.
 
 generator client {
   provider = "prisma-client-js"
@@ -13,279 +11,575 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ===== ENUMS =====
-
-enum Role {
-  MANAGEMENT
+enum UserRole {
+  ADMIN_MANAGEMENT
   SALES
-  ACCOUNTING
   INVENTORY
-  ADMIN
+  ACCOUNTING
+  OPERATIONS_DESIGN
+  CLIENT
 }
 
-enum StockStatus {
-  IN_STOCK
-  LOW_STOCK
-  OUT_OF_STOCK
+enum AccountStatus {
+  ACTIVE
+  BLOCKED
+  EXPIRED
+  PENDING_ACTIVATION
 }
 
-enum ProductBadge {
-  BEST_SELLER
-  SALE
-  HOT
+enum CompanyStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
 }
 
-enum OrderStatus {
+enum LeadStatus {
+  NEW
+  QUALIFIED
+  QUOTED
+  WON
+  LOST
+}
+
+enum OrderType {
+  CUSTOMIZED
+  SUPPLY
+}
+
+enum ApprovalStatus {
+  NOT_REQUIRED
   PENDING
-  CONFIRMED
-  IN_PRODUCTION
-  DELIVERED
-  CANCELLED
+  APPROVED
+  REJECTED
 }
 
 enum QuotationStatus {
   DRAFT
-  SENT
-  IN_REVIEW
-  CONFIRMED
+  FOR_INTERNAL_REVIEW
+  INTERNALLY_APPROVED
+  SENT_TO_CLIENT
+  CLIENT_APPROVED
+  CLIENT_REJECTED
+  EXPIRED
+  CONVERTED_TO_SALES_ORDER
+  CANCELLED
+}
+
+enum SalesOrderStatus {
+  DRAFT
+  PENDING_FULFILLMENT
+  PROCESSING
+  READY_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum InventoryRequestStatus {
+  NOT_REQUIRED
+  PENDING
+  APPROVED
+  PARTIALLY_APPROVED
+  OUT_OF_STOCK
   REJECTED
 }
 
-enum CrmStage {
-  NEW
-  QUOTED
-  NEGOTIATING
-  CONFIRMED
-  CLOSED
+enum StockAvailabilityStatus {
+  AVAILABLE
+  PARTIAL
+  OUT_OF_STOCK
+}
+
+enum AccountingStatus {
+  PENDING_REVIEW
+  WAITING_FOR_DOWN_PAYMENT
+  PARTIALLY_PAID
+  FULLY_PAID
+  FINANCIALLY_CLEARED
+  ON_HOLD
 }
 
 enum PaymentType {
   DOWN_PAYMENT
-  PARTIAL
-  FULL
+  PARTIAL_PAYMENT
+  FULL_PAYMENT
 }
 
 enum PaymentStatus {
   PENDING
-  CONFIRMED
+  VERIFIED
   REJECTED
+}
+
+enum DesignRequestStatus {
+  NOT_REQUIRED
+  PENDING
+  IN_PROGRESS
+  REVISION_REQUESTED
+  SUBMITTED
+  APPROVED
+  CANCELLED
+}
+
+enum DesignAssetType {
+  IMAGE
+  PDF
+  DRAWING_2D
+  MODEL_3D
+}
+
+enum DeliveryStatus {
+  BLOCKED
+  SCHEDULED
+  READY
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+enum DeliveryReadinessStatus {
+  BLOCKED_BY_APPROVALS
+  BLOCKED_BY_PAYMENT
+  BLOCKED_BY_STOCK
+  BLOCKED_BY_DESIGN
+  READY
 }
 
 enum StockState {
   AVAILABLE
   RESERVED
-  IN_PRODUCTION
-  DELIVERED
+  DAMAGED
+  ARCHIVED
 }
 
 enum StockMovementType {
   IN
   OUT
-  TRANSFER
   ADJUSTMENT
-  DAMAGED
+  TRANSFER
+  DAMAGE
 }
 
-// ===== MODELS =====
+enum AuditAction {
+  USER_CREATED
+  USER_UPDATED
+  USER_BLOCKED
+  USER_REMOVED
+  CLIENT_CREATED
+  COMPANY_CODE_ASSIGNED
+  COMPANY_CODE_CHANGED
+  QUOTATION_APPROVED
+  QUOTATION_REJECTED
+  STOCK_REQUEST_APPROVED
+  STOCK_REQUEST_REJECTED
+  PAYMENT_UPDATED
+  DELIVERY_SCHEDULE_CHANGED
+}
+
+enum AuditEntityType {
+  USER
+  COMPANY
+  QUOTATION
+  SALES_ORDER
+  STOCK_REQUEST
+  PAYMENT
+  DELIVERY_SCHEDULE
+}
+
+enum ApprovalModule {
+  QUOTATION
+  SALES_ORDER
+  STOCK_REQUEST
+  PAYMENT
+  DESIGN_REQUEST
+  DELIVERY_SCHEDULE
+}
+
+enum ApprovalAction {
+  SUBMITTED
+  APPROVED
+  REJECTED
+  RETURNED_FOR_REVISION
+  FINALIZED
+}
+
+model Company {
+  id              String        @id @default(cuid())
+  code            String        @unique
+  name            String
+  status          CompanyStatus @default(ACTIVE)
+  contactEmail    String?
+  contactPhone    String?
+  billingAddress  String?
+  shippingAddress String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  users             User[]
+  leads             Lead[]
+  quotations        Quotation[]
+  salesOrders       SalesOrder[]
+  deliverySchedules DeliverySchedule[]
+
+  @@map("companies")
+}
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  role      Role
-  branchId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String        @id @default(cuid())
+  authUserId      String?       @unique
+  companyId       String?
+  name            String
+  email           String        @unique
+  role            UserRole
+  status          AccountStatus @default(ACTIVE)
+  accessStartsAt  DateTime?
+  accessExpiresAt DateTime?
+  lastLoginAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
+  company              Company?           @relation(fields: [companyId], references: [id])
+  leadsCreated         Lead[]             @relation("LeadCreatedBy")
+  quotationsCreated    Quotation[]        @relation("QuotationCreatedBy")
+  salesOrdersCreated   SalesOrder[]       @relation("SalesOrderCreatedBy")
+  stockRequestsRaised  StockRequest[]     @relation("StockRequestRequestedBy")
+  stockRequestsChecked StockRequest[]     @relation("StockRequestDecidedBy")
+  paymentsRecorded     PaymentRecord[]    @relation("PaymentRecordedBy")
+  designRequested      DesignRequest[]    @relation("DesignRequestedBy")
+  designAssigned       DesignRequest[]    @relation("DesignAssignedTo")
+  designAssetsUploaded DesignAsset[]      @relation("DesignAssetUploadedBy")
+  deliveryAssigned     DeliverySchedule[] @relation("DeliveryAssignedBy")
+  deliveryConfirmed    DeliverySchedule[] @relation("DeliveryConfirmedBy")
+
+  @@index([companyId, role, status])
   @@map("users")
 }
 
-model Product {
-  id            String        @id @default(cuid())
-  slug          String        @unique
-  name          String
-  category      String
-  material      String
-  price         Decimal
-  originalPrice Decimal?
-  badge         ProductBadge?
-  stockStatus   StockStatus   @default(IN_STOCK)
-  description   String
-  images        String[]
-  rating        Decimal       @default(0)
-  reviewCount   Int           @default(0)
-  widthCm       Decimal
-  depthCm       Decimal
-  heightCm      Decimal
-  weightKg      Decimal
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+model Lead {
+  id             String     @id @default(cuid())
+  companyId      String?
+  companyName    String
+  contactName    String
+  email          String
+  phone          String?
+  projectAddress String?
+  status         LeadStatus @default(NEW)
+  createdById    String
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
-  colorVariants  ProductColorVariant[]
-  stockItems     StockItem[]
-  quotationItems QuotationLineItem[]
+  company    Company?    @relation(fields: [companyId], references: [id])
+  createdBy  User        @relation("LeadCreatedBy", fields: [createdById], references: [id])
+  quotations Quotation[]
 
-  @@map("products")
+  @@index([companyId, status])
+  @@map("leads")
 }
 
-model ProductColorVariant {
-  id        String @id @default(cuid())
-  productId String
-  name      String
-  hex       String
+model Quotation {
+  id                  String          @id @default(cuid())
+  quoteNumber         String          @unique
+  companyId           String
+  leadId              String?
+  createdById         String
+  orderType           OrderType
+  status              QuotationStatus @default(DRAFT)
+  internalApproval    ApprovalStatus  @default(PENDING)
+  clientApproval      ApprovalStatus  @default(PENDING)
+  companyCodeSnapshot String
+  validUntil          DateTime?
+  subtotal            Decimal
+  discountAmount      Decimal         @default(0)
+  vatAmount           Decimal         @default(0)
+  total               Decimal
+  remarks             String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
 
-  product Product @relation(fields: [productId], references: [id])
+  company        Company             @relation(fields: [companyId], references: [id])
+  lead           Lead?               @relation(fields: [leadId], references: [id])
+  createdBy      User                @relation("QuotationCreatedBy", fields: [createdById], references: [id])
+  lineItems      QuotationLineItem[]
+  salesOrder     SalesOrder?
+  paymentRecords PaymentRecord[]
 
-  @@map("product_color_variants")
+  @@index([companyId, status, companyCodeSnapshot])
+  @@map("quotations")
+}
+
+model QuotationLineItem {
+  id             String    @id @default(cuid())
+  quotationId    String
+  itemCode       String?
+  productName    String
+  description    String?
+  material       String?
+  specifications String?
+  laborCost      Decimal   @default(0)
+  serviceCost    Decimal   @default(0)
+  unitPrice      Decimal
+  quantity       Int
+  lineTotal      Decimal
+  imageUrl       String?
+  leadTimeDays   Int?
+  requestedDate  DateTime?
+
+  quotation Quotation @relation(fields: [quotationId], references: [id])
+
+  @@map("quotation_line_items")
+}
+
+model SalesOrder {
+  id                  String                 @id @default(cuid())
+  soNumber            String                 @unique
+  quotationId         String?                @unique
+  companyId           String
+  createdById         String
+  orderType           OrderType
+  status              SalesOrderStatus       @default(DRAFT)
+  inventoryStatus     InventoryRequestStatus @default(NOT_REQUIRED)
+  designStatus        DesignRequestStatus    @default(NOT_REQUIRED)
+  accountingStatus    AccountingStatus       @default(PENDING_REVIEW)
+  deliveryStatus      DeliveryStatus         @default(BLOCKED)
+  companyCodeSnapshot String
+  clientContactName   String
+  clientContactEmail  String?
+  clientContactPhone  String?
+  projectAddress      String?
+  deliveryAddress     String?
+  requestedDeliveryAt DateTime?
+  subtotal            Decimal
+  discountAmount      Decimal                @default(0)
+  vatAmount           Decimal                @default(0)
+  total               Decimal
+  readyForDeliveryAt  DateTime?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  company           Company              @relation(fields: [companyId], references: [id])
+  createdBy         User                 @relation("SalesOrderCreatedBy", fields: [createdById], references: [id])
+  quotation         Quotation?           @relation(fields: [quotationId], references: [id])
+  lineItems         SalesOrderLineItem[]
+  stockRequests     StockRequest[]
+  designRequests    DesignRequest[]
+  paymentRecords    PaymentRecord[]
+  deliverySchedules DeliverySchedule[]
+
+  @@index([companyId, status, companyCodeSnapshot])
+  @@map("sales_orders")
+}
+
+model SalesOrderLineItem {
+  id              String  @id @default(cuid())
+  salesOrderId    String
+  quotationLineId String?
+  itemCode        String?
+  productName     String
+  description     String?
+  quantity        Int
+  unitPrice       Decimal
+  lineTotal       Decimal
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])
+
+  @@map("sales_order_line_items")
 }
 
 model Warehouse {
-  id         String @id @default(cuid())
-  name       String
-  branchCode String @unique
-  address    String
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  address   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  stockItems    StockItem[]
-  transfersFrom StockTransfer[] @relation("TransferFrom")
-  transfersTo   StockTransfer[] @relation("TransferTo")
+  stockItems StockItem[]
 
   @@map("warehouses")
 }
 
 model StockItem {
-  id              String     @id @default(cuid())
-  productId       String
-  warehouseId     String
-  sku             String     @unique
-  qtyAvailable    Int        @default(0)
-  qtyReserved     Int        @default(0)
-  qtyInProduction Int        @default(0)
-  minThreshold    Int        @default(5)
-  state           StockState @default(AVAILABLE)
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id               String     @id @default(cuid())
+  warehouseId      String
+  sku              String     @unique
+  itemName         String
+  description      String?
+  unitOfMeasure    String     @default("pcs")
+  availableQty     Int        @default(0)
+  reservedQty      Int        @default(0)
+  reorderThreshold Int        @default(10)
+  state            StockState @default(AVAILABLE)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 
-  product   Product         @relation(fields: [productId], references: [id])
-  warehouse Warehouse       @relation(fields: [warehouseId], references: [id])
-  movements StockMovement[]
+  warehouse         Warehouse          @relation(fields: [warehouseId], references: [id])
+  stockMovements    StockMovement[]
+  stockRequestLines StockRequestLine[]
 
+  @@index([warehouseId, state])
   @@map("stock_items")
 }
 
 model StockMovement {
-  id          String            @id @default(cuid())
-  stockItemId String
-  type        StockMovementType
-  quantity    Int
-  actor       String
-  reference   String?
-  createdAt   DateTime          @default(now())
+  id              String            @id @default(cuid())
+  stockItemId     String
+  type            StockMovementType
+  quantity        Int
+  requesterName   String?
+  projectPurpose  String?
+  referenceNumber String?
+  createdAt       DateTime          @default(now())
 
   stockItem StockItem @relation(fields: [stockItemId], references: [id])
 
   @@map("stock_movements")
 }
 
-model StockTransfer {
-  id            String   @id @default(cuid())
-  fromWarehouse String
-  toWarehouse   String
-  productId     String
-  quantity      Int
-  reason        String?
-  status        String   @default("PENDING")
-  createdAt     DateTime @default(now())
+model StockRequest {
+  id                  String                 @id @default(cuid())
+  salesOrderId        String
+  requestedById       String
+  decidedById         String?
+  status              InventoryRequestStatus @default(PENDING)
+  requestedAt         DateTime               @default(now())
+  decidedAt           DateTime?
+  purpose             String?
+  deductionFormNumber String?
+  remarks             String?
 
-  from Warehouse @relation("TransferFrom", fields: [fromWarehouse], references: [id])
-  to   Warehouse @relation("TransferTo", fields: [toWarehouse], references: [id])
+  salesOrder  SalesOrder         @relation(fields: [salesOrderId], references: [id])
+  requestedBy User               @relation("StockRequestRequestedBy", fields: [requestedById], references: [id])
+  decidedBy   User?              @relation("StockRequestDecidedBy", fields: [decidedById], references: [id])
+  lineItems   StockRequestLine[]
 
-  @@map("stock_transfers")
+  @@index([salesOrderId, status])
+  @@map("stock_requests")
 }
 
-model Lead {
-  id           String    @id @default(cuid())
-  name         String
-  company      String
-  email        String
-  businessType String
-  budget       Decimal
-  targetDate   DateTime?
-  stage        CrmStage  @default(NEW)
-  createdAt    DateTime  @default(now())
+model StockRequestLine {
+  id                String                  @id @default(cuid())
+  stockRequestId    String
+  stockItemId       String
+  quantityRequested Int
+  quantityApproved  Int                     @default(0)
+  availability      StockAvailabilityStatus @default(AVAILABLE)
 
-  quotations Quotation[]
+  stockRequest StockRequest @relation(fields: [stockRequestId], references: [id])
+  stockItem    StockItem    @relation(fields: [stockItemId], references: [id])
 
-  @@map("leads")
+  @@map("stock_request_line_items")
 }
 
-model Quotation {
-  id          String          @id @default(cuid())
-  quoteNumber String          @unique
-  leadId      String
-  clientName  String
-  clientEmail String
-  status      QuotationStatus @default(DRAFT)
-  subtotal    Decimal
-  vatAmount   Decimal
-  total       Decimal
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+model DesignRequest {
+  id               String              @id @default(cuid())
+  salesOrderId     String
+  requestedById    String
+  assignedToId     String?
+  status           DesignRequestStatus @default(PENDING)
+  requestNotes     String?
+  finalSubmittedAt DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
 
-  lead      Lead                @relation(fields: [leadId], references: [id])
-  lineItems QuotationLineItem[]
-  order     Order?
+  salesOrder  SalesOrder    @relation(fields: [salesOrderId], references: [id])
+  requestedBy User          @relation("DesignRequestedBy", fields: [requestedById], references: [id])
+  assignedTo  User?         @relation("DesignAssignedTo", fields: [assignedToId], references: [id])
+  assets      DesignAsset[]
 
-  @@map("quotations")
+  @@index([salesOrderId, status])
+  @@map("design_requests")
 }
 
-model QuotationLineItem {
-  id          String  @id @default(cuid())
-  quotationId String
-  productId   String
-  productName String
-  quantity    Int
-  unitPrice   Decimal
-  dimensions  String?
-  finish      String?
-  total       Decimal
+model DesignAsset {
+  id              String          @id @default(cuid())
+  designRequestId String
+  uploadedById    String
+  fileName        String
+  fileUrl         String
+  mimeType        String
+  assetType       DesignAssetType
+  isFinal         Boolean         @default(false)
+  createdAt       DateTime        @default(now())
 
-  quotation Quotation @relation(fields: [quotationId], references: [id])
-  product   Product   @relation(fields: [productId], references: [id])
+  designRequest DesignRequest @relation(fields: [designRequestId], references: [id])
+  uploadedBy    User          @relation("DesignAssetUploadedBy", fields: [uploadedById], references: [id])
 
-  @@map("quotation_line_items")
+  @@map("design_assets")
 }
 
-model Order {
-  id           String      @id @default(cuid())
-  soNumber     String      @unique
-  poNumber     String?
-  quotationId  String      @unique
-  clientName   String
-  status       OrderStatus @default(PENDING)
-  rushOrder    Boolean     @default(false)
-  deliveryDate DateTime?
-  subtotal     Decimal
-  vatAmount    Decimal
-  total        Decimal
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+model PaymentRecord {
+  id               String        @id @default(cuid())
+  salesOrderId     String
+  quotationId      String?
+  recordedById     String
+  paymentType      PaymentType
+  status           PaymentStatus @default(PENDING)
+  amount           Decimal
+  remainingBalance Decimal
+  paymentDate      DateTime
+  referenceNumber  String?
+  remarks          String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
-  quotation Quotation @relation(fields: [quotationId], references: [id])
-  payments  Payment[]
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])
+  quotation  Quotation? @relation(fields: [quotationId], references: [id])
+  recordedBy User       @relation("PaymentRecordedBy", fields: [recordedById], references: [id])
 
-  @@map("orders")
+  @@index([salesOrderId, status, paymentDate])
+  @@map("payment_records")
 }
 
-model Payment {
-  id       String        @id @default(cuid())
-  orderId  String
-  type     PaymentType
-  amount   Decimal
-  status   PaymentStatus @default(PENDING)
-  proofUrl String?
-  date     DateTime      @default(now())
+model DeliverySchedule {
+  id                  String                  @id @default(cuid())
+  salesOrderId        String
+  companyId           String
+  assignedById        String
+  confirmedById       String?
+  scheduledAt         DateTime
+  status              DeliveryStatus          @default(BLOCKED)
+  readinessStatus     DeliveryReadinessStatus @default(BLOCKED_BY_APPROVALS)
+  companyCodeSnapshot String
+  notes               String?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
 
-  order Order @relation(fields: [orderId], references: [id])
+  salesOrder  SalesOrder @relation(fields: [salesOrderId], references: [id])
+  company     Company    @relation(fields: [companyId], references: [id])
+  assignedBy  User       @relation("DeliveryAssignedBy", fields: [assignedById], references: [id])
+  confirmedBy User?      @relation("DeliveryConfirmedBy", fields: [confirmedById], references: [id])
 
-  @@map("payments")
+  @@index([companyId, status, companyCodeSnapshot])
+  @@map("delivery_schedules")
+}
+
+model ApprovalHistory {
+  id         String         @id @default(cuid())
+  module     ApprovalModule
+  recordId   String
+  action     ApprovalAction
+  fromStatus String?
+  toStatus   String?
+  remarks    String?
+  actedById  String
+  actedAt    DateTime       @default(now())
+
+  @@index([module, recordId, actedAt])
+  @@map("approval_history")
+}
+
+model AuditLog {
+  id                  String          @id @default(cuid())
+  actorId             String?
+  action              AuditAction
+  entityType          AuditEntityType
+  entityId            String
+  companyId           String?
+  companyCodeSnapshot String?
+  metadata            Json?
+  createdAt           DateTime        @default(now())
+
+  @@index([entityType, entityId, createdAt])
+  @@index([companyId, createdAt])
+  @@map("audit_logs")
 }

@@ -44,7 +44,7 @@ furnitrack/
 │
 └── packages/
     ├── config/              # @furnitrack/config — shared TS, ESLint, and Tailwind configs
-    ├── db/                  # @furnitrack/db — Prisma schema + typed mock fixtures
+    ├── db/                  # @furnitrack/db — Prisma schema + Neon-backed data access
     ├── ui/                  # @furnitrack/ui — shared component library (shadcn/ui wrappers)
     └── validators/          # @furnitrack/validators — Zod schemas for all domain entities
 ```
@@ -60,10 +60,11 @@ furnitrack/
 *   **Capacity Management:** Visual tracking of warehouse storage utilization.
 
 ### 👥 Role-Based Dashboards
-*   **Executive:** High-level KPIs, sales performance, and business health analytics.
-*   **Sales:** Lead management, quotation generation, and order processing.
-*   **Accounting:** Payment verification, invoice management, and financial reporting.
-*   **Inventory:** Dedicated tools for stock transfers, audits, and warehouse operations.
+*   **Admin / Management:** User administration, company code control, reports, and audit oversight.
+*   **Sales:** Lead management, quotation generation, approvals, and sales order processing.
+*   **Accounting:** Payment verification, billing basis, and financial monitoring.
+*   **Inventory:** Stock transfers, audits, and warehouse operations.
+*   **Operations / Design:** Design handling, delivery readiness, and company code confirmation.
 
 ### 🛍️ Integrated Storefront
 *   **Digital Catalog:** Modern, visually rich product browsing for customers.
@@ -77,13 +78,14 @@ furnitrack/
 
 ## User Roles
 
-| Role         | Description                                                 |
-| ------------ | ----------------------------------------------------------- |
-| `ADMIN`      | Full system access — user management and configuration      |
-| `MANAGEMENT` | KPI dashboard, reports, and business overview               |
-| `SALES`      | Lead tracking, quotation creation, and order management     |
-| `ACCOUNTING` | Payment verification, invoicing, and financial controls     |
-| `INVENTORY`  | Stock management, warehouse tracking, and transfer requests |
+| Role | Description |
+| --- | --- |
+| `ADMIN_MANAGEMENT` | User management, company code ownership, reports, and audit oversight |
+| `SALES` | Lead tracking, quotation creation, approvals, and sales order management |
+| `INVENTORY` | Stock management, movement logging, and stock request approvals |
+| `ACCOUNTING` | Payment tracking, verification, balances, and financial approval |
+| `OPERATIONS_DESIGN` | Design handling, company code confirmation, and delivery scheduling |
+| `CLIENT` | Limited portal access to matching-company records only |
 
 ---
 
@@ -95,15 +97,16 @@ Admin accounts are now managed via **Neon Auth** (powered by Better Auth) and st
 
 1. Go to the [Neon Console](https://console.neon.tech) → your project → **Auth**
 2. Under **Users**, click **Add user** to create accounts for each role
-3. Set a `role` field in the user's metadata matching one of: `ADMIN`, `MANAGEMENT`, `SALES`, `ACCOUNTING`, `INVENTORY`, `ANALYTICS`
+3. Set a `role` field in the user's metadata matching one of: `ADMIN_MANAGEMENT`, `SALES`, `INVENTORY`, `ACCOUNTING`, `OPERATIONS_DESIGN`, `CLIENT`
 
-| Role / Dashboard  | Suggested Email       | `role` metadata value |
-| ----------------- | --------------------- | --------------------- |
-| Executive / Admin | `admin@sims.com`      | `ADMIN`               |
-| Sales             | `sales@sims.com`      | `SALES`               |
-| Accounting        | `accounting@sims.com` | `ACCOUNTING`          |
-| Inventory         | `inventory@sims.com`  | `INVENTORY`           |
-| Analytics         | `analytics@sims.com`  | `ANALYTICS`           |
+| Role / Dashboard | Suggested Email | `role` metadata value |
+| --- | --- | --- |
+| Admin / Management | `admin@sims.com` | `ADMIN_MANAGEMENT` |
+| Sales | `sales@sims.com` | `SALES` |
+| Inventory | `inventory@sims.com` | `INVENTORY` |
+| Accounting | `accounting@sims.com` | `ACCOUNTING` |
+| Operations / Design | `operations@sims.com` | `OPERATIONS_DESIGN` |
+| Client | `client@acme.com` | `CLIENT` |
 
 ### Customer Portal (`localhost:3000/sign-in`)
 
@@ -172,3 +175,7 @@ pnpm turbo build
 | 4     | Inventory & Warehouse Management  | ⏳ Planned  |
 | 5     | Accounting & Financial Controls   | ⏳ Planned  |
 | 6     | Reporting, Notifications & Polish | ⏳ Planned  |
+
+## Solution Design
+
+The updated minimized-role architecture, schema, workflow, permission matrix, API structure, and implementation notes live in [docs/minimized-role-business-system.md](./docs/minimized-role-business-system.md).

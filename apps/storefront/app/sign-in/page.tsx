@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Box, CheckCircle2, BarChart3, Package, User, Lock, Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
 
 // Known admin role keywords — any email containing these is blocked on the customer portal
-const ADMIN_KEYWORDS = ["sales", "accounting", "inventory", "analytics", "executive", "admin"];
+const ADMIN_KEYWORDS = ["sales", "accounting", "inventory", "operations", "executive", "admin", "management"];
 
 function isAdminEmail(email: string) {
   const lower = email.toLowerCase();

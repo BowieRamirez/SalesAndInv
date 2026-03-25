@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronRight } from "lucide-react"
-import { MOCK_PRODUCTS } from "@furnitrack/db"
+import { getStorefrontProductBySlug, getStorefrontProducts } from "@furnitrack/db"
 import { Footer } from "../../../../components/Footer"
 import { ProductCard } from "../../../../components/ProductCard"
 import { ProductClient } from "./ProductClient"
@@ -11,16 +11,21 @@ interface ProductPageProps {
   params: Promise<{ slug: string }>
 }
 
-export function generateStaticParams() {
-  return MOCK_PRODUCTS.map((p) => ({ slug: p.slug }))
+export async function generateStaticParams() {
+  const products = await getStorefrontProducts()
+  return products.map((p) => ({ slug: p.slug }))
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const resolvedParams = await params;
-  const product = MOCK_PRODUCTS.find((p) => p.slug === resolvedParams.slug)
+  const resolvedParams = await params
+  const [product, products] = await Promise.all([
+    getStorefrontProductBySlug(resolvedParams.slug),
+    getStorefrontProducts(),
+  ])
+
   if (!product) notFound()
 
-  const related = MOCK_PRODUCTS.filter(
+  const related = products.filter(
     (p) => p.category === product.category && p.id !== product.id
   ).slice(0, 4)
 

@@ -1,13 +1,14 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Sparkles, Star, Flame } from "lucide-react"
-import { MOCK_PRODUCTS } from "@furnitrack/db"
+import { getStorefrontProducts } from "@furnitrack/db"
 import { Footer } from "../../components/Footer"
 import { ProductCard } from "../../components/ProductCard"
 
-export default function HomePage() {
-  const newArrivals = MOCK_PRODUCTS.slice(0, 4)
-  const curatedForYou = MOCK_PRODUCTS.slice(4, 8)
+export default async function HomePage() {
+  const products = await getStorefrontProducts()
+  const newArrivals = products.slice(0, 4)
+  const curatedForYou = products.slice(4, 8)
 
   return (
     <div className="bg-white min-h-screen font-['var(--font-inter)'] relative">
@@ -141,11 +142,17 @@ export default function HomePage() {
               View All <ArrowRight className="w-[16px] h-[16px] group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[16px]">
-            {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={{...product, badge: 'HOT'}} /> 
-            ))}
-          </div>
+          {newArrivals.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[16px]">
+              {newArrivals.map((product) => (
+                <ProductCard key={product.id} product={{ ...product, badge: "HOT" }} />
+              ))}
+            </div>
+          ) : (
+            <div className="border border-dashed border-[#d1d5dc] bg-[#f9fafb] px-6 py-10 text-center text-[13px] text-[#6a7282]">
+              No live catalog products are available in Neon yet.
+            </div>
+          )}
         </section>
 
         {/* ===== MID-PAGE CTA ===== */}
@@ -194,11 +201,13 @@ export default function HomePage() {
                 View All <ArrowRight className="w-[16px] h-[16px] group-hover:translate-x-1" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[16px]">
-              {curatedForYou.map((product) => (
-                <ProductCard key={product.id} product={{...product, badge: 'BEST_SELLER'}} />
-              ))}
-            </div>
+            {curatedForYou.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[16px]">
+                {curatedForYou.map((product) => (
+                  <ProductCard key={product.id} product={{ ...product, badge: "BEST_SELLER" }} />
+                ))}
+              </div>
+            ) : null}
           </section>
         </div>
 

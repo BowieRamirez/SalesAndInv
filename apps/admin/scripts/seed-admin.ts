@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import path from "path";
-import { PrismaClient } from "@furnitrack/db";
+import { prisma } from "@furnitrack/db";
 
 // Load environment variables IMMEDIATELY
 config({ path: path.resolve(__dirname, "../../../.env") });
@@ -10,13 +10,19 @@ const ADMIN_USERS = [
         email: "admin@sims.com",
         password: "Admin@2026!",
         name: "Executive Admin",
-        role: "ADMIN",
+        role: "ADMIN_MANAGEMENT",
     },
     {
         email: "sales@sims.com",
         password: "Sales@2026!",
         name: "Sales Manager",
         role: "SALES",
+    },
+    {
+        email: "operations@sims.com",
+        password: "Operations@2026!",
+        name: "Operations Lead",
+        role: "OPERATIONS_DESIGN",
     },
     {
         email: "accounting@sims.com",
@@ -30,13 +36,16 @@ const ADMIN_USERS = [
         name: "Warehouse Lead",
         role: "INVENTORY",
     },
-    {
-        email: "analytics@sims.com",
-        password: "Analytics@2026!",
-        name: "Data Analyst",
-        role: "ANALYTICS",
-    },
 ];
+
+const APP_ROLES = new Set([
+    "ADMIN_MANAGEMENT",
+    "SALES",
+    "INVENTORY",
+    "ACCOUNTING",
+    "OPERATIONS_DESIGN",
+    "CLIENT",
+]);
 
 async function seed() {
     console.log("🚀 Starting Admin User Seeding...");
@@ -53,10 +62,12 @@ async function seed() {
         process.exit(1);
     }
 
-    const prisma = new PrismaClient();
-
     for (const user of ADMIN_USERS) {
         try {
+            if (!APP_ROLES.has(user.role)) {
+                throw new Error(`Unsupported role for minimized system: ${user.role}`);
+            }
+
             // 1. Create the user via the signup API
             const endpoint = `${authUrl}/sign-up/email`;
 
@@ -85,7 +96,7 @@ async function seed() {
             if (!signUpResponse.ok) {
                 if (signUpResult.message?.includes("already exists") || signUpResult.code === "user_already_exists") {
                     // User exists — just make sure role is still correct
-                    await prisma.$executeRaw`UPDATE neon_auth.user SET role = ${user.role} WHERE email = ${user.email}`;
+                    await prisma.$executeRaw`UPDATE neon_auth."user" SET role = ${user.role} WHERE email = ${user.email}`;
                     console.log(`⏩ Skipped: ${user.email} (Already exists, role ensured: ${user.role})`);
                     continue;
                 }
@@ -93,7 +104,7 @@ async function seed() {
             }
 
             // 2. Assign the role directly in the database
-            await prisma.$executeRaw`UPDATE neon_auth.user SET role = ${user.role} WHERE email = ${user.email}`;
+            await prisma.$executeRaw`UPDATE neon_auth."user" SET role = ${user.role} WHERE email = ${user.email}`;
             console.log(`✅ Created: ${user.email} (Role: ${user.role})`);
 
         } catch (error: any) {

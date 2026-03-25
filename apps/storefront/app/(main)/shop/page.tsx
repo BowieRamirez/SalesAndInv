@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight, SlidersHorizontal } from "lucide-react"
-import { MOCK_PRODUCTS } from "@furnitrack/db"
+import { getStorefrontProducts } from "@furnitrack/db"
 import { Footer } from "../../../components/Footer"
 import { ProductCard } from "../../../components/ProductCard"
 
@@ -16,29 +16,30 @@ const COLORS = [
   { name: "Black", hex: "#1a1a1a" },
 ]
 
-function getCategoryCounts() {
+function getCategoryCounts(products: Awaited<ReturnType<typeof getStorefrontProducts>>) {
   return CATEGORIES.map((cat) => ({
     name: cat,
-    count: MOCK_PRODUCTS.filter((p) => p.category === cat).length,
+    count: products.filter((p) => p.category === cat).length,
   }))
 }
 
-export default function ShopPage({
+export default async function ShopPage({
   searchParams,
 }: {
   searchParams?: { category?: string; sort?: string }
 }) {
+  const allProducts = await getStorefrontProducts()
   const selectedCategory = searchParams?.category ?? null
   const sort = searchParams?.sort ?? "default"
 
   let products = selectedCategory
-    ? MOCK_PRODUCTS.filter((p) => p.category === selectedCategory)
-    : [...MOCK_PRODUCTS]
+    ? allProducts.filter((p) => p.category === selectedCategory)
+    : [...allProducts]
 
   if (sort === "price-asc") products = products.sort((a, b) => a.price - b.price)
   else if (sort === "price-desc") products = products.sort((a, b) => b.price - a.price)
 
-  const categoryCounts = getCategoryCounts()
+  const categoryCounts = getCategoryCounts(allProducts)
 
   return (
     <div className="min-h-screen bg-[--color-beige] flex flex-col">
@@ -127,7 +128,7 @@ export default function ShopPage({
                       All
                     </span>
                   </div>
-                  <span className="text-xs text-[--color-muted]">{MOCK_PRODUCTS.length}</span>
+                  <span className="text-xs text-[--color-muted]">{allProducts.length}</span>
                 </label>
                 {categoryCounts.map(({ name, count }) => (
                   <Link
