@@ -25,6 +25,7 @@ export const ProductSchema = z.object({
   originalPrice: z.number().positive().nullable(),
   badge: ProductBadgeEnum,
   stockStatus: StockStatusEnum,
+  availableQty: z.number().int().nonnegative().default(0),
   colorVariants: z.array(ColorVariantSchema),
   images: z.array(z.string()),
   rating: z.number().min(0).max(5),

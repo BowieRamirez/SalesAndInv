@@ -1,85 +1,102 @@
-import React from "react";
-import { Box, CheckCircle2, BarChart3, Package, User, Lock, Eye, LogIn, Mail } from "lucide-react";
+"use client";
+
+import React, { useState } from "react";
+import { AlertCircle, Box, Eye, EyeOff, Lock, LogIn, Mail, User } from "lucide-react";
 import Link from "next/link";
 
 export default function SignUpPage() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setIsLoading(true);
+
+    const response = await fetch("/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const result = (await response.json().catch(() => ({}))) as { message?: string };
+
+    if (!response.ok) {
+      setError(result.message ?? "Unable to create account.");
+      setIsLoading(false);
+      return;
+    }
+
+    setSuccess("Your account has been created in Neon. You can sign in now.");
+    setForm({ name: "", email: "", password: "" });
+    setIsLoading(false);
+  }
+
   return (
     <main className="min-h-screen py-10 lg:py-0 flex lg:flex-row flex-col bg-[#fcfcfc] font-[family-name:var(--font-inter)]">
-      {/* Left Sidebar */}
       <div className="lg:w-[45%] bg-navy relative overflow-hidden flex flex-col justify-between p-8 xl:p-14 text-white min-h-[500px] lg:min-h-screen">
-        {/* Background decorative circles */}
         <div className="absolute top-[-10%] left-[-15%] w-[45rem] h-[45rem] rounded-full border-[60px] border-white/[0.03] pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[30rem] h-[30rem] rounded-full border-[40px] border-white/[0.03] pointer-events-none" />
         <div className="absolute top-[30%] right-[-15%] w-[50rem] h-[50rem] rounded-full border-[50px] border-white/[0.03] pointer-events-none" />
 
-        {/* Header */}
         <div className="relative z-10 flex items-center space-x-3 mt-4 lg:mt-0">
           <div className="p-2.5 bg-white/10 rounded-xl border border-white/5 shadow-sm">
             <Box className="w-6 h-6 text-white" />
           </div>
           <div className="flex flex-col">
-             <h1 className="font-semibold text-[17px] tracking-wide leading-tight">Sales & Inventory</h1>
-             <p className="text-[11px] text-white/50 tracking-wider uppercase font-medium mt-0.5">Management System</p>
+            <h1 className="font-semibold text-[17px] tracking-wide leading-tight">FurniTrack</h1>
+            <p className="text-[11px] text-white/50 tracking-wider uppercase font-medium mt-0.5">Customer Registration</p>
           </div>
         </div>
 
-        {/* Center Content */}
         <div className="relative z-10 max-w-lg mt-16 mb-auto xl:pl-4">
-          {/* Sparkle icon - approximate */}
-          <div className="absolute -top-10 -left-6 text-coral opacity-90 animate-pulse">
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-               <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z"/>
-             </svg>
-          </div>
-          
           <h2 className="text-[2.5rem] xl:text-[3.2rem] font-semibold leading-[1.1] mb-6 tracking-tight">
-            Streamline your<br />business operations
+            Create a customer account
+            <br />
+            saved in Neon
           </h2>
           <p className="text-white/60 text-[15px] xl:text-[16px] mb-10 leading-relaxed max-w-[420px]">
-            Track sales, manage inventory, generate reports, and
-            control finances &mdash; all from one unified dashboard tailored
-            to your role.
+            New storefront registrations now create real customer accounts in Neon Auth and a matching `public.users` client record for the FurniTrack system.
           </p>
-
-          <div className="flex flex-wrap gap-3">
-            <div className="flex items-center space-x-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-4 py-2 transition-colors cursor-default backdrop-blur-sm">
-              <CheckCircle2 className="w-[15px] h-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">Role-Based Access</span>
-            </div>
-            <div className="flex items-center space-x-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-4 py-2 transition-colors cursor-default backdrop-blur-sm">
-              <BarChart3 className="w-[15px] h-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">Real-Time Analytics</span>
-            </div>
-            <div className="flex items-center space-x-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-4 py-2 transition-colors cursor-default backdrop-blur-sm">
-              <Package className="w-[15px] h-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">Inventory Control</span>
-            </div>
-          </div>
         </div>
 
-        {/* Footer */}
         <div className="relative z-10 text-[12px] text-white/40 font-medium mb-4 lg:mb-0 xl:pl-4">
           &copy; 2026 SIMS Co. All rights reserved.
         </div>
       </div>
 
-      {/* Right Sidebar - Sign Up Form */}
       <div className="flex-1 flex items-center justify-center p-8 lg:p-12 relative bg-white">
-        {/* Subtle sparkle for form */}
-        <div className="absolute top-[28%] right-[22%] text-coral opacity-60 pointer-events-none hidden lg:block">
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-               <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z"/>
-             </svg>
-        </div>
-        
         <div className="w-full max-w-[400px]">
           <div className="text-center mb-10">
             <h2 className="text-[28px] font-semibold text-navy mb-2.5 tracking-tight">Create an account</h2>
-            <p className="text-[14px] text-muted">Join us today to manage your business efficiently.</p>
+            <p className="text-[14px] text-muted">Register as a client to browse the live finished-product catalog.</p>
           </div>
 
-          <form className="space-y-4">
-            <div className="space-y-2 relative">
+          {error && (
+            <div className="mb-5 flex items-start space-x-2.5 bg-red-50 border border-red-200 rounded-[10px] px-4 py-3">
+              <AlertCircle className="w-[16px] h-[16px] text-red-500 mt-0.5 shrink-0" />
+              <p className="text-[13px] text-red-600 leading-snug">{error}</p>
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-5 rounded-[10px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-[13px] text-emerald-700">
+              {success}
+            </div>
+          )}
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-2">
               <label className="text-[13px] font-medium text-charcoal/80" htmlFor="name">
                 Full Name
               </label>
@@ -92,6 +109,8 @@ export default function SignUpPage() {
                   name="name"
                   type="text"
                   required
+                  value={form.name}
+                  onChange={(e) => setForm((current) => ({ ...current, name: e.target.value }))}
                   placeholder="Enter your full name"
                   className="block w-full pl-10 pr-4 py-3 border border-border/80 rounded-[10px] text-[14px] text-charcoal bg-white placeholder:text-muted/70 focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy transition-all"
                 />
@@ -111,19 +130,15 @@ export default function SignUpPage() {
                   name="email"
                   type="email"
                   required
+                  value={form.email}
+                  onChange={(e) => setForm((current) => ({ ...current, email: e.target.value }))}
                   placeholder="Enter your email"
                   className="block w-full pl-10 pr-4 py-3 border border-border/80 rounded-[10px] text-[14px] text-charcoal bg-white placeholder:text-muted/70 focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy transition-all"
                 />
               </div>
             </div>
 
-            <div className="space-y-2 relative">
-              {/* password sparkle */}
-              <div className="absolute -top-1 left-[70px] text-[10px] text-coral opacity-80 pointer-events-none">
-                   <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                     <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z"/>
-                   </svg>
-              </div>
+            <div className="space-y-2">
               <label className="text-[13px] font-medium text-charcoal/80" htmlFor="password">
                 Password
               </label>
@@ -134,23 +149,26 @@ export default function SignUpPage() {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
+                  value={form.password}
+                  onChange={(e) => setForm((current) => ({ ...current, password: e.target.value }))}
                   placeholder="Create a strong password"
                   className="block w-full pl-10 pr-11 py-3 border border-border/80 rounded-[10px] text-[14px] text-charcoal bg-white placeholder:text-muted/70 focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy transition-all"
                 />
-                <button type="button" className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-muted/70 hover:text-charcoal transition-colors">
-                  <Eye className="h-[18px] w-[18px]" />
+                <button type="button" onClick={() => setShowPassword((current) => !current)} className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-muted/70 hover:text-charcoal transition-colors">
+                  {showPassword ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
                 </button>
               </div>
             </div>
 
             <button
-              type="button"
-              className="w-full h-[46px] flex items-center justify-center space-x-2 bg-navy hover:bg-navy/95 text-white rounded-[10px] text-[14px] font-medium transition-all !mt-8 group"
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-[46px] flex items-center justify-center space-x-2 bg-navy hover:bg-navy/95 disabled:opacity-60 text-white rounded-[10px] text-[14px] font-medium transition-all !mt-8 group"
             >
               <LogIn className="w-[18px] h-[18px] group-hover:translate-x-0.5 transition-transform" />
-              <span>Create Account</span>
+              <span>{isLoading ? "Creating..." : "Create Account"}</span>
             </button>
           </form>
 

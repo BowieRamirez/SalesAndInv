@@ -52,9 +52,22 @@ export default function AdminSignInPage() {
             }
 
             const sessionResult = await authClient.getSession();
-            const role = normalizeAppRole(
+            const roleFromSession = normalizeAppRole(
                 (sessionResult?.data?.user as { role?: string })?.role,
             );
+
+            const sessionUserResponse = await fetch("/api/session-user", { cache: "no-store" });
+            const sessionUserResult = (await sessionUserResponse.json().catch(() => ({}))) as {
+                user?: { role?: string | null };
+            };
+            const role = normalizeAppRole(sessionUserResult.user?.role ?? roleFromSession);
+
+            if (role === "CLIENT") {
+                await authClient.signOut();
+                setError("Client accounts are not permitted here. Please use the customer portal.");
+                setIsLoading(false);
+                return;
+            }
 
             const redirect = ROLE_REDIRECT[role] ?? "/";
 

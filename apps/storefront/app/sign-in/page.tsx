@@ -1,140 +1,139 @@
 "use client";
 
-import React, { useState } from "react";
-import { Box, CheckCircle2, BarChart3, Package, User, Lock, Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
-
-// Known admin role keywords — any email containing these is blocked on the customer portal
-const ADMIN_KEYWORDS = ["sales", "accounting", "inventory", "operations", "executive", "admin", "management"];
-
-function isAdminEmail(email: string) {
-  const lower = email.toLowerCase();
-  return ADMIN_KEYWORDS.some((kw) => lower.includes(kw));
-}
+import React, { useEffect, useState } from "react";
+import { AlertCircle, BarChart3, Box, CheckCircle2, Eye, EyeOff, Lock, LogIn, Package, User, X } from "lucide-react";
+import { authClient } from "@/lib/auth/client";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    // Block admin accounts from signing in here
-    if (isAdminEmail(email)) {
-      setError(
-        "This account belongs to the admin portal. Customer accounts only are permitted here."
-      );
+  useEffect(() => {
+    if (!error) {
       return;
     }
 
-    const emailLower = email.toLowerCase();
+    const timeout = window.setTimeout(() => {
+      setError("");
+    }, 5000);
 
-    // Customer accounts route to storefront homepage
-    if (emailLower.includes("customer")) {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("customerSession", emailLower);
-      }
-      window.location.href = "/";
-    } else {
-      // Generic unrecognised email — still block and ask them to use the right portal
-      setError(
-        "Account not recognised as a customer account. Please check your email or use the Admin Portal."
-      );
+    return () => window.clearTimeout(timeout);
+  }, [error]);
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    const result = await authClient.signIn.email({
+      email: email.trim().toLowerCase(),
+      password,
+    });
+
+    if (result.error) {
+      setError("We couldn’t sign you in with that email and password. Please try again.");
+      setIsLoading(false);
+      return;
     }
+
+    const sessionUserResponse = await fetch("/api/session-user", { cache: "no-store" });
+    const sessionUserResult = (await sessionUserResponse.json().catch(() => ({}))) as {
+      user?: { email?: string | null; name?: string | null; role?: string | null; status?: string | null };
+    };
+    const sessionUser = sessionUserResult.user;
+
+    if (!sessionUser || sessionUser.role !== "CLIENT" || sessionUser.status !== "ACTIVE") {
+      await authClient.signOut();
+      setError("That sign-in belongs to our staff workspace. Please use a customer account to continue shopping.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("customerSession", sessionUser.email ?? email.trim().toLowerCase());
+    }
+
+    window.location.href = "/";
   };
 
   return (
     <main className="min-h-screen py-10 lg:py-0 flex lg:flex-row flex-col bg-[#fcfcfc] font-[family-name:var(--font-inter)]">
-      {/* Left Sidebar */}
       <div className="lg:w-[45%] bg-navy relative overflow-hidden flex flex-col justify-between p-8 xl:p-14 text-white min-h-[500px] lg:min-h-screen">
-        {/* Background decorative circles */}
         <div className="absolute top-[-10%] left-[-15%] w-[45rem] h-[45rem] rounded-full border-[60px] border-white/[0.03] pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[30rem] h-[30rem] rounded-full border-[40px] border-white/[0.03] pointer-events-none" />
         <div className="absolute top-[30%] right-[-15%] w-[50rem] h-[50rem] rounded-full border-[50px] border-white/[0.03] pointer-events-none" />
 
-        {/* Header */}
         <div className="relative z-10 flex items-center space-x-3 mt-4 lg:mt-0">
           <div className="p-2.5 bg-white/10 rounded-xl border border-white/5 shadow-sm">
             <Box className="w-6 h-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <h1 className="font-semibold text-[17px] tracking-wide leading-tight">Sales & Inventory</h1>
-            <p className="text-[11px] text-white/50 tracking-wider uppercase font-medium mt-0.5">Management System</p>
+            <h1 className="font-semibold text-[17px] tracking-wide leading-tight">FurniTrack</h1>
+            <p className="text-[11px] text-white/50 tracking-wider uppercase font-medium mt-0.5">Client Portal</p>
           </div>
         </div>
 
-        {/* Center Content */}
         <div className="relative z-10 max-w-lg mt-16 mb-auto xl:pl-4">
-          {/* Sparkle icon - approximate */}
-          <div className="absolute -top-10 -left-6 text-coral opacity-90 animate-pulse">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z" />
-            </svg>
-          </div>
-
           <h2 className="text-[2.5rem] xl:text-[3.2rem] font-semibold leading-[1.1] mb-6 tracking-tight">
-            Streamline your<br />business operations
+            Browse finished products
+            <br />
+            from the live inventory
           </h2>
           <p className="text-white/60 text-[15px] xl:text-[16px] mb-10 leading-relaxed max-w-[420px]">
-            Track sales, manage inventory, generate reports, and
-            control finances &mdash; all from one unified dashboard tailored
-            to your role.
+            Sign in with your customer account to view the FurniTrack storefront powered by Neon-backed finished products only.
           </p>
 
           <div className="flex flex-wrap gap-3">
-            <div className="flex items-center space-x-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-4 py-2 transition-colors cursor-default backdrop-blur-sm">
+            <div className="flex items-center space-x-2.5 bg-white/5 border border-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
               <CheckCircle2 className="w-[15px] h-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">Role-Based Access</span>
+              <span className="text-[13px] font-medium text-white/90">Client Accounts</span>
             </div>
-            <div className="flex items-center space-x-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-4 py-2 transition-colors cursor-default backdrop-blur-sm">
+            <div className="flex items-center space-x-2.5 bg-white/5 border border-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
               <BarChart3 className="w-[15px] h-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">Real-Time Analytics</span>
+              <span className="text-[13px] font-medium text-white/90">Live Inventory</span>
             </div>
-            <div className="flex items-center space-x-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-4 py-2 transition-colors cursor-default backdrop-blur-sm">
+            <div className="flex items-center space-x-2.5 bg-white/5 border border-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
               <Package className="w-[15px] h-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">Inventory Control</span>
+              <span className="text-[13px] font-medium text-white/90">Finished Products Only</span>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="relative z-10 text-[12px] text-white/40 font-medium mb-4 lg:mb-0 xl:pl-4">
           &copy; 2026 SIMS Co. All rights reserved.
         </div>
       </div>
 
-      {/* Right Sidebar - Login Form */}
       <div className="flex-1 flex items-center justify-center p-8 lg:p-12 relative bg-white">
-        {/* Subtle sparkle for form */}
-        <div className="absolute top-[28%] right-[22%] text-coral opacity-60 pointer-events-none hidden lg:block">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z" />
-          </svg>
-        </div>
-
         <div className="w-full max-w-[400px]">
-          <div className="text-center mb-10">
-            <h2 className="text-[28px] font-semibold text-navy mb-2.5 tracking-tight">Welcome back</h2>
-            <p className="text-[14px] text-muted">Sign in to your customer account to start shopping.</p>
-          </div>
-
-          {/* Error banner */}
           {error && (
-            <div className="mb-5 flex items-start space-x-2.5 bg-red-50 border border-red-200 rounded-[10px] px-4 py-3">
-              <AlertCircle className="w-[16px] h-[16px] text-red-500 mt-0.5 shrink-0" />
-              <div>
-                <p className="text-[13px] text-red-600 leading-snug">{error}</p>
-                <a
-                  href="http://localhost:3001/sign-in"
-                  className="text-[12px] text-red-500 font-medium hover:underline mt-1 inline-block"
+            <div className="fixed right-6 top-6 z-50 w-full max-w-[360px] rounded-[18px] border border-[#f1d7a1] bg-white/95 p-4 shadow-[0_18px_50px_rgba(26,26,46,0.14)] backdrop-blur">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fff7e6] text-[#c89211]">
+                  <AlertCircle className="h-[18px] w-[18px]" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-[13px] font-semibold text-[#1a1a2e]">Sign-in note</p>
+                  <p className="mt-1 text-[13px] leading-[20px] text-[#6a7282]">{error}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setError("")}
+                  className="rounded-full p-1 text-[#99a1af] transition-colors hover:bg-[#f9fafb] hover:text-[#1a1a2e]"
                 >
-                  Go to Admin Portal →
-                </a>
+                  <X className="h-4 w-4" />
+                </button>
               </div>
             </div>
           )}
+
+          <div className="text-center mb-10">
+            <h2 className="text-[28px] font-semibold text-navy mb-2.5 tracking-tight">Welcome back</h2>
+            <p className="text-[14px] text-muted">Sign in to your customer account to browse live finished products.</p>
+          </div>
 
           <form className="space-y-5" onSubmit={handleSignIn}>
             <div className="space-y-2">
@@ -159,12 +158,6 @@ export default function SignInPage() {
             </div>
 
             <div className="space-y-2 relative">
-              {/* password sparkle */}
-              <div className="absolute -top-1 left-[70px] text-[10px] text-coral opacity-80 pointer-events-none">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z" />
-                </svg>
-              </div>
               <label className="text-[13px] font-medium text-charcoal/80" htmlFor="password">
                 Password
               </label>
@@ -187,35 +180,20 @@ export default function SignInPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-muted/70 hover:text-charcoal transition-colors"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-[18px] w-[18px]" />
-                  ) : (
-                    <Eye className="h-[18px] w-[18px]" />
-                  )}
+                  {showPassword ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
                 </button>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full h-[46px] flex items-center justify-center space-x-2 bg-navy hover:bg-navy/95 text-white rounded-[10px] text-[14px] font-medium transition-all !mt-8 group cursor-pointer"
+              disabled={isLoading}
+              className="w-full h-[46px] flex items-center justify-center space-x-2 bg-navy hover:bg-navy/95 disabled:opacity-60 text-white rounded-[10px] text-[14px] font-medium transition-all !mt-8 group cursor-pointer"
             >
               <LogIn className="w-[18px] h-[18px] group-hover:translate-x-0.5 transition-transform" />
-              <span>Sign In</span>
+              <span>{isLoading ? "Signing In..." : "Sign In"}</span>
             </button>
           </form>
-
-          <div className="mt-8 text-center pt-4 border-t border-border/40">
-            <p className="text-[12px] text-muted">
-              Are you an admin or staff member?{" "}
-              <a
-                href="http://localhost:3001/sign-in"
-                className="text-navy font-medium hover:underline"
-              >
-                Go to Admin Portal →
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </main>

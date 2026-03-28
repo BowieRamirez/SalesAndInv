@@ -1,93 +1,235 @@
-"use client";
+import { revalidatePath } from "next/cache"
+import { Prisma, prisma } from "@furnitrack/db"
 
-import React, { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { Bell } from "lucide-react";
-
-function SalesDashboardContent() {
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get("tab") || "lead";
-
-  return (
-    <div className="min-h-screen flex bg-[#fcfcfc] text-[#2d2d2d] font-sans">
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Header */}
-        <header className="h-[64px] bg-white border-b border-[#e5e7eb] px-8 flex items-center justify-between shrink-0">
-          <div>
-            <span className="text-[14px] font-medium text-charcoal">Welcome, Genie</span>
-          </div>
-          <div className="flex items-center space-x-5">
-            <button className="relative text-muted hover:text-charcoal transition-colors">
-              <Bell className="w-[20px] h-[20px]" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-            </button>
-            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center cursor-pointer">
-              <span className="text-emerald-700 font-bold text-[11px]">GRG</span>
-            </div>
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
-        <div className="flex-1 overflow-auto p-8">
-          {/* Dashboard Header */}
-          <div className="mb-6">
-            <h1 className="text-[24px] font-semibold text-charcoal leading-tight mb-1">Sales & Quotation Tracker</h1>
-            <p className="text-[13px] text-muted">Manage new leads, generate quotes, and track conversions.</p>
-          </div>
-
-          {/* Lead Intake Form MVP Content */}
-          {activeTab === "lead" && (
-            <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 lg:p-8 max-w-4xl shadow-sm">
-              <h3 className="text-[16px] font-semibold border-b border-[#f3f4f6] pb-4 mb-6">New Client Registration</h3>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4 col-span-1 md:col-span-2">
-                  <label className="text-[13px] font-medium text-charcoal block">Client / Company Name</label>
-                  <input type="text" placeholder="Enter company name" className="w-full px-4 py-2.5 border border-[#e5e7eb] rounded-lg text-[13px] focus:outline-none focus:border-black" />
-                </div>
-                
-                <div className="space-y-4">
-                  <label className="text-[13px] font-medium text-charcoal block">Contact Person</label>
-                  <input type="text" placeholder="Full name" className="w-full px-4 py-2.5 border border-[#e5e7eb] rounded-lg text-[13px] focus:outline-none focus:border-black" />
-                </div>
-                
-                <div className="space-y-4">
-                  <label className="text-[13px] font-medium text-charcoal block">Phone Number</label>
-                  <input type="text" placeholder="+63 9XX XXX XXXX" className="w-full px-4 py-2.5 border border-[#e5e7eb] rounded-lg text-[13px] focus:outline-none focus:border-black" />
-                </div>
-
-                <div className="space-y-4 col-span-1 md:col-span-2">
-                  <label className="text-[13px] font-medium text-charcoal block">Project Location</label>
-                  <input type="text" placeholder="Full address" className="w-full px-4 py-2.5 border border-[#e5e7eb] rounded-lg text-[13px] focus:outline-none focus:border-black" />
-                </div>
-
-                <div className="pt-6 col-span-1 md:col-span-2 flex justify-end space-x-4">
-                  <button type="button" className="px-6 py-2.5 text-[13px] font-medium text-charcoal border border-[#e5e7eb] rounded-lg hover:bg-slate-50 transition-colors">
-                    Save as Draft
-                  </button>
-                  <button type="button" className="px-6 py-2.5 text-[13px] font-medium text-white bg-black rounded-lg hover:bg-black/90 transition-colors">
-                    Submit Lead
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {activeTab !== "lead" && (
-             <div className="bg-white border border-[#e5e7eb] border-dashed rounded-xl p-12 text-center text-muted">
-                Detailed view for {activeTab} tab will go here.
-             </div>
-          )}
-        </div>
-      </main>
-    </div>
-  );
+type InquiryRow = {
+  id: string
+  productName: string
+  customerName: string
+  customerEmail: string
+  customerPhone: string
+  message: string
+  status: string
+  statusNote: string | null
+  createdAt: Date
+  updatedAt: Date
 }
 
-export default function SalesDashboard() {
+type SalesPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+const SALES_TABS = new Set(["lead", "quotes", "orders", "tracker"])
+const INQUIRY_STATUSES = [
+  "RECEIVED",
+  "ACCEPTED",
+  "GETTING_READY_FOR_BUILDING",
+  "WAITING_FOR_PAYMENT",
+  "READY_FOR_SHIPMENT",
+] as const
+
+function resolveTab(tab?: string | string[]) {
+  const value = Array.isArray(tab) ? tab[0] : tab
+  return value && SALES_TABS.has(value) ? value : "lead"
+}
+
+function formatStatus(status: string) {
+  return status.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (value) => value.toUpperCase())
+}
+
+async function getInquiryRows() {
+  return prisma.$queryRaw<InquiryRow[]>(Prisma.sql`
+    SELECT
+      ci.id,
+      p.name AS "productName",
+      ci."customerName",
+      ci."customerEmail",
+      ci."customerPhone",
+      ci.message,
+      ci.status::text AS status,
+      ci."statusNote",
+      ci."createdAt",
+      ci."updatedAt"
+    FROM public.customer_inquiries ci
+    INNER JOIN public.products p
+      ON p.id = ci."productId"
+    ORDER BY ci."updatedAt" DESC, ci."createdAt" DESC
+  `)
+}
+
+async function updateInquiryStatus(formData: FormData) {
+  "use server"
+
+  const inquiryId = String(formData.get("inquiryId") ?? "")
+  const status = String(formData.get("status") ?? "")
+  const statusNote = String(formData.get("statusNote") ?? "").trim()
+
+  if (!inquiryId || !INQUIRY_STATUSES.includes(status as (typeof INQUIRY_STATUSES)[number])) {
+    return
+  }
+
+  await prisma.$executeRaw(Prisma.sql`
+    UPDATE public.customer_inquiries
+    SET
+      status = ${status}::"InquiryStatus",
+      "statusNote" = ${statusNote || null},
+      "updatedAt" = CURRENT_TIMESTAMP
+    WHERE id = ${inquiryId}
+  `)
+
+  revalidatePath("/sales")
+  revalidatePath("/account/status")
+}
+
+function PlaceholderCard({
+  title,
+  description,
+}: {
+  title: string
+  description: string
+}) {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#fcfcfc]"></div>}>
-      <SalesDashboardContent />
-    </Suspense>
-  );
+    <div className="rounded-xl border border-[#e5e7eb] bg-white p-8 shadow-sm">
+      <h3 className="text-[16px] font-semibold text-[#1f2937]">{title}</h3>
+      <p className="mt-3 text-[13px] leading-[22px] text-[#6b7280]">{description}</p>
+    </div>
+  )
+}
+
+export default async function SalesDashboard({ searchParams }: SalesPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const activeTab = resolveTab(resolvedSearchParams.tab)
+  const inquiries = activeTab === "lead" ? await getInquiryRows() : []
+
+  return (
+    <main className="min-h-screen bg-[#fcfcfc] p-8">
+      <div className="mb-8">
+        <h1 className="text-[28px] font-semibold text-[#111827]">Sales Workspace</h1>
+        <p className="mt-2 text-[14px] text-[#6b7280]">
+          Manage incoming storefront inquiries, move accepted requests forward, and keep customers updated from one place.
+        </p>
+      </div>
+
+      {activeTab === "lead" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+              <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Total inquiries</p>
+              <p className="mt-2 text-[28px] font-semibold text-[#111827]">{inquiries.length}</p>
+            </div>
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+              <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Waiting on sales</p>
+              <p className="mt-2 text-[28px] font-semibold text-[#b45309]">
+                {inquiries.filter((inquiry) => inquiry.status === "RECEIVED").length}
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+              <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Accepted / active</p>
+              <p className="mt-2 text-[28px] font-semibold text-[#047857]">
+                {inquiries.filter((inquiry) => inquiry.status !== "RECEIVED").length}
+              </p>
+            </div>
+          </div>
+
+          <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <div className="mb-5">
+              <h2 className="text-[20px] font-semibold text-[#111827]">Customer product inquiries</h2>
+              <p className="mt-1 text-[13px] text-[#6b7280]">
+                These are the orders and customization inquiries coming from the live storefront.
+              </p>
+            </div>
+
+            {inquiries.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-[#d1d5db] bg-[#f9fafb] px-6 py-12 text-center text-[13px] text-[#6b7280]">
+                No customer inquiries have been submitted yet.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {inquiries.map((inquiry) => (
+                  <article key={inquiry.id} className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-5">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                      <div>
+                        <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Inquiry</p>
+                        <h3 className="mt-1 text-[20px] font-semibold text-[#111827]">{inquiry.productName}</h3>
+                        <p className="mt-2 text-[13px] text-[#6b7280]">
+                          {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
+                        </p>
+                        <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
+                      </div>
+
+                      <div className="text-[12px] text-[#6b7280]">
+                        <p>Created {new Date(inquiry.createdAt).toLocaleDateString()}</p>
+                        <p className="mt-1">Updated {new Date(inquiry.updatedAt).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+
+                    <form action={updateInquiryStatus} className="mt-5 grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)_auto]">
+                      <input type="hidden" name="inquiryId" value={inquiry.id} />
+                      <label className="block">
+                        <span className="mb-2 block text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
+                          Status
+                        </span>
+                        <select
+                          name="status"
+                          defaultValue={inquiry.status}
+                          className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+                        >
+                          {INQUIRY_STATUSES.map((status) => (
+                            <option key={status} value={status}>
+                              {formatStatus(status)}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <label className="block">
+                        <span className="mb-2 block text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
+                          Customer-facing note
+                        </span>
+                        <input
+                          name="statusNote"
+                          defaultValue={inquiry.statusNote ?? ""}
+                          placeholder="Optional update the customer can read on their status page"
+                          className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+                        />
+                      </label>
+
+                      <div className="flex items-end">
+                        <button
+                          type="submit"
+                          className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+                        >
+                          Save update
+                        </button>
+                      </div>
+                    </form>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      )}
+
+      {activeTab === "quotes" && (
+        <PlaceholderCard
+          title="Quotation workbench"
+          description="This area can keep the quotation builder, costing, and approval flow. The new product inquiries are already feeding into the Lead Intake tab for sales follow-up."
+        />
+      )}
+
+      {activeTab === "orders" && (
+        <PlaceholderCard
+          title="Sales orders"
+          description="Accepted inquiries can be converted into quotations and then into sales orders here as you continue wiring the full order flow."
+        />
+      )}
+
+      {activeTab === "tracker" && (
+        <PlaceholderCard
+          title="Workflow tracker"
+          description="Use this view for a cross-team timeline of inquiry acceptance, building readiness, payment waiting, and shipment readiness."
+        />
+      )}
+    </main>
+  )
 }

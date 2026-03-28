@@ -37,7 +37,7 @@ type NavConfig = {
   roleLabel: string
   color: string
   allowedPaths: string[]
-  defaultPath: string
+  defaultHref: string
 }
 
 const navConfigs: Record<AppRole, NavConfig> = {
@@ -51,7 +51,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Admin / Management",
     color: "bg-[#34384d]",
     allowedPaths: ["/", "/users", "/analytics"],
-    defaultPath: "/",
+    defaultHref: "/",
   },
   SALES: {
     links: [
@@ -63,7 +63,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Sales",
     color: "bg-emerald-500",
     allowedPaths: ["/sales"],
-    defaultPath: "/sales",
+    defaultHref: "/sales?tab=lead",
   },
   INVENTORY: {
     links: [
@@ -76,7 +76,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Inventory",
     color: "bg-blue-500",
     allowedPaths: ["/inventory"],
-    defaultPath: "/inventory",
+    defaultHref: "/inventory?tab=all-stocks",
   },
   ACCOUNTING: {
     links: [
@@ -88,7 +88,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Accounting",
     color: "bg-orange-500",
     allowedPaths: ["/accounting"],
-    defaultPath: "/accounting",
+    defaultHref: "/accounting?tab=auto-compute",
   },
   OPERATIONS_DESIGN: {
     links: [
@@ -100,14 +100,14 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Operations / Design",
     color: "bg-rose-500",
     allowedPaths: ["/operations"],
-    defaultPath: "/operations",
+    defaultHref: "/operations?tab=design",
   },
   CLIENT: {
     links: [],
     roleLabel: "Client",
     color: "bg-slate-500",
     allowedPaths: ["/"],
-    defaultPath: "/",
+    defaultHref: "/",
   },
 }
 
@@ -135,6 +135,20 @@ function isPathAllowed(pathname: string, allowedPaths: string[]) {
   })
 }
 
+function isValidTab(tab: string | null, links: NavConfig["links"]) {
+  const tabbedLinks = links.filter((link) => link.tab)
+
+  if (tabbedLinks.length === 0) {
+    return true
+  }
+
+  if (!tab) {
+    return false
+  }
+
+  return tabbedLinks.some((link) => link.tab === tab)
+}
+
 function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -144,10 +158,12 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
   const { links } = config;
 
   useEffect(() => {
-    if (!isPathAllowed(pathname, config.allowedPaths)) {
-      router.replace(config.defaultPath)
+    const currentTab = searchParams.get("tab")
+
+    if (!isPathAllowed(pathname, config.allowedPaths) || !isValidTab(currentTab, links)) {
+      router.replace(config.defaultHref)
     }
-  }, [config.allowedPaths, config.defaultPath, pathname, router])
+  }, [config.allowedPaths, config.defaultHref, links, pathname, router, searchParams])
 
   return (
     <>

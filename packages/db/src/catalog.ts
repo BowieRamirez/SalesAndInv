@@ -2,12 +2,7 @@ import { Prisma } from "./generated/prisma"
 import { prisma } from "./client"
 import { ProductSchema, type Product } from "@furnitrack/validators"
 
-// Temporary storefront adapter:
-// this reads optional legacy catalog tables only when they already exist in Neon.
-// The current live minimized-role production DB does not contain these tables yet,
-// so callers must handle an empty result until the catalog schema is migrated.
-
-type ProductRow = {
+type CatalogProductRow = {
   id: string
   slug: string
   name: string
@@ -16,7 +11,6 @@ type ProductRow = {
   price: Prisma.Decimal | number | string
   originalPrice: Prisma.Decimal | number | string | null
   badge: string | null
-  stockStatus: string
   images: string[] | Prisma.JsonValue | null
   rating: Prisma.Decimal | number | string | null
   reviewCount: number | bigint | null
@@ -25,12 +19,8 @@ type ProductRow = {
   heightCm: Prisma.Decimal | number | string
   weightKg: Prisma.Decimal | number | string
   description: string
-}
-
-type ColorVariantRow = {
-  productId: string
-  name: string
-  hex: string
+  availableQty: number | bigint | null
+  reorderThreshold: number | bigint | null
 }
 
 function asNumber(value: Prisma.Decimal | number | string | bigint | null | undefined) {
@@ -53,20 +43,36 @@ function asStringArray(value: string[] | Prisma.JsonValue | null): string[] {
   return []
 }
 
-async function tableExists(tableName: string) {
-  const result = await prisma.$queryRaw<{ exists: boolean }[]>(Prisma.sql`
-    SELECT EXISTS (
-      SELECT 1
-      FROM information_schema.tables
-      WHERE table_schema = 'public'
-        AND table_name = ${tableName}
-    ) AS "exists"
-  `)
+function normalizeBadge(value: string | null) {
+  if (!value) {
+    return null
+  }
 
-  return result[0]?.exists ?? false
+  const normalized = value.trim().toUpperCase().replace(/\s+/g, "_")
+
+  if (normalized === "BEST_SELLER" || normalized === "SALE" || normalized === "HOT") {
+    return normalized
+  }
+
+  return null
 }
 
-function mapProduct(row: ProductRow, colorVariants: ColorVariantRow[]): Product {
+function deriveStockStatus(availableQty: number, reorderThreshold: number) {
+  if (availableQty <= 0) {
+    return "OUT_OF_STOCK" as const
+  }
+
+  if (availableQty <= reorderThreshold) {
+    return "LOW_STOCK" as const
+  }
+
+  return "IN_STOCK" as const
+}
+
+function mapProduct(row: CatalogProductRow): Product {
+  const availableQty = asNumber(row.availableQty)
+  const reorderThreshold = asNumber(row.reorderThreshold)
+
   return ProductSchema.parse({
     id: row.id,
     slug: row.slug,
@@ -75,14 +81,10 @@ function mapProduct(row: ProductRow, colorVariants: ColorVariantRow[]): Product 
     material: row.material,
     price: asNumber(row.price),
     originalPrice: row.originalPrice == null ? null : asNumber(row.originalPrice),
-    badge: row.badge,
-    stockStatus: row.stockStatus,
-    colorVariants: colorVariants
-      .filter((variant) => variant.productId === row.id)
-      .map((variant) => ({
-        name: variant.name,
-        hex: variant.hex,
-      })),
+    badge: normalizeBadge(row.badge),
+    stockStatus: deriveStockStatus(availableQty, reorderThreshold),
+    availableQty,
+    colorVariants: [],
     images: asStringArray(row.images),
     rating: asNumber(row.rating),
     reviewCount: asNumber(row.reviewCount),
@@ -98,50 +100,35 @@ function mapProduct(row: ProductRow, colorVariants: ColorVariantRow[]): Product 
 
 export async function getStorefrontProducts(): Promise<Product[]> {
   try {
-    const hasProductsTable = await tableExists("products")
+    const rows = await prisma.$queryRaw<CatalogProductRow[]>(Prisma.sql`
+      SELECT
+        p.id,
+        p.slug,
+        p.name,
+        p.category,
+        p.material,
+        p.price,
+        p."originalPrice",
+        p.badge,
+        p.images,
+        p.rating,
+        p."reviewCount",
+        p."widthCm",
+        p."depthCm",
+        p."heightCm",
+        p."weightKg",
+        p.description,
+        s."availableQty",
+        s."reorderThreshold"
+      FROM public.products p
+      INNER JOIN public.stock_items s
+        ON s.id = p."stockItemId"
+      WHERE p."isPublished" = true
+        AND s."itemType" = 'FINISHED_PRODUCT'
+      ORDER BY p."createdAt" DESC, p.name ASC
+    `)
 
-    if (!hasProductsTable) {
-      return []
-    }
-
-    const [productRows, hasVariantsTable] = await Promise.all([
-      prisma.$queryRaw<ProductRow[]>(Prisma.sql`
-        SELECT
-          id,
-          slug,
-          name,
-          category,
-          material,
-          price,
-          "originalPrice",
-          badge,
-          "stockStatus",
-          images,
-          rating,
-          "reviewCount",
-          "widthCm",
-          "depthCm",
-          "heightCm",
-          "weightKg",
-          description
-        FROM public.products
-        ORDER BY "createdAt" DESC, name ASC
-      `),
-      tableExists("product_color_variants"),
-    ])
-
-    const colorVariants = hasVariantsTable
-      ? await prisma.$queryRaw<ColorVariantRow[]>(Prisma.sql`
-          SELECT
-            "productId",
-            name,
-            hex
-          FROM public.product_color_variants
-          ORDER BY "productId", name ASC
-        `)
-      : []
-
-    return productRows.map((row) => mapProduct(row, colorVariants))
+    return rows.map(mapProduct)
   } catch {
     return []
   }

@@ -11,8 +11,7 @@ export default async function HomePage() {
   const curatedForYou = products.slice(4, 8)
 
   return (
-    <div className="bg-white min-h-screen font-['var(--font-inter)'] relative">
-      <main className="flex flex-col items-center">
+    <div className="bg-white min-h-screen font-['var(--font-inter)'] relative flex flex-col items-center">
         
         {/* ===== HERO SECTION ===== */}
         <section className="w-full max-w-[1336px] mx-auto px-6 pt-[24px]">
@@ -211,7 +210,6 @@ export default async function HomePage() {
           </section>
         </div>
 
-      </main>
       <Footer />
     </div>
   )

@@ -21,11 +21,15 @@ export type AuthenticatedAppUser = {
   companyCode: string | null
 }
 
+function isInternalRole(role: AppRole) {
+  return role !== "CLIENT"
+}
+
 function isExpired(accessExpiresAt: Date | null) {
   return Boolean(accessExpiresAt && accessExpiresAt.getTime() <= Date.now())
 }
 
-export async function getAuthenticatedAppUser(): Promise<AuthenticatedAppUser | null> {
+export async function getCurrentAdminPortalUser(): Promise<AuthenticatedAppUser | null> {
   const { data } = await auth.getSession()
   const sessionUser = data?.user as SessionUser | undefined
 
@@ -91,6 +95,16 @@ export async function getAuthenticatedAppUser(): Promise<AuthenticatedAppUser | 
     companyId: appUser.companyId,
     companyCode: appUser.company?.code ?? null,
   }
+}
+
+export async function getAuthenticatedAppUser(): Promise<AuthenticatedAppUser | null> {
+  const appUser = await getCurrentAdminPortalUser()
+
+  if (!appUser || !isInternalRole(appUser.role)) {
+    return null
+  }
+
+  return appUser
 }
 
 export async function requireAuthenticatedAppUser() {

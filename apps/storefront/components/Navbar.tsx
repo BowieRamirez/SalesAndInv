@@ -3,21 +3,53 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, MapPin, Globe, User, LogOut } from "lucide-react";
+import { authClient } from "@/lib/auth/client";
 
 export function Navbar() {
   const [customerEmail, setCustomerEmail] = useState<string | null>(null);
+  const [customerName, setCustomerName] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    let isMounted = true;
+
+    async function loadSession() {
+      const response = await fetch("/api/session-user", { cache: "no-store" });
+      const result = (await response.json().catch(() => ({}))) as {
+        user?: { email?: string | null; name?: string | null; role?: string | null; status?: string | null };
+      };
+      const user = result.user;
+
+      if (user?.role === "CLIENT" && user.status === "ACTIVE" && isMounted) {
+        localStorage.setItem("customerSession", user.email ?? "");
+        setCustomerEmail(user.email ?? null);
+        setCustomerName(user.name ?? null);
+        return;
+      }
+
       const session = localStorage.getItem("customerSession");
-      setCustomerEmail(session);
+
+      if (session && isMounted) {
+        setCustomerEmail(session);
+      }
     }
+
+    if (typeof window !== "undefined") {
+      void loadSession();
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await authClient.signOut();
+
     if (typeof window !== "undefined") {
       localStorage.removeItem("customerSession");
       setCustomerEmail(null);
+      setCustomerName(null);
+      window.location.href = "/";
     }
   };
   return (
@@ -64,10 +96,16 @@ export function Navbar() {
           
           {customerEmail ? (
             <>
+              <Link
+                href="/account/status"
+                className="border-l border-white/20 pl-[20px] text-[11px] font-medium text-white/80 transition-opacity hover:opacity-80"
+              >
+                Status
+              </Link>
               <div className="flex items-center gap-[6px] border-l border-white/20 pl-[20px]">
                 <User className="w-[16px] h-[16px] text-white" />
                 <span className="text-[11px] font-medium text-white/80 leading-[16.5px]">
-                  {customerEmail.split('@')[0]}
+                  {customerName ?? customerEmail.split('@')[0]}
                 </span>
               </div>
               <button 
