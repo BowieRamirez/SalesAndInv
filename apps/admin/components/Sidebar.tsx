@@ -6,7 +6,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeftRight,
   BarChart3,
-  BookUser,
   Boxes,
   Box,
   Calculator,
@@ -18,7 +17,6 @@ import {
   LayoutDashboard,
   ListTodo,
   LogOut,
-  PackagePlus,
   Receipt,
   ShieldCheck,
   Truck,
@@ -45,7 +43,6 @@ const navConfigs: Record<AppRole, NavConfig> = {
     links: [
       { name: "Executive Overview", href: "/", icon: LayoutDashboard },
       { name: "User Access", href: "/users", icon: Users },
-      { name: "Client Companies", href: "/users?tab=clients", icon: BookUser, tab: "clients" },
       { name: "Reports", href: "/analytics", icon: BarChart3 },
     ],
     roleLabel: "Admin / Management",
@@ -69,7 +66,6 @@ const navConfigs: Record<AppRole, NavConfig> = {
     links: [
       { name: "Warehouse Locations", href: "/inventory?tab=locations", icon: Box, tab: "locations" },
       { name: "All Stocks", href: "/inventory?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
-      { name: "Incoming Stocks", href: "/inventory?tab=stocks", icon: PackagePlus, tab: "stocks" },
       { name: "Stock Requests", href: "/inventory?tab=requests", icon: ArrowLeftRight, tab: "requests" },
       { name: "Audit Logs", href: "/inventory?tab=audit", icon: History, tab: "audit" },
     ],
@@ -93,7 +89,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
   OPERATIONS_DESIGN: {
     links: [
       { name: "Design Queue", href: "/operations?tab=design", icon: FileEdit, tab: "design" },
-      { name: "Uploaded Files", href: "/operations?tab=files", icon: FileText, tab: "files" },
+      { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
       { name: "Delivery Schedule", href: "/operations?tab=delivery", icon: Truck, tab: "delivery" },
       { name: "Company Code Checks", href: "/operations?tab=company-code", icon: ShieldCheck, tab: "company-code" },
     ],
@@ -167,7 +163,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
 
   return (
     <>
-      <aside className="w-[280px] bg-[#1a1c29] text-white flex flex-col justify-between hidden md:flex shrink-0 border-r border-[#2a2c3d]">
+      <aside className="sticky top-0 h-screen overflow-y-auto w-[280px] bg-[#1a1c29] text-white flex flex-col justify-between hidden md:flex shrink-0 border-r border-[#2a2c3d]">
         <div>
           <div className="h-[72px] px-6 flex items-center justify-between text-white cursor-default">
             <div className="flex items-center space-x-3">

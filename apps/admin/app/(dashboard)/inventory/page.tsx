@@ -1,15 +1,17 @@
-import { Prisma } from "@furnitrack/db"
-import { prisma } from "@furnitrack/db"
+import { Prisma, prisma } from "@furnitrack/db"
+import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
 
 type InventoryRow = {
   id: string
   sku: string
   itemName: string
   itemType: string
+  warehouseId: string
   warehouseName: string
   availableQty: number
   reservedQty: number
   reorderThreshold: number
+  unitOfMeasure: string
 }
 
 type WarehouseSummaryRow = {
@@ -34,8 +36,7 @@ type InventoryPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-const INVENTORY_TABS = new Set(["locations", "all-stocks", "stocks", "requests", "audit"])
-
+const INVENTORY_TABS = new Set(["locations", "all-stocks", "requests", "audit"])
 export const dynamic = "force-dynamic"
 
 async function getInventoryRows() {
@@ -45,10 +46,12 @@ async function getInventoryRows() {
       s.sku,
       s."itemName",
       COALESCE(s."itemType"::text, 'RAW_MATERIAL') AS "itemType",
+      s."warehouseId",
       w.name AS "warehouseName",
       s."availableQty",
       s."reservedQty",
-      s."reorderThreshold"
+      s."reorderThreshold",
+      s."unitOfMeasure"
     FROM public.stock_items s
     INNER JOIN public.warehouses w
       ON w.id = s."warehouseId"
@@ -86,17 +89,21 @@ async function getStockRequestSummaries() {
 async function getAuditSummaries() {
   return prisma.$queryRaw<AuditSummaryRow[]>(Prisma.sql`
     SELECT
-      action::text AS action,
+      COALESCE(metadata->>'auditLabel', action::text) AS action,
       COUNT(*)::int AS count
     FROM public.audit_logs
-    GROUP BY action
-    ORDER BY COUNT(*) DESC, action ASC
+    GROUP BY COALESCE(metadata->>'auditLabel', action::text)
+    ORDER BY COUNT(*) DESC, COALESCE(metadata->>'auditLabel', action::text) ASC
     LIMIT 8
   `)
 }
 
+function resolveValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value
+}
+
 function resolveTab(tab?: string | string[]) {
-  const value = Array.isArray(tab) ? tab[0] : tab
+  const value = resolveValue(tab)
   return value && INVENTORY_TABS.has(value) ? value : "all-stocks"
 }
 
@@ -123,57 +130,20 @@ function EmptyState({ message }: { message: string }) {
   )
 }
 
-function InventoryTable({
-  title,
-  description,
+function SummaryCards({
   rows,
-  emptyMessage,
 }: {
-  title: string
-  description: string
-  rows: InventoryRow[]
-  emptyMessage: string
+  rows: Array<{ label: string; value: number; accent?: string }>
 }) {
   return (
-    <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
-      <div className="mb-4">
-        <h3 className="text-[18px] font-semibold text-[#111827]">{title}</h3>
-        <p className="mt-1 text-[13px] text-[#6b7280]">{description}</p>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-[13px]">
-          <thead>
-            <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-              <th className="py-3 pr-4 font-medium">SKU</th>
-              <th className="py-3 pr-4 font-medium">Item</th>
-              <th className="py-3 pr-4 font-medium">Warehouse</th>
-              <th className="py-3 pr-4 font-medium">Available</th>
-              <th className="py-3 pr-4 font-medium">Reserved</th>
-              <th className="py-3 font-medium">Threshold</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
-                <td className="py-3 pr-4 text-[#111827]">{row.sku}</td>
-                <td className="py-3 pr-4 text-[#111827]">{row.itemName}</td>
-                <td className="py-3 pr-4 text-[#6b7280]">{row.warehouseName}</td>
-                <td className="py-3 pr-4 text-[#111827]">{row.availableQty}</td>
-                <td className="py-3 pr-4 text-[#111827]">{row.reservedQty}</td>
-                <td className="py-3 text-[#111827]">{row.reorderThreshold}</td>
-              </tr>
-            ))}
-            {rows.length === 0 && (
-              <tr>
-                <td colSpan={6} className="py-8 text-center text-[#6b7280]">
-                  {emptyMessage}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+      {rows.map((row) => (
+        <div key={row.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+          <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{row.label}</p>
+          <p className={`mt-2 text-[28px] font-semibold ${row.accent ?? "text-[#111827]"}`}>{row.value}</p>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -207,23 +177,6 @@ function WarehouseTable({ rows }: { rows: WarehouseSummaryRow[] }) {
         </table>
       </div>
     </section>
-  )
-}
-
-function SummaryCards({
-  rows,
-}: {
-  rows: Array<{ label: string; value: number; accent?: string }>
-}) {
-  return (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-      {rows.map((row) => (
-        <div key={row.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
-          <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{row.label}</p>
-          <p className={`mt-2 text-[28px] font-semibold ${row.accent ?? "text-[#111827]"}`}>{row.value}</p>
-        </div>
-      ))}
-    </div>
   )
 }
 
@@ -288,6 +241,8 @@ function AuditSummary({ rows }: { rows: AuditSummaryRow[] }) {
 export default async function InventoryDashboard({ searchParams }: InventoryPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {}
   const activeTab = resolveTab(resolvedSearchParams.tab)
+  const message = resolveValue(resolvedSearchParams.message)
+  const tone = resolveValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
 
   const [rows, warehouses, requestSummary, auditSummary] = await Promise.all([
     getInventoryRows(),
@@ -296,18 +251,29 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
     getAuditSummaries(),
   ])
 
-  const finishedProducts = rows.filter((row) => row.itemType === "FINISHED_PRODUCT")
   const rawMaterials = rows.filter((row) => row.itemType !== "FINISHED_PRODUCT")
-  const lowStockItems = rows.filter((row) => row.availableQty <= row.reorderThreshold)
+  const lowStockItems = rawMaterials.filter((row) => row.availableQty <= row.reorderThreshold)
 
   return (
     <main className="min-h-screen overflow-auto bg-[#fcfcfc] p-8">
       <div className="mb-8">
         <h1 className="text-[28px] font-semibold text-[#1a1c29]">Inventory Workspace</h1>
         <p className="mt-2 text-[14px] text-[#6b7280]">
-          Each inventory menu item now opens its own workspace. Finished products feed the storefront, while raw materials stay in internal stock tracking.
+          Raw materials stay here for warehouse tracking, while finished products now live in the Operations workspace.
         </p>
       </div>
+
+      {message ? (
+        <div
+          className={`mb-6 rounded-2xl border px-5 py-4 text-[14px] ${
+            tone === "error"
+              ? "border-[#fecaca] bg-[#fff1f2] text-[#9f1239]"
+              : "border-[#bbf7d0] bg-[#f0fdf4] text-[#166534]"
+          }`}
+        >
+          {message}
+        </div>
+      ) : null}
 
       {activeTab === "locations" && (
         <div className="space-y-6">
@@ -318,7 +284,7 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
           <SummaryCards
             rows={[
               { label: "Warehouses", value: warehouses.length },
-              { label: "Tracked Items", value: rows.length },
+              { label: "Tracked Materials", value: rawMaterials.length },
               { label: "Low Stock Items", value: lowStockItems.length, accent: "text-amber-600" },
             ]}
           />
@@ -330,45 +296,91 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
         <div className="space-y-8">
           <SummaryCards
             rows={[
-              { label: "Total Inventory Items", value: rows.length },
-              { label: "Finished Products", value: finishedProducts.length },
               { label: "Raw Materials", value: rawMaterials.length },
-            ]}
-          />
-          <InventoryTable
-            title="Finished Products Used by the Storefront"
-            description="Only these items should appear in the storefront catalog."
-            rows={finishedProducts}
-            emptyMessage="No finished products have been loaded from Neon yet."
-          />
-          <InventoryTable
-            title="Raw Materials"
-            description="These items stay in the inventory module and are linked to finished products through material mapping."
-            rows={rawMaterials}
-            emptyMessage="No raw materials have been loaded from Neon yet."
-          />
-        </div>
-      )}
-
-      {activeTab === "stocks" && (
-        <div className="space-y-6">
-          <SectionHeader
-            title="Incoming Stocks"
-            description="Use this view to monitor stock entries and identify which items still need actual on-hand quantities encoded."
-          />
-          <SummaryCards
-            rows={[
-              { label: "Zero On-Hand", value: rows.filter((row) => row.availableQty === 0).length, accent: "text-amber-600" },
               { label: "Low Stock", value: lowStockItems.length, accent: "text-amber-600" },
-              { label: "Reserved", value: rows.reduce((sum, row) => sum + row.reservedQty, 0) },
+              { label: "Warehouses", value: warehouses.length },
             ]}
           />
-          <InventoryTable
-            title="Items Waiting for Stock Encoding"
-            description="These items are live in Neon, but most still need opening balances or stock-in transactions."
-            rows={rows}
-            emptyMessage="No inventory items are available yet."
-          />
+
+          <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h3 className="text-[18px] font-semibold text-[#111827]">Add new raw material</h3>
+                <p className="mt-1 text-[13px] text-[#6b7280]">
+                  Create a new material manually from the inventory workspace.
+                </p>
+              </div>
+              <div className="rounded-xl border border-[#e5e7eb] bg-[#f8fafc] px-4 py-3 text-[12px] leading-5 text-[#64748b]">
+                New materials are written to Neon DB stock tables and appear in the list below.
+              </div>
+            </div>
+            <form method="post" action="/api/admin/inventory/raw-materials/create" className="mt-5 grid gap-3 xl:grid-cols-[1.2fr_1.1fr_1fr_0.9fr]">
+              <input
+                name="itemName"
+                placeholder="Material name"
+                className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              />
+              <input
+                name="sku"
+                placeholder="SKU (optional auto-generate)"
+                className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              />
+              <select
+                name="warehouseId"
+                defaultValue=""
+                className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              >
+                <option value="" disabled>
+                  Select warehouse
+                </option>
+                {warehouses.map((warehouse) => (
+                  <option key={warehouse.id} value={warehouse.id}>
+                    {warehouse.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                name="unitOfMeasure"
+                defaultValue="pcs"
+                placeholder="Unit"
+                className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              />
+              <input
+                name="reorderThreshold"
+                type="number"
+                min="0"
+                defaultValue="10"
+                placeholder="Reorder threshold"
+                className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              />
+              <input
+                name="openingQty"
+                type="number"
+                min="0"
+                defaultValue="0"
+                placeholder="Opening stock"
+                className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              />
+              <input
+                name="referenceNumber"
+                placeholder="Reference number (optional)"
+                className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] xl:col-span-2"
+              />
+              <textarea
+                name="description"
+                placeholder="Description (optional)"
+                className="min-h-[96px] rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] xl:col-span-3"
+              />
+              <button
+                type="submit"
+                className="rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 xl:self-stretch"
+              >
+                Add raw material
+              </button>
+            </form>
+          </section>
+
+          <RawMaterialsManager rows={rawMaterials} />
         </div>
       )}
 

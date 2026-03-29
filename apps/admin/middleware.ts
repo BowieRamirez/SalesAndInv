@@ -12,8 +12,9 @@ export const config = {
          * Exclude:
          *  - /sign-in  (the login page itself)
          *  - /api/auth (Neon Auth handler routes)
+         *  - /api/admin (custom admin route handlers do their own checks)
          *  - Next.js internals (_next/*) and static files
          */
-        "/((?!sign-in|api/auth|_next/static|_next/image|favicon.ico).*)",
+        "/((?!sign-in|api/auth|api/admin|_next/static|_next/image|favicon.ico).*)",
     ],
 };
