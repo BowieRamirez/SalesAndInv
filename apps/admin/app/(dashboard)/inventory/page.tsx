@@ -109,15 +109,12 @@ function resolveTab(tab?: string | string[]) {
 
 function SectionHeader({
   title,
-  description,
 }: {
   title: string
-  description: string
 }) {
   return (
     <div className="mb-6">
       <h2 className="text-[20px] font-semibold text-[#111827]">{title}</h2>
-      <p className="mt-1 text-[13px] text-[#6b7280]">{description}</p>
     </div>
   )
 }
@@ -258,9 +255,6 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
     <main className="min-h-screen overflow-auto bg-[#fcfcfc] p-8">
       <div className="mb-8">
         <h1 className="text-[28px] font-semibold text-[#1a1c29]">Inventory Workspace</h1>
-        <p className="mt-2 text-[14px] text-[#6b7280]">
-          Raw materials stay here for warehouse tracking, while finished products now live in the Operations workspace.
-        </p>
       </div>
 
       {message ? (
@@ -275,12 +269,9 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
         </div>
       ) : null}
 
-      {activeTab === "locations" && (
-        <div className="space-y-6">
-          <SectionHeader
-            title="Warehouse Locations"
-            description="Review warehouse locations and how many stock records each one is currently tracking."
-          />
+        {activeTab === "locations" && (
+          <div className="space-y-6">
+          <SectionHeader title="Warehouse Locations" />
           <SummaryCards
             rows={[
               { label: "Warehouses", value: warehouses.length },
@@ -306,12 +297,6 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
                 <h3 className="text-[18px] font-semibold text-[#111827]">Add new raw material</h3>
-                <p className="mt-1 text-[13px] text-[#6b7280]">
-                  Create a new material manually from the inventory workspace.
-                </p>
-              </div>
-              <div className="rounded-xl border border-[#e5e7eb] bg-[#f8fafc] px-4 py-3 text-[12px] leading-5 text-[#64748b]">
-                New materials are written to Neon DB stock tables and appear in the list below.
               </div>
             </div>
             <form method="post" action="/api/admin/inventory/raw-materials/create" className="mt-5 grid gap-3 xl:grid-cols-[1.2fr_1.1fr_1fr_0.9fr]">
@@ -384,22 +369,16 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
         </div>
       )}
 
-      {activeTab === "requests" && (
-        <div className="space-y-6">
-          <SectionHeader
-            title="Stock Requests"
-            description="Track the approval flow for internal stock requests raised from sales orders."
-          />
+        {activeTab === "requests" && (
+          <div className="space-y-6">
+          <SectionHeader title="Stock Requests" />
           <RequestSummary rows={requestSummary} />
         </div>
       )}
 
       {activeTab === "audit" && (
         <div className="space-y-6">
-          <SectionHeader
-            title="Audit Logs"
-            description="Inventory-related changes should be visible here once operational actions are being recorded by the system."
-          />
+          <SectionHeader title="Audit Logs" />
           <AuditSummary rows={auditSummary} />
         </div>
       )}

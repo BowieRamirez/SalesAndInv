@@ -33,7 +33,6 @@ function AccountingDashboardContent() {
           {/* Dashboard Header */}
           <div className="mb-6">
             <h1 className="text-[24px] font-semibold text-charcoal leading-tight mb-1">Accounting & Financial Controls</h1>
-            <p className="text-[13px] text-muted">Manage computations, payments, approvals, and document generation.</p>
           </div>
 
           {/* MVP Content - Auto Compute */}

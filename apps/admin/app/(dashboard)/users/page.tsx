@@ -1,8 +1,8 @@
-import { Fragment } from "react"
 import { redirect } from "next/navigation"
 import { Prisma, prisma } from "@furnitrack/db"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { APP_ROLES, ROLE_LABELS, ROLE_REDIRECT, type AppRole } from "@/lib/rbac"
+import { PasswordField } from "@/components/users/PasswordField"
 
 type UsersPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -103,17 +103,14 @@ async function getManagedAccounts() {
 function StatCard({
   label,
   value,
-  caption,
 }: {
   label: string
   value: string | number
-  caption: string
 }) {
   return (
     <div className="rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
       <p className="text-[12px] uppercase tracking-[0.18em] text-[#94a3b8]">{label}</p>
       <p className="mt-3 text-[30px] font-semibold text-[#0f172a]">{value}</p>
-      <p className="mt-2 text-[13px] leading-6 text-[#64748b]">{caption}</p>
     </div>
   )
 }
@@ -153,34 +150,18 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
         ) : null}
 
         <section className="grid gap-5 md:grid-cols-3">
-          <StatCard
-            label="Internal Accounts"
-            value={managedAccounts.length}
-            caption="All non-client accounts currently visible to the executive management view."
-          />
+          <StatCard label="Internal Accounts" value={managedAccounts.length} />
           <StatCard
             label="Executive Admins"
             value={roleBreakdown.find((entry) => entry.role === "ADMIN_MANAGEMENT")?.count ?? 0}
-            caption="These accounts keep access to this user-access workspace and its role controls."
           />
-          <StatCard
-            label="Role Coverage"
-            value={roleBreakdown.filter((entry) => entry.count > 0).length}
-            caption="How many internal role lanes already have at least one active account."
-          />
+          <StatCard label="Role Coverage" value={roleBreakdown.filter((entry) => entry.count > 0).length} />
         </section>
 
         <section className="rounded-[28px] border border-[#e2e8f0] bg-white p-6 shadow-sm">
           <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h2 className="text-[22px] font-semibold text-[#0f172a]">Add internal account</h2>
-              <p className="mt-2 max-w-2xl text-[13px] leading-6 text-[#64748b]">
-                Create a new sign-in in Neon Auth, then mirror the same person into the app `users` table with the
-                selected internal role.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-[#dbe4f0] bg-[#f8fafc] px-4 py-3 text-[13px] text-[#475569]">
-              Add a new account here, then manage it from the roster below.
             </div>
           </div>
 
@@ -227,10 +208,6 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <h2 className="text-[22px] font-semibold text-[#0f172a]">Internal account roster</h2>
-                <p className="mt-2 max-w-3xl text-[13px] leading-6 text-[#64748b]">
-                  Scan the full roster in one table, then use the inline controls to update roles, reset passwords, or
-                  remove access without leaving the page.
-                </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {roleBreakdown.map((entry) => (
@@ -263,15 +240,14 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
                       <th className="px-4 py-4 font-semibold">Notes</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {managedAccounts.map((account) => {
-                      const isCurrentUser = currentUser.authUserId === account.authUserId
-                      const editableRoles = isCurrentUser ? INTERNAL_ROLES : STAFF_ROLES
-                      const isExecutiveAccount = account.role === "ADMIN_MANAGEMENT"
+                  {managedAccounts.map((account) => {
+                    const isCurrentUser = currentUser.authUserId === account.authUserId
+                    const editableRoles = isCurrentUser ? INTERNAL_ROLES : STAFF_ROLES
+                    const isExecutiveAccount = account.role === "ADMIN_MANAGEMENT"
 
-                      return (
-                        <Fragment key={account.authUserId}>
-                          <tr key={`${account.authUserId}-summary`} className="border-b border-[#eef2f7] align-top">
+                    return (
+                      <tbody key={account.authUserId}>
+                        <tr className="border-b border-[#eef2f7] align-top">
                             <td className="px-6 py-5">
                               <div className="flex items-start gap-3">
                                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e2e8f0] text-[13px] font-semibold text-[#0f172a]">
@@ -311,7 +287,7 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
                                 : "Inline controls are available below this row."}
                             </td>
                           </tr>
-                          <tr key={`${account.authUserId}-actions`} className="border-b border-[#eef2f7] last:border-b-0">
+                        <tr className="border-b border-[#eef2f7] last:border-b-0">
                             <td colSpan={6} className="bg-[#fbfdff] px-6 py-5">
                               <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_220px]">
                                 <form method="post" action="/api/admin/accounts/update" className="rounded-2xl border border-[#e2e8f0] bg-white p-4">
@@ -366,9 +342,8 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
                                   <input type="hidden" name="authUserId" value={account.authUserId} />
                                   <input type="hidden" name="email" value={account.email} />
                                   <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_170px]">
-                                    <input
+                                    <PasswordField
                                       name="newPassword"
-                                      type="password"
                                       placeholder="New password"
                                       className="w-full rounded-xl border border-[#dbe4f0] bg-white px-3 py-2.5 text-[13px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
                                     />
@@ -400,11 +375,10 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
                                 </form>
                               </div>
                             </td>
-                          </tr>
-                        </Fragment>
-                      )
-                    })}
-                  </tbody>
+                        </tr>
+                      </tbody>
+                    )
+                  })}
                 </table>
               </div>
             </div>

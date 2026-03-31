@@ -82,15 +82,12 @@ async function updateInquiryStatus(formData: FormData) {
 
 function PlaceholderCard({
   title,
-  description,
 }: {
   title: string
-  description: string
 }) {
   return (
     <div className="rounded-xl border border-[#e5e7eb] bg-white p-8 shadow-sm">
       <h3 className="text-[16px] font-semibold text-[#1f2937]">{title}</h3>
-      <p className="mt-3 text-[13px] leading-[22px] text-[#6b7280]">{description}</p>
     </div>
   )
 }
@@ -104,9 +101,6 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
     <main className="min-h-screen bg-[#fcfcfc] p-8">
       <div className="mb-8">
         <h1 className="text-[28px] font-semibold text-[#111827]">Sales Workspace</h1>
-        <p className="mt-2 text-[14px] text-[#6b7280]">
-          Manage incoming storefront inquiries, move accepted requests forward, and keep customers updated from one place.
-        </p>
       </div>
 
       {activeTab === "lead" && (
@@ -133,9 +127,6 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
           <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
             <div className="mb-5">
               <h2 className="text-[20px] font-semibold text-[#111827]">Customer product inquiries</h2>
-              <p className="mt-1 text-[13px] text-[#6b7280]">
-                These are the orders and customization inquiries coming from the live storefront.
-              </p>
             </div>
 
             {inquiries.length === 0 ? (
@@ -213,21 +204,18 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
       {activeTab === "quotes" && (
         <PlaceholderCard
           title="Quotation workbench"
-          description="This area can keep the quotation builder, costing, and approval flow. The new product inquiries are already feeding into the Lead Intake tab for sales follow-up."
         />
       )}
 
       {activeTab === "orders" && (
         <PlaceholderCard
           title="Sales orders"
-          description="Accepted inquiries can be converted into quotations and then into sales orders here as you continue wiring the full order flow."
         />
       )}
 
       {activeTab === "tracker" && (
         <PlaceholderCard
           title="Workflow tracker"
-          description="Use this view for a cross-team timeline of inquiry acceptance, building readiness, payment waiting, and shipment readiness."
         />
       )}
     </main>

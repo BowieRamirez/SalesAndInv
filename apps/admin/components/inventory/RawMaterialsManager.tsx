@@ -47,9 +47,6 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <h3 className="text-[18px] font-semibold text-[#111827]">Raw Materials</h3>
-            <p className="mt-1 text-[13px] text-[#6b7280]">
-              Search the list instantly and keep each page capped at 20 materials.
-            </p>
           </div>
           <div className="w-full md:w-[320px]">
             <input

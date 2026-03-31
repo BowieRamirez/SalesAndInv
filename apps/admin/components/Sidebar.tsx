@@ -88,7 +88,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
   },
   OPERATIONS_DESIGN: {
     links: [
-      { name: "Design Queue", href: "/operations?tab=design", icon: FileEdit, tab: "design" },
+      { name: "New Products", href: "/operations?tab=new-products", icon: FileEdit, tab: "new-products" },
       { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
       { name: "Delivery Schedule", href: "/operations?tab=delivery", icon: Truck, tab: "delivery" },
       { name: "Company Code Checks", href: "/operations?tab=company-code", icon: ShieldCheck, tab: "company-code" },
@@ -96,7 +96,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Operations / Design",
     color: "bg-rose-500",
     allowedPaths: ["/operations"],
-    defaultHref: "/operations?tab=design",
+    defaultHref: "/operations?tab=new-products",
   },
   CLIENT: {
     links: [],

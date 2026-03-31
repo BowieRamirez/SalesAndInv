@@ -88,37 +88,28 @@ export function ExecutiveReportsClient({ userName, data }: ExecutiveReportsClien
       <div className="space-y-6 p-8">
         <section className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
           <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-[#94a3b8]">Management Reports</p>
-          <h1 className="mt-3 text-[32px] font-semibold leading-tight text-[#0f172a]">
-            Executive reporting now reflects the latest data currently stored in Neon.
-          </h1>
-          <p className="mt-3 max-w-[760px] text-[14px] leading-7 text-[#64748b]">
-            These summaries update from your live sales, payments, inventory, product, and delivery tables on each request.
-          </p>
+          <h1 className="mt-3 text-[32px] font-semibold leading-tight text-[#0f172a]">Management Reports</h1>
         </section>
 
         <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
             <p className="text-[12px] font-medium text-[#94a3b8]">Booked Revenue</p>
             <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{formatCompactCurrency(snapshot.bookedRevenue)}</p>
-            <p className="mt-3 text-[12px] text-[#64748b]">{snapshot.salesOrders} total orders recorded</p>
           </div>
 
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
             <p className="text-[12px] font-medium text-[#94a3b8]">Verified Collections</p>
             <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{formatCompactCurrency(snapshot.verifiedCollections)}</p>
-            <p className="mt-3 text-[12px] text-[#64748b]">{snapshot.verifiedPayments} verified payment entries</p>
           </div>
 
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
             <p className="text-[12px] font-medium text-[#94a3b8]">Outstanding Receivables</p>
             <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{formatCompactCurrency(snapshot.outstandingReceivables)}</p>
-            <p className="mt-3 text-[12px] text-[#64748b]">{snapshot.pendingPayments} payment records still pending review</p>
           </div>
 
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
             <p className="text-[12px] font-medium text-[#94a3b8]">Open Orders</p>
             <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{snapshot.openOrders}</p>
-            <p className="mt-3 text-[12px] text-[#64748b]">{snapshot.activeDeliveries} deliveries already scheduled or moving</p>
           </div>
         </section>
 
@@ -126,7 +117,6 @@ export function ExecutiveReportsClient({ userName, data }: ExecutiveReportsClien
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
             <div className="mb-6">
               <h2 className="text-[15px] font-semibold text-[#0f172a]">Monthly Revenue vs Collections</h2>
-              <p className="mt-1 text-[12px] text-[#64748b]">Live 12-month rollup from `sales_orders` and verified `payment_records`.</p>
             </div>
             <div className="h-[340px] w-full">
               <ResponsiveContainer width="100%" height="100%">

@@ -119,13 +119,7 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
         <section className="flex flex-col gap-4 rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[720px]">
             <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-[#94a3b8]">Executive Overview</p>
-            <h1 className="mt-3 text-[34px] font-semibold leading-tight text-[#0f172a]">
-              Live executive dashboard powered directly by your Neon database.
-            </h1>
-            <p className="mt-3 max-w-[640px] text-[14px] leading-7 text-[#64748b]">
-              Revenue, collections, inventory exposure, deliveries, and stock alerts now come from live operational
-              tables instead of placeholder samples.
-            </p>
+            <h1 className="mt-3 text-[34px] font-semibold leading-tight text-[#0f172a]">Executive Overview</h1>
           </div>
 
           <div className="rounded-2xl border border-[#e5e7eb] bg-[#f8fbff] px-5 py-4">
@@ -149,7 +143,6 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
                 <CircleDollarSign className="h-5 w-5 text-indigo-600" />
               </div>
             </div>
-            <p className="text-[12px] text-[#64748b]">{snapshot.salesOrders} orders currently stored in Neon</p>
           </div>
 
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
@@ -162,9 +155,6 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
                 <ShoppingBag className="h-5 w-5 text-emerald-500" />
               </div>
             </div>
-            <p className="text-[12px] text-[#64748b]">
-              {snapshot.openOrders} still open, {snapshot.deliveredOrders} already delivered
-            </p>
           </div>
 
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
@@ -177,7 +167,6 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
                 <Clock3 className="h-5 w-5 text-amber-500" />
               </div>
             </div>
-            <p className="text-[12px] text-[#64748b]">{formatCurrency(snapshot.verifiedCollections)} verified payments posted</p>
           </div>
 
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
@@ -190,9 +179,6 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
                 <Package className="h-5 w-5 text-blue-500" />
               </div>
             </div>
-            <p className="text-[12px] text-[#64748b]">
-              {snapshot.lowStockItems} low-stock items across {snapshot.totalStockItems} stock records
-            </p>
           </div>
         </section>
 
@@ -201,7 +187,6 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-[15px] font-semibold text-[#0f172a]">Revenue and Collection Trend</h2>
-                <p className="mt-1 text-[12px] text-[#64748b]">Last 12 months from sales orders and verified payment records.</p>
               </div>
             </div>
             <div className="h-[280px] w-full">
@@ -239,7 +224,6 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
             <div className="mb-4">
               <h2 className="text-[15px] font-semibold text-[#0f172a]">Published Products by Category</h2>
-              <p className="mt-1 text-[12px] text-[#64748b]">Current catalog composition from live product records.</p>
             </div>
 
             {categoryMix.length === 0 ? (
@@ -378,17 +362,9 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
         </section>
 
         <section className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h3 className="text-[16px] font-semibold text-[#0f172a]">What this page is reading live</h3>
-              <p className="mt-1 text-[13px] text-[#64748b]">
-                `sales_orders`, `payment_records`, `stock_items`, `products`, `warehouses`, and `delivery_schedules`
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#eef4ff] px-4 py-2 text-[12px] font-medium text-[#3159d8]">
-              Live from Neon DB
-              <ArrowRight className="h-3.5 w-3.5" />
-            </div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#eef4ff] px-4 py-2 text-[12px] font-medium text-[#3159d8]">
+            Live from Neon DB
+            <ArrowRight className="h-3.5 w-3.5" />
           </div>
         </section>
       </div>
