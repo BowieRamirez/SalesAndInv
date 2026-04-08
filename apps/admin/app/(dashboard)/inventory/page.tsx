@@ -1,5 +1,13 @@
+import { redirect } from "next/navigation"
 import { Prisma, prisma } from "@furnitrack/db"
+import {
+  formatInquiryWorkflowStatus,
+  getInquiryWorkflowStyle,
+} from "@furnitrack/validators"
 import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
+import { requireAuthenticatedAppUser } from "@/lib/auth/session"
+import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
+import { ROLE_REDIRECT } from "@/lib/rbac"
 
 type InventoryRow = {
   id: string
@@ -36,8 +44,19 @@ type InventoryPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-const INVENTORY_TABS = new Set(["locations", "all-stocks", "requests", "audit"])
-export const dynamic = "force-dynamic"
+const INVENTORY_TABS = new Set(["locations", "all-stocks", "approvals", "audit"])
+
+function resolveValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value
+}
+
+function resolveTab(tab?: string | string[]) {
+  const value = resolveValue(tab)
+  if (value === "requests") {
+    return "approvals"
+  }
+  return value && INVENTORY_TABS.has(value) ? value : "all-stocks"
+}
 
 async function getInventoryRows() {
   return prisma.$queryRaw<InventoryRow[]>(Prisma.sql`
@@ -98,20 +117,7 @@ async function getAuditSummaries() {
   `)
 }
 
-function resolveValue(value?: string | string[]) {
-  return Array.isArray(value) ? value[0] : value
-}
-
-function resolveTab(tab?: string | string[]) {
-  const value = resolveValue(tab)
-  return value && INVENTORY_TABS.has(value) ? value : "all-stocks"
-}
-
-function SectionHeader({
-  title,
-}: {
-  title: string
-}) {
+function SectionHeader({ title }: { title: string }) {
   return (
     <div className="mb-6">
       <h2 className="text-[20px] font-semibold text-[#111827]">{title}</h2>
@@ -235,17 +241,90 @@ function AuditSummary({ rows }: { rows: AuditSummaryRow[] }) {
   )
 }
 
+function WorkflowBadge({ status }: { status: string }) {
+  return (
+    <span
+      className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(status)}`}
+    >
+      {formatInquiryWorkflowStatus(status)}
+    </span>
+  )
+}
+
+function InventoryApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }) {
+  return (
+    <article className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Material approval request</p>
+          <h3 className="mt-1 text-[20px] font-semibold text-[#111827]">{inquiry.productName}</h3>
+          <p className="mt-2 text-[13px] text-[#6b7280]">
+            {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
+          </p>
+          <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
+          {inquiry.workflowNote ? (
+            <p className="mt-3 rounded-xl bg-white px-4 py-3 text-[13px] text-[#4b5563]">
+              Latest note: {inquiry.workflowNote}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="flex flex-col items-start gap-3 text-[12px] text-[#6b7280] lg:items-end">
+          <WorkflowBadge status={inquiry.workflowStatus} />
+          <div>
+            <p>Created {new Date(inquiry.createdAt).toLocaleDateString()}</p>
+            <p className="mt-1">Updated {new Date(inquiry.updatedAt).toLocaleDateString()}</p>
+          </div>
+        </div>
+      </div>
+
+      <form method="post" action="/api/admin/approvals/inventory" className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <input type="hidden" name="inquiryId" value={inquiry.id} />
+        <label className="block">
+          <span className="mb-2 block text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
+            Inventory approval note
+          </span>
+          <input
+            name="statusNote"
+            defaultValue={inquiry.workflowNote ?? ""}
+            placeholder="Confirm stock readiness for accounting"
+            className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+          />
+        </label>
+
+        <div className="flex items-end">
+          <button
+            type="submit"
+            className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+          >
+            Approve materials
+          </button>
+        </div>
+      </form>
+    </article>
+  )
+}
+
+export const dynamic = "force-dynamic"
+
 export default async function InventoryDashboard({ searchParams }: InventoryPageProps) {
+  const currentUser = await requireAuthenticatedAppUser()
+
+  if (!["INVENTORY", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+    redirect(ROLE_REDIRECT[currentUser.role])
+  }
+
   const resolvedSearchParams = searchParams ? await searchParams : {}
   const activeTab = resolveTab(resolvedSearchParams.tab)
   const message = resolveValue(resolvedSearchParams.message)
   const tone = resolveValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
 
-  const [rows, warehouses, requestSummary, auditSummary] = await Promise.all([
+  const [rows, warehouses, requestSummary, auditSummary, inquiries] = await Promise.all([
     getInventoryRows(),
     getWarehouseSummaries(),
     getStockRequestSummaries(),
     getAuditSummaries(),
+    getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
   ])
 
   const rawMaterials = rows.filter((row) => row.itemType !== "FINISHED_PRODUCT")
@@ -269,8 +348,8 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
         </div>
       ) : null}
 
-        {activeTab === "locations" && (
-          <div className="space-y-6">
+      {activeTab === "locations" && (
+        <div className="space-y-6">
           <SectionHeader title="Warehouse Locations" />
           <SummaryCards
             rows={[
@@ -369,10 +448,37 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
         </div>
       )}
 
-        {activeTab === "requests" && (
-          <div className="space-y-6">
-          <SectionHeader title="Stock Requests" />
+      {activeTab === "approvals" && (
+        <div className="space-y-6">
+          <SectionHeader title="Inventory Approval Page" />
+          <SummaryCards
+            rows={[
+              { label: "Orders Waiting", value: inquiries.length, accent: "text-blue-600" },
+              { label: "Low Stock Items", value: lowStockItems.length, accent: "text-amber-600" },
+              { label: "Stock Request Logs", value: requestSummary.reduce((total, row) => total + row.count, 0) },
+            ]}
+          />
           <RequestSummary rows={requestSummary} />
+
+          <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <div className="mb-5">
+              <h2 className="text-[20px] font-semibold text-[#111827]">Customer orders waiting for stock confirmation</h2>
+              <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
+                Sales has already checked these orders. Approve them here once material availability is confirmed so
+                accounting can continue with payment processing.
+              </p>
+            </div>
+
+            {inquiries.length === 0 ? (
+              <EmptyState message="No customer orders are currently waiting on inventory approval." />
+            ) : (
+              <div className="space-y-4">
+                {inquiries.map((inquiry) => (
+                  <InventoryApprovalCard key={inquiry.id} inquiry={inquiry} />
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       )}
 

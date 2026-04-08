@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation"
 import { prisma, type Prisma } from "@furnitrack/db"
+import {
+  formatInquiryWorkflowStatus,
+  getInquiryWorkflowStyle,
+} from "@furnitrack/validators"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { FinishedProductsManager } from "@/components/operations/FinishedProductsManager"
 import { MaterialSelector } from "@/components/operations/MaterialSelector"
+import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { OPERATIONS_DEFAULT_TAB, OPERATIONS_PRODUCT_CATEGORIES } from "@/lib/operations-products"
 
@@ -35,7 +40,7 @@ type ProductCardData = {
   }>
 }
 
-const OPERATIONS_TABS = new Set(["design", "new-products", "finished-products", "delivery", "company-code"])
+const OPERATIONS_TABS = new Set(["design", "new-products", "finished-products", "approvals", "delivery", "company-code"])
 
 function getSearchValue(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value
@@ -95,6 +100,218 @@ function StatCard({
       <p className="text-[12px] uppercase tracking-[0.16em] text-[#94a3b8]">{label}</p>
       <p className="mt-3 text-[30px] font-semibold text-[#0f172a]">{value}</p>
     </div>
+  )
+}
+
+function WorkflowBadge({ status }: { status: string }) {
+  return (
+    <span
+      className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(status)}`}
+    >
+      {formatInquiryWorkflowStatus(status)}
+    </span>
+  )
+}
+
+function formatDateTime(value: Date | null) {
+  if (!value) {
+    return null
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(value)
+}
+
+function toDateTimeLocalValue(value: Date | null) {
+  if (!value) {
+    return ""
+  }
+
+  const local = new Date(value.getTime() - value.getTimezoneOffset() * 60_000)
+  return local.toISOString().slice(0, 16)
+}
+
+function ShippingProgressBadge({
+  shippingScheduledAt,
+}: {
+  shippingScheduledAt: Date | null
+}) {
+  if (!shippingScheduledAt) {
+    return (
+      <span className="inline-flex rounded-full bg-[#fff7ed] px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#c2410c]">
+        Awaiting Shipping Schedule
+      </span>
+    )
+  }
+
+  const isReadyToComplete = shippingScheduledAt.getTime() <= Date.now()
+
+  return (
+    <span
+      className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${
+        isReadyToComplete ? "bg-[#ecfdf3] text-[#166534]" : "bg-[#eff6ff] text-[#1d4ed8]"
+      }`}
+    >
+      {isReadyToComplete ? "Ready To Complete" : "In Shipping"}
+    </span>
+  )
+}
+
+function DeliveryQueueCard({
+  inquiry,
+  action,
+}: {
+  inquiry: InquiryWorkflowRow
+  action: "build" | "ship"
+}) {
+  const formAction =
+    action === "build" ? "/api/admin/approvals/operations/build" : "/api/admin/approvals/operations/ship"
+  const buttonLabel = action === "build" ? "Approve for building" : "Mark shipped and complete"
+  const placeholder =
+    action === "build"
+      ? "Confirm that operations has finished preparing this order."
+      : "Add the shipping confirmation note for order history."
+  const shippingScheduleLabel = formatDateTime(inquiry.shippingScheduledAt)
+  const canCompleteNow = inquiry.shippingScheduledAt ? inquiry.shippingScheduledAt.getTime() <= Date.now() : false
+  const progressWidth = inquiry.shippingScheduledAt ? (canCompleteNow ? "100%" : "66%") : "33%"
+
+  return (
+    <article className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Operations queue</p>
+          <h3 className="mt-2 text-[24px] font-medium text-[#1a1a2e]">{inquiry.productName}</h3>
+          <p className="mt-2 text-[13px] text-[#6a7282]">
+            {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
+          </p>
+          {shippingScheduleLabel ? (
+            <div className="mt-4 inline-flex rounded-[16px] bg-[#eff6ff] px-4 py-3 text-[13px] font-medium text-[#1d4ed8]">
+              Shipment time set for {shippingScheduleLabel}
+            </div>
+          ) : null}
+          <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">{inquiry.message}</p>
+          {inquiry.workflowNote ? (
+            <div className="mt-4 rounded-[18px] bg-[#f9fafb] p-4 text-[13px] leading-[22px] text-[#4b5563]">
+              Latest note: {inquiry.workflowNote}
+            </div>
+          ) : null}
+          <div className="mt-4 rounded-[18px] bg-[#f8fafc] p-4">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Shipping progress</p>
+                <p className="mt-2 text-[14px] font-medium text-[#1a1a2e]">
+                  {shippingScheduleLabel
+                    ? canCompleteNow
+                      ? "Scheduled ship time reached. This order can now be completed."
+                      : "In shipping. Waiting for the scheduled ship time to be reached."
+                    : "Waiting for operations to schedule the shipping date and time."}
+                </p>
+                <p className="mt-1 text-[13px] text-[#4b5563]">
+                  {shippingScheduleLabel ? `Ship time: ${shippingScheduleLabel}` : "Ship time: not set yet"}
+                </p>
+              </div>
+              {action === "ship" ? (
+                <div className="rounded-[14px] bg-white px-4 py-3 text-[13px] font-medium text-[#1d4ed8]">
+                  {shippingScheduleLabel ? "In Shipping" : "Pending Shipping"}
+                </div>
+              ) : null}
+            </div>
+            <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white">
+              <div
+                className={`h-full rounded-full transition-all ${
+                  canCompleteNow ? "bg-[#16a34a]" : shippingScheduleLabel ? "bg-[#2563eb]" : "bg-[#cbd5e1]"
+                }`}
+                style={{ width: progressWidth }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-start gap-3 md:items-end">
+          {action === "ship" ? (
+            <ShippingProgressBadge shippingScheduledAt={inquiry.shippingScheduledAt} />
+          ) : (
+            <WorkflowBadge status={inquiry.workflowStatus} />
+          )}
+          <p className="text-[12px] text-[#6a7282]">Updated {new Date(inquiry.updatedAt).toLocaleDateString()}</p>
+        </div>
+      </div>
+
+      <form method="post" action={formAction} className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <input type="hidden" name="inquiryId" value={inquiry.id} />
+        {action === "ship" ? (
+          <label className="grid gap-2">
+            <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Shipping date and time</span>
+            <input
+              type="datetime-local"
+              name="shippingScheduledAt"
+              defaultValue={toDateTimeLocalValue(inquiry.shippingScheduledAt)}
+              className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+            />
+          </label>
+        ) : null}
+        <label className="grid gap-2">
+          <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Operations note</span>
+          <input
+            name="statusNote"
+            defaultValue={inquiry.workflowNote ?? ""}
+            placeholder={placeholder}
+            className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+          />
+        </label>
+
+        <div className="flex items-end">
+          {action === "ship" ? (
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="submit"
+                name="submitMode"
+                value="schedule"
+                className="rounded-[12px] border border-[#111827] px-5 py-3 text-[13px] font-medium text-[#111827] transition-colors hover:bg-[#f9fafb]"
+              >
+                Save shipping schedule
+              </button>
+              <button
+                type="submit"
+                name="submitMode"
+                value="complete"
+                disabled={!canCompleteNow}
+                className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#cbd5e1]"
+              >
+                {!canCompleteNow ? "Waiting for scheduled ship time" : buttonLabel}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+            >
+              {buttonLabel}
+            </button>
+          )}
+        </div>
+      </form>
+      {action === "ship" && !canCompleteNow && shippingScheduleLabel ? (
+        <p className="mt-3 text-[12px] text-[#b45309]">
+          This order can only be marked complete on or after {shippingScheduleLabel}.
+        </p>
+      ) : null}
+      {action === "build" ? (
+        <p className="mt-3 text-[12px] text-[#6b7280]">
+          Approve the build here first. Operations will set the shipping date and time in Delivery Schedule.
+        </p>
+      ) : null}
+      {action === "ship" && !shippingScheduleLabel ? (
+        <p className="mt-3 text-[12px] text-[#6b7280]">
+          Set the shipping date and time here in Delivery Schedule before this order can be completed.
+        </p>
+      ) : null}
+    </article>
   )
 }
 
@@ -252,8 +469,13 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
   const activeTab = resolveTab(resolvedSearchParams.tab)
   const message = getSearchValue(resolvedSearchParams.message)
   const tone = getSearchValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
-  const { warehouses, rawMaterials, finishedProducts } = await getOperationsWorkspaceData()
+  const [{ warehouses, rawMaterials, finishedProducts }, operationsInquiries] = await Promise.all([
+    getOperationsWorkspaceData(),
+    getInquiryWorkflowRows(["GETTING_READY_FOR_BUILDING", "READY_FOR_SHIPPING"]),
+  ])
   const publishedProducts = finishedProducts.filter((product) => product.isPublished).length
+  const buildingQueue = operationsInquiries.filter((inquiry) => inquiry.workflowStatus === "GETTING_READY_FOR_BUILDING")
+  const shippingQueue = operationsInquiries.filter((inquiry) => inquiry.workflowStatus === "READY_FOR_SHIPPING")
 
   return (
     <main className="min-h-screen overflow-auto bg-[#fcfcfc] p-8">
@@ -502,10 +724,71 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           <FinishedProductsManager products={finishedProducts} />
         )}
 
+        {activeTab === "approvals" && (
+          <div className="space-y-6">
+            <div className="grid gap-5 md:grid-cols-3">
+              <StatCard label="Building Queue" value={buildingQueue.length} />
+              <StatCard label="Shipping Queue" value={shippingQueue.length} />
+              <StatCard label="Delivery Flow" value="Step 4-5" />
+            </div>
+
+            <section className="rounded-[28px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
+              <div className="mb-5">
+                <h2 className="text-[22px] font-semibold text-[#111827]">Operations approval page</h2>
+                <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#64748b]">
+                  Accounting-approved orders arrive here first for building preparation. Use this page to approve the
+                  build stage and move each order into shipping.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">
+                    Getting ready for building
+                  </p>
+                </div>
+                {buildingQueue.length === 0 ? (
+                  <div className="rounded-[20px] border border-dashed border-[#dbe4f0] bg-[#fbfdff] p-8 text-[14px] text-[#64748b]">
+                    No orders are waiting for building preparation right now.
+                  </div>
+                ) : (
+                  buildingQueue.map((inquiry) => (
+                    <DeliveryQueueCard key={inquiry.id} inquiry={inquiry} action="build" />
+                  ))
+                )}
+              </div>
+            </section>
+          </div>
+        )}
+
         {activeTab === "delivery" && (
-          <PlaceholderCard
-            title="Delivery Schedule"
-          />
+          <div className="space-y-6">
+            <section className="rounded-[28px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
+              <div className="mb-5">
+                <h2 className="text-[22px] font-semibold text-[#111827]">Delivery schedule</h2>
+                <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#64748b]">
+                  Orders that already cleared operations show up here for shipping confirmation and completion.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">
+                    Ready for shipping
+                  </p>
+                </div>
+                {shippingQueue.length === 0 ? (
+                  <div className="rounded-[20px] border border-dashed border-[#dbe4f0] bg-[#fbfdff] p-8 text-[14px] text-[#64748b]">
+                    No orders are currently waiting to be marked shipped.
+                  </div>
+                ) : (
+                  shippingQueue.map((inquiry) => (
+                    <DeliveryQueueCard key={inquiry.id} inquiry={inquiry} action="ship" />
+                  ))
+                )}
+              </div>
+            </section>
+          </div>
         )}
 
         {activeTab === "company-code" && (

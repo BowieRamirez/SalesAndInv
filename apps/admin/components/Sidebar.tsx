@@ -4,7 +4,6 @@ import React, { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
-  ArrowLeftRight,
   BarChart3,
   Boxes,
   Box,
@@ -42,17 +41,19 @@ const navConfigs: Record<AppRole, NavConfig> = {
   ADMIN_MANAGEMENT: {
     links: [
       { name: "Executive Overview", href: "/", icon: LayoutDashboard },
+      { name: "Approvals", href: "/approvals", icon: CheckSquare },
       { name: "User Access", href: "/users", icon: Users },
       { name: "Reports", href: "/analytics", icon: BarChart3 },
     ],
     roleLabel: "Admin / Management",
     color: "bg-[#34384d]",
-    allowedPaths: ["/", "/users", "/analytics"],
+    allowedPaths: ["/", "/approvals", "/users", "/analytics"],
     defaultHref: "/",
   },
   SALES: {
     links: [
       { name: "Lead Intake", href: "/sales?tab=lead", icon: FileEdit, tab: "lead" },
+      { name: "Approvals", href: "/sales?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Quotations", href: "/sales?tab=quotes", icon: ClipboardList, tab: "quotes" },
       { name: "Sales Orders", href: "/sales?tab=orders", icon: CheckSquare, tab: "orders" },
       { name: "Workflow Tracker", href: "/sales?tab=tracker", icon: ListTodo, tab: "tracker" },
@@ -66,7 +67,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     links: [
       { name: "Warehouse Locations", href: "/inventory?tab=locations", icon: Box, tab: "locations" },
       { name: "All Stocks", href: "/inventory?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
-      { name: "Stock Requests", href: "/inventory?tab=requests", icon: ArrowLeftRight, tab: "requests" },
+      { name: "Approvals", href: "/inventory?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Audit Logs", href: "/inventory?tab=audit", icon: History, tab: "audit" },
     ],
     roleLabel: "Inventory",
@@ -90,6 +91,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     links: [
       { name: "New Products", href: "/operations?tab=new-products", icon: FileEdit, tab: "new-products" },
       { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
+      { name: "Approvals", href: "/operations?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Delivery Schedule", href: "/operations?tab=delivery", icon: Truck, tab: "delivery" },
       { name: "Company Code Checks", href: "/operations?tab=company-code", icon: ShieldCheck, tab: "company-code" },
     ],

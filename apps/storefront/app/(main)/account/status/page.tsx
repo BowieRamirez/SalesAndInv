@@ -1,6 +1,10 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Prisma, prisma } from "@furnitrack/db"
+import {
+  formatInquiryWorkflowStatus,
+  getInquiryWorkflowStyle,
+} from "@furnitrack/validators"
 import { getStorefrontSessionUser } from "@/lib/auth/session"
 import { formatShortDate } from "@/lib/format"
 
@@ -14,16 +18,35 @@ type InquiryRow = {
   updatedAt: Date
 }
 
-const STATUS_STYLES: Record<string, string> = {
-  RECEIVED: "bg-[#eef2ff] text-[#4338ca]",
-  ACCEPTED: "bg-[#ecfdf3] text-[#047857]",
-  GETTING_READY_FOR_BUILDING: "bg-[#fff7e6] text-[#b45309]",
-  WAITING_FOR_PAYMENT: "bg-[#fff1f2] text-[#be123c]",
-  READY_FOR_SHIPMENT: "bg-[#ecfeff] text-[#155e75]",
+const COMPLETED_MARKER = "[[completed]]"
+
+function hasCompletedMarker(note: string | null) {
+  return typeof note === "string" && note.includes(COMPLETED_MARKER)
 }
 
-function formatStatus(status: string) {
-  return status.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (value) => value.toUpperCase())
+function stripWorkflowMarkers(note: string | null) {
+  if (!note) {
+    return null
+  }
+
+  return note.replace(COMPLETED_MARKER, "").trim() || null
+}
+
+function resolveWorkflowStatus(status: string, note: string | null) {
+  if (hasCompletedMarker(note)) {
+    return "COMPLETED"
+  }
+
+  switch (status) {
+    case "ACCEPTED":
+      return "PENDING_INVENTORY_APPROVAL"
+    case "WAITING_FOR_PAYMENT":
+      return "PENDING_ACCOUNTING_APPROVAL"
+    case "READY_FOR_SHIPMENT":
+      return "READY_FOR_SHIPPING"
+    default:
+      return status
+  }
 }
 
 export default async function CustomerStatusPage() {
@@ -48,6 +71,13 @@ export default async function CustomerStatusPage() {
     WHERE ci."customerUserId" = ${sessionUser.id}
     ORDER BY ci."updatedAt" DESC, ci."createdAt" DESC
   `)
+  const workflowInquiries = inquiries.map((inquiry) => ({
+    ...inquiry,
+    workflowStatus: resolveWorkflowStatus(inquiry.status, inquiry.statusNote),
+    workflowNote: stripWorkflowMarkers(inquiry.statusNote),
+  }))
+  const activeInquiries = workflowInquiries.filter((inquiry) => inquiry.workflowStatus !== "COMPLETED")
+  const completedInquiries = workflowInquiries.filter((inquiry) => inquiry.workflowStatus === "COMPLETED")
 
   return (
     <div className="min-h-screen bg-[#f8f8f6]">
@@ -59,8 +89,8 @@ export default async function CustomerStatusPage() {
               Inquiry Status
             </h1>
             <p className="mt-3 max-w-[640px] text-[14px] leading-[22px] text-[#6a7282]">
-              Track every finished-product inquiry you sent to sales, including whether it has been accepted,
-              is getting ready for building, is waiting for payment, or is ready for shipment.
+              Track every finished-product order as it moves from sales to inventory, accounting, operations,
+              shipping, and finally into your completed order history.
             </p>
           </div>
           <Link
@@ -79,42 +109,96 @@ export default async function CustomerStatusPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-5">
-            {inquiries.map((inquiry) => (
-              <article key={inquiry.id} className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
-                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Product inquiry</p>
-                    <h2 className="mt-2 text-[24px] font-medium text-[#1a1a2e]">{inquiry.productName}</h2>
-                    <p className="mt-2 text-[13px] text-[#6a7282]">
-                      Sent on {formatShortDate(inquiry.createdAt)} and last updated on{" "}
-                      {formatShortDate(inquiry.updatedAt)}.
-                    </p>
-                  </div>
-                  <span
-                    className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${
-                      STATUS_STYLES[inquiry.status] ?? "bg-[#f3f4f6] text-[#374151]"
-                    }`}
-                  >
-                    {formatStatus(inquiry.status)}
-                  </span>
-                </div>
+          <div className="space-y-8">
+            <section className="space-y-5">
+              <div>
+                <h2 className="text-[24px] font-medium text-[#1a1a2e]">Active orders</h2>
+                <p className="mt-2 text-[14px] text-[#6a7282]">
+                  These are still moving through approval, building, or shipping.
+                </p>
+              </div>
 
-                <div className="mt-5 grid gap-5 md:grid-cols-2">
-                  <div className="rounded-[18px] bg-[#f9fafb] p-4">
-                    <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Your inquiry</p>
-                    <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">{inquiry.customerMessage}</p>
-                  </div>
-                  <div className="rounded-[18px] bg-[#f9fafb] p-4">
-                    <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Sales update</p>
-                    <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">
-                      {inquiry.statusNote ??
-                        "Sales has received your inquiry. Status updates will appear here as your request moves forward."}
-                    </p>
-                  </div>
+              {activeInquiries.length === 0 ? (
+                <div className="rounded-[24px] border border-dashed border-[#d1d5dc] bg-white px-8 py-10 text-center text-[14px] text-[#6a7282]">
+                  No active orders right now.
                 </div>
-              </article>
-            ))}
+              ) : (
+                activeInquiries.map((inquiry) => (
+                  <article key={inquiry.id} className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                      <div>
+                        <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Product inquiry</p>
+                        <h2 className="mt-2 text-[24px] font-medium text-[#1a1a2e]">{inquiry.productName}</h2>
+                        <p className="mt-2 text-[13px] text-[#6a7282]">
+                          Sent on {formatShortDate(inquiry.createdAt)} and last updated on{" "}
+                          {formatShortDate(inquiry.updatedAt)}.
+                        </p>
+                      </div>
+                      <span
+                        className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(inquiry.workflowStatus)}`}
+                      >
+                        {formatInquiryWorkflowStatus(inquiry.workflowStatus)}
+                      </span>
+                    </div>
+
+                    <div className="mt-5 grid gap-5 md:grid-cols-2">
+                      <div className="rounded-[18px] bg-[#f9fafb] p-4">
+                        <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Your inquiry</p>
+                        <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">{inquiry.customerMessage}</p>
+                      </div>
+                      <div className="rounded-[18px] bg-[#f9fafb] p-4">
+                        <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Team update</p>
+                        <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">
+                          {inquiry.workflowNote ??
+                            "Your order is progressing through the admin approval flow. New updates will appear here."}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                ))
+              )}
+            </section>
+
+            <section className="space-y-5">
+              <div>
+                <h2 className="text-[24px] font-medium text-[#1a1a2e]">Order history</h2>
+                <p className="mt-2 text-[14px] text-[#6a7282]">
+                  Shipped orders are marked complete and stored here.
+                </p>
+              </div>
+
+              {completedInquiries.length === 0 ? (
+                <div className="rounded-[24px] border border-dashed border-[#d1d5dc] bg-white px-8 py-10 text-center text-[14px] text-[#6a7282]">
+                  No completed orders yet.
+                </div>
+              ) : (
+                completedInquiries.map((inquiry) => (
+                  <article key={inquiry.id} className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                      <div>
+                        <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Completed order</p>
+                        <h2 className="mt-2 text-[24px] font-medium text-[#1a1a2e]">{inquiry.productName}</h2>
+                        <p className="mt-2 text-[13px] text-[#6a7282]">
+                          Completed on {formatShortDate(inquiry.updatedAt)}.
+                        </p>
+                      </div>
+                      <span
+                        className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(inquiry.workflowStatus)}`}
+                      >
+                        {formatInquiryWorkflowStatus(inquiry.workflowStatus)}
+                      </span>
+                    </div>
+
+                    <div className="mt-5 rounded-[18px] bg-[#f9fafb] p-4">
+                      <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Final update</p>
+                      <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">
+                        {inquiry.workflowNote ?? "This order was shipped and completed successfully."}
+                      </p>
+                    </div>
+                  </article>
+                ))
+              )}
+            </section>
           </div>
         )}
       </div>

@@ -1,0 +1,27 @@
+DO $$
+BEGIN
+  ALTER TYPE "InquiryStatus" ADD VALUE 'PENDING_INVENTORY_APPROVAL';
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER TYPE "InquiryStatus" ADD VALUE 'PENDING_ACCOUNTING_APPROVAL';
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER TYPE "InquiryStatus" ADD VALUE 'READY_FOR_SHIPPING';
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+  ALTER TYPE "InquiryStatus" ADD VALUE 'COMPLETED';
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
