@@ -9,14 +9,12 @@ import {
   Box,
   Calculator,
   CheckSquare,
-  ClipboardList,
   FileEdit,
   FileText,
   History,
   LayoutDashboard,
   ListTodo,
   LogOut,
-  Receipt,
   ShieldCheck,
   Truck,
   Users,
@@ -52,9 +50,9 @@ const navConfigs: Record<AppRole, NavConfig> = {
   },
   SALES: {
     links: [
-      { name: "Lead Intake", href: "/sales?tab=lead", icon: FileEdit, tab: "lead" },
+      { name: "Overview", href: "/sales?tab=lead", icon: FileEdit, tab: "lead" },
       { name: "Approvals", href: "/sales?tab=approvals", icon: CheckSquare, tab: "approvals" },
-      { name: "Quotations", href: "/sales?tab=quotes", icon: ClipboardList, tab: "quotes" },
+      { name: "Returns", href: "/sales?tab=returns", icon: History, tab: "returns" },
       { name: "Sales Orders", href: "/sales?tab=orders", icon: CheckSquare, tab: "orders" },
       { name: "Workflow Tracker", href: "/sales?tab=tracker", icon: ListTodo, tab: "tracker" },
     ],
@@ -67,6 +65,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     links: [
       { name: "Warehouse Locations", href: "/inventory?tab=locations", icon: Box, tab: "locations" },
       { name: "All Stocks", href: "/inventory?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
+      { name: "Damaged Materials", href: "/inventory?tab=damaged-materials", icon: History, tab: "damaged-materials" },
       { name: "Approvals", href: "/inventory?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Audit Logs", href: "/inventory?tab=audit", icon: History, tab: "audit" },
     ],
@@ -78,8 +77,8 @@ const navConfigs: Record<AppRole, NavConfig> = {
   ACCOUNTING: {
     links: [
       { name: "Billing Basis", href: "/accounting?tab=auto-compute", icon: Calculator, tab: "auto-compute" },
-      { name: "Payments", href: "/accounting?tab=payments", icon: Receipt, tab: "payments" },
       { name: "Approvals", href: "/accounting?tab=approvals", icon: CheckSquare, tab: "approvals" },
+      { name: "Approval History", href: "/accounting?tab=history", icon: History, tab: "history" },
       { name: "Documents", href: "/accounting?tab=documents", icon: FileText, tab: "documents" },
     ],
     roleLabel: "Accounting",

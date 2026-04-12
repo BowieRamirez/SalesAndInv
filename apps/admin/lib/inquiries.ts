@@ -1,8 +1,11 @@
 import { Prisma, prisma } from "@furnitrack/db"
+import type { AccountingPaymentMethod } from "@/lib/accounting-payment-methods"
 
 const COMPLETED_MARKER = "[[completed]]"
 const SHIP_AT_PREFIX = "[[ship_at:"
+const PAYMENT_METHOD_PREFIX = "[[payment_method:"
 const SHIP_AT_PATTERN = /\[\[ship_at:([^\]]+)\]\]/i
+const PAYMENT_METHOD_PATTERN = /\[\[payment_method:([^\]]+)\]\]/i
 
 type InquiryBaseRow = {
   id: string
@@ -29,6 +32,7 @@ export type InquiryWorkflowRow = InquiryBaseRow & {
   workflowStatus: InquiryWorkflowStage
   workflowNote: string | null
   shippingScheduledAt: Date | null
+  paymentMethod: AccountingPaymentMethod | null
 }
 
 function hasCompletedMarker(note: string | null) {
@@ -55,6 +59,15 @@ function parseShipAt(note: string | null) {
   return Number.isNaN(parsed.getTime()) ? null : parsed
 }
 
+function parsePaymentMethod(note: string | null) {
+  if (!note) {
+    return null
+  }
+
+  const match = note.match(PAYMENT_METHOD_PATTERN)
+  return (match?.[1] as AccountingPaymentMethod | undefined) ?? null
+}
+
 function stripWorkflowMarkers(note: string | null) {
   if (!note) {
     return null
@@ -63,6 +76,7 @@ function stripWorkflowMarkers(note: string | null) {
   return note
     .replace(COMPLETED_MARKER, "")
     .replace(SHIP_AT_PATTERN, "")
+    .replace(PAYMENT_METHOD_PATTERN, "")
     .trim() || null
 }
 
@@ -98,6 +112,7 @@ function toWorkflowRows(rows: InquiryBaseRow[]) {
     workflowStatus: resolveWorkflowStatus(row.status, row.statusNote),
     workflowNote: stripWorkflowMarkers(row.statusNote),
     shippingScheduledAt: parseShipAt(row.statusNote),
+    paymentMethod: parsePaymentMethod(row.statusNote),
   }))
 }
 
@@ -131,18 +146,33 @@ export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowSt
 
 function withCompletedMarker(note: string | null) {
   const cleanNote = stripWorkflowMarkers(note)
-  return cleanNote ? `${COMPLETED_MARKER} ${cleanNote}` : COMPLETED_MARKER
+  const paymentMethod = parsePaymentMethod(note)
+  const noteWithPaymentMethod = withPaymentMethodMarker(cleanNote, paymentMethod)
+  return noteWithPaymentMethod ? `${COMPLETED_MARKER} ${noteWithPaymentMethod}` : COMPLETED_MARKER
 }
 
 function withShipAtMarker(note: string | null, shippingScheduledAt: Date | null) {
   const cleanNote = stripWorkflowMarkers(note)
+  const paymentMethod = parsePaymentMethod(note)
 
   if (!shippingScheduledAt) {
-    return cleanNote
+    return withPaymentMethodMarker(cleanNote, paymentMethod)
   }
 
   const scheduleMarker = `${SHIP_AT_PREFIX}${shippingScheduledAt.toISOString()}]]`
-  return cleanNote ? `${scheduleMarker} ${cleanNote}` : scheduleMarker
+  const noteWithPaymentMethod = withPaymentMethodMarker(cleanNote, paymentMethod)
+  return noteWithPaymentMethod ? `${scheduleMarker} ${noteWithPaymentMethod}` : scheduleMarker
+}
+
+function withPaymentMethodMarker(note: string | null, paymentMethod: AccountingPaymentMethod | null) {
+  const cleanNote = stripWorkflowMarkers(note)
+
+  if (!paymentMethod) {
+    return cleanNote
+  }
+
+  const paymentMethodMarker = `${PAYMENT_METHOD_PREFIX}${paymentMethod}]]`
+  return cleanNote ? `${paymentMethodMarker} ${cleanNote}` : paymentMethodMarker
 }
 
 export async function updateInquiryWorkflowStatus(params: {
@@ -151,8 +181,9 @@ export async function updateInquiryWorkflowStatus(params: {
   nextStage: InquiryWorkflowStage
   statusNote: string | null
   shippingScheduledAt?: Date | null
+  paymentMethod?: AccountingPaymentMethod | null
 }) {
-  const { inquiryId, expectedStages, nextStage, statusNote, shippingScheduledAt = null } = params
+  const { inquiryId, expectedStages, nextStage, statusNote, shippingScheduledAt = null, paymentMethod = null } = params
 
   if (expectedStages.length === 0) {
     return 0
@@ -179,7 +210,7 @@ export async function updateInquiryWorkflowStatus(params: {
       break
     case "GETTING_READY_FOR_BUILDING":
       nextStoredStatus = "GETTING_READY_FOR_BUILDING"
-      nextStoredNote = stripWorkflowMarkers(statusNote)
+      nextStoredNote = withPaymentMethodMarker(statusNote, paymentMethod)
       break
     case "READY_FOR_SHIPPING":
       nextStoredStatus = "READY_FOR_SHIPMENT"

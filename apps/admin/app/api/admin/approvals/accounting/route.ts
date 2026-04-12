@@ -1,5 +1,9 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
+import {
+  formatAccountingPaymentMethod,
+  isAccountingPaymentMethod,
+} from "@/lib/accounting-payment-methods"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { updateInquiryWorkflowStatus } from "@/lib/inquiries"
 
@@ -31,9 +35,16 @@ export async function POST(request: Request) {
 
   const formData = await request.formData()
   const inquiryId = String(formData.get("inquiryId") ?? "")
+  const paymentMethodValue = String(formData.get("paymentMethod") ?? "").trim().toUpperCase()
+
+  if (!isAccountingPaymentMethod(paymentMethodValue)) {
+    return buildRedirect(request, "Select the customer's payment method before approving payment.", "error")
+  }
+
+  const paymentMethodLabel = formatAccountingPaymentMethod(paymentMethodValue)
+  const rawStatusNote = String(formData.get("statusNote") ?? "").trim()
   const statusNote =
-    String(formData.get("statusNote") ?? "").trim()
-    || "Accounting approved the payment stage and released the order to operations for building."
+    rawStatusNote || `Accounting approved the payment via ${paymentMethodLabel} and released the order to operations for building.`
 
   try {
     const updatedRows = await updateInquiryWorkflowStatus({
@@ -41,6 +52,7 @@ export async function POST(request: Request) {
       expectedStages: ["PENDING_ACCOUNTING_APPROVAL"],
       nextStage: "GETTING_READY_FOR_BUILDING",
       statusNote,
+      paymentMethod: paymentMethodValue,
     })
 
     revalidatePath("/accounting")

@@ -1,10 +1,11 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { Prisma, prisma } from "@furnitrack/db"
+import { Prisma, prisma, getReturnRequests } from "@furnitrack/db"
 import {
   formatInquiryWorkflowStatus,
   getInquiryWorkflowStyle,
 } from "@furnitrack/validators"
+import { CompletedOrderReturnCard } from "@/components/CompletedOrderReturnCard"
 import { getStorefrontSessionUser } from "@/lib/auth/session"
 import { formatShortDate } from "@/lib/format"
 
@@ -18,7 +19,16 @@ type InquiryRow = {
   updatedAt: Date
 }
 
+type CustomerStatusPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
 const COMPLETED_MARKER = "[[completed]]"
+const PAYMENT_METHOD_PATTERN = /\[\[payment_method:([^\]]+)\]\]/i
+
+function resolveValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value
+}
 
 function hasCompletedMarker(note: string | null) {
   return typeof note === "string" && note.includes(COMPLETED_MARKER)
@@ -29,7 +39,7 @@ function stripWorkflowMarkers(note: string | null) {
     return null
   }
 
-  return note.replace(COMPLETED_MARKER, "").trim() || null
+  return note.replace(COMPLETED_MARKER, "").replace(PAYMENT_METHOD_PATTERN, "").trim() || null
 }
 
 function resolveWorkflowStatus(status: string, note: string | null) {
@@ -49,7 +59,7 @@ function resolveWorkflowStatus(status: string, note: string | null) {
   }
 }
 
-export default async function CustomerStatusPage() {
+export default async function CustomerStatusPage({ searchParams }: CustomerStatusPageProps) {
   const sessionUser = await getStorefrontSessionUser()
 
   if (!sessionUser) {
@@ -78,6 +88,13 @@ export default async function CustomerStatusPage() {
   }))
   const activeInquiries = workflowInquiries.filter((inquiry) => inquiry.workflowStatus !== "COMPLETED")
   const completedInquiries = workflowInquiries.filter((inquiry) => inquiry.workflowStatus === "COMPLETED")
+  const returnRequests = await getReturnRequests({
+    customerUserId: sessionUser.id,
+    inquiryIds: completedInquiries.map((inquiry) => inquiry.id),
+  })
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const message = resolveValue(resolvedSearchParams.message)
+  const tone = resolveValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
 
   return (
     <div className="min-h-screen bg-[#f8f8f6]">
@@ -100,6 +117,18 @@ export default async function CustomerStatusPage() {
             Browse products
           </Link>
         </div>
+
+        {message ? (
+          <div
+            className={`mb-6 rounded-[18px] border px-5 py-4 text-[14px] ${
+              tone === "error"
+                ? "border-[#fecaca] bg-[#fff1f2] text-[#9f1239]"
+                : "border-[#bbf7d0] bg-[#f0fdf4] text-[#166534]"
+            }`}
+          >
+            {message}
+          </div>
+        ) : null}
 
         {inquiries.length === 0 ? (
           <div className="rounded-[24px] border border-dashed border-[#d1d5dc] bg-white px-8 py-14 text-center">
@@ -173,29 +202,11 @@ export default async function CustomerStatusPage() {
                 </div>
               ) : (
                 completedInquiries.map((inquiry) => (
-                  <article key={inquiry.id} className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
-                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                      <div>
-                        <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Completed order</p>
-                        <h2 className="mt-2 text-[24px] font-medium text-[#1a1a2e]">{inquiry.productName}</h2>
-                        <p className="mt-2 text-[13px] text-[#6a7282]">
-                          Completed on {formatShortDate(inquiry.updatedAt)}.
-                        </p>
-                      </div>
-                      <span
-                        className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(inquiry.workflowStatus)}`}
-                      >
-                        {formatInquiryWorkflowStatus(inquiry.workflowStatus)}
-                      </span>
-                    </div>
-
-                    <div className="mt-5 rounded-[18px] bg-[#f9fafb] p-4">
-                      <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Final update</p>
-                      <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">
-                        {inquiry.workflowNote ?? "This order was shipped and completed successfully."}
-                      </p>
-                    </div>
-                  </article>
+                  <CompletedOrderReturnCard
+                    key={inquiry.id}
+                    inquiry={inquiry}
+                    existingReturn={returnRequests.find((request) => request.inquiryId === inquiry.id)}
+                  />
                 ))
               )}
             </section>

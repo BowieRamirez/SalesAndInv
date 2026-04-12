@@ -40,11 +40,24 @@ type AuditSummaryRow = {
   count: number
 }
 
+type DamagedMaterialRow = {
+  id: string
+  stockItemId: string
+  sku: string
+  itemName: string
+  warehouseName: string
+  quantity: number
+  requesterName: string | null
+  projectPurpose: string | null
+  referenceNumber: string | null
+  createdAt: Date
+}
+
 type InventoryPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-const INVENTORY_TABS = new Set(["locations", "all-stocks", "approvals", "audit"])
+const INVENTORY_TABS = new Set(["locations", "all-stocks", "damaged-materials", "approvals", "audit"])
 
 function resolveValue(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value
@@ -114,6 +127,29 @@ async function getAuditSummaries() {
     GROUP BY COALESCE(metadata->>'auditLabel', action::text)
     ORDER BY COUNT(*) DESC, COALESCE(metadata->>'auditLabel', action::text) ASC
     LIMIT 8
+  `)
+}
+
+async function getDamagedMaterialRows() {
+  return prisma.$queryRaw<DamagedMaterialRow[]>(Prisma.sql`
+    SELECT
+      sm.id,
+      sm."stockItemId",
+      si.sku,
+      si."itemName",
+      w.name AS "warehouseName",
+      sm.quantity,
+      sm."requesterName",
+      sm."projectPurpose",
+      sm."referenceNumber",
+      sm."createdAt"
+    FROM public.stock_movements sm
+    INNER JOIN public.stock_items si
+      ON si.id = sm."stockItemId"
+    INNER JOIN public.warehouses w
+      ON w.id = si."warehouseId"
+    WHERE sm.type = 'DAMAGE'::"StockMovementType"
+    ORDER BY sm."createdAt" DESC
   `)
 }
 
@@ -241,6 +277,52 @@ function AuditSummary({ rows }: { rows: AuditSummaryRow[] }) {
   )
 }
 
+function DamagedMaterialsTable({ rows }: { rows: DamagedMaterialRow[] }) {
+  if (rows.length === 0) {
+    return <EmptyState message="Damaged materials from completed returns will appear here." />
+  }
+
+  return (
+    <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
+      <div className="mb-4">
+        <h3 className="text-[18px] font-semibold text-[#111827]">Damaged materials from returns</h3>
+        <p className="mt-2 max-w-[720px] text-[13px] leading-[22px] text-[#6b7280]">
+          These entries are recorded when sales completes a customer return and the product recipe is added back into
+          inventory as damaged materials.
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-left text-[13px]">
+          <thead>
+            <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
+              <th className="py-3 pr-4 font-medium">Recorded</th>
+              <th className="py-3 pr-4 font-medium">SKU</th>
+              <th className="py-3 pr-4 font-medium">Material</th>
+              <th className="py-3 pr-4 font-medium">Warehouse</th>
+              <th className="py-3 pr-4 font-medium">Qty</th>
+              <th className="py-3 pr-4 font-medium">Source</th>
+              <th className="py-3 font-medium">Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
+                <td className="py-3 pr-4 text-[#111827]">{new Date(row.createdAt).toLocaleString()}</td>
+                <td className="py-3 pr-4 text-[#111827]">{row.sku}</td>
+                <td className="py-3 pr-4 text-[#111827]">{row.itemName}</td>
+                <td className="py-3 pr-4 text-[#6b7280]">{row.warehouseName}</td>
+                <td className="py-3 pr-4 text-[#111827]">{row.quantity}</td>
+                <td className="py-3 pr-4 text-[#6b7280]">{row.projectPurpose ?? row.requesterName ?? "Customer return"}</td>
+                <td className="py-3 text-[#6b7280]">{row.referenceNumber ?? "Not set"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
 function WorkflowBadge({ status }: { status: string }) {
   return (
     <span
@@ -319,12 +401,13 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
   const message = resolveValue(resolvedSearchParams.message)
   const tone = resolveValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
 
-  const [rows, warehouses, requestSummary, auditSummary, inquiries] = await Promise.all([
+  const [rows, warehouses, requestSummary, auditSummary, inquiries, damagedMaterials] = await Promise.all([
     getInventoryRows(),
     getWarehouseSummaries(),
     getStockRequestSummaries(),
     getAuditSummaries(),
     getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
+    getDamagedMaterialRows(),
   ])
 
   const rawMaterials = rows.filter((row) => row.itemType !== "FINISHED_PRODUCT")
@@ -445,6 +528,25 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
           </section>
 
           <RawMaterialsManager rows={rawMaterials} />
+        </div>
+      )}
+
+      {activeTab === "damaged-materials" && (
+        <div className="space-y-6">
+          <SummaryCards
+            rows={[
+              { label: "Damaged Entries", value: damagedMaterials.length, accent: "text-[#be123c]" },
+              {
+                label: "Unique Materials",
+                value: new Set(damagedMaterials.map((row) => row.stockItemId)).size,
+              },
+              {
+                label: "Return References",
+                value: new Set(damagedMaterials.map((row) => row.referenceNumber).filter(Boolean)).size,
+              },
+            ]}
+          />
+          <DamagedMaterialsTable rows={damagedMaterials} />
         </div>
       )}
 
