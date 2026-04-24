@@ -91,3 +91,12 @@ Module._initPaths();
 require("./apps/${appName}/server.js");
 `,
 );
+
+console.log("[prepare-appwrite-next] prepared standalone runtime", {
+  appName,
+  rootServer: existsSync(rootStandaloneServerPath),
+  appServer: existsSync(appStandaloneServerPath),
+  appStatic: existsSync(appStandaloneStaticDir),
+  pnpmHoistedDeps: existsSync(pnpmHoistedNodeModulesDir),
+  styledJsx: existsSync(styledJsxAppTargetDir),
+});
