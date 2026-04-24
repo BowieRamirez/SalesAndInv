@@ -5,6 +5,10 @@
   "engines": { "pnpm": ">=9.0.0", "node": ">=20.0.0" },
   "scripts": {
     "build": "turbo run build",
+    "build:storefront": "pnpm --filter @furnitrack/db generate && pnpm --filter storefront build",
+    "build:storefront:appwrite": "pnpm build:storefront && node scripts/prepare-appwrite-next.mjs storefront",
+    "build:admin": "pnpm --filter @furnitrack/db generate && pnpm --filter admin build",
+    "build:admin:appwrite": "pnpm build:admin && node scripts/prepare-appwrite-next.mjs admin",
     "dev": "turbo run dev",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",

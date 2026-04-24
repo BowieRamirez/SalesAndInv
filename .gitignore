@@ -6,3 +6,5 @@ dist/
 .env.local
 .env*.local
 *.tsbuildinfo
+/next.config.ts
+/packages/db/src/generated/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node

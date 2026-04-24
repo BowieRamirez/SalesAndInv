@@ -257,6 +257,7 @@ exports.Prisma.StockItemScalarFieldEnum = {
   warehouseId: 'warehouseId',
   sku: 'sku',
   itemName: 'itemName',
+  itemType: 'itemType',
   description: 'description',
   unitOfMeasure: 'unitOfMeasure',
   availableQty: 'availableQty',
@@ -265,6 +266,54 @@ exports.Prisma.StockItemScalarFieldEnum = {
   state: 'state',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  stockItemId: 'stockItemId',
+  slug: 'slug',
+  name: 'name',
+  category: 'category',
+  material: 'material',
+  price: 'price',
+  originalPrice: 'originalPrice',
+  badge: 'badge',
+  images: 'images',
+  rating: 'rating',
+  reviewCount: 'reviewCount',
+  widthCm: 'widthCm',
+  depthCm: 'depthCm',
+  heightCm: 'heightCm',
+  weightKg: 'weightKg',
+  description: 'description',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CustomerInquiryScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  customerUserId: 'customerUserId',
+  customerName: 'customerName',
+  customerEmail: 'customerEmail',
+  customerPhone: 'customerPhone',
+  message: 'message',
+  status: 'status',
+  statusNote: 'statusNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductMaterialScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  stockItemId: 'stockItemId',
+  quantityRequired: 'quantityRequired',
+  quantityDisplay: 'quantityDisplay',
+  dimension: 'dimension',
+  notes: 'notes',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.StockMovementScalarFieldEnum = {
@@ -504,11 +553,28 @@ exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.InventoryItemType = exports.$Enums.InventoryItemType = {
+  FINISHED_PRODUCT: 'FINISHED_PRODUCT',
+  RAW_MATERIAL: 'RAW_MATERIAL'
+};
+
 exports.StockState = exports.$Enums.StockState = {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
   DAMAGED: 'DAMAGED',
   ARCHIVED: 'ARCHIVED'
+};
+
+exports.InquiryStatus = exports.$Enums.InquiryStatus = {
+  RECEIVED: 'RECEIVED',
+  ACCEPTED: 'ACCEPTED',
+  PENDING_INVENTORY_APPROVAL: 'PENDING_INVENTORY_APPROVAL',
+  GETTING_READY_FOR_BUILDING: 'GETTING_READY_FOR_BUILDING',
+  WAITING_FOR_PAYMENT: 'WAITING_FOR_PAYMENT',
+  PENDING_ACCOUNTING_APPROVAL: 'PENDING_ACCOUNTING_APPROVAL',
+  READY_FOR_SHIPMENT: 'READY_FOR_SHIPMENT',
+  READY_FOR_SHIPPING: 'READY_FOR_SHIPPING',
+  COMPLETED: 'COMPLETED'
 };
 
 exports.StockMovementType = exports.$Enums.StockMovementType = {
@@ -605,6 +671,9 @@ exports.Prisma.ModelName = {
   SalesOrderLineItem: 'SalesOrderLineItem',
   Warehouse: 'Warehouse',
   StockItem: 'StockItem',
+  Product: 'Product',
+  CustomerInquiry: 'CustomerInquiry',
+  ProductMaterial: 'ProductMaterial',
   StockMovement: 'StockMovement',
   StockRequest: 'StockRequest',
   StockRequestLine: 'StockRequestLine',

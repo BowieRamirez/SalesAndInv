@@ -2,8 +2,9 @@
 // This schema is intended to guide the backend and migrations for the next phase.
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -144,11 +145,28 @@ enum DeliveryReadinessStatus {
   READY
 }
 
+enum InquiryStatus {
+  RECEIVED
+  ACCEPTED
+  PENDING_INVENTORY_APPROVAL
+  GETTING_READY_FOR_BUILDING
+  WAITING_FOR_PAYMENT
+  PENDING_ACCOUNTING_APPROVAL
+  READY_FOR_SHIPMENT
+  READY_FOR_SHIPPING
+  COMPLETED
+}
+
 enum StockState {
   AVAILABLE
   RESERVED
   DAMAGED
   ARCHIVED
+}
+
+enum InventoryItemType {
+  FINISHED_PRODUCT
+  RAW_MATERIAL
 }
 
 enum StockMovementType {
@@ -225,7 +243,7 @@ model Company {
 
 model User {
   id              String        @id @default(cuid())
-  authUserId      String?       @unique
+  authUserId      String?       @unique @db.Uuid
   companyId       String?
   name            String
   email           String        @unique
@@ -249,6 +267,7 @@ model User {
   designAssetsUploaded DesignAsset[]      @relation("DesignAssetUploadedBy")
   deliveryAssigned     DeliverySchedule[] @relation("DeliveryAssignedBy")
   deliveryConfirmed    DeliverySchedule[] @relation("DeliveryConfirmedBy")
+  customerInquiries    CustomerInquiry[]  @relation("CustomerInquiryUser")
 
   @@index([companyId, role, status])
   @@map("users")
@@ -399,25 +418,98 @@ model Warehouse {
 }
 
 model StockItem {
-  id               String     @id @default(cuid())
+  id               String            @id @default(cuid())
   warehouseId      String
-  sku              String     @unique
+  sku              String            @unique
   itemName         String
+  itemType         InventoryItemType @default(RAW_MATERIAL)
   description      String?
-  unitOfMeasure    String     @default("pcs")
-  availableQty     Int        @default(0)
-  reservedQty      Int        @default(0)
-  reorderThreshold Int        @default(10)
-  state            StockState @default(AVAILABLE)
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  unitOfMeasure    String            @default("pcs")
+  availableQty     Int               @default(0)
+  reservedQty      Int               @default(0)
+  reorderThreshold Int               @default(10)
+  state            StockState        @default(AVAILABLE)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 
   warehouse         Warehouse          @relation(fields: [warehouseId], references: [id])
+  product           Product?
+  materialFor       ProductMaterial[]  @relation("ProductMaterialStockItem")
   stockMovements    StockMovement[]
   stockRequestLines StockRequestLine[]
 
   @@index([warehouseId, state])
+  @@index([itemType, state])
   @@map("stock_items")
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  stockItemId   String   @unique
+  slug          String   @unique
+  name          String
+  category      String
+  material      String
+  price         Decimal
+  originalPrice Decimal?
+  badge         String?
+  images        Json?
+  rating        Decimal  @default(0)
+  reviewCount   Int      @default(0)
+  widthCm       Decimal
+  depthCm       Decimal
+  heightCm      Decimal
+  weightKg      Decimal
+  description   String
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  stockItem StockItem         @relation(fields: [stockItemId], references: [id])
+  materials ProductMaterial[]
+  inquiries CustomerInquiry[]
+
+  @@index([category, isPublished])
+  @@map("products")
+}
+
+model CustomerInquiry {
+  id             String        @id @default(cuid())
+  productId      String
+  customerUserId String?
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  message        String
+  status         InquiryStatus @default(RECEIVED)
+  statusNote     String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  product      Product @relation(fields: [productId], references: [id])
+  customerUser User?   @relation("CustomerInquiryUser", fields: [customerUserId], references: [id])
+
+  @@index([customerUserId, status, createdAt])
+  @@index([productId, status, createdAt])
+  @@map("customer_inquiries")
+}
+
+model ProductMaterial {
+  id               String   @id @default(cuid())
+  productId        String
+  stockItemId      String
+  quantityRequired Decimal?
+  quantityDisplay  String?
+  dimension        String?
+  notes            String?
+  createdAt        DateTime @default(now())
+
+  product   Product   @relation(fields: [productId], references: [id])
+  stockItem StockItem @relation("ProductMaterialStockItem", fields: [stockItemId], references: [id])
+
+  @@unique([productId, stockItemId, quantityDisplay])
+  @@index([stockItemId])
+  @@map("product_materials")
 }
 
 model StockMovement {
