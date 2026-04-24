@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
-import { cookies } from "next/headers"
+import { headers } from "next/headers"
+import { createHmac, timingSafeEqual } from "node:crypto"
 import { prisma } from "@furnitrack/db"
 import { auth } from "@/lib/auth/server"
 import { normalizeAppRole, type AppRole } from "@/lib/rbac"
@@ -9,6 +10,15 @@ type SessionUser = {
   email?: string
   name?: string
   role?: string | null
+}
+
+type CachedSessionPayload = {
+  exp?: number
+  session?: {
+    token?: string | null
+    userId?: string | null
+  } | null
+  user?: SessionUser | null
 }
 
 type AppUserRow = {
@@ -42,15 +52,92 @@ function isExpired(accessExpiresAt: Date | null) {
   return Boolean(accessExpiresAt && accessExpiresAt.getTime() <= Date.now())
 }
 
-async function getSessionUserFromTokenCookie(): Promise<SessionUser | null> {
-  const cookieStore = await cookies()
-  const signedToken = cookieStore.get("__Secure-neon-auth.session_token")?.value
+function base64UrlDecode(value: string) {
+  const base64 = value.replace(/-/g, "+").replace(/_/g, "/")
+  const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=")
 
-  if (!signedToken) {
+  return Buffer.from(padded, "base64")
+}
+
+function parseCookieHeader(cookieHeader: string | null) {
+  const parsed = new Map<string, string>()
+
+  if (!cookieHeader) {
+    return parsed
+  }
+
+  for (const cookie of cookieHeader.split(";")) {
+    const separatorIndex = cookie.indexOf("=")
+
+    if (separatorIndex === -1) {
+      continue
+    }
+
+    const name = cookie.slice(0, separatorIndex).trim()
+    const rawValue = cookie.slice(separatorIndex + 1).trim()
+
+    if (!name) {
+      continue
+    }
+
+    try {
+      parsed.set(name, decodeURIComponent(rawValue))
+    } catch {
+      parsed.set(name, rawValue)
+    }
+  }
+
+  return parsed
+}
+
+async function getNeonAuthCookies() {
+  const headerStore = await headers()
+
+  return parseCookieHeader(headerStore.get("cookie"))
+}
+
+function verifySignedSessionPayload(
+  token: string | undefined
+): CachedSessionPayload | null {
+  const secret = process.env.NEON_AUTH_COOKIE_SECRET
+
+  if (!token || !secret) {
     return null
   }
 
-  const [token] = signedToken.split(".")
+  const [encodedHeader, encodedPayload, encodedSignature] = token.split(".")
+
+  if (!encodedHeader || !encodedPayload || !encodedSignature) {
+    return null
+  }
+
+  const expectedSignature = createHmac("sha256", secret)
+    .update(`${encodedHeader}.${encodedPayload}`)
+    .digest()
+  const actualSignature = base64UrlDecode(encodedSignature)
+
+  if (
+    expectedSignature.length !== actualSignature.length ||
+    !timingSafeEqual(expectedSignature, actualSignature)
+  ) {
+    return null
+  }
+
+  const payload = JSON.parse(base64UrlDecode(encodedPayload).toString("utf8")) as
+    | CachedSessionPayload
+    | null
+
+  if (!payload?.user?.id || !payload.exp || payload.exp <= Date.now() / 1000) {
+    return null
+  }
+
+  return payload
+}
+
+async function getSessionUserFromTokenCookie(): Promise<SessionUser | null> {
+  const cookieMap = await getNeonAuthCookies()
+  const signedToken = cookieMap.get("__Secure-neon-auth.session_token")
+  const [token] = signedToken?.split(".") ?? []
 
   if (!token) {
     return null
@@ -72,6 +159,15 @@ async function getSessionUserFromTokenCookie(): Promise<SessionUser | null> {
   return rows[0] ?? null
 }
 
+async function getSessionUserFromSignedCache(): Promise<SessionUser | null> {
+  const cookieMap = await getNeonAuthCookies()
+  const payload = verifySignedSessionPayload(
+    cookieMap.get("__Secure-neon-auth.local.session_data")
+  )
+
+  return payload?.user ?? null
+}
+
 async function getVerifiedSessionUser(): Promise<SessionUser | null> {
   try {
     const { data } = await auth.getSession()
@@ -84,7 +180,17 @@ async function getVerifiedSessionUser(): Promise<SessionUser | null> {
     console.warn("[admin.auth] Falling back to database session lookup", error)
   }
 
-  return getSessionUserFromTokenCookie()
+  try {
+    const sessionUser = await getSessionUserFromTokenCookie()
+
+    if (sessionUser?.id) {
+      return sessionUser
+    }
+  } catch (error) {
+    console.warn("[admin.auth] Falling back to signed session cache", error)
+  }
+
+  return getSessionUserFromSignedCache()
 }
 
 async function findAppUserForSession(

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { getCurrentAdminPortalUser } from "@/lib/auth/session"
 
+export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
+
 export async function GET() {
   try {
     const user = await getCurrentAdminPortalUser()
