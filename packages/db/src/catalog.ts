@@ -98,35 +98,44 @@ function mapProduct(row: CatalogProductRow): Product {
   })
 }
 
+function timeoutAfter<T>(milliseconds: number, fallback: T): Promise<T> {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(fallback), milliseconds)
+  })
+}
+
 export async function getStorefrontProducts(): Promise<Product[]> {
   try {
-    const rows = await prisma.$queryRaw<CatalogProductRow[]>(Prisma.sql`
-      SELECT
-        p.id,
-        p.slug,
-        p.name,
-        p.category,
-        p.material,
-        p.price,
-        p."originalPrice",
-        p.badge,
-        p.images,
-        p.rating,
-        p."reviewCount",
-        p."widthCm",
-        p."depthCm",
-        p."heightCm",
-        p."weightKg",
-        p.description,
-        s."availableQty",
-        s."reorderThreshold"
-      FROM public.products p
-      INNER JOIN public.stock_items s
-        ON s.id = p."stockItemId"
-      WHERE p."isPublished" = true
-        AND s."itemType" = 'FINISHED_PRODUCT'
-      ORDER BY p."createdAt" DESC, p.name ASC
-    `)
+    const rows = await Promise.race([
+      prisma.$queryRaw<CatalogProductRow[]>(Prisma.sql`
+        SELECT
+          p.id,
+          p.slug,
+          p.name,
+          p.category,
+          p.material,
+          p.price,
+          p."originalPrice",
+          p.badge,
+          p.images,
+          p.rating,
+          p."reviewCount",
+          p."widthCm",
+          p."depthCm",
+          p."heightCm",
+          p."weightKg",
+          p.description,
+          s."availableQty",
+          s."reorderThreshold"
+        FROM public.products p
+        INNER JOIN public.stock_items s
+          ON s.id = p."stockItemId"
+        WHERE p."isPublished" = true
+          AND s."itemType" = 'FINISHED_PRODUCT'
+        ORDER BY p."createdAt" DESC, p.name ASC
+      `),
+      timeoutAfter<CatalogProductRow[]>(3000, []),
+    ])
 
     return rows.map(mapProduct)
   } catch {
