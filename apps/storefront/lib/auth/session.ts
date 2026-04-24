@@ -9,6 +9,15 @@ type SessionUser = {
   role?: string | null
 }
 
+type AppUserRow = {
+  id: string
+  authUserId: string | null
+  email: string
+  name: string
+  role: AppRole
+  status: string
+}
+
 type AppRole =
   | "ADMIN_MANAGEMENT"
   | "SALES"
@@ -95,6 +104,33 @@ async function getVerifiedSessionUser(): Promise<SessionUser | null> {
   return getSessionUserFromTokenCookie()
 }
 
+async function findAppUserForSession(
+  sessionUser: SessionUser
+): Promise<AppUserRow | null> {
+  if (!sessionUser.id) {
+    return null
+  }
+
+  const rows = await prisma.$queryRaw<AppUserRow[]>`
+    SELECT
+      u.id,
+      u."authUserId"::text AS "authUserId",
+      u.email,
+      u.name,
+      u.role::text AS role,
+      u.status::text AS status
+    FROM public.users u
+    WHERE u."authUserId" = ${sessionUser.id}::uuid
+      OR (
+        ${sessionUser.email ?? null}::text IS NOT NULL
+        AND LOWER(u.email) = LOWER(${sessionUser.email ?? null}::text)
+      )
+    LIMIT 1
+  `
+
+  return rows[0] ?? null
+}
+
 export async function getCurrentStorefrontUser(): Promise<StorefrontSessionUser | null> {
   const sessionUser = await getVerifiedSessionUser()
 
@@ -102,29 +138,7 @@ export async function getCurrentStorefrontUser(): Promise<StorefrontSessionUser 
     return null
   }
 
-  const appUser =
-    (await prisma.user.findUnique({
-      where: { authUserId: sessionUser.id },
-      select: {
-        id: true,
-        authUserId: true,
-        email: true,
-        name: true,
-        role: true,
-        status: true,
-      },
-    })) ??
-    (await prisma.user.findUnique({
-      where: { email: sessionUser.email },
-      select: {
-        id: true,
-        authUserId: true,
-        email: true,
-        name: true,
-        role: true,
-        status: true,
-      },
-    }))
+  const appUser = await findAppUserForSession(sessionUser)
 
   if (!appUser || appUser.role !== "CLIENT" || appUser.status !== "ACTIVE") {
     if (!appUser) {

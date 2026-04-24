@@ -11,6 +11,18 @@ type SessionUser = {
   role?: string | null
 }
 
+type AppUserRow = {
+  id: string
+  authUserId: string | null
+  email: string
+  name: string
+  role: AppRole
+  status: string
+  companyId: string | null
+  companyCode: string | null
+  accessExpiresAt: Date | null
+}
+
 export type AuthenticatedAppUser = {
   id: string
   authUserId: string | null
@@ -75,6 +87,37 @@ async function getVerifiedSessionUser(): Promise<SessionUser | null> {
   return getSessionUserFromTokenCookie()
 }
 
+async function findAppUserForSession(
+  sessionUser: SessionUser
+): Promise<AppUserRow | null> {
+  if (!sessionUser.id) {
+    return null
+  }
+
+  const rows = await prisma.$queryRaw<AppUserRow[]>`
+    SELECT
+      u.id,
+      u."authUserId"::text AS "authUserId",
+      u.email,
+      u.name,
+      u.role::text AS role,
+      u.status::text AS status,
+      u."companyId" AS "companyId",
+      c.code AS "companyCode",
+      u."accessExpiresAt" AS "accessExpiresAt"
+    FROM public.users u
+    LEFT JOIN public.companies c ON c.id = u."companyId"
+    WHERE u."authUserId" = ${sessionUser.id}::uuid
+      OR (
+        ${sessionUser.email ?? null}::text IS NOT NULL
+        AND LOWER(u.email) = LOWER(${sessionUser.email ?? null}::text)
+      )
+    LIMIT 1
+  `
+
+  return rows[0] ?? null
+}
+
 export async function getCurrentAdminPortalUser(): Promise<AuthenticatedAppUser | null> {
   const sessionUser = await getVerifiedSessionUser()
 
@@ -82,29 +125,7 @@ export async function getCurrentAdminPortalUser(): Promise<AuthenticatedAppUser 
     return null
   }
 
-  const appUser =
-    (await prisma.user.findUnique({
-      where: { authUserId: sessionUser.id },
-      include: {
-        company: {
-          select: {
-            code: true,
-          },
-        },
-      },
-    })) ??
-    (sessionUser.email
-      ? await prisma.user.findUnique({
-          where: { email: sessionUser.email },
-          include: {
-            company: {
-              select: {
-                code: true,
-              },
-            },
-          },
-        })
-      : null)
+  const appUser = await findAppUserForSession(sessionUser)
 
   if (!appUser) {
     if (!sessionUser.email || !sessionUser.name) {
@@ -138,7 +159,7 @@ export async function getCurrentAdminPortalUser(): Promise<AuthenticatedAppUser 
     role: normalizedRole,
     status: effectiveStatus,
     companyId: appUser.companyId,
-    companyCode: appUser.company?.code ?? null,
+    companyCode: appUser.companyCode,
   }
 }
 
