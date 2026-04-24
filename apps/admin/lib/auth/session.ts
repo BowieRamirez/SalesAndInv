@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation"
+import { cookies } from "next/headers"
 import { prisma } from "@furnitrack/db"
 import { auth } from "@/lib/auth/server"
 import { normalizeAppRole, type AppRole } from "@/lib/rbac"
@@ -29,9 +30,53 @@ function isExpired(accessExpiresAt: Date | null) {
   return Boolean(accessExpiresAt && accessExpiresAt.getTime() <= Date.now())
 }
 
+async function getSessionUserFromTokenCookie(): Promise<SessionUser | null> {
+  const cookieStore = await cookies()
+  const signedToken = cookieStore.get("__Secure-neon-auth.session_token")?.value
+
+  if (!signedToken) {
+    return null
+  }
+
+  const [token] = signedToken.split(".")
+
+  if (!token) {
+    return null
+  }
+
+  const rows = await prisma.$queryRaw<SessionUser[]>`
+    SELECT
+      u.id::text AS id,
+      u.email,
+      u.name,
+      u.role::text AS role
+    FROM neon_auth.session s
+    INNER JOIN neon_auth."user" u ON u.id = s."userId"
+    WHERE s.token = ${token}
+      AND s."expiresAt" > CURRENT_TIMESTAMP
+    LIMIT 1
+  `
+
+  return rows[0] ?? null
+}
+
+async function getVerifiedSessionUser(): Promise<SessionUser | null> {
+  try {
+    const { data } = await auth.getSession()
+    const sessionUser = data?.user as SessionUser | undefined
+
+    if (sessionUser?.id) {
+      return sessionUser
+    }
+  } catch (error) {
+    console.warn("[admin.auth] Falling back to database session lookup", error)
+  }
+
+  return getSessionUserFromTokenCookie()
+}
+
 export async function getCurrentAdminPortalUser(): Promise<AuthenticatedAppUser | null> {
-  const { data } = await auth.getSession()
-  const sessionUser = data?.user as SessionUser | undefined
+  const sessionUser = await getVerifiedSessionUser()
 
   if (!sessionUser?.id) {
     return null
