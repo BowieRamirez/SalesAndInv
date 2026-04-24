@@ -12,6 +12,8 @@ const rootDir = process.cwd();
 const appDir = join(rootDir, "apps", appName);
 const appNextDir = join(appDir, ".next");
 const rootNextDir = join(rootDir, ".next");
+const rootStandaloneDir = join(rootNextDir, "standalone");
+const appStandaloneDir = join(rootStandaloneDir, "apps", appName);
 const appConfigPath = join(appDir, "next.config.ts");
 const rootConfigPath = join(rootDir, "next.config.ts");
 
@@ -30,3 +32,14 @@ mkdirSync(rootNextDir, { recursive: true });
 cpSync(appNextDir, rootNextDir, { recursive: true });
 cpSync(appConfigPath, rootConfigPath);
 
+if (existsSync(appStandaloneDir)) {
+  cpSync(appStandaloneDir, rootStandaloneDir, { recursive: true });
+}
+
+const standaloneStaticDir = join(rootStandaloneDir, ".next", "static");
+const rootStaticDir = join(rootNextDir, "static");
+
+if (existsSync(rootStaticDir)) {
+  mkdirSync(standaloneStaticDir, { recursive: true });
+  cpSync(rootStaticDir, standaloneStaticDir, { recursive: true });
+}
