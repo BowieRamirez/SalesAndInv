@@ -48,7 +48,7 @@ if (existsSync(appStandaloneServerPath)) {
     appStandaloneServerPath,
     serverSource.replace(
       "const hostname = process.env.HOSTNAME || '0.0.0.0'",
-      "const hostname = process.env.APP_HOSTNAME || '0.0.0.0'",
+      "const hostname = '0.0.0.0'",
     ),
   );
 }
