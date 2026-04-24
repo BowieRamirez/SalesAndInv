@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const appName = process.argv[2];
@@ -34,4 +34,17 @@ cpSync(appConfigPath, rootConfigPath);
 
 if (existsSync(appStandaloneDir)) {
   cpSync(appStandaloneDir, rootStandaloneDir, { recursive: true });
+}
+
+const rootStandaloneServerPath = join(rootStandaloneDir, "server.js");
+
+if (existsSync(rootStandaloneServerPath)) {
+  const serverSource = readFileSync(rootStandaloneServerPath, "utf8");
+  writeFileSync(
+    rootStandaloneServerPath,
+    serverSource.replace(
+      "const hostname = process.env.HOSTNAME || '0.0.0.0'",
+      "const hostname = process.env.APP_HOSTNAME || '0.0.0.0'",
+    ),
+  );
 }
