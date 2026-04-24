@@ -9,6 +9,8 @@ import { CompletedOrderReturnCard } from "@/components/CompletedOrderReturnCard"
 import { getStorefrontSessionUser } from "@/lib/auth/session"
 import { formatShortDate } from "@/lib/format"
 
+export const dynamic = "force-dynamic"
+
 type InquiryRow = {
   id: string
   productName: string
