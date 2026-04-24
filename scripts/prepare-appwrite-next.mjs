@@ -35,11 +35,3 @@ cpSync(appConfigPath, rootConfigPath);
 if (existsSync(appStandaloneDir)) {
   cpSync(appStandaloneDir, rootStandaloneDir, { recursive: true });
 }
-
-const standaloneStaticDir = join(rootStandaloneDir, ".next", "static");
-const rootStaticDir = join(rootNextDir, "static");
-
-if (existsSync(rootStaticDir)) {
-  mkdirSync(standaloneStaticDir, { recursive: true });
-  cpSync(rootStaticDir, standaloneStaticDir, { recursive: true });
-}
