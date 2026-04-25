@@ -6,6 +6,8 @@ import { Footer } from "../../components/Footer"
 import { ProductCard } from "../../components/ProductCard"
 import { LandingAccordionItem } from "../../components/ui/interactive-image-accordion"
 
+export const dynamic = "force-dynamic"
+
 export default async function HomePage() {
   const products = await getStorefrontProducts()
   const newArrivals = products.slice(0, 4)

@@ -138,7 +138,8 @@ export async function getStorefrontProducts(): Promise<Product[]> {
     ])
 
     return rows.map(mapProduct)
-  } catch {
+  } catch (error) {
+    console.error("[db.catalog] Failed to load storefront products", error)
     return []
   }
 }

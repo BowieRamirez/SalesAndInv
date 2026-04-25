@@ -82,22 +82,25 @@ export default function SignInPage() {
         fetch("/api/session-user", { cache: "no-store" }),
         "The session check took too long to respond. Please try again."
       )
-      if (!sessionUserResponse.ok) {
-        setError(
-          "We signed you in, but couldn't verify your customer profile. Please try again."
-        )
-        setIsLoading(false)
-        return
-      }
       const sessionUserResult = (await sessionUserResponse
         .json()
         .catch(() => ({}))) as {
+        error?: string
         user?: {
           email?: string | null
           name?: string | null
           role?: string | null
           status?: string | null
         }
+      }
+
+      if (!sessionUserResponse.ok) {
+        setError(
+          sessionUserResult.error ??
+            "We signed you in, but couldn't verify your customer profile. Please try again."
+        )
+        setIsLoading(false)
+        return
       }
       const sessionUser = sessionUserResult.user
 

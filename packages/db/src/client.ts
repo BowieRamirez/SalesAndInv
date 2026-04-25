@@ -84,6 +84,12 @@ function loadDatabaseUrlFromNearestEnv() {
 
 const datasourceUrl = loadDatabaseUrlFromNearestEnv()
 
+if (!datasourceUrl) {
+  throw new Error(
+    "DATABASE_URL is not configured. Add the Neon Postgres connection string to this deployment's environment variables."
+  )
+}
+
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
 export const prisma =
