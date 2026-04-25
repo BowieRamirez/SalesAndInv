@@ -11,12 +11,36 @@ type InquiryPayload = {
   message?: unknown
 }
 
+const MAX_NAME_LENGTH = 50
+const MAX_EMAIL_LENGTH = 50
+const MAX_PHONE_LENGTH = 15
+
 function normalizeText(value: unknown) {
   return typeof value === "string" ? value.trim() : ""
 }
 
+function normalizeName(value: unknown) {
+  return normalizeText(value)
+    .replace(/[^A-Za-z\s'-]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .slice(0, MAX_NAME_LENGTH)
+    .trim()
+}
+
+function normalizePhone(value: unknown) {
+  return normalizeText(value).replace(/\D/g, "").slice(0, MAX_PHONE_LENGTH)
+}
+
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
+function isValidName(value: string) {
+  return /^[A-Za-z\s'-]{2,50}$/.test(value)
+}
+
+function isValidPhone(value: string) {
+  return /^\d{7,15}$/.test(value)
 }
 
 export async function POST(request: Request) {
@@ -32,24 +56,25 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as InquiryPayload | null
   const payload = {
     productId: normalizeText(body?.productId),
-    customerName: normalizeText(body?.customerName),
-    customerEmail: normalizeText(body?.customerEmail).toLowerCase(),
-    customerPhone: normalizeText(body?.customerPhone),
+    customerName: normalizeName(body?.customerName),
+    customerEmail: normalizeText(body?.customerEmail).toLowerCase().slice(0, MAX_EMAIL_LENGTH),
+    customerPhone: normalizePhone(body?.customerPhone),
     message: normalizeText(body?.message),
   }
 
   if (
     !payload.productId ||
-    payload.customerName.length < 2 ||
-    payload.customerName.length > 120 ||
+    !isValidName(payload.customerName) ||
     !isValidEmail(payload.customerEmail) ||
-    payload.customerEmail.length > 255 ||
-    payload.customerPhone.length < 7 ||
-    payload.customerPhone.length > 40 ||
+    payload.customerEmail.length > MAX_EMAIL_LENGTH ||
+    !isValidPhone(payload.customerPhone) ||
     payload.message.length < 5 ||
     payload.message.length > 2000
   ) {
-    return NextResponse.json({ message: "Please complete all inquiry fields." }, { status: 400 })
+    return NextResponse.json(
+      { message: "Please enter a valid name, email, phone number, and inquiry message." },
+      { status: 400 }
+    )
   }
 
   const products = await prisma.$queryRaw<{ id: string; name: string }[]>(Prisma.sql`

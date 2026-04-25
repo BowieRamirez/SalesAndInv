@@ -31,7 +31,7 @@ export function ProductCard({ product }: ProductCardProps) {
   
   return (
     <div className="bg-white border-[#f3f4f6] border-[1.25px] border-solid overflow-clip flex flex-col h-full hover:shadow-md transition-shadow">
-      <Link href={`/shop/${product.slug}`} className="block relative h-[180px] shrink-0 w-full overflow-hidden group">
+      <Link href={`/shop/${product.slug}`} className="block relative h-[200px] shrink-0 w-full overflow-hidden group">
         <Image
           src={product.images[0] ?? `https://placehold.co/400x300/f5f0e8/2d2d2d?text=${encodeURIComponent(product.name)}`}
           alt={product.name}
@@ -47,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
       </Link>
       
-      <div className="flex flex-col gap-[10px] p-[16px] flex-1">
+      <div className="flex flex-col gap-[12px] p-[18px] flex-1">
         <div className="flex items-center justify-between">
           <p className="font-[family-name:var(--font-inter)] font-normal text-[#99a1af] text-[11px] uppercase tracking-[0.55px] leading-[16.5px]">
             {product.category || "Living Room"}

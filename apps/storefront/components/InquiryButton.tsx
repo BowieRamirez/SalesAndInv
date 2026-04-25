@@ -4,6 +4,22 @@ import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Loader2, MessageCircle, X } from "lucide-react"
 
+const MAX_NAME_LENGTH = 50
+const MAX_EMAIL_LENGTH = 50
+const MAX_PHONE_LENGTH = 15
+
+function sanitizeName(value: string) {
+  return value.replace(/[^A-Za-z\s'-]/g, "").replace(/\s{2,}/g, " ").slice(0, MAX_NAME_LENGTH)
+}
+
+function sanitizePhone(value: string) {
+  return value.replace(/\D/g, "").slice(0, MAX_PHONE_LENGTH)
+}
+
+function sanitizeEmail(value: string) {
+  return value.trim().slice(0, MAX_EMAIL_LENGTH)
+}
+
 type InquiryButtonProps = {
   productId: string
   productName: string
@@ -154,8 +170,14 @@ export function InquiryButton({
                   <input
                     value={formState.customerName}
                     onChange={(event) =>
-                      setFormState((current) => ({ ...current, customerName: event.target.value }))
+                      setFormState((current) => ({
+                        ...current,
+                        customerName: sanitizeName(event.target.value),
+                      }))
                     }
+                    maxLength={MAX_NAME_LENGTH}
+                    pattern="[A-Za-z\s'-]{2,50}"
+                    title="Use letters and spaces only."
                     className="w-full rounded-[12px] border border-[#d1d5dc] px-4 py-3 text-[14px] text-[#1a1a2e] outline-none transition-colors focus:border-[#1a1a2e]"
                     placeholder="Your full name"
                     required
@@ -168,8 +190,12 @@ export function InquiryButton({
                     type="email"
                     value={formState.customerEmail}
                     onChange={(event) =>
-                      setFormState((current) => ({ ...current, customerEmail: event.target.value }))
+                      setFormState((current) => ({
+                        ...current,
+                        customerEmail: sanitizeEmail(event.target.value),
+                      }))
                     }
+                    maxLength={MAX_EMAIL_LENGTH}
                     className="w-full rounded-[12px] border border-[#d1d5dc] px-4 py-3 text-[14px] text-[#1a1a2e] outline-none transition-colors focus:border-[#1a1a2e]"
                     placeholder="you@example.com"
                     required
@@ -182,10 +208,17 @@ export function InquiryButton({
                 <input
                   value={formState.customerPhone}
                   onChange={(event) =>
-                    setFormState((current) => ({ ...current, customerPhone: event.target.value }))
+                    setFormState((current) => ({
+                      ...current,
+                      customerPhone: sanitizePhone(event.target.value),
+                    }))
                   }
+                  inputMode="numeric"
+                  maxLength={MAX_PHONE_LENGTH}
+                  pattern="[0-9]{7,15}"
+                  title="Use numbers only, 7 to 15 digits."
                   className="w-full rounded-[12px] border border-[#d1d5dc] px-4 py-3 text-[14px] text-[#1a1a2e] outline-none transition-colors focus:border-[#1a1a2e]"
-                  placeholder="+63 9xx xxx xxxx"
+                  placeholder="639xxxxxxxxx"
                   required
                 />
               </label>
