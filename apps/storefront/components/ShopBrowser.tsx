@@ -16,6 +16,7 @@ type ShopBrowserProps = {
   initialCategories: string[]
   initialMaterials: string[]
   initialSort: string
+  initialQuery: string
   initialMaxPrice: number
 }
 
@@ -60,35 +61,55 @@ export function ShopBrowser({
   initialCategories,
   initialMaterials,
   initialSort,
+  initialQuery,
   initialMaxPrice,
 }: ShopBrowserProps) {
   const [selectedCategories, setSelectedCategories] = useState(initialCategories)
   const [selectedMaterials, setSelectedMaterials] = useState(initialMaterials)
   const [sort, setSort] = useState(initialSort)
+  const [query, setQuery] = useState(initialQuery)
   const [maxPrice, setMaxPrice] = useState(initialMaxPrice)
   const deferredMaxPrice = useDeferredValue(maxPrice)
+  const deferredQuery = useDeferredValue(query)
   const [, startTransition] = useTransition()
 
   const categoryCounts = useMemo(() => getCategoryCounts(products), [products])
   const materialCounts = useMemo(() => getMaterialCounts(products), [products])
 
   const filteredProducts = useMemo(() => {
+    const normalizedQuery = deferredQuery.trim().toLowerCase()
+
     const filtered = products.filter((product) => {
       const matchesCategory =
         selectedCategories.length === 0 || selectedCategories.includes(product.category)
       const matchesMaterial =
         selectedMaterials.length === 0 || selectedMaterials.includes(product.material)
       const matchesPrice = product.price <= deferredMaxPrice
+      const searchableText = [
+        product.name,
+        product.category,
+        product.material,
+        product.description,
+        product.slug,
+      ]
+        .join(" ")
+        .toLowerCase()
+      const matchesQuery = normalizedQuery.length === 0 || searchableText.includes(normalizedQuery)
 
-      return matchesCategory && matchesMaterial && matchesPrice
+      return matchesCategory && matchesMaterial && matchesPrice && matchesQuery
     })
 
     return sortProducts(filtered, sort)
-  }, [deferredMaxPrice, products, selectedCategories, selectedMaterials, sort])
+  }, [deferredMaxPrice, deferredQuery, products, selectedCategories, selectedMaterials, sort])
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
       const params = new URLSearchParams()
+      const trimmedQuery = query.trim()
+
+      if (trimmedQuery.length > 0) {
+        params.set("q", trimmedQuery)
+      }
 
       if (selectedCategories.length > 0) {
         params.set("category", selectedCategories.join(","))
@@ -106,8 +127,8 @@ export function ShopBrowser({
         params.set("maxPrice", String(maxPrice))
       }
 
-      const query = params.toString()
-      const nextUrl = query ? `/shop?${query}` : "/shop"
+      const queryString = params.toString()
+      const nextUrl = queryString ? `/shop?${queryString}` : "/shop"
 
       startTransition(() => {
         window.history.replaceState(null, "", nextUrl)
@@ -117,17 +138,43 @@ export function ShopBrowser({
     return () => {
       window.clearTimeout(timeout)
     }
-  }, [maxPrice, selectedCategories, selectedMaterials, sort])
+  }, [maxPrice, query, selectedCategories, selectedMaterials, sort])
+
+  useEffect(() => {
+    setSelectedCategories(initialCategories)
+  }, [initialCategories])
+
+  useEffect(() => {
+    setSelectedMaterials(initialMaterials)
+  }, [initialMaterials])
+
+  useEffect(() => {
+    setSort(initialSort)
+  }, [initialSort])
+
+  useEffect(() => {
+    setQuery(initialQuery)
+  }, [initialQuery])
+
+  useEffect(() => {
+    setMaxPrice(initialMaxPrice)
+  }, [initialMaxPrice])
 
   const activeCategoryLabel = selectedCategories.length === 1 ? selectedCategories[0] : null
+  const activeSearchLabel = query.trim()
 
   return (
     <>
-      <div className="mx-auto w-full max-w-7xl px-4 pb-4 md:px-8">
+      <div className="mx-auto w-full max-w-[1536px] px-4 pb-4 md:px-8">
         <div className="flex items-center justify-between rounded-lg border border-[--color-beige] bg-white px-4 py-3 shadow-sm">
           <p className="text-sm text-[--color-muted]">
             <span className="font-semibold text-[--color-charcoal]">{filteredProducts.length}</span>{" "}
-            results{activeCategoryLabel ? ` for "${activeCategoryLabel}"` : " for furniture"}
+            results
+            {activeSearchLabel
+              ? ` for "${activeSearchLabel}"`
+              : activeCategoryLabel
+                ? ` for "${activeCategoryLabel}"`
+                : " for furniture"}
           </p>
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 text-[--color-muted]" />
@@ -148,8 +195,8 @@ export function ShopBrowser({
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-7xl flex-1 gap-8 px-4 pb-16 md:px-8">
-        <aside className="hidden w-56 shrink-0 md:block">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-1 gap-8 px-4 pb-16 md:px-8">
+        <aside className="hidden w-64 shrink-0 md:block">
           <div className="sticky top-6 rounded-lg border border-[--color-beige] bg-white p-5 shadow-sm">
             <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[--color-charcoal]">
               Filters
@@ -262,6 +309,7 @@ export function ShopBrowser({
                   setSelectedCategories([])
                   setSelectedMaterials([])
                   setSort("default")
+                  setQuery("")
                   setMaxPrice(MAX_PRICE)
                 }}
                 className="text-sm text-[--color-navy] underline underline-offset-2"
@@ -270,7 +318,7 @@ export function ShopBrowser({
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

@@ -66,17 +66,21 @@ export function Navbar() {
         </div>
 
         {/* Search */}
-        <div className="flex-[1_0_0] h-[36px] flex overflow-hidden lg:max-w-xl">
+        <form action="/shop" className="flex-[1_0_0] h-[36px] flex overflow-hidden lg:max-w-xl">
           <input
+            name="q"
             type="text"
             placeholder="Search furniture, decor, collections..."
             className="flex-1 bg-white h-full px-[16px] text-[13px] font-[family-name:var(--font-inter)] text-[#0a0a0a] placeholder:text-[#0a0a0a]/50 focus:outline-none"
           />
-          <button className="bg-[#c9a96e] px-[20px] flex items-center justify-center gap-[6px] transition-colors hover:bg-[#c9a96e]/90 shrink-0">
+          <button
+            type="submit"
+            className="bg-[#c9a96e] px-[20px] flex items-center justify-center gap-[6px] transition-colors hover:bg-[#c9a96e]/90 shrink-0"
+          >
             <Search className="w-4 h-4 text-[#1a1a2e]" />
             <span className="font-[family-name:var(--font-inter)] font-medium text-[13px] text-[#1a1a2e]">Search</span>
           </button>
-        </div>
+        </form>
 
         {/* Right Actions */}
         <div className="hidden lg:flex items-center gap-[20px] shrink-0 font-[family-name:var(--font-inter)]">

@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { Instagram, Facebook, Twitter, ArrowRight } from "lucide-react"
+import { Instagram, Facebook, Twitter } from "lucide-react"
 import Image from "next/image"
+import { FooterCtaLink } from "./FooterCtaLink"
 
 export function Footer() {
   return (
@@ -9,21 +10,19 @@ export function Footer() {
       <div className="w-full max-w-[1336px] mx-auto px-6 mb-[64px] font-['var(--font-inter)']">
         <div className="relative w-full h-[280px] flex flex-col items-center justify-center text-center overflow-hidden">
           <Image 
-            src="https://placehold.co/1336x280/1a1a2e/ffffff?text=Bedroom+Furniture" 
-            alt="Members Background" 
+            src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1400&auto=format&fit=crop&q=80"
+            alt="Modern office furniture collection"
             fill 
             className="object-cover pointer-events-none" 
           />
           <div className="absolute inset-0 bg-black/50" />
           <div className="relative z-10 flex flex-col items-center max-w-[500px] px-4">
             <span className="text-[#c9a96e] text-[10px] font-medium tracking-[2px] uppercase mb-[12px]">Members Only</span>
-            <h2 className="text-white text-[32px] font-['var(--font-playfair)'] font-medium leading-[38.4px] mb-[12px]">Unlock the Full Experience</h2>
+            <h2 className="text-white text-[32px] font-['var(--font-playfair)'] font-medium leading-[38.4px] mb-[12px]">Build a Better Workspace</h2>
             <p className="text-[#d1d5dc] text-[13px] font-normal leading-[19.5px] mb-[24px]">
-              Access advanced filters, personalized picks, wishlists, and exclusive member deals.
+              Browse office tables, pedestals, cabinets, and storage pieces selected for business spaces.
             </p>
-            <Link href="/sign-up" className="bg-white px-[24px] py-[12px] flex items-center justify-center gap-2 text-[#1a1a2e] text-[13px] font-medium hover:bg-white/90 transition-colors">
-              Get Started Free <ArrowRight className="w-4 h-4" />
-            </Link>
+            <FooterCtaLink />
           </div>
         </div>
       </div>
@@ -40,7 +39,7 @@ export function Footer() {
               <span className="text-white text-[10px] tracking-[0.9px] font-normal uppercase">FurniTrack</span>
             </Link>
             <p className="text-[#99a1af] text-[13px] leading-[19.5px]">
-              Curated furniture for modern living. Designed with care, built to last.
+              Office tables, pedestals, cabinets, and workspace storage for organized business interiors.
             </p>
             <div className="flex gap-[12px] mt-2">
               <a href="#" aria-label="Instagram" className="w-[36px] h-[36px] bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
@@ -60,7 +59,7 @@ export function Footer() {
             <div className="flex flex-col gap-[16px] min-w-[120px]">
               <h4 className="text-[#d1d5dc] text-[13px] font-medium tracking-[0.65px] uppercase leading-[19.5px]">Shop</h4>
               <ul className="flex flex-col gap-[10px]">
-                {["Living Room", "Bedroom", "Dining", "Office", "All Products"].map((item) => (
+                {["Tables", "Storage", "Office", "All Products"].map((item) => (
                   <li key={item}>
                     <Link href={`/shop${item !== "All Products" ? `?category=${item}` : ""}`} className="text-[#99a1af] text-[13px] font-normal leading-[19.5px] hover:text-white transition-colors">
                       {item}
@@ -103,7 +102,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 flex flex-col md:flex-row justify-between items-center py-[16px] gap-4">
           <p className="text-[#6a7282] text-[12px] font-normal leading-[18px]">
-            2026 MAISON. All rights reserved.
+            2026 FurniTrack. All rights reserved.
           </p>
           <div className="flex gap-[24px]">
             <a href="#" className="text-[#6a7282] text-[12px] font-normal leading-[18px] hover:text-white/80 transition-colors">Privacy Policy</a>

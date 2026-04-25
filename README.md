@@ -139,7 +139,7 @@ pnpm install
 pnpm --filter storefront dev
 
 # Admin dashboard — http://localhost:3001
-pnpm --filter admin devpnpm --filter admin dev
+pnpm --filter admin dev pnpm --filter admin dev
 
 # Both apps simultaneously
 pnpm dev

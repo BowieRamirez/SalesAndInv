@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import {
   AlertCircle,
-  Box,
+  ArrowLeft,
   Eye,
   EyeOff,
   Lock,
@@ -12,6 +12,7 @@ import {
   User,
 } from "lucide-react"
 import Link from "next/link"
+import { AuthMarketingPanel } from "@/components/AuthMarketingPanel"
 
 const REGISTER_TIMEOUT_MS = 15000
 
@@ -78,44 +79,17 @@ export default function SignUpPage() {
 
   return (
     <main className="flex min-h-screen flex-col bg-[#fcfcfc] py-10 font-[family-name:var(--font-inter)] lg:flex-row lg:py-0">
-      <div className="bg-navy relative flex min-h-[500px] flex-col justify-between overflow-hidden p-8 text-white lg:min-h-screen lg:w-[45%] xl:p-14">
-        <div className="pointer-events-none absolute top-[-10%] left-[-15%] h-[45rem] w-[45rem] rounded-full border-[60px] border-white/[0.03]" />
-        <div className="pointer-events-none absolute right-[-10%] bottom-[-10%] h-[30rem] w-[30rem] rounded-full border-[40px] border-white/[0.03]" />
-        <div className="pointer-events-none absolute top-[30%] right-[-15%] h-[50rem] w-[50rem] rounded-full border-[50px] border-white/[0.03]" />
-
-        <div className="relative z-10 mt-4 flex items-center space-x-3 lg:mt-0">
-          <div className="rounded-xl border border-white/5 bg-white/10 p-2.5 shadow-sm">
-            <Box className="h-6 w-6 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <h1 className="text-[17px] leading-tight font-semibold tracking-wide">
-              FurniTrack
-            </h1>
-            <p className="mt-0.5 text-[11px] font-medium tracking-wider text-white/50 uppercase">
-              Customer Registration
-            </p>
-          </div>
-        </div>
-
-        <div className="relative z-10 mt-16 mb-auto max-w-lg xl:pl-4">
-          <h2 className="mb-6 text-[2.5rem] leading-[1.1] font-semibold tracking-tight xl:text-[3.2rem]">
-            Create a customer account
-            <br />
-            saved in Neon
-          </h2>
-          <p className="mb-10 max-w-[420px] text-[15px] leading-relaxed text-white/60 xl:text-[16px]">
-            New storefront registrations now create real customer accounts in
-            Neon Auth and a matching `public.users` client record for the
-            FurniTrack system.
-          </p>
-        </div>
-
-        <div className="relative z-10 mb-4 text-[12px] font-medium text-white/40 lg:mb-0 xl:pl-4">
-          &copy; 2026 SIMS Co. All rights reserved.
-        </div>
-      </div>
+      <AuthMarketingPanel eyebrow="Customer Registration" />
 
       <div className="relative flex flex-1 items-center justify-center bg-white p-8 lg:p-12">
+        <Link
+          href="/"
+          className="text-charcoal/70 hover:text-navy absolute top-6 left-6 inline-flex items-center gap-2 rounded-[10px] px-3 py-2 text-[13px] font-medium transition-colors hover:bg-[#f9fafb]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back to products</span>
+        </Link>
+
         <div className="w-full max-w-[400px]">
           <div className="mb-10 text-center">
             <h2 className="text-navy mb-2.5 text-[28px] font-semibold tracking-tight">

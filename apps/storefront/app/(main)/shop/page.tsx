@@ -35,30 +35,36 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const initialCategories = readListParam(resolvedSearchParams.category)
   const initialMaterials = readListParam(resolvedSearchParams.material)
   const initialSort = readStringParam(resolvedSearchParams.sort) ?? "default"
+  const initialQuery = readStringParam(resolvedSearchParams.q)?.trim() ?? ""
   const initialMaxPriceParam = Number(readStringParam(resolvedSearchParams.maxPrice) ?? "90000")
   const initialMaxPrice = Number.isFinite(initialMaxPriceParam) ? initialMaxPriceParam : 90000
-  const activeCategoryLabel = initialCategories.length === 1 ? initialCategories[0] : "Furniture"
+  const activeCategoryLabel =
+    initialCategories.length === 1 ? initialCategories[0] : "Office Furniture"
 
   return (
     <div className="flex min-h-screen flex-col bg-[--color-beige]">
       <div className="relative h-48 overflow-hidden bg-[--color-navy] md:h-64">
         <Image
-          src="https://placehold.co/1440x256/1a1a2e/c9a84c?text=Simple+is+More"
-          alt="Shop Banner"
+          src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1800&auto=format&fit=crop&q=80"
+          alt="Office tables, workstations, and storage furniture"
           fill
-          className="object-cover opacity-60"
+          className="object-cover opacity-70"
         />
+        <div className="absolute inset-0 bg-[#1a1a2e]/55" />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
-          <h1 className="text-4xl font-light italic tracking-wide text-white md:text-5xl">
-            Simple is More
+          <p className="mb-3 text-[10px] font-semibold uppercase leading-none tracking-[2px] text-[--color-gold]">
+            What we sell
+          </p>
+          <h1 className="font-[family-name:var(--font-playfair)] text-4xl font-medium leading-tight text-white md:text-5xl">
+            Office Furniture
           </h1>
-          <p className="mt-2 text-sm uppercase tracking-widest text-[--color-gold]">
-            Furniture Collection
+          <p className="mt-3 max-w-xl text-xs font-medium uppercase leading-5 tracking-[2px] text-white/75">
+            Tables, Pedestals, Cabinets, Storage
           </p>
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-7xl px-4 py-4 md:px-8">
+      <div className="mx-auto w-full max-w-[1536px] px-4 py-4 md:px-8">
         <nav className="flex items-center gap-1.5 text-sm text-[--color-muted]">
           <Link href="/" className="transition-colors hover:text-[--color-charcoal]">
             Home
@@ -73,6 +79,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         initialCategories={initialCategories}
         initialMaterials={initialMaterials}
         initialSort={initialSort}
+        initialQuery={initialQuery}
         initialMaxPrice={initialMaxPrice}
       />
 

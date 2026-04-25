@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server"
-import { Prisma } from "@furnitrack/db"
 import { prisma } from "@furnitrack/db"
 
 type RegisterPayload = {
   name?: string
   email?: string
   password?: string
+}
+
+type AuthIdentity = {
+  authUserId: string
+  email: string
+  name: string | null
 }
 
 const AUTH_REQUEST_TIMEOUT_MS = 15000
@@ -25,6 +30,70 @@ async function fetchWithTimeout(input: string, init: RequestInit) {
   }
 }
 
+async function findAuthIdentityByEmail(email: string) {
+  const rows = await prisma.$queryRaw<AuthIdentity[]>`
+    SELECT
+      id::text AS "authUserId",
+      LOWER(email) AS email,
+      name
+    FROM neon_auth."user"
+    WHERE LOWER(email) = LOWER(${email})
+    LIMIT 1
+  `
+
+  return rows[0] ?? null
+}
+
+async function updateAuthIdentity(params: { authUserId: string; name: string }) {
+  await prisma.$executeRaw`
+    UPDATE neon_auth."user"
+    SET
+      name = ${params.name},
+      role = 'CLIENT',
+      "updatedAt" = CURRENT_TIMESTAMP
+    WHERE id::text = ${params.authUserId}
+  `
+}
+
+async function syncClientUserRecord(params: {
+  authUserId: string
+  email: string
+  name: string
+}) {
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [{ authUserId: params.authUserId }, { email: params.email }],
+    },
+    select: { id: true },
+  })
+
+  if (existingUser) {
+    await prisma.user.update({
+      where: { id: existingUser.id },
+      data: {
+        authUserId: params.authUserId,
+        email: params.email,
+        name: params.name,
+        role: "CLIENT",
+        status: "ACTIVE",
+      },
+    })
+
+    return
+  }
+
+  await prisma.user.create({
+    data: {
+      id: params.authUserId,
+      authUserId: params.authUserId,
+      email: params.email,
+      name: params.name,
+      role: "CLIENT",
+      status: "ACTIVE",
+    },
+  })
+}
+
 export async function POST(request: Request) {
   const payload = (await request.json()) as RegisterPayload
   const name = payload.name?.trim()
@@ -35,6 +104,22 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { message: "Name, email, and password are required." },
       { status: 400 }
+    )
+  }
+
+  if (password.length < 8) {
+    return NextResponse.json(
+      { message: "Use a password with at least 8 characters." },
+      { status: 400 }
+    )
+  }
+
+  const existingIdentity = await findAuthIdentityByEmail(email)
+
+  if (existingIdentity) {
+    return NextResponse.json(
+      { message: "That email already has an account. Please sign in instead." },
+      { status: 409 }
     )
   }
 
@@ -61,6 +146,7 @@ export async function POST(request: Request) {
         password,
         name,
       }),
+      cache: "no-store",
     })
   } catch {
     return NextResponse.json(
@@ -91,40 +177,24 @@ export async function POST(request: Request) {
     )
   }
 
-  const authUsers = await prisma.$queryRaw<{ id: string }[]>(Prisma.sql`
-    SELECT id::text AS id
-    FROM neon_auth."user"
-    WHERE email = ${email}
-    LIMIT 1
-  `)
+  const authIdentity = await findAuthIdentityByEmail(email)
 
-  const authUserId = authUsers[0]?.id
-
-  await prisma.$executeRaw`
-    UPDATE neon_auth."user"
-    SET role = 'CLIENT'
-    WHERE email = ${email}
-  `
-
-  if (authUserId) {
-    await prisma.user.upsert({
-      where: { email },
-      update: {
-        authUserId,
-        name,
-        role: "CLIENT",
-        status: "ACTIVE",
+  if (!authIdentity) {
+    return NextResponse.json(
+      {
+        message:
+          "The account was created, but Neon did not return the new user id.",
       },
-      create: {
-        id: authUserId,
-        authUserId,
-        email,
-        name,
-        role: "CLIENT",
-        status: "ACTIVE",
-      },
-    })
+      { status: 502 }
+    )
   }
+
+  await updateAuthIdentity({ authUserId: authIdentity.authUserId, name })
+  await syncClientUserRecord({
+    authUserId: authIdentity.authUserId,
+    email,
+    name,
+  })
 
   return NextResponse.json({ ok: true })
 }
