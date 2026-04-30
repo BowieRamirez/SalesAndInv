@@ -6,6 +6,7 @@ import {
 } from "@furnitrack/validators"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { FinishedProductsManager } from "@/components/operations/FinishedProductsManager"
+import { ImageDropField } from "@/components/operations/ImageDropField"
 import { MaterialSelector } from "@/components/operations/MaterialSelector"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { ROLE_REDIRECT } from "@/lib/rbac"
@@ -122,18 +123,25 @@ function formatDateTime(value: Date | null) {
     year: "numeric",
     month: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
   }).format(value)
 }
 
-function toDateTimeLocalValue(value: Date | null) {
+function toDateValue(value: Date | null) {
   if (!value) {
     return ""
   }
 
   const local = new Date(value.getTime() - value.getTimezoneOffset() * 60_000)
-  return local.toISOString().slice(0, 16)
+  return local.toISOString().slice(0, 10)
+}
+
+function startOfShippingDay(value: Date | null) {
+  if (!value) {
+    return null
+  }
+
+  const local = new Date(value.getFullYear(), value.getMonth(), value.getDate())
+  return local
 }
 
 function ShippingProgressBadge({
@@ -177,7 +185,8 @@ function DeliveryQueueCard({
       ? "Confirm that operations has finished preparing this order."
       : "Add the shipping confirmation note for order history."
   const shippingScheduleLabel = formatDateTime(inquiry.shippingScheduledAt)
-  const canCompleteNow = inquiry.shippingScheduledAt ? inquiry.shippingScheduledAt.getTime() <= Date.now() : false
+  const shippingDayStart = startOfShippingDay(inquiry.shippingScheduledAt)
+  const canCompleteNow = shippingDayStart ? shippingDayStart.getTime() <= Date.now() : false
   const progressWidth = inquiry.shippingScheduledAt ? (canCompleteNow ? "100%" : "66%") : "33%"
 
   return (
@@ -191,7 +200,7 @@ function DeliveryQueueCard({
           </p>
           {shippingScheduleLabel ? (
             <div className="mt-4 inline-flex rounded-[16px] bg-[#eff6ff] px-4 py-3 text-[13px] font-medium text-[#1d4ed8]">
-              Shipment time set for {shippingScheduleLabel}
+              Shipment scheduled for {shippingScheduleLabel}
             </div>
           ) : null}
           <p className="mt-3 text-[14px] leading-[22px] text-[#1a1a2e]">{inquiry.message}</p>
@@ -207,12 +216,12 @@ function DeliveryQueueCard({
                 <p className="mt-2 text-[14px] font-medium text-[#1a1a2e]">
                   {shippingScheduleLabel
                     ? canCompleteNow
-                      ? "Scheduled ship time reached. This order can now be completed."
-                      : "In shipping. Waiting for the scheduled ship time to be reached."
-                    : "Waiting for operations to schedule the shipping date and time."}
+                      ? "Scheduled ship date reached. This order can now be completed."
+                      : "In shipping. Waiting for the scheduled ship date to be reached."
+                    : "Waiting for operations to schedule the shipping date."}
                 </p>
                 <p className="mt-1 text-[13px] text-[#4b5563]">
-                  {shippingScheduleLabel ? `Ship time: ${shippingScheduleLabel}` : "Ship time: not set yet"}
+                  {shippingScheduleLabel ? `Ship date: ${shippingScheduleLabel}` : "Ship date: not set yet"}
                 </p>
               </div>
               {action === "ship" ? (
@@ -246,11 +255,11 @@ function DeliveryQueueCard({
         <input type="hidden" name="inquiryId" value={inquiry.id} />
         {action === "ship" ? (
           <label className="grid gap-2">
-            <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Shipping date and time</span>
+            <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Shipping date</span>
             <input
-              type="datetime-local"
+              type="date"
               name="shippingScheduledAt"
-              defaultValue={toDateTimeLocalValue(inquiry.shippingScheduledAt)}
+              defaultValue={toDateValue(inquiry.shippingScheduledAt)}
               className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
             />
           </label>
@@ -283,7 +292,7 @@ function DeliveryQueueCard({
                 disabled={!canCompleteNow}
                 className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#cbd5e1]"
               >
-                {!canCompleteNow ? "Waiting for scheduled ship time" : buttonLabel}
+                {!canCompleteNow ? "Waiting for scheduled ship date" : buttonLabel}
               </button>
             </div>
           ) : (
@@ -303,12 +312,12 @@ function DeliveryQueueCard({
       ) : null}
       {action === "build" ? (
         <p className="mt-3 text-[12px] text-[#6b7280]">
-          Approve the build here first. Operations will set the shipping date and time in Delivery Schedule.
+          Approve the build here first. Operations will set the shipping date in Delivery Schedule.
         </p>
       ) : null}
       {action === "ship" && !shippingScheduleLabel ? (
         <p className="mt-3 text-[12px] text-[#6b7280]">
-          Set the shipping date and time here in Delivery Schedule before this order can be completed.
+          Set the shipping date here in Delivery Schedule before this order can be completed.
         </p>
       ) : null}
     </article>
@@ -589,12 +598,8 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
                         />
                       </label>
                       <label className="md:col-span-2 grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Image URL</span>
-                        <input
-                          name="imageUrl"
-                          placeholder="https://example.com/product-image.jpg"
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
+                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Product image</span>
+                        <ImageDropField name="imageUrl" />
                       </label>
                       <label className="md:col-span-2 grid gap-2">
                         <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Description</span>

@@ -1,6 +1,7 @@
 "use client"
 
 import { Fragment, useDeferredValue, useMemo, useState } from "react"
+import { ImageDropField } from "./ImageDropField"
 
 type FinishedProduct = {
   id: string
@@ -205,12 +206,11 @@ export function FinishedProductsManager({ products }: FinishedProductsManagerPro
                                     />
                                   </label>
                                   <label className="md:col-span-2 grid gap-2">
-                                    <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Image URL</span>
-                                    <input
+                                    <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Product image</span>
+                                    <ImageDropField
                                       name="imageUrl"
                                       defaultValue={product.imageUrl}
-                                      placeholder="https://example.com/product-image.jpg"
-                                      className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
+                                      altPreview={product.name}
                                     />
                                   </label>
                                   <label className="md:col-span-2 grid gap-2">
