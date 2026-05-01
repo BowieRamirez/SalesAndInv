@@ -1,0 +1,306 @@
+"use client"
+
+import { useMemo, useState } from "react"
+import { formatInquiryWorkflowStatus, getInquiryWorkflowStyle } from "@furnitrack/validators"
+import { formatAccountingPaymentMethod, type AccountingPaymentMethod } from "@/lib/accounting-payment-methods"
+import type { InquiryWorkflowRow } from "@/lib/inquiries"
+
+const PAGE_SIZE = 10
+
+function WorkflowBadge({ status }: { status: string }) {
+  return (
+    <span
+      className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(status)}`}
+    >
+      {formatInquiryWorkflowStatus(status)}
+    </span>
+  )
+}
+
+export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
+  const [query, setQuery] = useState("")
+  const [page, setPage] = useState(1)
+
+  const filteredRows = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+    if (!normalizedQuery) return rows
+
+    return rows.filter((row) =>
+      [row.productName, row.customerName, row.customerEmail].some((value) =>
+        value.toLowerCase().includes(normalizedQuery),
+      ),
+    )
+  }, [query, rows])
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageStart = (currentPage - 1) * PAGE_SIZE
+  const pagedRows = filteredRows.slice(pageStart, pageStart + PAGE_SIZE)
+
+  return (
+    <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col">
+          <h2 className="text-[20px] font-semibold text-[#111827]">Accounting approval history</h2>
+          <p className="mt-1 text-[13px] text-[#6b7280]">
+            Review previously approved payments here.
+          </p>
+        </div>
+        <div className="w-full md:w-[320px]">
+          <input
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setPage(1)
+            }}
+            placeholder="Search product, customer, email"
+            className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+          />
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-left text-[13px]">
+          <thead>
+            <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
+              <th className="py-3 pr-4 font-medium">Date Approved</th>
+              <th className="py-3 pr-4 font-medium">Product</th>
+              <th className="py-3 pr-4 font-medium">Customer</th>
+              <th className="py-3 pr-4 font-medium">Payment Method</th>
+              <th className="py-3 pr-4 font-medium">Status</th>
+              <th className="py-3 pr-4 font-medium">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pagedRows.map((row) => (
+              <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
+                <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">
+                  {new Date(row.updatedAt).toLocaleDateString()}
+                </td>
+                <td className="py-3 pr-4 text-[#111827]">{row.productName}</td>
+                <td className="py-3 pr-4 text-[#111827]">
+                  {row.customerName}
+                  <br />
+                  <span className="text-[11px] text-[#6b7280]">{row.customerEmail}</span>
+                </td>
+                <td className="py-3 pr-4 text-[#111827]">
+                  {row.paymentMethod ? formatAccountingPaymentMethod(row.paymentMethod) : "N/A"}
+                </td>
+                <td className="py-3 pr-4">
+                  <WorkflowBadge status={row.workflowStatus} />
+                </td>
+                <td className="py-3 pr-4 text-[#6b7280] max-w-xs truncate" title={row.workflowNote ?? ""}>
+                  {row.workflowNote || "No note"}
+                </td>
+              </tr>
+            ))}
+            {pagedRows.length === 0 && (
+              <tr>
+                <td colSpan={6} className="py-8 text-center text-[#6b7280]">
+                  No approval records found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-5 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setPage((value) => Math.max(1, value - 1))}
+          disabled={currentPage <= 1}
+          className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+        >
+          Previous
+        </button>
+        <span className="text-[13px] text-[#6b7280]">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          type="button"
+          onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+          disabled={currentPage >= totalPages}
+          className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+        >
+          Next
+        </button>
+      </div>
+    </section>
+  )
+}
+
+export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
+  const [query, setQuery] = useState("")
+  const [page, setPage] = useState(1)
+  const [selectedReceipt, setSelectedReceipt] = useState<InquiryWorkflowRow | null>(null)
+
+  const filteredRows = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+    if (!normalizedQuery) return rows
+
+    return rows.filter((row) =>
+      [row.productName, row.customerName, row.customerEmail].some((value) =>
+        value.toLowerCase().includes(normalizedQuery),
+      ),
+    )
+  }, [query, rows])
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageStart = (currentPage - 1) * PAGE_SIZE
+  const pagedRows = filteredRows.slice(pageStart, pageStart + PAGE_SIZE)
+
+  return (
+    <>
+      <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col">
+            <h2 className="text-[20px] font-semibold text-[#111827]">Payment Records</h2>
+            <p className="mt-1 text-[13px] text-[#6b7280]">
+              View receipts and payment details of accepted orders.
+            </p>
+          </div>
+          <div className="w-full md:w-[320px]">
+            <input
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value)
+                setPage(1)
+              }}
+              placeholder="Search product, customer, email"
+              className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+            />
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-[13px]">
+            <thead>
+              <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
+                <th className="py-3 pr-4 font-medium">Order ID</th>
+                <th className="py-3 pr-4 font-medium">Date Approved</th>
+                <th className="py-3 pr-4 font-medium">Product</th>
+                <th className="py-3 pr-4 font-medium">Customer</th>
+                <th className="py-3 pr-4 font-medium">Payment Method</th>
+                <th className="py-3 font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pagedRows.map((row) => (
+                <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
+                  <td className="py-3 pr-4 text-[#111827] whitespace-nowrap font-mono text-[11px]">
+                    {row.id.slice(-8).toUpperCase()}
+                  </td>
+                  <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">
+                    {new Date(row.updatedAt).toLocaleDateString()}
+                  </td>
+                  <td className="py-3 pr-4 text-[#111827]">{row.productName}</td>
+                  <td className="py-3 pr-4 text-[#111827]">
+                    {row.customerName}
+                  </td>
+                  <td className="py-3 pr-4 text-[#111827]">
+                    {row.paymentMethod ? formatAccountingPaymentMethod(row.paymentMethod) : "N/A"}
+                  </td>
+                  <td className="py-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedReceipt(row)}
+                      className="rounded-lg bg-[#111827] px-3 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+                    >
+                      View Receipt
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {pagedRows.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-[#6b7280]">
+                    No payment records found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-5 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setPage((value) => Math.max(1, value - 1))}
+            disabled={currentPage <= 1}
+            className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+          >
+            Previous
+          </button>
+          <span className="text-[13px] text-[#6b7280]">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+            disabled={currentPage >= totalPages}
+            className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+          >
+            Next
+          </button>
+        </div>
+      </section>
+
+      {selectedReceipt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/45 px-4 overflow-y-auto pt-20 pb-10">
+          <div className="w-full max-w-md rounded-2xl border border-[#dbe4f0] bg-white p-8 shadow-2xl">
+            <div className="mb-6 flex justify-between items-center border-b border-[#e5e7eb] pb-4">
+              <div>
+                <h3 className="text-[18px] font-bold text-[#111827]">Payment Receipt</h3>
+                <p className="text-[12px] text-[#6b7280]">Order #{selectedReceipt.id.slice(-8).toUpperCase()}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[14px] font-medium text-[#111827]">{new Date(selectedReceipt.updatedAt).toLocaleDateString()}</p>
+                <p className="text-[12px] text-[#6b7280]">FurniTrack Admin</p>
+              </div>
+            </div>
+            
+            <div className="space-y-4 text-[13px]">
+              <div className="flex justify-between">
+                <span className="text-[#6b7280]">Customer Name</span>
+                <span className="font-medium text-[#111827]">{selectedReceipt.customerName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#6b7280]">Email</span>
+                <span className="font-medium text-[#111827]">{selectedReceipt.customerEmail}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#6b7280]">Phone</span>
+                <span className="font-medium text-[#111827]">{selectedReceipt.customerPhone}</span>
+              </div>
+              <div className="border-t border-dashed border-[#e5e7eb] my-3"></div>
+              <div className="flex justify-between">
+                <span className="text-[#6b7280]">Product</span>
+                <span className="font-medium text-[#111827]">{selectedReceipt.productName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#6b7280]">Payment Method</span>
+                <span className="font-medium text-[#111827]">
+                  {selectedReceipt.paymentMethod ? formatAccountingPaymentMethod(selectedReceipt.paymentMethod) : "N/A"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#6b7280]">Approval Note</span>
+                <span className="font-medium text-[#111827] max-w-[200px] text-right">
+                  {selectedReceipt.workflowNote || "None"}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-8 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setSelectedReceipt(null)}
+                className="w-full rounded-xl bg-[#111827] px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+              >
+                Close Receipt
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}

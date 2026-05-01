@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <>
       {/* Pre-Footer CTA */}
-      <div className="w-full max-w-[1336px] mx-auto px-6 mb-[64px] font-['var(--font-inter)']">
+      <div className="w-full max-w-[1336px] mx-auto px-6 mb-[64px] font-[family-name:var(--font-inter)]">
         <div className="relative w-full h-[280px] flex flex-col items-center justify-center text-center overflow-hidden">
           <Image 
             src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1400&auto=format&fit=crop&q=80"
@@ -18,7 +18,7 @@ export function Footer() {
           <div className="absolute inset-0 bg-black/50" />
           <div className="relative z-10 flex flex-col items-center max-w-[500px] px-4">
             <span className="text-[#c9a96e] text-[10px] font-medium tracking-[2px] uppercase mb-[12px]">Members Only</span>
-            <h2 className="text-white text-[32px] font-['var(--font-playfair)'] font-medium leading-[38.4px] mb-[12px]">Build a Better Workspace</h2>
+            <h2 className="text-white text-[32px] font-[family-name:var(--font-inter)] font-semibold leading-[38.4px] mb-[12px]">Build a Better Workspace</h2>
             <p className="text-[#d1d5dc] text-[13px] font-normal leading-[19.5px] mb-[24px]">
               Browse office tables, pedestals, cabinets, and storage pieces selected for business spaces.
             </p>
@@ -27,7 +27,7 @@ export function Footer() {
         </div>
       </div>
 
-      <footer className="bg-[#1a1a2e] w-full mt-auto font-['var(--font-inter)']">
+      <footer className="bg-[#1a1a2e] w-full mt-auto font-[family-name:var(--font-inter)]">
       <div className="max-w-[1336px] mx-auto px-6 py-[64px] pb-0">
         <div className="flex flex-col md:flex-row justify-between gap-[32px] md:gap-[92px] mb-[64px]">
           {/* Brand */}

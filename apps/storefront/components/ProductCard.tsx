@@ -81,11 +81,11 @@ export function ProductCard({ product }: ProductCardProps) {
           <InquiryButton
             productId={product.id}
             productName={product.name}
-            className="inline-flex items-center gap-[8px] rounded-[8px] bg-[#1a1a2e] px-[12px] py-[10px] text-[12px] font-medium text-white transition-colors hover:bg-[#1a1a2e]/90"
+            className="font-[family-name:var(--font-inter)] inline-flex items-center gap-[8px] rounded-[8px] bg-[#1a1a2e] px-[12px] py-[10px] text-[12px] font-medium text-white transition-colors hover:bg-[#1a1a2e]/90"
           />
           <Link
             href={`/shop/${product.slug}`}
-            className="inline-flex items-center justify-center rounded-[8px] border border-[#d1d5dc] px-[12px] py-[10px] text-[12px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f9fafb]"
+            className="font-[family-name:var(--font-inter)] inline-flex items-center justify-center rounded-[8px] border border-[#d1d5dc] px-[12px] py-[10px] text-[12px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f9fafb]"
           >
             View details
           </Link>

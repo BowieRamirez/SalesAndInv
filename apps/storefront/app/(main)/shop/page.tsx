@@ -55,7 +55,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           <p className="mb-3 text-[10px] font-semibold uppercase leading-none tracking-[2px] text-[--color-gold]">
             What we sell
           </p>
-          <h1 className="font-[family-name:var(--font-playfair)] text-4xl font-medium leading-tight text-white md:text-5xl">
+          <h1 className="font-[family-name:var(--font-inter)] text-4xl font-semibold leading-tight text-white md:text-5xl">
             Office Furniture
           </h1>
           <p className="mt-3 max-w-xl text-xs font-medium uppercase leading-5 tracking-[2px] text-white/75">

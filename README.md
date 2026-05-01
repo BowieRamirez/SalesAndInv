@@ -78,14 +78,14 @@ furnitrack/
 
 ## User Roles
 
-| Role | Description |
-| --- | --- |
-| `ADMIN_MANAGEMENT` | User management, company code ownership, reports, and audit oversight |
-| `SALES` | Lead tracking, quotation creation, approvals, and sales order management |
-| `INVENTORY` | Stock management, movement logging, and stock request approvals |
-| `ACCOUNTING` | Payment tracking, verification, balances, and financial approval |
-| `OPERATIONS_DESIGN` | Design handling, company code confirmation, and delivery scheduling |
-| `CLIENT` | Limited portal access to matching-company records only |
+| Role                | Description                                                              |
+| ------------------- | ------------------------------------------------------------------------ |
+| `ADMIN_MANAGEMENT`  | User management, company code ownership, reports, and audit oversight    |
+| `SALES`             | Lead tracking, quotation creation, approvals, and sales order management |
+| `INVENTORY`         | Stock management, movement logging, and stock request approvals          |
+| `ACCOUNTING`        | Payment tracking, verification, balances, and financial approval         |
+| `OPERATIONS_DESIGN` | Design handling, company code confirmation, and delivery scheduling      |
+| `CLIENT`            | Limited portal access to matching-company records only                   |
 
 ---
 
@@ -99,14 +99,14 @@ Admin accounts are now managed via **Neon Auth** (powered by Better Auth) and st
 2. Under **Users**, click **Add user** to create accounts for each role
 3. Set a `role` field in the user's metadata matching one of: `ADMIN_MANAGEMENT`, `SALES`, `INVENTORY`, `ACCOUNTING`, `OPERATIONS_DESIGN`, `CLIENT`
 
-| Role / Dashboard | Suggested Email | `role` metadata value |
-| --- | --- | --- |
-| Admin / Management | `admin@sims.com` | `ADMIN_MANAGEMENT` |
-| Sales | `sales@sims.com` | `SALES` |
-| Inventory | `inventory@sims.com` | `INVENTORY` |
-| Accounting | `accounting@sims.com` | `ACCOUNTING` |
-| Operations / Design | `operations@sims.com` | `OPERATIONS_DESIGN` |
-| Client | `client@acme.com` | `CLIENT` |
+| Role / Dashboard    | Suggested Email       | `role` metadata value |
+| ------------------- | --------------------- | --------------------- |
+| Admin / Management  | `admin@sims.com`      | `ADMIN_MANAGEMENT`    |
+| Sales               | `sales@sims.com`      | `SALES`               |
+| Inventory           | `inventory@sims.com`  | `INVENTORY`           |
+| Accounting          | `accounting@sims.com` | `ACCOUNTING`          |
+| Operations / Design | `operations@sims.com` | `OPERATIONS_DESIGN`   |
+| Client              | `client@acme.com`     | `CLIENT`              |
 
 ### Customer Portal (`localhost:3000/sign-in`)
 
@@ -139,7 +139,8 @@ pnpm install
 pnpm --filter storefront dev
 
 # Admin dashboard — http://localhost:3001
-pnpm --filter admin dev pnpm --filter admin dev
+pnpm --filter admin dev 
+
 
 # Both apps simultaneously
 pnpm dev

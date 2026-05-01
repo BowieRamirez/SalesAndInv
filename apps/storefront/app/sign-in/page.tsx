@@ -142,7 +142,7 @@ export default function SignInPage() {
       <div className="relative flex flex-1 items-center justify-center bg-white p-8 lg:p-12">
         <Link
           href="/"
-          className="text-charcoal/70 hover:text-navy absolute top-6 left-6 inline-flex items-center gap-2 rounded-[10px] px-3 py-2 text-[13px] font-medium transition-colors hover:bg-[#f9fafb]"
+          className="text-[#6a7282] hover:text-[#1a1a2e] absolute top-6 left-6 inline-flex items-center gap-2 rounded-[10px] px-3 py-2 text-[13px] font-medium transition-colors hover:bg-[#f9fafb]"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to products</span>
@@ -175,10 +175,10 @@ export default function SignInPage() {
           )}
 
           <div className="mb-10 text-center">
-            <h2 className="text-navy mb-2.5 text-[28px] font-semibold tracking-tight">
+            <h2 className="font-[family-name:var(--font-inter)] mb-2.5 text-[28px] font-semibold tracking-tight text-[#1a1a2e]">
               Welcome back
             </h2>
-            <p className="text-muted text-[14px]">
+            <p className="text-[14px] text-[#6a7282]">
               Sign in to your customer account to browse live finished products.
             </p>
           </div>
@@ -186,14 +186,14 @@ export default function SignInPage() {
           <form className="space-y-5" onSubmit={handleSignIn}>
             <div className="space-y-2">
               <label
-                className="text-charcoal/80 text-[13px] font-medium"
+                className="text-[13px] font-medium text-[#2d2d2d]"
                 htmlFor="email"
               >
                 Email Address
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                  <User className="text-muted/70 h-[18px] w-[18px]" />
+                  <User className="h-[18px] w-[18px] text-[#99a1af]" />
                 </div>
                 <input
                   id="email"
@@ -203,21 +203,21 @@ export default function SignInPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your customer email"
-                  className="border-border/80 text-charcoal placeholder:text-muted/70 focus:border-navy focus:ring-navy block w-full rounded-[10px] border bg-white py-3 pr-4 pl-10 text-[14px] transition-all focus:ring-1 focus:outline-none"
+                  className="block w-full rounded-[10px] border border-[#d1d5dc] bg-white py-3 pr-4 pl-10 text-[14px] text-[#1a1a2e] placeholder:text-[#99a1af] transition-all focus:border-[#1a1a2e] focus:ring-1 focus:ring-[#1a1a2e] focus:outline-none"
                 />
               </div>
             </div>
 
             <div className="relative space-y-2">
               <label
-                className="text-charcoal/80 text-[13px] font-medium"
+                className="text-[13px] font-medium text-[#2d2d2d]"
                 htmlFor="password"
               >
                 Password
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                  <Lock className="text-muted/70 h-[18px] w-[18px]" />
+                  <Lock className="h-[18px] w-[18px] text-[#99a1af]" />
                 </div>
                 <input
                   id="password"
@@ -227,12 +227,12 @@ export default function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="border-border/80 text-charcoal placeholder:text-muted/70 focus:border-navy focus:ring-navy block w-full rounded-[10px] border bg-white py-3 pr-11 pl-10 text-[14px] transition-all focus:ring-1 focus:outline-none"
+                  className="block w-full rounded-[10px] border border-[#d1d5dc] bg-white py-3 pr-11 pl-10 text-[14px] text-[#1a1a2e] placeholder:text-[#99a1af] transition-all focus:border-[#1a1a2e] focus:ring-1 focus:ring-[#1a1a2e] focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-muted/70 hover:text-charcoal absolute inset-y-0 right-0 flex items-center pr-3.5 transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#99a1af] transition-colors hover:text-[#1a1a2e]"
                 >
                   {showPassword ? (
                     <EyeOff className="h-[18px] w-[18px]" />
@@ -246,7 +246,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-navy hover:bg-navy/95 group !mt-8 flex h-[46px] w-full cursor-pointer items-center justify-center space-x-2 rounded-[10px] text-[14px] font-medium text-white transition-all disabled:opacity-60"
+              className="group !mt-8 flex h-[46px] w-full cursor-pointer items-center justify-center space-x-2 rounded-[10px] bg-[#1a1a2e] text-[14px] font-medium text-white transition-all hover:bg-[#1a1a2e]/90 disabled:opacity-60"
             >
               <LogIn className="h-[18px] w-[18px] transition-transform group-hover:translate-x-0.5" />
               <span>{isLoading ? "Signing In..." : "Sign In"}</span>
@@ -254,11 +254,11 @@ export default function SignInPage() {
           </form>
 
           <div className="mt-8 border-t border-[#eef0f4] pt-6 text-center">
-            <p className="text-muted text-[13px]">
+            <p className="text-[14px] text-[#6a7282]">
               New to FurniTrack?{" "}
               <Link
                 href="/sign-up"
-                className="text-navy hover:text-navy/80 inline-flex items-center gap-1.5 font-semibold transition-colors"
+                className="inline-flex items-center gap-1.5 font-semibold text-[#1a1a2e] transition-colors hover:text-[#1a1a2e]/70"
               >
                 <UserPlus className="h-4 w-4" />
                 Create an account

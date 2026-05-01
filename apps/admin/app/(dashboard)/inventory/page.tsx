@@ -35,9 +35,14 @@ type StockRequestSummaryRow = {
   count: number
 }
 
-type AuditSummaryRow = {
+type DetailedAuditLog = {
+  id: string
   action: string
-  count: number
+  sku: string | null
+  itemName: string | null
+  quantity: number | null
+  actorName: string | null
+  createdAt: Date
 }
 
 type DamagedMaterialRow = {
@@ -118,15 +123,20 @@ async function getStockRequestSummaries() {
   `)
 }
 
-async function getAuditSummaries() {
-  return prisma.$queryRaw<AuditSummaryRow[]>(Prisma.sql`
+async function getAuditLogs() {
+  return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
     SELECT
-      COALESCE(metadata->>'auditLabel', action::text) AS action,
-      COUNT(*)::int AS count
-    FROM public.audit_logs
-    GROUP BY COALESCE(metadata->>'auditLabel', action::text)
-    ORDER BY COUNT(*) DESC, COALESCE(metadata->>'auditLabel', action::text) ASC
-    LIMIT 8
+      a.id,
+      COALESCE(a.metadata->>'auditLabel', a.action::text) AS action,
+      a.metadata->>'sku' AS sku,
+      a.metadata->>'itemName' AS "itemName",
+      CAST(a.metadata->>'quantity' AS INTEGER) AS quantity,
+      u.name AS "actorName",
+      a."createdAt"
+    FROM public.audit_logs a
+    LEFT JOIN public.users u ON u.id = a."actorId"
+    ORDER BY a."createdAt" DESC
+    LIMIT 50
   `)
 }
 
@@ -248,7 +258,7 @@ function RequestSummary({ rows }: { rows: StockRequestSummaryRow[] }) {
   )
 }
 
-function AuditSummary({ rows }: { rows: AuditSummaryRow[] }) {
+function DetailedAuditTable({ rows }: { rows: DetailedAuditLog[] }) {
   if (rows.length === 0) {
     return <EmptyState message="Audit entries will show up here after stock approvals, updates, and company-code actions are recorded." />
   }
@@ -259,15 +269,23 @@ function AuditSummary({ rows }: { rows: AuditSummaryRow[] }) {
         <table className="min-w-full text-left text-[13px]">
           <thead>
             <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-              <th className="py-3 pr-4 font-medium">Audit Action</th>
-              <th className="py-3 font-medium">Count</th>
+              <th className="py-3 pr-4 font-medium">Recorded</th>
+              <th className="py-3 pr-4 font-medium">Actor</th>
+              <th className="py-3 pr-4 font-medium">Action</th>
+              <th className="py-3 pr-4 font-medium">SKU</th>
+              <th className="py-3 pr-4 font-medium">Item Name</th>
+              <th className="py-3 font-medium">Qty</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.action} className="border-b border-[#f3f4f6] last:border-b-0">
+              <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
+                <td className="py-3 pr-4 text-[#111827]">{new Date(row.createdAt).toLocaleString()}</td>
+                <td className="py-3 pr-4 text-[#111827]">{row.actorName ?? "System"}</td>
                 <td className="py-3 pr-4 text-[#111827]">{row.action.replaceAll("_", " ")}</td>
-                <td className="py-3 text-[#111827]">{row.count}</td>
+                <td className="py-3 pr-4 text-[#111827]">{row.sku ?? "-"}</td>
+                <td className="py-3 pr-4 text-[#111827]">{row.itemName ?? "-"}</td>
+                <td className="py-3 text-[#111827]">{row.quantity ?? "-"}</td>
               </tr>
             ))}
           </tbody>
@@ -405,7 +423,7 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
     getInventoryRows(),
     getWarehouseSummaries(),
     getStockRequestSummaries(),
-    getAuditSummaries(),
+    getAuditLogs(),
     getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
     getDamagedMaterialRows(),
   ])
@@ -587,7 +605,7 @@ export default async function InventoryDashboard({ searchParams }: InventoryPage
       {activeTab === "audit" && (
         <div className="space-y-6">
           <SectionHeader title="Audit Logs" />
-          <AuditSummary rows={auditSummary} />
+          <DetailedAuditTable rows={auditSummary} />
         </div>
       )}
     </main>

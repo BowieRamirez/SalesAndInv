@@ -96,7 +96,7 @@ function AccordionPanel({ item, isActive, onActivate }: AccordionPanelProps) {
         <p className="mb-2 text-[10px] font-medium uppercase leading-none tracking-[2px] text-white/60">
           FurniTrack Collection
         </p>
-        <h3 className="font-[family-name:var(--font-playfair)] text-3xl font-medium leading-tight">
+        <h3 className="font-[family-name:var(--font-inter)] text-3xl font-semibold leading-tight">
           {item.title}
         </h3>
         <p className="mt-3 max-w-[260px] text-sm leading-5 text-white/70">
@@ -109,7 +109,7 @@ function AccordionPanel({ item, isActive, onActivate }: AccordionPanelProps) {
 
       <span
         className={cn(
-          "absolute left-1/2 bottom-20 whitespace-nowrap text-sm font-semibold uppercase tracking-[1px] text-white transition-all duration-300",
+          "absolute left-1/2 bottom-20 whitespace-nowrap font-[family-name:var(--font-inter)] text-sm font-semibold uppercase tracking-[1px] text-white transition-all duration-300",
           isActive
             ? "translate-x-8 rotate-90 opacity-0"
             : "-translate-x-1/2 rotate-90 opacity-100"
@@ -128,7 +128,7 @@ export function LandingAccordionItem() {
     <section className="mx-auto w-full max-w-[1536px] px-4 pb-6 md:px-8">
       <div className="grid gap-8 rounded-lg border border-white/10 bg-[#1a1a2e] p-5 shadow-sm lg:grid-cols-[minmax(260px,0.55fr)_minmax(0,1fr)] lg:p-8">
         <div className="flex flex-col justify-center">
-          <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-medium leading-tight text-white md:text-5xl">
+          <h2 className="font-[family-name:var(--font-inter)] text-4xl font-semibold leading-tight text-white md:text-5xl">
             Practical office furniture, ready for real work.
           </h2>
           <p className="mt-5 max-w-xl text-sm leading-6 text-white/65">

@@ -21,7 +21,7 @@ export function ProductClient({ product }: ProductClientProps) {
   const savings = product.originalPrice ? product.originalPrice - product.price : null
 
   return (
-    <div className="flex flex-col font-['var(--font-inter)']">
+    <div className="flex flex-col font-[family-name:var(--font-inter)]">
       {product.badge && (
         <div className="mb-[12px] inline-flex w-max items-center justify-center rounded-[100px] bg-[#ffefc6] px-[12px] py-[4px]">
           <span className="text-[10px] font-bold uppercase tracking-[0.9px] text-[#ffb900]">
@@ -30,7 +30,7 @@ export function ProductClient({ product }: ProductClientProps) {
         </div>
       )}
 
-      <h1 className="mb-[12px] font-['var(--font-playfair)'] text-[36px] font-medium leading-[43.2px] text-[#1a1a2e]">
+      <h1 className="mb-[12px] font-[family-name:var(--font-inter)] text-[36px] font-semibold leading-[43.2px] text-[#1a1a2e]">
         {product.name}
       </h1>
 

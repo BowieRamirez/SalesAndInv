@@ -138,7 +138,7 @@ export function InquiryButton({
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <p className="text-[12px] uppercase tracking-[0.24em] text-[#99a1af]">Product inquiry</p>
-                <h3 className="mt-2 text-[28px] font-medium text-[#1a1a2e]">{productName}</h3>
+                <h3 className="mt-2 font-[family-name:var(--font-inter)] text-[28px] font-semibold text-[#1a1a2e]">{productName}</h3>
                 <p className="mt-2 text-[13px] leading-[20px] text-[#6a7282]">
                   Tell sales what you need, especially if you want custom sizing, materials, or layout changes.
                 </p>

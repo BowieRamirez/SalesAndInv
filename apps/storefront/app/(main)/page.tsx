@@ -14,32 +14,10 @@ export default async function HomePage() {
   const curatedForYou = products.slice(4, 8)
 
   return (
-    <div className="bg-white min-h-screen font-['var(--font-inter)'] relative flex flex-col items-center">
+    <div className="bg-white min-h-screen font-[family-name:var(--font-inter)] relative flex flex-col items-center">
         <div className="w-full pt-[24px]">
           <LandingAccordionItem />
         </div>
-
-        {/* ===== TRUST BAR ===== */}
-        <section className="w-full max-w-[1336px] mx-auto px-6 py-[40px]">
-          <div className="flex flex-wrap lg:flex-nowrap justify-between items-center gap-[12px] w-full">
-            <span className="flex items-center gap-[6px]">
-              <span className="text-[14px]">🚚</span>
-              <span className="font-normal text-[12px] text-[#99a1af] leading-[18px]">Free shipping on $500+</span>
-            </span>
-            <span className="flex items-center gap-[6px]">
-              <span className="text-[14px]">🛡️</span>
-              <span className="font-normal text-[12px] text-[#99a1af] leading-[18px]">5-year warranty</span>
-            </span>
-            <span className="flex items-center gap-[6px]">
-              <span className="text-[14px]">↩️</span>
-              <span className="font-normal text-[12px] text-[#99a1af] leading-[18px]">30-day easy returns</span>
-            </span>
-            <span className="flex items-center gap-[6px]">
-              <span className="text-[14px]">💬</span>
-              <span className="font-normal text-[12px] text-[#99a1af] leading-[18px]">24/7 expert support</span>
-            </span>
-          </div>
-        </section>
 
         {/* ===== NEW ARRIVALS ===== */}
         <section className="w-full max-w-[1336px] mx-auto px-6 pb-[40px] flex flex-col gap-[28px]">
@@ -49,7 +27,7 @@ export default async function HomePage() {
                 <Sparkles className="w-[18px] h-[18px] text-[#00bc7d]" />
               </div>
               <div className="flex flex-col">
-                <h2 className="font-[family-name:var(--font-playfair)] font-medium text-[18px] text-[#1a1a2e] leading-[27px]">New Arrivals</h2>
+                <h2 className="font-[family-name:var(--font-inter)] font-semibold text-[18px] text-[#1a1a2e] leading-[27px]">New Arrivals</h2>
                 <p className="font-normal text-[11px] text-[#99a1af] leading-[16.5px]">Fresh additions to our collection</p>
               </div>
             </div>
@@ -75,19 +53,19 @@ export default async function HomePage() {
           <div className="flex flex-col lg:flex-row h-auto lg:h-[300px]">
              {/* Left Text Block */}
              <div className="bg-[#f5f0eb] w-full lg:w-[527px] shrink-0 p-[40px] flex flex-col justify-center">
-                <span className="font-normal text-[10px] text-[#99a1af] uppercase tracking-[2px] leading-[15px] mb-4">The Office Edit</span>
+                <span className="font-[family-name:var(--font-inter)] font-normal text-[10px] text-[#99a1af] uppercase tracking-[2px] leading-[15px] mb-4">The Office Edit</span>
                 <h2 className="text-[#1a1a2e] text-[28px] leading-[33.6px] mb-6">
-                  <span className="font-[family-name:var(--font-playfair)] font-medium block">Work-ready tables,</span>
-                  <span className="font-[family-name:var(--font-playfair)] font-medium italic block">storage that fits</span>
+                  <span className="font-[family-name:var(--font-inter)] font-semibold block">Work-ready tables,</span>
+                  <span className="font-[family-name:var(--font-inter)] font-semibold block">storage that fits</span>
                 </h2>
-                <p className="font-normal text-[13px] text-[#6a7282] leading-[19.5px] max-w-[367px] mb-[20px]">
+                <p className="font-[family-name:var(--font-inter)] font-normal text-[13px] text-[#6a7282] leading-[19.5px] max-w-[367px] mb-[20px]">
                   Find office tables, pedestals, cabinets, and compact storage made for productive workspaces.
                 </p>
                 <div className="flex items-center gap-3">
-                  <Link href="/sign-in" className="bg-[#1a1a2e] text-white px-[20px] py-[11px] font-medium text-[13px] leading-[19.5px] flex items-center gap-2 w-max transition-colors hover:bg-[#1a1a2e]/90">
+                  <Link href="/sign-in" className="font-[family-name:var(--font-inter)] bg-[#1a1a2e] text-white px-[20px] py-[11px] font-medium text-[13px] leading-[19.5px] flex items-center gap-2 w-max transition-colors hover:bg-[#1a1a2e]/90">
                     Sign In <ArrowRight className="w-[14px] h-[14px]" />
                   </Link>
-                  <Link href="/shop" className="border-[1.25px] border-[#1a1a2e]/20 text-[#1a1a2e] px-[25px] py-[11px] font-normal text-[13px] leading-[19.5px] transition-colors hover:bg-black/5">
+                  <Link href="/shop" className="font-[family-name:var(--font-inter)] border-[1.25px] border-[#1a1a2e]/20 text-[#1a1a2e] px-[25px] py-[11px] font-normal text-[13px] leading-[19.5px] transition-colors hover:bg-black/5">
                     Browse
                   </Link>
                 </div>
@@ -108,7 +86,7 @@ export default async function HomePage() {
                   <Star className="w-[18px] h-[18px] text-[#ffb900]" fill="currentColor" />
                 </div>
                 <div className="flex flex-col">
-                  <h2 className="font-[family-name:var(--font-playfair)] font-medium text-[18px] text-[#1a1a2e] leading-[27px]">Curated For You</h2>
+                  <h2 className="font-[family-name:var(--font-inter)] font-semibold text-[18px] text-[#1a1a2e] leading-[27px]">Curated For You</h2>
                   <p className="font-normal text-[11px] text-[#99a1af] leading-[16.5px]">Top-rated pieces our customers love</p>
                 </div>
               </div>

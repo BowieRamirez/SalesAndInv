@@ -1,0 +1,125 @@
+import { randomUUID } from "node:crypto"
+import { revalidatePath } from "next/cache"
+import { NextResponse } from "next/server"
+import { Prisma, prisma } from "@furnitrack/db"
+import { getAuthenticatedAppUser } from "@/lib/auth/session"
+
+function buildRedirect(request: Request, message: string, tone: "success" | "error") {
+  const url = new URL("/inventory", request.url)
+  url.searchParams.set("tab", "all-stocks")
+  url.searchParams.set("message", message)
+  url.searchParams.set("tone", tone)
+  return NextResponse.redirect(url, { status: 303 })
+}
+
+export async function POST(request: Request) {
+  const currentUser = await getAuthenticatedAppUser()
+
+  if (!currentUser || !["INVENTORY", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+    return buildRedirect(request, "Only inventory or executive admins can remove stock.", "error")
+  }
+
+  const requestOrigin = request.headers.get("origin")
+  const appOrigin = new URL(request.url).origin
+
+  if (requestOrigin && requestOrigin !== appOrigin) {
+    return buildRedirect(request, "Invalid request origin.", "error")
+  }
+
+  const formData = await request.formData()
+  const stockItemId = String(formData.get("stockItemId") ?? "").trim()
+  const quantity = Number.parseInt(String(formData.get("quantity") ?? "0"), 10)
+  const referenceNumber = String(formData.get("referenceNumber") ?? "").trim()
+
+  if (!stockItemId) {
+    return buildRedirect(request, "Select a raw material to deduct stock from.", "error")
+  }
+
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    return buildRedirect(request, "Stock quantity must be greater than zero.", "error")
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const existingItem = await tx.$queryRaw<Array<{ id: string; sku: string; itemName: string; availableQty: number }>>(Prisma.sql`
+        SELECT id, sku, "itemName", "availableQty"
+        FROM public.stock_items
+        WHERE id = ${stockItemId}
+          AND "itemType" = 'RAW_MATERIAL'::"InventoryItemType"
+        LIMIT 1
+      `)
+
+      if (!existingItem[0]) {
+        throw new Error("The selected raw material could not be found.")
+      }
+
+      if (existingItem[0].availableQty < quantity) {
+        throw new Error("Cannot remove more stock than is currently available.")
+      }
+
+      await tx.$executeRaw(Prisma.sql`
+        UPDATE public.stock_items
+        SET
+          "availableQty" = "availableQty" - ${quantity},
+          "updatedAt" = CURRENT_TIMESTAMP
+        WHERE id = ${stockItemId}
+      `)
+
+      await tx.$executeRaw(Prisma.sql`
+        INSERT INTO public.stock_movements (
+          id,
+          "stockItemId",
+          type,
+          quantity,
+          "referenceNumber",
+          "createdAt"
+        )
+        VALUES (
+          ${randomUUID()},
+          ${stockItemId},
+          'OUT'::"StockMovementType",
+          ${quantity},
+          ${referenceNumber || null},
+          CURRENT_TIMESTAMP
+        )
+      `)
+
+      await tx.$executeRaw(Prisma.sql`
+        INSERT INTO public.audit_logs (
+          id,
+          "actorId",
+          action,
+          "entityType",
+          "entityId",
+          metadata,
+          "createdAt"
+        )
+        VALUES (
+          ${randomUUID()},
+          ${currentUser.id},
+          'USER_UPDATED'::"AuditAction",
+          'USER'::"AuditEntityType",
+          ${stockItemId},
+          ${JSON.stringify({
+            auditLabel: "RAW_MATERIAL_STOCK_REMOVED",
+            sku: existingItem[0].sku,
+            itemName: existingItem[0].itemName,
+            quantity,
+            referenceNumber: referenceNumber || null,
+          })}::jsonb,
+          CURRENT_TIMESTAMP
+        )
+      `)
+    })
+
+    revalidatePath("/inventory")
+    return buildRedirect(request, "Stock was removed from the selected raw material.", "success")
+  } catch (error) {
+    const message =
+      error instanceof Error && error.message
+        ? error.message
+        : "Neon DB could not update that raw material stock."
+
+    return buildRedirect(request, message, "error")
+  }
+}

@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { authClient } from "@/lib/auth/client"
 import { normalizeAppRole, ROLE_LABELS, ROLE_REDIRECT } from "@/lib/rbac"
+import { HeroGeometric } from "@/components/ui/shape-landing-hero"
 
 const AUTH_CLIENT_TIMEOUT_MS = 15000
 
@@ -134,73 +135,9 @@ export default function AdminSignInPage() {
 
   return (
     <main className="flex min-h-screen flex-col bg-[#fcfcfc] py-10 font-[family-name:var(--font-inter)] lg:flex-row lg:py-0">
-      <div className="relative flex min-h-[500px] flex-col justify-between overflow-hidden bg-[#1a1c29] p-8 text-white lg:min-h-screen lg:w-[45%] xl:p-14">
-        <div className="pointer-events-none absolute top-[-10%] left-[-15%] h-[45rem] w-[45rem] rounded-full border-[60px] border-white/[0.03]" />
-        <div className="pointer-events-none absolute right-[-10%] bottom-[-10%] h-[30rem] w-[30rem] rounded-full border-[40px] border-white/[0.03]" />
-        <div className="pointer-events-none absolute top-[30%] right-[-15%] h-[50rem] w-[50rem] rounded-full border-[50px] border-white/[0.03]" />
-
-        <div className="relative z-10 mt-4 flex items-center space-x-3 lg:mt-0">
-          <div className="rounded-xl border border-white/5 bg-white/10 p-2.5 shadow-sm">
-            <Shield className="h-6 w-6 text-[#818cf8]" />
-          </div>
-          <div className="flex flex-col">
-            <h1 className="text-[17px] leading-tight font-semibold tracking-wide">
-              FurniTrack
-            </h1>
-            <p className="mt-0.5 text-[11px] font-medium tracking-wider text-white/50 uppercase">
-              Admin Portal
-            </p>
-          </div>
-        </div>
-
-        <div className="relative z-10 mt-6">
-          <span className="inline-flex items-center space-x-1.5 rounded-full border border-[#6366f1]/30 bg-[#6366f1]/20 px-3 py-1.5 text-[11px] font-semibold tracking-wider text-[#818cf8] uppercase">
-            <Shield className="h-3 w-3" />
-            <span>Internal Access Only</span>
-          </span>
-        </div>
-
-        <div className="relative z-10 mt-10 mb-auto max-w-lg xl:pl-4">
-          <div className="absolute -top-10 -left-6 animate-pulse text-[#818cf8] opacity-90">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L13.4 9.6L21 12L13.4 14.4L12 22L10.6 14.4L3 12L10.6 9.6L12 2Z" />
-            </svg>
-          </div>
-
-          <h2 className="mb-6 text-[2.5rem] leading-[1.1] font-semibold tracking-tight xl:text-[3.2rem]">
-            Minimized role-based
-            <br />
-            business management
-          </h2>
-          <p className="mb-10 max-w-[420px] text-[15px] leading-relaxed text-white/60 xl:text-[16px]">
-            Sales, inventory, accounting, operations, and management work from
-            one shared workflow with backend company-code enforcement for client
-            security.
-          </p>
-
-          <div className="flex flex-wrap gap-3">
-            <div className="flex items-center space-x-2.5 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-sm">
-              <CheckCircle2 className="h-[15px] w-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">
-                Role-Based Access
-              </span>
-            </div>
-            <div className="flex items-center space-x-2.5 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-sm">
-              <BarChart3 className="h-[15px] w-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">
-                Shared Workflow
-              </span>
-            </div>
-            <div className="flex items-center space-x-2.5 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-sm">
-              <Package className="h-[15px] w-[15px] text-white/80" />
-              <span className="text-[13px] font-medium text-white/90">
-                Company-Code Security
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10 mb-4 text-[12px] font-medium text-white/40 lg:mb-0 xl:pl-4">
+      <div className="relative flex min-h-[500px] flex-col overflow-hidden bg-[#1a1c29] lg:min-h-screen lg:w-[45%]">
+        <HeroGeometric />
+        <div className="absolute bottom-4 left-4 z-20 text-[12px] font-medium text-white/40 lg:bottom-8 lg:left-8 xl:left-14">
           &copy; 2026 SIMS Co. All rights reserved.
         </div>
       </div>

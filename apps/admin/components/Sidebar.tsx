@@ -87,7 +87,6 @@ const navConfigs: Record<AppRole, NavConfig> = {
   },
   ACCOUNTING: {
     links: [
-      { name: "Billing Basis", href: "/accounting?tab=auto-compute", icon: Calculator, tab: "auto-compute" },
       { name: "Approvals", href: "/accounting?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Approval History", href: "/accounting?tab=history", icon: History, tab: "history" },
       { name: "Documents", href: "/accounting?tab=documents", icon: FileText, tab: "documents" },
@@ -95,7 +94,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Accounting",
     color: "bg-orange-500",
     allowedPaths: ["/accounting"],
-    defaultHref: "/accounting?tab=auto-compute",
+    defaultHref: "/accounting?tab=approvals",
   },
   OPERATIONS_DESIGN: {
     links: [

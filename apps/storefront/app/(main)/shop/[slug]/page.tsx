@@ -80,7 +80,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {/* Related products */}
         {related.length > 0 && (
           <section className="mb-[64px]">
-            <h2 className="text-[32px] font-medium font-['var(--font-playfair)'] text-[#1a1a2e] leading-[38.4px] mb-[40px]">
+            <h2 className="text-[32px] font-semibold font-[family-name:var(--font-inter)] text-[#1a1a2e] leading-[38.4px] mb-[40px]">
               You May Also Like
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[24px]">
