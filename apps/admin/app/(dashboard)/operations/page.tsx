@@ -126,6 +126,21 @@ function formatDateTime(value: Date | null) {
   }).format(value)
 }
 
+function formatPeso(value: number) {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function formatPaymentStatus(status: InquiryWorkflowRow["paymentStatus"]) {
+  return status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ")
+}
+
 function toDateValue(value: Date | null) {
   if (!value) {
     return ""
@@ -186,7 +201,8 @@ function DeliveryQueueCard({
       : "Add the shipping confirmation note for order history."
   const shippingScheduleLabel = formatDateTime(inquiry.shippingScheduledAt)
   const shippingDayStart = startOfShippingDay(inquiry.shippingScheduledAt)
-  const canCompleteNow = shippingDayStart ? shippingDayStart.getTime() <= Date.now() : false
+  const isFullyPaid = inquiry.paymentStatus === "FULLY_PAID"
+  const canCompleteNow = shippingDayStart ? shippingDayStart.getTime() <= Date.now() && isFullyPaid : false
   const progressWidth = inquiry.shippingScheduledAt ? (canCompleteNow ? "100%" : "66%") : "33%"
 
   return (
@@ -209,13 +225,37 @@ function DeliveryQueueCard({
               Latest note: {inquiry.workflowNote}
             </div>
           ) : null}
+          <div className="mt-4 grid gap-3 rounded-[18px] bg-[#f8fafc] p-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Total</p>
+              <p className="mt-1 text-[13px] font-semibold text-[#111827]">{formatPeso(inquiry.total)}</p>
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Down payment required</p>
+              <p className="mt-1 text-[13px] font-semibold text-[#111827]">{formatPeso(inquiry.downPaymentRequired)}</p>
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Paid</p>
+              <p className="mt-1 text-[13px] font-semibold text-[#111827]">{formatPeso(inquiry.paid)}</p>
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Remaining balance</p>
+              <p className="mt-1 text-[13px] font-semibold text-[#111827]">{formatPeso(inquiry.remainingBalance)}</p>
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Payment status</p>
+              <p className="mt-1 text-[13px] font-semibold text-[#111827]">{formatPaymentStatus(inquiry.paymentStatus)}</p>
+            </div>
+          </div>
           <div className="mt-4 rounded-[18px] bg-[#f8fafc] p-4">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Shipping progress</p>
                 <p className="mt-2 text-[14px] font-medium text-[#1a1a2e]">
                   {shippingScheduleLabel
-                    ? canCompleteNow
+                    ? !isFullyPaid
+                      ? "Shipping is blocked until accounting marks this order as fully paid."
+                      : canCompleteNow
                       ? "Scheduled ship date reached. This order can now be completed."
                       : "In shipping. Waiting for the scheduled ship date to be reached."
                     : "Waiting for operations to schedule the shipping date."}
@@ -307,7 +347,9 @@ function DeliveryQueueCard({
       </form>
       {action === "ship" && !canCompleteNow && shippingScheduleLabel ? (
         <p className="mt-3 text-[12px] text-[#b45309]">
-          This order can only be marked complete on or after {shippingScheduleLabel}.
+          {isFullyPaid
+            ? `This order can only be marked complete on or after ${shippingScheduleLabel}.`
+            : "This order cannot be shipped yet because accounting has not marked it as fully paid."}
         </p>
       ) : null}
       {action === "build" ? (

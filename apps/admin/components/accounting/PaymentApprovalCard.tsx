@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { formatInquiryWorkflowStatus, getInquiryWorkflowStyle } from "@furnitrack/validators"
-import type { InquiryWorkflowRow } from "@/lib/inquiries"
+import type { InquiryPaymentStatus, InquiryWorkflowRow } from "@/lib/inquiries"
 import {
   ACCOUNTING_PAYMENT_METHODS,
   type AccountingPaymentMethod,
@@ -18,9 +18,42 @@ function WorkflowBadge({ status }: { status: string }) {
   )
 }
 
+function formatPeso(value: number) {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function PaymentStatusBadge({ status }: { status: InquiryPaymentStatus }) {
+  const label = status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ")
+
+  const tone =
+    status === "FULLY_PAID"
+      ? "bg-[#dcfce7] text-[#166534]"
+      : status === "REJECTED"
+        ? "bg-[#ffe4e6] text-[#be123c]"
+        : status === "PENDING"
+          ? "bg-[#fef3c7] text-[#92400e]"
+          : "bg-[#dbeafe] text-[#1d4ed8]"
+
+  return (
+    <span className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${tone}`}>
+      {label}
+    </span>
+  )
+}
+
 export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }) {
   const [isOpen, setIsOpen] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<AccountingPaymentMethod>("BANK_TRANSFER")
+  const [paymentStatus, setPaymentStatus] = useState<InquiryPaymentStatus>("FULLY_PAID")
+  const [paidAmount, setPaidAmount] = useState(() => inquiry.total.toFixed(2))
+  const requiresPaidAmount = paymentStatus === "DOWN_PAYMENT" || paymentStatus === "PARTIALLY_PAID"
 
   return (
     <>
@@ -42,9 +75,35 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
 
           <div className="flex flex-col items-start gap-3 text-[12px] text-[#6b7280] lg:items-end">
             <WorkflowBadge status={inquiry.workflowStatus} />
+            <PaymentStatusBadge status={inquiry.paymentStatus} />
             <div>
               <p>Created {new Date(inquiry.createdAt).toLocaleDateString()}</p>
               <p className="mt-1">Updated {new Date(inquiry.updatedAt).toLocaleDateString()}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-3 border-t border-[#e5e7eb] pt-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Total</p>
+            <p className="mt-1 text-[14px] font-semibold text-[#111827]">{formatPeso(inquiry.total)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Down payment required</p>
+            <p className="mt-1 text-[14px] font-semibold text-[#111827]">{formatPeso(inquiry.downPaymentRequired)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Paid</p>
+            <p className="mt-1 text-[14px] font-semibold text-[#111827]">{formatPeso(inquiry.paid)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Remaining balance</p>
+            <p className="mt-1 text-[14px] font-semibold text-[#111827]">{formatPeso(inquiry.remainingBalance)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Payment status</p>
+            <div className="mt-1">
+              <PaymentStatusBadge status={inquiry.paymentStatus} />
             </div>
           </div>
         </div>
@@ -117,6 +176,7 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
             <form method="post" action="/api/admin/approvals/accounting" className="mt-6 space-y-4">
               <input type="hidden" name="inquiryId" value={inquiry.id} />
               <input type="hidden" name="paymentMethod" value={paymentMethod} />
+              <input type="hidden" name="paymentStatus" value={paymentStatus} />
 
               <label className="grid gap-2">
                 <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
@@ -134,6 +194,56 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
                   ))}
                 </select>
               </label>
+
+              <label className="grid gap-2">
+                <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
+                  Payment status
+                </span>
+                <select
+                  value={paymentStatus}
+                  onChange={(event) => {
+                    const nextPaymentStatus = event.target.value as InquiryPaymentStatus
+                    setPaymentStatus(nextPaymentStatus)
+                    if (nextPaymentStatus === "DOWN_PAYMENT") {
+                      setPaidAmount(inquiry.downPaymentRequired.toFixed(2))
+                    } else if (nextPaymentStatus === "PARTIALLY_PAID") {
+                      setPaidAmount(Math.max(inquiry.paid, inquiry.downPaymentRequired).toFixed(2))
+                    } else if (nextPaymentStatus === "FULLY_PAID") {
+                      setPaidAmount(inquiry.total.toFixed(2))
+                    }
+                  }}
+                  className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+                >
+                  <option value="DOWN_PAYMENT">Down Payment</option>
+                  <option value="PARTIALLY_PAID">Partially Paid</option>
+                  <option value="FULLY_PAID">Fully Paid</option>
+                  <option value="REJECTED">Rejected</option>
+                </select>
+              </label>
+
+              {requiresPaidAmount ? (
+                <label className="grid gap-2">
+                  <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
+                    Customer paid amount
+                  </span>
+                  <input
+                    type="number"
+                    name="paidAmount"
+                    value={paidAmount}
+                    onChange={(event) => setPaidAmount(event.target.value)}
+                    min="0"
+                    max={inquiry.total}
+                    step="0.01"
+                    required
+                    className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+                  />
+                  <span className="text-[12px] text-[#6b7280]">
+                    Remaining balance will be computed from the order total.
+                  </span>
+                </label>
+              ) : (
+                <input type="hidden" name="paidAmount" value={paymentStatus === "FULLY_PAID" ? inquiry.total.toFixed(2) : "0"} />
+              )}
 
               <label className="grid gap-2">
                 <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">

@@ -2,10 +2,19 @@
 
 import { useMemo, useState } from "react"
 import { formatInquiryWorkflowStatus, getInquiryWorkflowStyle } from "@furnitrack/validators"
-import { formatAccountingPaymentMethod, type AccountingPaymentMethod } from "@/lib/accounting-payment-methods"
-import type { InquiryWorkflowRow } from "@/lib/inquiries"
+import { formatAccountingPaymentMethod } from "@/lib/accounting-payment-methods"
+import type { InquiryPaymentStatus, InquiryWorkflowRow } from "@/lib/inquiries"
 
 const PAGE_SIZE = 10
+const FILTER_OPTIONS: Array<{ value: "ALL" | "PENDING" | "APPROVED" | "REJECTED" | InquiryPaymentStatus; label: string }> = [
+  { value: "ALL", label: "All" },
+  { value: "PENDING", label: "Pending" },
+  { value: "APPROVED", label: "Approved" },
+  { value: "REJECTED", label: "Rejected" },
+  { value: "DOWN_PAYMENT", label: "Down Payment" },
+  { value: "PARTIALLY_PAID", label: "Partially Paid" },
+  { value: "FULLY_PAID", label: "Fully Paid" },
+]
 
 function WorkflowBadge({ status }: { status: string }) {
   return (
@@ -17,20 +26,51 @@ function WorkflowBadge({ status }: { status: string }) {
   )
 }
 
+function formatPeso(value: number) {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function formatPaymentStatus(status: InquiryPaymentStatus) {
+  return status
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ")
+}
+
+function matchesFilter(row: InquiryWorkflowRow, filter: string) {
+  if (filter === "ALL") {
+    return true
+  }
+
+  if (filter === "PENDING" || filter === "APPROVED" || filter === "REJECTED") {
+    return row.paymentReviewStatus === filter
+  }
+
+  return row.paymentStatus === filter
+}
+
 export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
   const [query, setQuery] = useState("")
+  const [filter, setFilter] = useState<(typeof FILTER_OPTIONS)[number]["value"]>("ALL")
   const [page, setPage] = useState(1)
 
   const filteredRows = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
-    if (!normalizedQuery) return rows
 
-    return rows.filter((row) =>
-      [row.productName, row.customerName, row.customerEmail].some((value) =>
-        value.toLowerCase().includes(normalizedQuery),
-      ),
-    )
-  }, [query, rows])
+    return rows.filter((row) => {
+      const matchesQuery =
+        !normalizedQuery ||
+        [row.productName, row.customerName, row.customerEmail].some((value) =>
+          value.toLowerCase().includes(normalizedQuery),
+        )
+
+      return matchesQuery && matchesFilter(row, filter)
+    })
+  }, [filter, query, rows])
 
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -46,7 +86,7 @@ export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
             Review previously approved payments here.
           </p>
         </div>
-        <div className="w-full md:w-[320px]">
+        <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
           <input
             value={query}
             onChange={(event) => {
@@ -54,8 +94,22 @@ export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
               setPage(1)
             }}
             placeholder="Search product, customer, email"
-            className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+            className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] md:w-[320px]"
           />
+          <select
+            value={filter}
+            onChange={(event) => {
+              setFilter(event.target.value as typeof filter)
+              setPage(1)
+            }}
+            className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] md:w-[210px]"
+          >
+            {FILTER_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -66,6 +120,11 @@ export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
               <th className="py-3 pr-4 font-medium">Product</th>
               <th className="py-3 pr-4 font-medium">Customer</th>
               <th className="py-3 pr-4 font-medium">Payment Method</th>
+              <th className="py-3 pr-4 font-medium">Total</th>
+              <th className="py-3 pr-4 font-medium">Down payment required</th>
+              <th className="py-3 pr-4 font-medium">Paid</th>
+              <th className="py-3 pr-4 font-medium">Remaining balance</th>
+              <th className="py-3 pr-4 font-medium">Payment status</th>
               <th className="py-3 pr-4 font-medium">Status</th>
               <th className="py-3 pr-4 font-medium">Note</th>
             </tr>
@@ -85,6 +144,11 @@ export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
                 <td className="py-3 pr-4 text-[#111827]">
                   {row.paymentMethod ? formatAccountingPaymentMethod(row.paymentMethod) : "N/A"}
                 </td>
+                <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.total)}</td>
+                <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.downPaymentRequired)}</td>
+                <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.paid)}</td>
+                <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.remainingBalance)}</td>
+                <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPaymentStatus(row.paymentStatus)}</td>
                 <td className="py-3 pr-4">
                   <WorkflowBadge status={row.workflowStatus} />
                 </td>
@@ -130,19 +194,23 @@ export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
 
 export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
   const [query, setQuery] = useState("")
+  const [filter, setFilter] = useState<(typeof FILTER_OPTIONS)[number]["value"]>("ALL")
   const [page, setPage] = useState(1)
   const [selectedReceipt, setSelectedReceipt] = useState<InquiryWorkflowRow | null>(null)
 
   const filteredRows = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
-    if (!normalizedQuery) return rows
 
-    return rows.filter((row) =>
-      [row.productName, row.customerName, row.customerEmail].some((value) =>
-        value.toLowerCase().includes(normalizedQuery),
-      ),
-    )
-  }, [query, rows])
+    return rows.filter((row) => {
+      const matchesQuery =
+        !normalizedQuery ||
+        [row.productName, row.customerName, row.customerEmail].some((value) =>
+          value.toLowerCase().includes(normalizedQuery),
+        )
+
+      return matchesQuery && matchesFilter(row, filter)
+    })
+  }, [filter, query, rows])
 
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -159,7 +227,7 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
               View receipts and payment details of accepted orders.
             </p>
           </div>
-          <div className="w-full md:w-[320px]">
+          <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
             <input
               value={query}
               onChange={(event) => {
@@ -167,8 +235,22 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
                 setPage(1)
               }}
               placeholder="Search product, customer, email"
-              className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] md:w-[320px]"
             />
+            <select
+              value={filter}
+              onChange={(event) => {
+                setFilter(event.target.value as typeof filter)
+                setPage(1)
+              }}
+              className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] md:w-[210px]"
+            >
+              {FILTER_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -180,6 +262,11 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
                 <th className="py-3 pr-4 font-medium">Product</th>
                 <th className="py-3 pr-4 font-medium">Customer</th>
                 <th className="py-3 pr-4 font-medium">Payment Method</th>
+                <th className="py-3 pr-4 font-medium">Total</th>
+                <th className="py-3 pr-4 font-medium">Down payment required</th>
+                <th className="py-3 pr-4 font-medium">Paid</th>
+                <th className="py-3 pr-4 font-medium">Remaining balance</th>
+                <th className="py-3 pr-4 font-medium">Payment status</th>
                 <th className="py-3 font-medium">Action</th>
               </tr>
             </thead>
@@ -199,6 +286,11 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
                   <td className="py-3 pr-4 text-[#111827]">
                     {row.paymentMethod ? formatAccountingPaymentMethod(row.paymentMethod) : "N/A"}
                   </td>
+                  <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.total)}</td>
+                  <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.downPaymentRequired)}</td>
+                  <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.paid)}</td>
+                  <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(row.remainingBalance)}</td>
+                  <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">{formatPaymentStatus(row.paymentStatus)}</td>
                   <td className="py-3">
                     <button
                       type="button"
@@ -212,7 +304,7 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
               ))}
               {pagedRows.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-[#6b7280]">
+                  <td colSpan={11} className="py-8 text-center text-[#6b7280]">
                     No payment records found.
                   </td>
                 </tr>

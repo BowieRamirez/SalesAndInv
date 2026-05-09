@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation"
-import { PaymentApprovalCard } from "@/components/accounting/PaymentApprovalCard"
+import { AccountingApprovalsList } from "@/components/accounting/AccountingApprovalsList"
 import { ApprovalHistoryTable, PaymentRecordsTable } from "@/components/accounting/AccountingTables"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
-import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
+import { getInquiryWorkflowRows } from "@/lib/inquiries"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 
 type AccountingPageProps = {
@@ -28,6 +28,23 @@ function EmptyState({ message }: { message: string }) {
   )
 }
 
+function formatPeso(value: number) {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function StatCard({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+      <p className="text-[12px] uppercase tracking-[0.16em] text-[#94a3b8]">{label}</p>
+      <p className="mt-3 text-[24px] font-semibold text-[#111827]">{value}</p>
+    </div>
+  )
+}
+
 export const dynamic = "force-dynamic"
 
 export default async function AccountingDashboard({ searchParams }: AccountingPageProps) {
@@ -47,7 +64,22 @@ export default async function AccountingDashboard({ searchParams }: AccountingPa
       inquiry.paymentMethod &&
       ["GETTING_READY_FOR_BUILDING", "READY_FOR_SHIPPING", "COMPLETED"].includes(inquiry.workflowStatus),
   )
-  const buildingCount = (await getInquiryWorkflowRows(["GETTING_READY_FOR_BUILDING"])).length
+  const allAccountingRows = [...inquiries, ...accountingHistory]
+  const pendingApprovals = inquiries.filter((inquiry) => inquiry.paymentReviewStatus === "PENDING").length
+  const totalCollectedToday = allAccountingRows
+    .filter((inquiry) => {
+      const updatedAt = new Date(inquiry.updatedAt)
+      const today = new Date()
+      return (
+        inquiry.paymentReviewStatus === "APPROVED" &&
+        updatedAt.getFullYear() === today.getFullYear() &&
+        updatedAt.getMonth() === today.getMonth() &&
+        updatedAt.getDate() === today.getDate()
+      )
+    })
+    .reduce((sum, inquiry) => sum + inquiry.paid, 0)
+  const outstandingBalances = allAccountingRows.reduce((sum, inquiry) => sum + inquiry.remainingBalance, 0)
+  const rejectedPayments = allAccountingRows.filter((inquiry) => inquiry.paymentReviewStatus === "REJECTED").length
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] p-8">
@@ -67,7 +99,12 @@ export default async function AccountingDashboard({ searchParams }: AccountingPa
         </div>
       ) : null}
 
-
+      <div className="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <StatCard label="Pending Approvals" value={pendingApprovals} />
+        <StatCard label="Total Collected Today" value={formatPeso(totalCollectedToday)} />
+        <StatCard label="Outstanding Balances" value={formatPeso(outstandingBalances)} />
+        <StatCard label="Rejected Payments" value={rejectedPayments} />
+      </div>
 
       {activeTab === "approvals" && (
         <div className="space-y-6">
@@ -83,11 +120,7 @@ export default async function AccountingDashboard({ searchParams }: AccountingPa
             {inquiries.length === 0 ? (
               <EmptyState message="No customer orders are currently waiting on accounting approval." />
             ) : (
-              <div className="space-y-4">
-                {inquiries.map((inquiry) => (
-                  <PaymentApprovalCard key={inquiry.id} inquiry={inquiry} />
-                ))}
-              </div>
+              <AccountingApprovalsList rows={inquiries} />
             )}
           </section>
         </div>

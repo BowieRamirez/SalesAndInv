@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import { getReturnRequests } from "@furnitrack/db"
 import {
   formatInquiryWorkflowStatus,
@@ -13,7 +14,7 @@ type SalesPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-const SALES_TABS = new Set(["lead", "approvals", "returns", "orders", "tracker"])
+const SALES_TABS = new Set(["lead", "approvals", "returns", "orders", "chats"])
 
 function resolveTab(tab?: string | string[]) {
   const value = Array.isArray(tab) ? tab[0] : tab
@@ -83,15 +84,35 @@ function SalesLeadCard({ inquiry }: { inquiry: InquiryWorkflowRow }) {
   )
 }
 
-function TrackerRow({ inquiry }: { inquiry: InquiryWorkflowRow }) {
+function formatPeso(value: number) {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function SalesOrderRow({ inquiry }: { inquiry: InquiryWorkflowRow }) {
   return (
     <tr className="border-b border-[#eef2f7] last:border-b-0">
       <td className="py-4 pr-4 text-[#111827]">{inquiry.productName}</td>
-      <td className="py-4 pr-4 text-[#4b5563]">{inquiry.customerName}</td>
+      <td className="py-4 pr-4 text-[#4b5563]">
+        {inquiry.customerName}
+        <br />
+        <span className="text-[11px] text-[#94a3b8]">{inquiry.customerEmail}</span>
+      </td>
+      <td className="py-4 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(inquiry.total)}</td>
       <td className="py-4 pr-4">
         <WorkflowBadge status={inquiry.workflowStatus} />
       </td>
-      <td className="py-4 text-[#4b5563]">{inquiry.workflowNote ?? "No note yet."}</td>
+      <td className="py-4 text-right">
+        <Link
+          href={`/sales/orders/${inquiry.id}?tab=orders`}
+          className="rounded-lg bg-[#111827] px-3 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+        >
+          View order
+        </Link>
+      </td>
     </tr>
   )
 }
@@ -190,13 +211,40 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
             />
           </div>
 
+          <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <div className="mb-5">
+              <h2 className="text-[20px] font-semibold text-[#111827]">Workflow tracker</h2>
+              <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
+                Quick dashboard view of where customer orders are across the sales-to-delivery workflow.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+              {[
+                "RECEIVED",
+                "PENDING_INVENTORY_APPROVAL",
+                "PENDING_ACCOUNTING_APPROVAL",
+                "GETTING_READY_FOR_BUILDING",
+                "READY_FOR_SHIPPING",
+                "COMPLETED",
+              ].map((status) => (
+                <div key={status} className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-4">
+                  <p className="text-[12px] uppercase tracking-[0.14em] text-[#94a3b8]">
+                    {formatInquiryWorkflowStatus(status)}
+                  </p>
+                  <p className="mt-3 text-[28px] font-semibold text-[#111827]">
+                    {inquiries.filter((inquiry) => inquiry.workflowStatus === status).length}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <div className="grid gap-6 xl:grid-cols-[1.3fr_0.9fr]">
             <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
               <div className="mb-5">
-                <h2 className="text-[20px] font-semibold text-[#111827]">Sales overview</h2>
+                <h2 className="text-[20px] font-semibold text-[#111827]">Sales dashboard</h2>
                 <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
-                  This page is a simplified summary only. Use the other sales pages to actually process approvals,
-                  returns, orders, and workflow details.
+                  Use the sidebar pages to process approvals, returns, orders, and customer chat threads.
                 </p>
               </div>
 
@@ -343,13 +391,14 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
                 <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
                   <th className="py-3 pr-4 font-medium">Product</th>
                   <th className="py-3 pr-4 font-medium">Customer</th>
+                  <th className="py-3 pr-4 font-medium">Quotation total</th>
                   <th className="py-3 pr-4 font-medium">Current stage</th>
-                  <th className="py-3 font-medium">Latest note</th>
+                  <th className="py-3 font-medium text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {inquiries.map((inquiry) => (
-                  <TrackerRow key={inquiry.id} inquiry={inquiry} />
+                  <SalesOrderRow key={inquiry.id} inquiry={inquiry} />
                 ))}
               </tbody>
             </table>
@@ -357,32 +406,31 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
         </section>
       )}
 
-      {activeTab === "tracker" && (
+      {activeTab === "chats" && (
         <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
           <div className="mb-5">
-            <h2 className="text-[20px] font-semibold text-[#111827]">Cross-team workflow tracker</h2>
+            <h2 className="text-[20px] font-semibold text-[#111827]">Order Chats</h2>
+            <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
+              Open a specific order to chat with the customer, receive images, and send quotation or receipt documents.
+            </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
-            {[
-              "RECEIVED",
-              "PENDING_INVENTORY_APPROVAL",
-              "PENDING_ACCOUNTING_APPROVAL",
-              "GETTING_READY_FOR_BUILDING",
-              "READY_FOR_SHIPPING",
-              "COMPLETED",
-            ].map((status) => (
-              <div key={status} className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-4">
-                <p className="text-[12px] uppercase tracking-[0.14em] text-[#94a3b8]">
-                  {formatInquiryWorkflowStatus(status)}
-                </p>
-                <p className="mt-3 text-[28px] font-semibold text-[#111827]">
-                  {inquiries.filter((inquiry) => inquiry.workflowStatus === status).length}
-                </p>
-              </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {inquiries.map((inquiry) => (
+              <Link
+                key={inquiry.id}
+                href={`/sales/orders/${inquiry.id}?tab=chats`}
+                className="rounded-2xl border border-[#eef2f7] bg-[#fbfcfd] p-5 transition-colors hover:border-[#111827]"
+              >
+                <p className="text-[12px] uppercase tracking-[0.16em] text-[#94a3b8]">Order chat</p>
+                <h3 className="mt-2 text-[17px] font-semibold text-[#111827]">{inquiry.productName}</h3>
+                <p className="mt-2 text-[13px] text-[#6b7280]">{inquiry.customerName}</p>
+                <p className="mt-3 text-[13px] font-medium text-[#111827]">{formatPeso(inquiry.total)}</p>
+              </Link>
             ))}
           </div>
         </section>
       )}
+
     </main>
   )
 }

@@ -5,6 +5,7 @@ import {
   isAccountingPaymentMethod,
 } from "@/lib/accounting-payment-methods"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
+import type { InquiryPaymentStatus } from "@/lib/inquiries"
 import { updateInquiryWorkflowStatus } from "@/lib/inquiries"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
@@ -36,15 +37,53 @@ export async function POST(request: Request) {
   const formData = await request.formData()
   const inquiryId = String(formData.get("inquiryId") ?? "")
   const paymentMethodValue = String(formData.get("paymentMethod") ?? "").trim().toUpperCase()
+  const paymentStatusValue = String(formData.get("paymentStatus") ?? "FULLY_PAID").trim().toUpperCase()
+  const paidAmountValue = Number(formData.get("paidAmount") ?? 0)
 
   if (!isAccountingPaymentMethod(paymentMethodValue)) {
     return buildRedirect(request, "Select the customer's payment method before approving payment.", "error")
   }
 
+  const allowedPaymentStatuses = new Set(["DOWN_PAYMENT", "PARTIALLY_PAID", "FULLY_PAID", "REJECTED"])
+
+  if (!allowedPaymentStatuses.has(paymentStatusValue)) {
+    return buildRedirect(request, "Select a valid payment status before approving payment.", "error")
+  }
+
+  if (
+    (paymentStatusValue === "DOWN_PAYMENT" || paymentStatusValue === "PARTIALLY_PAID") &&
+    (!Number.isFinite(paidAmountValue) || paidAmountValue <= 0)
+  ) {
+    return buildRedirect(request, "Enter the amount paid by the customer before approving this payment.", "error")
+  }
+
+  if (paymentStatusValue === "REJECTED") {
+    const rawStatusNote = String(formData.get("statusNote") ?? "").trim()
+    const updatedRows = await updateInquiryWorkflowStatus({
+      inquiryId,
+      expectedStages: ["PENDING_ACCOUNTING_APPROVAL"],
+      nextStage: "PENDING_ACCOUNTING_APPROVAL",
+      statusNote: rawStatusNote || "Accounting rejected this payment. Please request a corrected payment from the customer.",
+      paymentMethod: paymentMethodValue,
+      paymentStatus: "REJECTED",
+    })
+
+    revalidatePath("/accounting")
+    revalidatePath("/sales")
+    revalidatePath("/account/status")
+
+    return buildRedirect(
+      request,
+      updatedRows > 0 ? "Payment rejected and kept in accounting review." : "That order is no longer waiting on accounting.",
+      updatedRows > 0 ? "success" : "error",
+    )
+  }
+
   const paymentMethodLabel = formatAccountingPaymentMethod(paymentMethodValue)
   const rawStatusNote = String(formData.get("statusNote") ?? "").trim()
   const statusNote =
-    rawStatusNote || `Accounting approved the payment via ${paymentMethodLabel} and released the order to operations for building.`
+    rawStatusNote ||
+    `Accounting approved the ${paymentStatusValue.toLowerCase().replaceAll("_", " ")} via ${paymentMethodLabel} and released the order to operations for building.`
 
   try {
     const updatedRows = await updateInquiryWorkflowStatus({
@@ -53,9 +92,12 @@ export async function POST(request: Request) {
       nextStage: "GETTING_READY_FOR_BUILDING",
       statusNote,
       paymentMethod: paymentMethodValue,
+      paymentStatus: paymentStatusValue as InquiryPaymentStatus,
+      paidAmount: paymentStatusValue === "FULLY_PAID" ? null : paidAmountValue,
     })
 
     revalidatePath("/accounting")
+    revalidatePath("/accounting/follow-ups")
     revalidatePath("/operations")
     revalidatePath("/sales")
     revalidatePath("/account/status")

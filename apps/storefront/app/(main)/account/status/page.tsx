@@ -1,126 +1,13 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Prisma, prisma, getReturnRequests } from "@furnitrack/db"
-import {
-  ClipboardList,
-  ScanSearch,
-  CreditCard,
-  Hammer,
-  Truck,
-  PackageCheck,
-  Clock,
-} from "lucide-react"
+import { Clock, Truck } from "lucide-react"
 import { CompletedOrderReturnCard } from "@/components/CompletedOrderReturnCard"
+import { OrderChatPanel } from "@/components/OrderChatPanel"
+import { OrderStepper } from "@/components/OrderStepper"
 import { getStorefrontSessionUser } from "@/lib/auth/session"
 import { formatShortDate } from "@/lib/format"
-
-// --- Order progress stepper config ---
-type StepKey =
-  | "RECEIVED"
-  | "PENDING_INVENTORY_APPROVAL"
-  | "PENDING_ACCOUNTING_APPROVAL"
-  | "GETTING_READY_FOR_BUILDING"
-  | "READY_FOR_SHIPPING"
-  | "COMPLETED"
-
-type StepConfig = {
-  key: StepKey
-  label: string
-  Icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
-}
-
-const ORDER_STEPS: StepConfig[] = [
-  { key: "RECEIVED",                    label: "Order Placed",       Icon: ClipboardList },
-  { key: "PENDING_INVENTORY_APPROVAL",  label: "Sales Review",       Icon: ScanSearch },
-  { key: "PENDING_ACCOUNTING_APPROVAL", label: "Payment Confirmed",  Icon: CreditCard },
-  { key: "GETTING_READY_FOR_BUILDING",  label: "Being Built",        Icon: Hammer },
-  { key: "READY_FOR_SHIPPING",          label: "Out for Delivery",   Icon: Truck },
-  { key: "COMPLETED",                   label: "Delivered",          Icon: PackageCheck },
-]
-
-const STEP_ORDER: StepKey[] = [
-  "RECEIVED",
-  "PENDING_INVENTORY_APPROVAL",
-  "PENDING_ACCOUNTING_APPROVAL",
-  "GETTING_READY_FOR_BUILDING",
-  "READY_FOR_SHIPPING",
-  "COMPLETED",
-]
-
-function getStepIndex(workflowStatus: string): number {
-  const idx = STEP_ORDER.indexOf(workflowStatus as StepKey)
-  return idx === -1 ? 0 : idx
-}
-
-function OrderStepper({ workflowStatus, updatedAt }: { workflowStatus: string; updatedAt: Date }) {
-  const currentIndex = getStepIndex(workflowStatus)
-
-  return (
-    <div className="relative flex items-start justify-between w-full overflow-x-auto py-2">
-      {ORDER_STEPS.map((step, index) => {
-        const isCompleted = index < currentIndex
-        const isCurrent = index === currentIndex
-        const isPending = index > currentIndex
-
-        return (
-          <div key={step.key} className="relative flex flex-col items-center flex-1 min-w-[80px]">
-            {/* Connector line left */}
-            {index > 0 && (
-              <div
-                className={`absolute top-[22px] right-[50%] w-full h-[3px] ${
-                  isCompleted || isCurrent ? "bg-[#22c55e]" : "bg-[#e5e7eb]"
-                }`}
-                style={{ left: "-50%", right: "50%" }}
-              />
-            )}
-
-            {/* Step circle */}
-            <div
-              className={`relative z-10 flex h-[44px] w-[44px] items-center justify-center rounded-full border-[2px] transition-all ${
-                isCompleted
-                  ? "border-[#22c55e] bg-[#22c55e] shadow-[0_0_0_4px_rgba(34,197,94,0.12)]"
-                  : isCurrent
-                    ? "border-[#22c55e] bg-white shadow-[0_0_0_5px_rgba(34,197,94,0.15)]"
-                    : "border-[#d1d5dc] bg-white"
-              }`}
-            >
-              <step.Icon
-                className={`h-[18px] w-[18px] ${
-                  isCompleted
-                    ? "text-white"
-                    : isCurrent
-                      ? "text-[#16a34a]"
-                      : "text-[#cbd5e1]"
-                }`}
-                strokeWidth={1.75}
-              />
-            </div>
-
-            {/* Label */}
-            <p
-              className={`mt-2 text-center text-[10px] font-medium uppercase tracking-[0.12em] leading-[14px] ${
-                isCurrent
-                  ? "text-[#15803d]"
-                  : isCompleted
-                    ? "text-[#16a34a]"
-                    : "text-[#b0b8c4]"
-              }`}
-            >
-              {step.label}
-            </p>
-
-            {/* Current step date */}
-            {isCurrent && (
-              <p className="mt-1 text-center text-[10px] tracking-wide text-[#6a7282]">
-                {formatShortDate(updatedAt)}
-              </p>
-            )}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
+import { getOrderChatMessages } from "@/lib/order-chat"
 
 export const dynamic = "force-dynamic"
 
@@ -217,6 +104,11 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
   }))
   const activeInquiries = workflowInquiries.filter((inquiry) => inquiry.workflowStatus !== "COMPLETED")
   const completedInquiries = workflowInquiries.filter((inquiry) => inquiry.workflowStatus === "COMPLETED")
+  const chatMessagesByInquiryId = new Map(
+    await Promise.all(
+      workflowInquiries.map(async (inquiry) => [inquiry.id, await getOrderChatMessages(inquiry.id)] as const),
+    ),
+  )
   const returnRequests = await getReturnRequests({
     customerUserId: sessionUser.id,
     inquiryIds: completedInquiries.map((inquiry) => inquiry.id),
@@ -224,6 +116,7 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
   const resolvedSearchParams = searchParams ? await searchParams : {}
   const message = resolveValue(resolvedSearchParams.message)
   const tone = resolveValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
+  const openOrderChatId = resolveValue(resolvedSearchParams.order)
 
   return (
     <div className="min-h-screen bg-[#f8f8f6]">
@@ -296,7 +189,7 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
 
                     {/* Progress stepper */}
                     <div className="rounded-[18px] border border-[#e9f7ef] bg-[#f0fdf4] px-4 py-5 mb-6">
-                      <OrderStepper workflowStatus={inquiry.workflowStatus} updatedAt={inquiry.updatedAt} />
+                      <OrderStepper workflowStatus={inquiry.workflowStatus} updatedAtLabel={formatShortDate(inquiry.updatedAt)} />
                     </div>
 
                     {/* Shipping date banner — shown when operations has set a delivery date */}
@@ -345,6 +238,13 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
                             "Your order is progressing through the admin approval flow. New updates will appear here."}
                         </p>
                       </div>
+                    </div>
+                    <div className="mt-5">
+                      <OrderChatPanel
+                        inquiryId={inquiry.id}
+                        messages={chatMessagesByInquiryId.get(inquiry.id) ?? []}
+                        defaultOpen={openOrderChatId === inquiry.id}
+                      />
                     </div>
                   </article>
 

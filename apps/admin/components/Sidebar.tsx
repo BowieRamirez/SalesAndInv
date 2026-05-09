@@ -21,7 +21,6 @@ import {
   FileText,
   History,
   LayoutDashboard,
-  ListTodo,
   LogOut,
   Menu,
   ShieldCheck,
@@ -61,11 +60,11 @@ const navConfigs: Record<AppRole, NavConfig> = {
   },
   SALES: {
     links: [
-      { name: "Overview", href: "/sales?tab=lead", icon: FileEdit, tab: "lead" },
+      { name: "Dashboard", href: "/sales?tab=lead", icon: FileEdit, tab: "lead" },
       { name: "Approvals", href: "/sales?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Returns", href: "/sales?tab=returns", icon: History, tab: "returns" },
       { name: "Sales Orders", href: "/sales?tab=orders", icon: CheckSquare, tab: "orders" },
-      { name: "Workflow Tracker", href: "/sales?tab=tracker", icon: ListTodo, tab: "tracker" },
+      { name: "Order Chats", href: "/sales?tab=chats", icon: Calculator, tab: "chats" },
     ],
     roleLabel: "Sales",
     color: "bg-emerald-500",
@@ -89,6 +88,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     links: [
       { name: "Approvals", href: "/accounting?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Approval History", href: "/accounting?tab=history", icon: History, tab: "history" },
+      { name: "Payment Follow-ups", href: "/accounting/follow-ups?tab=follow-ups", icon: Calculator, tab: "follow-ups" },
       { name: "Documents", href: "/accounting?tab=documents", icon: FileText, tab: "documents" },
     ],
     roleLabel: "Accounting",
@@ -154,6 +154,10 @@ function isValidTab(tab: string | null, links: NavConfig["links"]) {
   }
 
   return tabbedLinks.some((link) => link.tab === tab)
+}
+
+function needsTabValidation(pathname: string, allowedPaths: string[]) {
+  return allowedPaths.some((allowedPath) => pathname === allowedPath)
 }
 
 const itemVariants = {
@@ -315,7 +319,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
   useEffect(() => {
     const tab = searchParams.get("tab")
 
-    if (!isPathAllowed(pathname, config.allowedPaths) || !isValidTab(tab, links)) {
+    if (!isPathAllowed(pathname, config.allowedPaths) || (needsTabValidation(pathname, config.allowedPaths) && !isValidTab(tab, links))) {
       router.replace(config.defaultHref)
     }
   }, [config.allowedPaths, config.defaultHref, links, pathname, router, searchParams])

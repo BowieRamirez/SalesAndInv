@@ -4,8 +4,14 @@ import type { AccountingPaymentMethod } from "@/lib/accounting-payment-methods"
 const COMPLETED_MARKER = "[[completed]]"
 const SHIP_AT_PREFIX = "[[ship_at:"
 const PAYMENT_METHOD_PREFIX = "[[payment_method:"
+const PAYMENT_STATUS_PREFIX = "[[payment_status:"
+const PAID_AMOUNT_PREFIX = "[[paid_amount:"
 const SHIP_AT_PATTERN = /\[\[ship_at:([^\]]+)\]\]/i
 const PAYMENT_METHOD_PATTERN = /\[\[payment_method:([^\]]+)\]\]/i
+const PAYMENT_STATUS_PATTERN = /\[\[payment_status:([^\]]+)\]\]/i
+const PAID_AMOUNT_PATTERN = /\[\[paid_amount:([^\]]+)\]\]/i
+
+export type InquiryPaymentStatus = "PENDING" | "DOWN_PAYMENT" | "PARTIALLY_PAID" | "FULLY_PAID" | "REJECTED"
 
 type InquiryBaseRow = {
   id: string
@@ -16,6 +22,7 @@ type InquiryBaseRow = {
   message: string
   status: string
   statusNote: string | null
+  total: Prisma.Decimal | number | string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -33,6 +40,12 @@ export type InquiryWorkflowRow = InquiryBaseRow & {
   workflowNote: string | null
   shippingScheduledAt: Date | null
   paymentMethod: AccountingPaymentMethod | null
+  total: number
+  downPaymentRequired: number
+  paid: number
+  remainingBalance: number
+  paymentStatus: InquiryPaymentStatus
+  paymentReviewStatus: "PENDING" | "APPROVED" | "REJECTED"
 }
 
 function hasCompletedMarker(note: string | null) {
@@ -68,6 +81,73 @@ function parsePaymentMethod(note: string | null) {
   return (match?.[1] as AccountingPaymentMethod | undefined) ?? null
 }
 
+function parsePaymentStatus(note: string | null, workflowStatus?: InquiryWorkflowStage): InquiryPaymentStatus {
+  if (!note) {
+    return workflowStatus === "PENDING_ACCOUNTING_APPROVAL" ? "PENDING" : "FULLY_PAID"
+  }
+
+  const match = note.match(PAYMENT_STATUS_PATTERN)
+  const status = match?.[1]
+
+  if (
+    status === "PENDING" ||
+    status === "DOWN_PAYMENT" ||
+    status === "PARTIALLY_PAID" ||
+    status === "FULLY_PAID" ||
+    status === "REJECTED"
+  ) {
+    return status
+  }
+
+  return workflowStatus === "PENDING_ACCOUNTING_APPROVAL" ? "PENDING" : "FULLY_PAID"
+}
+
+function parsePaidAmount(note: string | null) {
+  if (!note) {
+    return null
+  }
+
+  const match = note.match(PAID_AMOUNT_PATTERN)
+  const amount = Number(match?.[1])
+
+  return Number.isFinite(amount) ? amount : null
+}
+
+function toNumber(value: Prisma.Decimal | number | string | null | undefined) {
+  if (value == null) {
+    return 0
+  }
+
+  return Number(value)
+}
+
+function getBalanceFields(
+  totalValue: Prisma.Decimal | number | string | null,
+  paymentStatus: InquiryPaymentStatus,
+  paidAmount: number | null,
+) {
+  const total = toNumber(totalValue)
+  const downPaymentRequired = total * 0.3
+  const paid =
+    paidAmount != null
+      ? Math.min(Math.max(paidAmount, 0), total)
+      : paymentStatus === "FULLY_PAID"
+      ? total
+      : paymentStatus === "PARTIALLY_PAID"
+        ? Math.max(downPaymentRequired, total * 0.5)
+        : paymentStatus === "DOWN_PAYMENT"
+          ? downPaymentRequired
+          : 0
+  const remainingBalance = Math.max(total - paid, 0)
+
+  return {
+    total,
+    downPaymentRequired,
+    paid,
+    remainingBalance,
+  }
+}
+
 function stripWorkflowMarkers(note: string | null) {
   if (!note) {
     return null
@@ -77,6 +157,8 @@ function stripWorkflowMarkers(note: string | null) {
     .replace(COMPLETED_MARKER, "")
     .replace(SHIP_AT_PATTERN, "")
     .replace(PAYMENT_METHOD_PATTERN, "")
+    .replace(PAYMENT_STATUS_PATTERN, "")
+    .replace(PAID_AMOUNT_PATTERN, "")
     .trim() || null
 }
 
@@ -106,14 +188,30 @@ function resolveWorkflowStatus(status: string, note: string | null): InquiryWork
   }
 }
 
-function toWorkflowRows(rows: InquiryBaseRow[]) {
-  return rows.map((row) => ({
-    ...row,
-    workflowStatus: resolveWorkflowStatus(row.status, row.statusNote),
-    workflowNote: stripWorkflowMarkers(row.statusNote),
-    shippingScheduledAt: parseShipAt(row.statusNote),
-    paymentMethod: parsePaymentMethod(row.statusNote),
-  }))
+function toWorkflowRows(rows: InquiryBaseRow[]): InquiryWorkflowRow[] {
+  return rows.map((row) => {
+    const workflowStatus = resolveWorkflowStatus(row.status, row.statusNote)
+    const paymentStatus = parsePaymentStatus(row.statusNote, workflowStatus)
+    const balanceFields = getBalanceFields(row.total, paymentStatus, parsePaidAmount(row.statusNote))
+
+    const paymentReviewStatus: InquiryWorkflowRow["paymentReviewStatus"] =
+      paymentStatus === "REJECTED"
+        ? "REJECTED"
+        : workflowStatus === "PENDING_ACCOUNTING_APPROVAL"
+          ? "PENDING"
+          : "APPROVED"
+
+    return {
+      ...row,
+      ...balanceFields,
+      workflowStatus,
+      workflowNote: stripWorkflowMarkers(row.statusNote),
+      shippingScheduledAt: parseShipAt(row.statusNote),
+      paymentMethod: parsePaymentMethod(row.statusNote),
+      paymentStatus,
+      paymentReviewStatus,
+    }
+  })
 }
 
 export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowStage[]) {
@@ -127,6 +225,7 @@ export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowSt
       ci.message,
       ci.status::text AS status,
       ci."statusNote",
+      p.price AS total,
       ci."createdAt",
       ci."updatedAt"
     FROM public.customer_inquiries ci
@@ -147,32 +246,46 @@ export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowSt
 function withCompletedMarker(note: string | null) {
   const cleanNote = stripWorkflowMarkers(note)
   const paymentMethod = parsePaymentMethod(note)
-  const noteWithPaymentMethod = withPaymentMethodMarker(cleanNote, paymentMethod)
+  const paymentStatus = parsePaymentStatus(note)
+  const paidAmount = parsePaidAmount(note)
+  const noteWithPaymentMethod = withPaymentMethodMarker(cleanNote, paymentMethod, paymentStatus, paidAmount)
   return noteWithPaymentMethod ? `${COMPLETED_MARKER} ${noteWithPaymentMethod}` : COMPLETED_MARKER
 }
 
 function withShipAtMarker(note: string | null, shippingScheduledAt: Date | null) {
   const cleanNote = stripWorkflowMarkers(note)
   const paymentMethod = parsePaymentMethod(note)
+  const paymentStatus = parsePaymentStatus(note)
+  const paidAmount = parsePaidAmount(note)
 
   if (!shippingScheduledAt) {
-    return withPaymentMethodMarker(cleanNote, paymentMethod)
+    return withPaymentMethodMarker(cleanNote, paymentMethod, paymentStatus, paidAmount)
   }
 
   const scheduleMarker = `${SHIP_AT_PREFIX}${shippingScheduledAt.toISOString()}]]`
-  const noteWithPaymentMethod = withPaymentMethodMarker(cleanNote, paymentMethod)
+  const noteWithPaymentMethod = withPaymentMethodMarker(cleanNote, paymentMethod, paymentStatus, paidAmount)
   return noteWithPaymentMethod ? `${scheduleMarker} ${noteWithPaymentMethod}` : scheduleMarker
 }
 
-function withPaymentMethodMarker(note: string | null, paymentMethod: AccountingPaymentMethod | null) {
+function withPaymentMethodMarker(
+  note: string | null,
+  paymentMethod: AccountingPaymentMethod | null,
+  paymentStatus: InquiryPaymentStatus | null = null,
+  paidAmount: number | null = null,
+) {
   const cleanNote = stripWorkflowMarkers(note)
+  const markers = [
+    paymentMethod ? `${PAYMENT_METHOD_PREFIX}${paymentMethod}]]` : null,
+    paymentStatus ? `${PAYMENT_STATUS_PREFIX}${paymentStatus}]]` : null,
+    paidAmount != null ? `${PAID_AMOUNT_PREFIX}${paidAmount}]]` : null,
+  ].filter(Boolean)
 
-  if (!paymentMethod) {
+  if (markers.length === 0) {
     return cleanNote
   }
 
-  const paymentMethodMarker = `${PAYMENT_METHOD_PREFIX}${paymentMethod}]]`
-  return cleanNote ? `${paymentMethodMarker} ${cleanNote}` : paymentMethodMarker
+  const markerText = markers.join(" ")
+  return cleanNote ? `${markerText} ${cleanNote}` : markerText
 }
 
 export async function updateInquiryWorkflowStatus(params: {
@@ -182,8 +295,19 @@ export async function updateInquiryWorkflowStatus(params: {
   statusNote: string | null
   shippingScheduledAt?: Date | null
   paymentMethod?: AccountingPaymentMethod | null
+  paymentStatus?: InquiryPaymentStatus | null
+  paidAmount?: number | null
 }) {
-  const { inquiryId, expectedStages, nextStage, statusNote, shippingScheduledAt = null, paymentMethod = null } = params
+  const {
+    inquiryId,
+    expectedStages,
+    nextStage,
+    statusNote,
+    shippingScheduledAt = null,
+    paymentMethod = null,
+    paymentStatus = null,
+    paidAmount = null,
+  } = params
 
   if (expectedStages.length === 0) {
     return 0
@@ -206,19 +330,26 @@ export async function updateInquiryWorkflowStatus(params: {
       break
     case "PENDING_ACCOUNTING_APPROVAL":
       nextStoredStatus = "WAITING_FOR_PAYMENT"
-      nextStoredNote = stripWorkflowMarkers(statusNote)
+      nextStoredNote = withPaymentMethodMarker(statusNote, paymentMethod, paymentStatus, paidAmount)
       break
     case "GETTING_READY_FOR_BUILDING":
       nextStoredStatus = "GETTING_READY_FOR_BUILDING"
-      nextStoredNote = withPaymentMethodMarker(statusNote, paymentMethod)
+      nextStoredNote = withPaymentMethodMarker(statusNote, paymentMethod, paymentStatus, paidAmount)
       break
     case "READY_FOR_SHIPPING":
       nextStoredStatus = "READY_FOR_SHIPMENT"
-      nextStoredNote = withShipAtMarker(statusNote, shippingScheduledAt)
+      nextStoredNote = withShipAtMarker(
+        withPaymentMethodMarker(statusNote, currentRow.paymentMethod, currentRow.paymentStatus, currentRow.paid),
+        shippingScheduledAt,
+      )
       break
     case "COMPLETED":
       if (!currentRow.shippingScheduledAt) {
         throw new Error("Shipping schedule is required before completing this order.")
+      }
+
+      if (currentRow.paymentStatus !== "FULLY_PAID") {
+        throw new Error("This order cannot be shipped until accounting marks the payment as fully paid.")
       }
 
       if (currentRow.shippingScheduledAt.getTime() > Date.now()) {
@@ -226,7 +357,12 @@ export async function updateInquiryWorkflowStatus(params: {
       }
 
       nextStoredStatus = "READY_FOR_SHIPMENT"
-      nextStoredNote = withCompletedMarker(withShipAtMarker(statusNote, currentRow.shippingScheduledAt))
+      nextStoredNote = withCompletedMarker(
+        withShipAtMarker(
+          withPaymentMethodMarker(statusNote, currentRow.paymentMethod, currentRow.paymentStatus, currentRow.paid),
+          currentRow.shippingScheduledAt,
+        ),
+      )
       break
     case "RECEIVED":
     default:
@@ -258,12 +394,51 @@ export async function setInquiryShippingSchedule(params: {
     return 0
   }
 
-  const nextStoredNote = withShipAtMarker(statusNote, shippingScheduledAt)
+  const nextStoredNote = withShipAtMarker(
+    withPaymentMethodMarker(statusNote, currentRow.paymentMethod, currentRow.paymentStatus, currentRow.paid),
+    shippingScheduledAt,
+  )
 
   return prisma.$executeRaw(Prisma.sql`
     UPDATE public.customer_inquiries
     SET
       status = 'READY_FOR_SHIPMENT'::"InquiryStatus",
+      "statusNote" = ${nextStoredNote},
+      "updatedAt" = CURRENT_TIMESTAMP
+    WHERE id = ${inquiryId}
+  `)
+}
+
+export async function updateInquiryPaymentFollowUp(params: {
+  inquiryId: string
+  statusNote: string | null
+  paidAmount: number
+}) {
+  const { inquiryId, statusNote, paidAmount } = params
+  const currentRows = await getInquiryWorkflowRows()
+  const currentRow = currentRows.find(
+    (row) => row.id === inquiryId && ["DOWN_PAYMENT", "PARTIALLY_PAID"].includes(row.paymentStatus),
+  )
+
+  if (!currentRow) {
+    return 0
+  }
+
+  const nextPaidAmount = Math.min(Math.max(paidAmount, 0), currentRow.total)
+  const nextPaymentStatus: InquiryPaymentStatus =
+    nextPaidAmount >= currentRow.total
+      ? "FULLY_PAID"
+      : nextPaidAmount > currentRow.downPaymentRequired
+        ? "PARTIALLY_PAID"
+        : "DOWN_PAYMENT"
+  const nextStoredNote = withShipAtMarker(
+    withPaymentMethodMarker(statusNote, currentRow.paymentMethod, nextPaymentStatus, nextPaidAmount),
+    currentRow.shippingScheduledAt,
+  )
+
+  return prisma.$executeRaw(Prisma.sql`
+    UPDATE public.customer_inquiries
+    SET
       "statusNote" = ${nextStoredNote},
       "updatedAt" = CURRENT_TIMESTAMP
     WHERE id = ${inquiryId}
