@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto"
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { Prisma, prisma } from "@furnitrack/db"

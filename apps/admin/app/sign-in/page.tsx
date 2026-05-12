@@ -3,13 +3,10 @@
 import React, { useState } from "react"
 import {
   AlertCircle,
-  BarChart3,
-  CheckCircle2,
   Eye,
   EyeOff,
   Lock,
   LogIn,
-  Package,
   Shield,
   User,
 } from "lucide-react"
