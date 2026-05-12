@@ -278,6 +278,9 @@ function NavBody({ config, links, currentUser, pathname, currentTab, onLinkClick
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={async () => {
+            await fetch("/api/portal-session", {
+              method: "DELETE",
+            }).catch(() => undefined);
             await authClient.signOut();
             window.location.href = "/sign-in";
           }}

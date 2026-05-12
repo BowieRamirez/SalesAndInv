@@ -43,6 +43,13 @@ export function Navbar() {
   }, []);
 
   const handleLogout = async () => {
+    await fetch("/api/portal-session", {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ portal: "storefront" }),
+    }).catch(() => undefined);
     await authClient.signOut();
 
     if (typeof window !== "undefined") {

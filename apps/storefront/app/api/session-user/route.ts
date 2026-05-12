@@ -10,7 +10,7 @@ function getMissingServerEnv() {
   )
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const missingEnv = getMissingServerEnv()
 
@@ -24,7 +24,8 @@ export async function GET() {
       )
     }
 
-    const user = await getCurrentStorefrontUser()
+    const fresh = new URL(request.url).searchParams.get("fresh") === "1"
+    const user = await getCurrentStorefrontUser({ fresh })
 
     return NextResponse.json({ user })
   } catch (error) {

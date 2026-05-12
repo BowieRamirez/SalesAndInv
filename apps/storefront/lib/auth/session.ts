@@ -2,6 +2,7 @@ import { headers } from "next/headers"
 import { createHmac, timingSafeEqual } from "node:crypto"
 import { prisma } from "@furnitrack/db"
 import { auth } from "@/lib/auth/server"
+import { PORTAL_SESSION_COOKIE_NAMES, verifyPortalSession } from "@/lib/auth/portal-session"
 
 type SessionUser = {
   id?: string
@@ -182,7 +183,18 @@ async function getSessionUserFromSignedCache(): Promise<SessionUser | null> {
   return payload?.user ?? null
 }
 
-async function getVerifiedSessionUser(): Promise<SessionUser | null> {
+async function getVerifiedSessionUser({ fresh = false }: { fresh?: boolean } = {}): Promise<SessionUser | null> {
+  if (!fresh) {
+    const cookieMap = await getNeonAuthCookies()
+    const portalSessionUser = verifyPortalSession(
+      cookieMap.get(PORTAL_SESSION_COOKIE_NAMES.storefront)
+    )
+
+    if (portalSessionUser?.id) {
+      return portalSessionUser
+    }
+  }
+
   try {
     const { data } = await auth.getSession()
     const sessionUser = data?.user as SessionUser | undefined
@@ -237,8 +249,8 @@ async function findAppUserForSession(
   return rows[0] ?? null
 }
 
-export async function getCurrentStorefrontUser(): Promise<StorefrontSessionUser | null> {
-  const sessionUser = await getVerifiedSessionUser()
+export async function getCurrentStorefrontUser({ fresh = false }: { fresh?: boolean } = {}): Promise<StorefrontSessionUser | null> {
+  const sessionUser = await getVerifiedSessionUser({ fresh })
 
   if (!sessionUser?.id || !sessionUser.email) {
     return null

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { OrderChatMessage } from "@/lib/order-chat"
 
 type AttachmentDraft = {
@@ -8,6 +8,16 @@ type AttachmentDraft = {
   mimeType: string
   attachmentType: "IMAGE" | "DOCUMENT" | "QUOTATION" | "RECEIPT"
   dataUrl: string
+}
+
+type ChatPostResponse = {
+  message?: string
+  chatMessage?: OrderChatMessage
+}
+
+type ChatGetResponse = {
+  message?: string
+  messages?: OrderChatMessage[]
 }
 
 function readFileAsDataUrl(file: File) {
@@ -23,7 +33,40 @@ export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; mes
   const [body, setBody] = useState("")
   const [attachmentType, setAttachmentType] = useState<AttachmentDraft["attachmentType"]>("IMAGE")
   const [attachments, setAttachments] = useState<AttachmentDraft[]>([])
+  const [localMessages, setLocalMessages] = useState(messages)
   const [isPreparing, setIsPreparing] = useState(false)
+  const [isSending, setIsSending] = useState(false)
+  const [statusMessage, setStatusMessage] = useState("")
+
+  const refreshMessages = useCallback(async () => {
+    const response = await fetch(`/api/admin/sales/order-chat?inquiryId=${encodeURIComponent(inquiryId)}`, {
+      cache: "no-store",
+      headers: {
+        "x-requested-with": "fetch",
+      },
+    })
+    const result = (await response.json().catch(() => ({}))) as ChatGetResponse
+
+    if (!response.ok || !result.messages) {
+      return
+    }
+
+    setLocalMessages(
+      result.messages.map((message) => ({
+        ...message,
+        createdAt: new Date(message.createdAt),
+      }))
+    )
+  }, [inquiryId])
+
+  useEffect(() => {
+    void refreshMessages()
+    const interval = window.setInterval(() => {
+      void refreshMessages()
+    }, 3000)
+
+    return () => window.clearInterval(interval)
+  }, [refreshMessages])
 
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return
@@ -41,6 +84,52 @@ export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; mes
     setIsPreparing(false)
   }
 
+  async function handleSendMessage(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setStatusMessage("")
+
+    if (!body.trim() && attachments.length === 0) {
+      return
+    }
+
+    setIsSending(true)
+
+    try {
+      const form = event.currentTarget
+      const formData = new FormData(form)
+      const response = await fetch("/api/admin/sales/order-chat", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "x-requested-with": "fetch",
+        },
+      })
+      const result = (await response.json().catch(() => ({}))) as ChatPostResponse
+
+      if (!response.ok || !result.chatMessage) {
+        setStatusMessage(result.message ?? "Message could not be sent. Please try again.")
+        return
+      }
+
+      setLocalMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          ...result.chatMessage!,
+          createdAt: new Date(result.chatMessage!.createdAt),
+        },
+      ])
+      setBody("")
+      setAttachments([])
+      form.reset()
+      setStatusMessage(result.message ?? "Message sent.")
+      void refreshMessages()
+    } catch {
+      setStatusMessage("Message could not be sent. Please try again.")
+    } finally {
+      setIsSending(false)
+    }
+  }
+
   return (
     <div className="rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
       <div className="mb-4">
@@ -49,12 +138,12 @@ export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; mes
       </div>
 
       <div className="max-h-[460px] space-y-3 overflow-y-auto rounded-2xl bg-[#f8fafc] p-4">
-        {messages.length === 0 ? (
+        {localMessages.length === 0 ? (
           <div className="rounded-xl border border-dashed border-[#d1d5db] bg-white p-8 text-center text-[13px] text-[#6b7280]">
             No chat messages yet.
           </div>
         ) : (
-          messages.map((message) => (
+          localMessages.map((message) => (
             <div key={message.id} className={`flex ${message.senderRole === "SALES" ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[78%] rounded-2xl px-4 py-3 ${message.senderRole === "SALES" ? "bg-[#111827] text-white" : "bg-white text-[#111827]"}`}>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] opacity-70">
@@ -83,7 +172,7 @@ export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; mes
         )}
       </div>
 
-      <form method="post" action="/api/admin/sales/order-chat" className="mt-4 space-y-3">
+      <form onSubmit={handleSendMessage} className="mt-4 space-y-3">
         <input type="hidden" name="inquiryId" value={inquiryId} />
         <input type="hidden" name="attachmentsJson" value={JSON.stringify(attachments)} />
         <textarea
@@ -108,11 +197,12 @@ export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; mes
             <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Images / documents</span>
             <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onChange={(event) => void handleFiles(event.target.files)} className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827]" />
           </label>
-          <button type="submit" disabled={isPreparing || (!body.trim() && attachments.length === 0)} className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]">
-            Send
+          <button type="submit" disabled={isPreparing || isSending || (!body.trim() && attachments.length === 0)} className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]">
+            {isSending ? "Sending..." : "Send"}
           </button>
         </div>
         {attachments.length > 0 ? <p className="text-[12px] text-[#6b7280]">Prepared {attachments.length} attachment(s).</p> : null}
+        {statusMessage ? <p className="text-[12px] text-[#6b7280]">{statusMessage}</p> : null}
       </form>
     </div>
   )

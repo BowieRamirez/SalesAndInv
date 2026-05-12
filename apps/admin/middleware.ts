@@ -1,20 +1,17 @@
-import { auth } from "@/lib/auth/server";
+﻿import { NextResponse, type NextRequest } from "next/server"
 
-export default auth.middleware({
-    // Redirect unauthenticated users to the admin sign-in page
-    loginUrl: "/sign-in",
-});
+const ADMIN_PORTAL_SESSION_COOKIE_NAME = "furnitrack.admin.session"
+
+export default function middleware(request: NextRequest) {
+  if (request.cookies.has(ADMIN_PORTAL_SESSION_COOKIE_NAME)) {
+    return NextResponse.next()
+  }
+
+  return NextResponse.redirect(new URL("/sign-in", request.url))
+}
 
 export const config = {
-    matcher: [
-        /*
-         * Protect all admin dashboard routes.
-         * Exclude:
-         *  - /sign-in  (the login page itself)
-         *  - /api/auth (Neon Auth handler routes)
-         *  - /api/admin (custom admin route handlers do their own checks)
-         *  - Next.js internals (_next/*) and static files
-         */
-        "/((?!sign-in|api/auth|api/admin|_next/static|_next/image|favicon.ico).*)",
-    ],
-};
+  matcher: [
+    "/((?!sign-in|api/auth|api/admin|api/portal-session|_next/static|_next/image|favicon.ico).*)",
+  ],
+}

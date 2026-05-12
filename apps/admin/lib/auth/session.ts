@@ -4,6 +4,7 @@ import { createHmac, timingSafeEqual } from "node:crypto"
 import { prisma } from "@furnitrack/db"
 import { auth } from "@/lib/auth/server"
 import { normalizeAppRole, type AppRole } from "@/lib/rbac"
+import { ADMIN_PORTAL_SESSION_COOKIE_NAME, verifyPortalSession } from "@/lib/auth/portal-session"
 
 type SessionUser = {
   id?: string
@@ -168,7 +169,18 @@ async function getSessionUserFromSignedCache(): Promise<SessionUser | null> {
   return payload?.user ?? null
 }
 
-async function getVerifiedSessionUser(): Promise<SessionUser | null> {
+async function getVerifiedSessionUser({ fresh = false }: { fresh?: boolean } = {}): Promise<SessionUser | null> {
+  if (!fresh) {
+    const cookieMap = await getNeonAuthCookies()
+    const portalSessionUser = verifyPortalSession(
+      cookieMap.get(ADMIN_PORTAL_SESSION_COOKIE_NAME)
+    )
+
+    if (portalSessionUser?.id) {
+      return portalSessionUser
+    }
+  }
+
   try {
     const { data } = await auth.getSession()
     const sessionUser = data?.user as SessionUser | undefined
@@ -224,8 +236,8 @@ async function findAppUserForSession(
   return rows[0] ?? null
 }
 
-export async function getCurrentAdminPortalUser(): Promise<AuthenticatedAppUser | null> {
-  const sessionUser = await getVerifiedSessionUser()
+export async function getCurrentAdminPortalUser({ fresh = false }: { fresh?: boolean } = {}): Promise<AuthenticatedAppUser | null> {
+  const sessionUser = await getVerifiedSessionUser({ fresh })
 
   if (!sessionUser?.id) {
     return null
