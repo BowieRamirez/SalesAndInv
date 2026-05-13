@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
+import { Prisma, prisma } from "@furnitrack/db"
 import {
   formatAccountingPaymentMethod,
   isAccountingPaymentMethod,
@@ -7,6 +8,14 @@ import {
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import type { InquiryPaymentStatus } from "@/lib/inquiries"
 import { updateInquiryWorkflowStatus } from "@/lib/inquiries"
+
+type ReservationMaterialRow = {
+  stockItemId: string
+  sku: string
+  itemName: string
+  availableQty: number
+  quantityRequired: number
+}
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/accounting", request.url)
@@ -86,6 +95,53 @@ export async function POST(request: Request) {
     `Accounting approved the ${paymentStatusValue.toLowerCase().replaceAll("_", " ")} via ${paymentMethodLabel} and released the order to operations for building.`
 
   try {
+    const inquiry = await prisma.customerInquiry.findUnique({
+      where: { id: inquiryId },
+      include: { product: true },
+    })
+
+    if (!inquiry || inquiry.status !== "WAITING_FOR_PAYMENT") {
+      throw new Error("That order is no longer waiting on accounting.")
+    }
+
+    const reservationMaterials = await prisma.$queryRaw<ReservationMaterialRow[]>(Prisma.sql`
+      SELECT
+        pm."stockItemId",
+        si.sku,
+        si."itemName",
+        si."availableQty",
+        CEIL(pm."quantityRequired")::int AS "quantityRequired"
+      FROM public.product_materials pm
+      INNER JOIN public.stock_items si
+        ON si.id = pm."stockItemId"
+      WHERE pm."productId" = ${inquiry.productId}
+        AND COALESCE(pm."quantityRequired", 0) > 0
+      ORDER BY si."itemName" ASC
+    `)
+
+    if (reservationMaterials.length === 0) {
+      throw new Error(`No material requirements are configured for ${inquiry.product.name}.`)
+    }
+
+    const existingReservations = await prisma.$queryRaw<Array<{ count: number }>>(Prisma.sql`
+      SELECT COUNT(*)::int AS count
+      FROM public.stock_movements
+      WHERE "referenceNumber" = ${inquiryId}
+        AND "projectPurpose" = 'Reserved for Build Order'
+        AND type = 'ADJUSTMENT'::"StockMovementType"
+    `)
+    const alreadyReserved = (existingReservations[0]?.count ?? 0) > 0
+
+    if (!alreadyReserved) {
+      for (const material of reservationMaterials) {
+        if (material.availableQty < material.quantityRequired) {
+          throw new Error(
+            `Insufficient stock to reserve ${material.itemName}. Need ${material.quantityRequired}, have ${material.availableQty}.`
+          )
+        }
+      }
+    }
+
     const updatedRows = await updateInquiryWorkflowStatus({
       inquiryId,
       expectedStages: ["PENDING_ACCOUNTING_APPROVAL"],
@@ -96,9 +152,78 @@ export async function POST(request: Request) {
       paidAmount: paymentStatusValue === "FULLY_PAID" ? null : paidAmountValue,
     })
 
+    if (updatedRows > 0 && !alreadyReserved) {
+      try {
+        await prisma.$transaction(async (tx) => {
+          for (const material of reservationMaterials) {
+            const required = material.quantityRequired
+            if (required <= 0) continue
+
+            const affectedRows = await tx.$executeRaw(Prisma.sql`
+              UPDATE public.stock_items
+              SET "availableQty" = "availableQty" - ${required},
+                  "reservedQty" = "reservedQty" + ${required},
+                  "updatedAt" = CURRENT_TIMESTAMP
+              WHERE id = ${material.stockItemId}
+                AND "availableQty" >= ${required}
+            `)
+
+            if (affectedRows === 0) {
+              throw new Error(`Insufficient stock to reserve ${material.itemName}.`)
+            }
+
+            await tx.$executeRaw(Prisma.sql`
+              INSERT INTO public.stock_movements (id, "stockItemId", type, quantity, "requesterName", "projectPurpose", "referenceNumber", "createdAt")
+              VALUES (
+                gen_random_uuid(),
+                ${material.stockItemId},
+                'ADJUSTMENT'::"StockMovementType",
+                ${required},
+                ${currentUser.name},
+                'Reserved for Build Order',
+                ${inquiryId},
+                CURRENT_TIMESTAMP
+              )
+            `)
+
+            await tx.$executeRaw(Prisma.sql`
+              INSERT INTO public.audit_logs (id, "actorId", action, "entityType", "entityId", metadata, "createdAt")
+              VALUES (
+                gen_random_uuid(),
+                ${currentUser.id},
+                'USER_UPDATED'::"AuditAction",
+                'USER'::"AuditEntityType",
+                ${material.stockItemId},
+                ${JSON.stringify({
+                  auditLabel: "RAW_MATERIAL_STOCK_RESERVED",
+                  sku: material.sku,
+                  itemName: material.itemName,
+                  quantity: required,
+                  referenceNumber: inquiryId,
+                  reason: "Accounting payment approved",
+                  paymentStatus: paymentStatusValue,
+                })}::jsonb,
+                CURRENT_TIMESTAMP
+              )
+            `)
+          }
+        })
+      } catch (reservationError) {
+        await prisma.$executeRaw(Prisma.sql`
+          UPDATE public.customer_inquiries
+          SET status = 'WAITING_FOR_PAYMENT'::"InquiryStatus",
+              "statusNote" = ${inquiry.statusNote},
+              "updatedAt" = CURRENT_TIMESTAMP
+          WHERE id = ${inquiryId}
+        `)
+        throw reservationError
+      }
+    }
+
     revalidatePath("/accounting")
     revalidatePath("/accounting/follow-ups")
     revalidatePath("/operations")
+    revalidatePath("/inventory")
     revalidatePath("/sales")
     revalidatePath("/account/status")
 
@@ -109,6 +234,7 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error("Failed to approve accounting payment.", error)
-    return buildRedirect(request, "Accounting approval failed. Please try again.", "error")
+    const message = error instanceof Error ? error.message : "Accounting approval failed. Please try again."
+    return buildRedirect(request, message, "error")
   }
 }

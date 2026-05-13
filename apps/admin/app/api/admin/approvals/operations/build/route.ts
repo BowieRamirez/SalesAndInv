@@ -4,6 +4,15 @@ import { Prisma, prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { updateInquiryWorkflowStatus } from "@/lib/inquiries"
 
+type BuildMaterialRow = {
+  stockItemId: string
+  sku: string
+  itemName: string
+  availableQty: number
+  reservedQty: number
+  quantityRequired: number
+}
+
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/operations", request.url)
   url.searchParams.set("tab", "approvals")
@@ -40,15 +49,7 @@ export async function POST(request: Request) {
     const inquiry = await prisma.customerInquiry.findUnique({
       where: { id: inquiryId },
       include: {
-        product: {
-          include: {
-            materials: {
-              include: {
-                stockItem: true,
-              },
-            },
-          },
-        },
+        product: true,
       },
     })
 
@@ -56,14 +57,34 @@ export async function POST(request: Request) {
       throw new Error("Order not found or no longer in the building queue.")
     }
 
+    const buildMaterials = await prisma.$queryRaw<BuildMaterialRow[]>(Prisma.sql`
+      SELECT
+        pm."stockItemId",
+        si.sku,
+        si."itemName",
+        si."availableQty",
+        si."reservedQty",
+        CEIL(pm."quantityRequired")::int AS "quantityRequired"
+      FROM public.product_materials pm
+      INNER JOIN public.stock_items si
+        ON si.id = pm."stockItemId"
+      WHERE pm."productId" = ${inquiry.productId}
+        AND COALESCE(pm."quantityRequired", 0) > 0
+      ORDER BY si."itemName" ASC
+    `)
+
+    if (buildMaterials.length === 0) {
+      throw new Error(`No material requirements are configured for ${inquiry.product.name}.`)
+    }
+
     // Check inventory availability before proceeding
-    for (const pm of inquiry.product.materials) {
-      const required = Number(pm.quantityRequired ?? 0)
+    for (const material of buildMaterials) {
+      const required = material.quantityRequired
       if (required <= 0) continue
 
-      if (pm.stockItem.availableQty < required) {
+      if (material.reservedQty < required && material.availableQty < required) {
         throw new Error(
-          `Insufficient stock for material ${pm.stockItem.itemName}. Need ${required}, have ${pm.stockItem.availableQty}.`
+          `Insufficient stock for material ${material.itemName}. Need ${required}, have ${material.availableQty} available and ${material.reservedQty} reserved.`
         )
       }
     }
@@ -81,16 +102,42 @@ export async function POST(request: Request) {
 
     try {
       await prisma.$transaction(async (tx) => {
-        for (const pm of inquiry.product.materials) {
-          const required = Number(pm.quantityRequired ?? 0)
+        const existingBuildMovements = await tx.$queryRaw<Array<{ count: number }>>(Prisma.sql`
+          SELECT COUNT(*)::int AS count
+          FROM public.stock_movements
+          WHERE "referenceNumber" = ${inquiryId}
+            AND "projectPurpose" = 'Build Order'
+            AND type = 'OUT'::"StockMovementType"
+        `)
+
+        if ((existingBuildMovements[0]?.count ?? 0) > 0) {
+          return
+        }
+
+        for (const material of buildMaterials) {
+          const required = material.quantityRequired
           if (required <= 0) continue
 
-          await tx.$executeRaw(Prisma.sql`
-            UPDATE public.stock_items
-            SET "availableQty" = "availableQty" - ${required},
-                "updatedAt" = CURRENT_TIMESTAMP
-            WHERE id = ${pm.stockItemId}
-          `)
+          const affectedRows =
+            material.reservedQty >= required
+              ? await tx.$executeRaw(Prisma.sql`
+                  UPDATE public.stock_items
+                  SET "reservedQty" = "reservedQty" - ${required},
+                      "updatedAt" = CURRENT_TIMESTAMP
+                  WHERE id = ${material.stockItemId}
+                    AND "reservedQty" >= ${required}
+                `)
+              : await tx.$executeRaw(Prisma.sql`
+                  UPDATE public.stock_items
+                  SET "availableQty" = "availableQty" - ${required},
+                      "updatedAt" = CURRENT_TIMESTAMP
+                  WHERE id = ${material.stockItemId}
+                    AND "availableQty" >= ${required}
+                `)
+
+          if (affectedRows === 0) {
+            throw new Error(`Insufficient stock for material ${material.itemName}.`)
+          }
 
           await tx.$executeRaw(Prisma.sql`
             INSERT INTO public.stock_movements (
@@ -104,7 +151,7 @@ export async function POST(request: Request) {
             )
             VALUES (
               gen_random_uuid(),
-              ${pm.stockItemId},
+              ${material.stockItemId},
               'OUT'::"StockMovementType",
               ${required},
               'Build Order',
@@ -128,11 +175,11 @@ export async function POST(request: Request) {
               ${currentUser.id},
               'USER_UPDATED'::"AuditAction",
               'USER'::"AuditEntityType",
-              ${pm.stockItemId},
+              ${material.stockItemId},
               ${JSON.stringify({
                 auditLabel: "RAW_MATERIAL_STOCK_REMOVED",
-                sku: pm.stockItem.sku,
-                itemName: pm.stockItem.itemName,
+                sku: material.sku,
+                itemName: material.itemName,
                 quantity: required,
                 referenceNumber: inquiryId,
                 reason: "Build Order"

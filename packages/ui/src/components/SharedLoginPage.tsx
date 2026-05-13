@@ -26,7 +26,7 @@ type AuthClient = {
   signIn: {
     email: (credentials: { email: string; password: string }) => Promise<AuthSignInResult>
   }
-  signOut: () => Promise<unknown>
+  signOut?: () => Promise<unknown>
 }
 
 type SessionUser = {
@@ -301,7 +301,6 @@ export function SharedLoginPage({
       const sessionUser = sessionUserResult.user
 
       if (!verifySessionUser(sessionUser)) {
-        await authClient.signOut()
         setError(invalidRoleMessage)
         setIsLoading(false)
         return

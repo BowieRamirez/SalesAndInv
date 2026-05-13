@@ -28,7 +28,6 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { authClient } from "@/lib/auth/client";
 import type { AppRole } from "@/lib/rbac";
 
 type NavConfig = {
@@ -75,6 +74,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     links: [
       { name: "Warehouse Locations", href: "/inventory?tab=locations", icon: Box, tab: "locations" },
       { name: "All Stocks", href: "/inventory?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
+      { name: "Reserved Materials", href: "/inventory?tab=reserved", icon: CheckSquare, tab: "reserved" },
       { name: "Damaged Materials", href: "/inventory?tab=damaged-materials", icon: History, tab: "damaged-materials" },
       { name: "Approvals", href: "/inventory?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Audit Logs", href: "/inventory?tab=audit", icon: History, tab: "audit" },
@@ -281,7 +281,6 @@ function NavBody({ config, links, currentUser, pathname, currentTab, onLinkClick
             await fetch("/api/portal-session", {
               method: "DELETE",
             }).catch(() => undefined);
-            await authClient.signOut();
             window.location.href = "/sign-in";
           }}
           className="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-[#8b92a5] hover:bg-[#252839] hover:text-white border border-transparent transition-colors w-full"
@@ -497,3 +496,4 @@ export function Sidebar({ currentUser }: { currentUser: SidebarUser }) {
     </Suspense>
   );
 }
+

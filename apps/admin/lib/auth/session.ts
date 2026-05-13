@@ -172,13 +172,8 @@ async function getSessionUserFromSignedCache(): Promise<SessionUser | null> {
 async function getVerifiedSessionUser({ fresh = false }: { fresh?: boolean } = {}): Promise<SessionUser | null> {
   if (!fresh) {
     const cookieMap = await getNeonAuthCookies()
-    const portalSessionUser = verifyPortalSession(
-      cookieMap.get(ADMIN_PORTAL_SESSION_COOKIE_NAME)
-    )
 
-    if (portalSessionUser?.id) {
-      return portalSessionUser
-    }
+    return verifyPortalSession(cookieMap.get(ADMIN_PORTAL_SESSION_COOKIE_NAME))
   }
 
   try {

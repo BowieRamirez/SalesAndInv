@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, MapPin, Globe, User, LogOut } from "lucide-react";
-import { authClient } from "@/lib/auth/client";
 
 export function Navbar() {
   const [customerEmail, setCustomerEmail] = useState<string | null>(null);
@@ -50,8 +49,6 @@ export function Navbar() {
       },
       body: JSON.stringify({ portal: "storefront" }),
     }).catch(() => undefined);
-    await authClient.signOut();
-
     if (typeof window !== "undefined") {
       localStorage.removeItem("customerSession");
       setCustomerEmail(null);

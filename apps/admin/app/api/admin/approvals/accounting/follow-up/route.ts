@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
+import { reserveInquiryMaterialsForBuild } from "@/lib/inventory/reservations"
 import { updateInquiryPaymentFollowUp } from "@/lib/inquiries"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
@@ -45,8 +46,18 @@ export async function POST(request: Request) {
       statusNote: statusNote || "Accounting updated the customer payment follow-up.",
     })
 
+    if (updatedRows > 0) {
+      await reserveInquiryMaterialsForBuild({
+        inquiryId,
+        actorId: currentUser.id,
+        actorName: currentUser.name,
+        paymentStatus: "FOLLOW_UP_UPDATED",
+      })
+    }
+
     revalidatePath("/accounting")
     revalidatePath("/accounting/follow-ups")
+    revalidatePath("/inventory")
     revalidatePath("/operations")
     revalidatePath("/account/status")
 
@@ -57,6 +68,7 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error("Failed to update payment follow-up.", error)
-    return buildRedirect(request, "Payment follow-up update failed. Please try again.", "error")
+    const message = error instanceof Error ? error.message : "Payment follow-up update failed. Please try again."
+    return buildRedirect(request, message, "error")
   }
 }

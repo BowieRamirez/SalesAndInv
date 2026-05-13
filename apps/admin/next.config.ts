@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/sign-in",
-        destination: `${storefrontUrl}/sign-in?portal=admin`,
+        destination: `${storefrontUrl}/sign-in`,
         permanent: false,
       },
     ]
