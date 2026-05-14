@@ -15,7 +15,7 @@ type InventoryRow = {
   unitOfMeasure: string
 }
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 10
 
 export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
   const [query, setQuery] = useState("")
@@ -139,7 +139,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                       <button
                         type="button"
                         onClick={() => { setStockAction("ADD"); setSelectedMaterial(row); }}
-                        className="rounded-lg bg-[#1d4ed8] px-3 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#1d4ed8]/90"
+                        className="rounded-lg bg-[#111827] px-3 py-2 text-[12px] font-medium text-white transition-colors transition-colors hover:bg-[#111827]/90"
                       >
                         Add stock
                       </button>
@@ -164,38 +164,45 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
             </tbody>
           </table>
         </div>
-        <div className="mt-5 flex items-center justify-between">
+        <div className="mt-5 flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage(1)}
+            disabled={currentPage <= 1}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="First page"
+          >
+            &lt;&lt;
+          </button>
           <button
             type="button"
             onClick={() => setPage((value) => Math.max(1, value - 1))}
             disabled={currentPage <= 1}
-            className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Previous page"
           >
-            Previous
+            &lt;
           </button>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-              <button
-                key={pageNumber}
-                type="button"
-                onClick={() => setPage(pageNumber)}
-                className={`rounded-lg px-3 py-2 text-[13px] ${
-                  pageNumber === currentPage
-                    ? "bg-[#111827] text-white"
-                    : "border border-[#d1d5db] text-[#111827] hover:bg-[#f8fafc]"
-                }`}
-              >
-                {pageNumber}
-              </button>
-            ))}
+          <div className="min-w-[112px] rounded-md border border-[#111827] bg-white px-4 py-2 text-center text-[13px] font-semibold text-[#6b7280] shadow-sm">
+            <span className="rounded-md bg-[#020617] px-2 py-1 text-white">{currentPage}</span> of {totalPages}
           </div>
           <button
             type="button"
             onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
             disabled={currentPage >= totalPages}
-            className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Next page"
           >
-            Next
+            &gt;
+          </button>
+          <button
+            type="button"
+            onClick={() => setPage(totalPages)}
+            disabled={currentPage >= totalPages}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Last page"
+          >
+            &gt;&gt;
           </button>
         </div>
       </section>
