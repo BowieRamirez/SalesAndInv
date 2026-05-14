@@ -13,8 +13,8 @@ type Facet = {
 
 type ShopBrowserProps = {
   products: Product[]
+  definedCategories: string[]
   initialCategories: string[]
-  initialMaterials: string[]
   initialSort: string
   initialQuery: string
   initialMaxPrice: number
@@ -38,7 +38,16 @@ function sortProducts(products: Product[], sort: string) {
   return products
 }
 
-function getCategoryCounts(products: Product[]): Facet[] {
+function getCategoryCounts(products: Product[], definedCategories: string[]): Facet[] {
+  // If we have defined categories, we use those exactly as they are ordered/specified by the admin.
+  // Otherwise fallback to whatever is on the products.
+  if (definedCategories.length > 0) {
+    return definedCategories.map((category) => ({
+      name: category,
+      count: products.filter((product) => product.category === category).length,
+    }))
+  }
+
   return [...new Set(products.map((product) => product.category))]
     .sort((left, right) => left.localeCompare(right))
     .map((category) => ({
@@ -47,25 +56,16 @@ function getCategoryCounts(products: Product[]): Facet[] {
     }))
 }
 
-function getMaterialCounts(products: Product[]): Facet[] {
-  return [...new Set(products.map((product) => product.material))]
-    .sort((left, right) => left.localeCompare(right))
-    .map((material) => ({
-      name: material,
-      count: products.filter((product) => product.material === material).length,
-    }))
-}
 
 export function ShopBrowser({
   products,
+  definedCategories,
   initialCategories,
-  initialMaterials,
   initialSort,
   initialQuery,
   initialMaxPrice,
 }: ShopBrowserProps) {
   const [selectedCategories, setSelectedCategories] = useState(initialCategories)
-  const [selectedMaterials, setSelectedMaterials] = useState(initialMaterials)
   const [sort, setSort] = useState(initialSort)
   const [query, setQuery] = useState(initialQuery)
   const [maxPrice, setMaxPrice] = useState(initialMaxPrice)
@@ -73,8 +73,7 @@ export function ShopBrowser({
   const deferredQuery = useDeferredValue(query)
   const [, startTransition] = useTransition()
 
-  const categoryCounts = useMemo(() => getCategoryCounts(products), [products])
-  const materialCounts = useMemo(() => getMaterialCounts(products), [products])
+  const categoryCounts = useMemo(() => getCategoryCounts(products, definedCategories), [products, definedCategories])
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = deferredQuery.trim().toLowerCase()
@@ -82,8 +81,6 @@ export function ShopBrowser({
     const filtered = products.filter((product) => {
       const matchesCategory =
         selectedCategories.length === 0 || selectedCategories.includes(product.category)
-      const matchesMaterial =
-        selectedMaterials.length === 0 || selectedMaterials.includes(product.material)
       const matchesPrice = product.price <= deferredMaxPrice
       const searchableText = [
         product.name,
@@ -96,11 +93,11 @@ export function ShopBrowser({
         .toLowerCase()
       const matchesQuery = normalizedQuery.length === 0 || searchableText.includes(normalizedQuery)
 
-      return matchesCategory && matchesMaterial && matchesPrice && matchesQuery
+      return matchesCategory && matchesPrice && matchesQuery
     })
 
     return sortProducts(filtered, sort)
-  }, [deferredMaxPrice, deferredQuery, products, selectedCategories, selectedMaterials, sort])
+  }, [deferredMaxPrice, deferredQuery, products, selectedCategories, sort])
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -113,10 +110,6 @@ export function ShopBrowser({
 
       if (selectedCategories.length > 0) {
         params.set("category", selectedCategories.join(","))
-      }
-
-      if (selectedMaterials.length > 0) {
-        params.set("material", selectedMaterials.join(","))
       }
 
       if (sort !== "default") {
@@ -138,15 +131,12 @@ export function ShopBrowser({
     return () => {
       window.clearTimeout(timeout)
     }
-  }, [maxPrice, query, selectedCategories, selectedMaterials, sort])
+  }, [maxPrice, query, selectedCategories, sort])
 
   useEffect(() => {
     setSelectedCategories(initialCategories)
   }, [initialCategories])
 
-  useEffect(() => {
-    setSelectedMaterials(initialMaterials)
-  }, [initialMaterials])
 
   useEffect(() => {
     setSort(initialSort)
@@ -246,32 +236,6 @@ export function ShopBrowser({
               </div>
             </div>
 
-            <div className="mb-6">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[--color-muted]">
-                Material
-              </h3>
-              <div className="space-y-2">
-                {materialCounts.map(({ name, count }) => (
-                  <button
-                    key={name}
-                    type="button"
-                    onClick={() => setSelectedMaterials((current) => toggleValue(current, name))}
-                    className="flex w-full items-start justify-between gap-3 text-left"
-                  >
-                    <div className="flex items-start gap-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedMaterials.includes(name)}
-                        readOnly
-                        className="mt-1 h-3.5 w-3.5 accent-[--color-navy]"
-                      />
-                      <span className="text-sm text-[--color-charcoal]">{name}</span>
-                    </div>
-                    <span className="text-xs text-[--color-muted]">{count}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
 
             <div className="mb-6">
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[--color-muted]">
@@ -307,7 +271,6 @@ export function ShopBrowser({
                 type="button"
                 onClick={() => {
                   setSelectedCategories([])
-                  setSelectedMaterials([])
                   setSort("default")
                   setQuery("")
                   setMaxPrice(MAX_PRICE)

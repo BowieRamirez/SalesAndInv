@@ -231,7 +231,7 @@ export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowSt
     FROM public.customer_inquiries ci
     INNER JOIN public.products p
       ON p.id = ci."productId"
-    ORDER BY ci."updatedAt" DESC, ci."createdAt" DESC
+    ORDER BY ci."updatedAt" DESC, ci."createdAt" DESC /* bust_v3 */
   `)
 
   const workflowRows = toWorkflowRows(rows)

@@ -1,6 +1,8 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 import { formatInquiryWorkflowStatus, getInquiryWorkflowStyle } from "@furnitrack/validators"
 import { formatAccountingPaymentMethod } from "@/lib/accounting-payment-methods"
 import type { InquiryPaymentStatus, InquiryWorkflowRow } from "@/lib/inquiries"
@@ -167,25 +169,45 @@ export function ApprovalHistoryTable({ rows }: { rows: InquiryWorkflowRow[] }) {
           </tbody>
         </table>
       </div>
-      <div className="mt-5 flex items-center justify-between">
+      <div className="mt-5 flex items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => setPage(1)}
+          disabled={currentPage <= 1}
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="First page"
+        >
+          &lt;&lt;
+        </button>
         <button
           type="button"
           onClick={() => setPage((value) => Math.max(1, value - 1))}
           disabled={currentPage <= 1}
-          className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="Previous page"
         >
-          Previous
+          &lt;
         </button>
-        <span className="text-[13px] text-[#6b7280]">
-          Page {currentPage} of {totalPages}
-        </span>
+        <div className="min-w-[112px] rounded-md border border-[#111827] bg-white px-4 py-2 text-center text-[13px] font-semibold text-[#6b7280] shadow-sm">
+          <span className="rounded-md bg-[#020617] px-2 py-1 text-white">{currentPage}</span> of {totalPages}
+        </div>
         <button
           type="button"
           onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
           disabled={currentPage >= totalPages}
-          className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="Next page"
         >
-          Next
+          &gt;
+        </button>
+        <button
+          type="button"
+          onClick={() => setPage(totalPages)}
+          disabled={currentPage >= totalPages}
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="Last page"
+        >
+          &gt;&gt;
         </button>
       </div>
     </section>
@@ -197,6 +219,76 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
   const [filter, setFilter] = useState<(typeof FILTER_OPTIONS)[number]["value"]>("ALL")
   const [page, setPage] = useState(1)
   const [selectedReceipt, setSelectedReceipt] = useState<InquiryWorkflowRow | null>(null)
+
+  const handleDownloadPdf = () => {
+    if (!selectedReceipt) return
+
+    const doc = new jsPDF()
+
+    // Header
+    doc.setFontSize(22)
+    doc.setFont("helvetica", "bold")
+    doc.text("FurniTrack", 14, 20)
+    
+    doc.setFontSize(14)
+    doc.setFont("helvetica", "normal")
+    doc.text("Official Receipt", 14, 30)
+
+    doc.setFontSize(10)
+    doc.setTextColor(100)
+    doc.text(`Order #${selectedReceipt.id.slice(-8).toUpperCase()}`, 14, 38)
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 44)
+
+    // Reset color
+    doc.setTextColor(0)
+
+    // Customer Info
+    autoTable(doc, {
+      startY: 55,
+      head: [["Customer Information", ""]],
+      body: [
+        ["Name:", selectedReceipt.customerName],
+        ["Email:", selectedReceipt.customerEmail],
+        ["Phone:", selectedReceipt.customerPhone || "N/A"],
+      ],
+      theme: "plain",
+      headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold" },
+      styles: { cellPadding: 3, fontSize: 10 },
+      columnStyles: { 0: { fontStyle: "bold", cellWidth: 40 } },
+    })
+
+    const formatPdfPeso = (val: number) => {
+      return "PHP " + val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+
+    // Order Details
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 10,
+      head: [["Order Details", ""]],
+      body: [
+        ["Product:", selectedReceipt.productName],
+        ["Total Amount:", formatPdfPeso(selectedReceipt.total)],
+        ["Amount Paid:", formatPdfPeso(selectedReceipt.paid)],
+        ["Remaining Balance:", formatPdfPeso(selectedReceipt.remainingBalance)],
+        ["Payment Status:", formatPaymentStatus(selectedReceipt.paymentStatus)],
+        ["Payment Method:", selectedReceipt.paymentMethod ? formatAccountingPaymentMethod(selectedReceipt.paymentMethod) : "N/A"],
+        ["Approval Note:", selectedReceipt.workflowNote || "None"],
+      ],
+      theme: "plain",
+      headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold" },
+      styles: { cellPadding: 3, fontSize: 10 },
+      columnStyles: { 0: { fontStyle: "bold", cellWidth: 40 } },
+    })
+
+    // Footer
+    const finalY = (doc as any).lastAutoTable.finalY + 30
+    doc.setFontSize(10)
+    doc.setFont("helvetica", "italic")
+    doc.setTextColor(100)
+    doc.text("Thank you for your business!", 14, finalY)
+
+    doc.save(`Receipt_${selectedReceipt.id.slice(-8).toUpperCase()}.pdf`)
+  }
 
   const filteredRows = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -312,25 +404,45 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
             </tbody>
           </table>
         </div>
-        <div className="mt-5 flex items-center justify-between">
+        <div className="mt-5 flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage(1)}
+            disabled={currentPage <= 1}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="First page"
+          >
+            &lt;&lt;
+          </button>
           <button
             type="button"
             onClick={() => setPage((value) => Math.max(1, value - 1))}
             disabled={currentPage <= 1}
-            className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Previous page"
           >
-            Previous
+            &lt;
           </button>
-          <span className="text-[13px] text-[#6b7280]">
-            Page {currentPage} of {totalPages}
-          </span>
+          <div className="min-w-[112px] rounded-md border border-[#111827] bg-white px-4 py-2 text-center text-[13px] font-semibold text-[#6b7280] shadow-sm">
+            <span className="rounded-md bg-[#020617] px-2 py-1 text-white">{currentPage}</span> of {totalPages}
+          </div>
           <button
             type="button"
             onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
             disabled={currentPage >= totalPages}
-            className="rounded-lg border border-[#d1d5db] px-4 py-2 text-[13px] text-[#111827] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:text-[#cbd5e1]"
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Next page"
           >
-            Next
+            &gt;
+          </button>
+          <button
+            type="button"
+            onClick={() => setPage(totalPages)}
+            disabled={currentPage >= totalPages}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Last page"
+          >
+            &gt;&gt;
           </button>
         </div>
       </section>
@@ -382,6 +494,13 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
             </div>
 
             <div className="mt-8 flex gap-3">
+              <button
+                type="button"
+                onClick={handleDownloadPdf}
+                className="w-full rounded-xl border border-[#d1d5db] bg-white px-4 py-3 text-[13px] font-medium text-[#111827] transition-colors hover:bg-[#f8fafc]"
+              >
+                Download PDF
+              </button>
               <button
                 type="button"
                 onClick={() => setSelectedReceipt(null)}

@@ -272,6 +272,7 @@ export async function completeReturnRequest(params: {
     for (const material of materials) {
       const resolvedQuantity = Math.max(1, Math.ceil(Number(material.quantityRequired ?? 1)))
 
+      // Record the damage movement in stock_movements
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.stock_movements (
           id,
@@ -293,6 +294,15 @@ export async function completeReturnRequest(params: {
           ${returnRequestId},
           CURRENT_TIMESTAMP
         )
+      `)
+
+      // Permanently deduct from availableQty — clamped to 0, never goes back to stock
+      await tx.$executeRaw(Prisma.sql`
+        UPDATE public.stock_items
+        SET
+          "availableQty" = GREATEST(0, "availableQty" - ${resolvedQuantity}),
+          "updatedAt" = CURRENT_TIMESTAMP
+        WHERE id = ${material.stockItemId}
       `)
     }
     return statusUpdateCount

@@ -2,7 +2,14 @@ import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { Prisma, prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
-import { generateUniqueProductSlug, parseDecimal, splitLines } from "@/lib/operations-products"
+import {
+  buildProductMaterialSummary,
+  collectSelectedMaterialIds,
+  generateUniqueProductSlug,
+  getExistingRawMaterials,
+  parseDecimal,
+  splitLines,
+} from "@/lib/operations-products"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/operations", request.url)
@@ -36,9 +43,14 @@ export async function POST(request: Request) {
   const badge = String(formData.get("badge") ?? "").trim() || null
   const price = parseDecimal(formData.get("price"))
   const isPublished = String(formData.get("isPublished") ?? "").trim() === "on"
+  const selectedMaterialIds = collectSelectedMaterialIds(formData)
 
   if (!productId || !stockItemId || !name || !category || !description) {
     return buildRedirect(request, "Select a valid product and provide its name, category, and description.", "error")
+  }
+
+  if (selectedMaterialIds.length === 0) {
+    return buildRedirect(request, "Select at least one raw material for the product's recipe.", "error")
   }
 
   if (!Number.isFinite(price) || price < 0) {
@@ -62,6 +74,20 @@ export async function POST(request: Request) {
     const slug = await generateUniqueProductSlug(name, productId)
     const imageUrls = splitLines(imageUrl)
 
+    const rawMaterials = await getExistingRawMaterials(selectedMaterialIds)
+
+    if (rawMaterials.length !== selectedMaterialIds.length) {
+      return buildRedirect(request, "One or more selected materials are not in inventory.", "error")
+    }
+
+    const materialEntries = rawMaterials.map((material) => ({
+      stockItemId: material.id,
+      quantityDisplay: String(formData.get(`quantityDisplay:${material.id}`) ?? "").trim() || null,
+      notes: String(formData.get(`notes:${material.id}`) ?? "").trim() || null,
+    }))
+
+    const materialSummary = buildProductMaterialSummary(rawMaterials.map((material) => material.itemName))
+
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
         UPDATE public.stock_items
@@ -82,10 +108,39 @@ export async function POST(request: Request) {
           badge = ${badge},
           images = ${JSON.stringify(imageUrls)}::jsonb,
           description = ${description},
+          material = ${materialSummary},
           "isPublished" = ${isPublished},
           "updatedAt" = CURRENT_TIMESTAMP
         WHERE id = ${productId}
       `)
+
+      await tx.$executeRaw(Prisma.sql`
+        DELETE FROM public.product_materials
+        WHERE "productId" = ${productId}
+      `)
+
+      if (materialEntries.length > 0) {
+        for (const entry of materialEntries) {
+          await tx.$executeRaw(Prisma.sql`
+            INSERT INTO public.product_materials (
+              id,
+              "productId",
+              "stockItemId",
+              "quantityDisplay",
+              notes,
+              "createdAt"
+            )
+            VALUES (
+              gen_random_uuid(),
+              ${productId},
+              ${entry.stockItemId},
+              ${entry.quantityDisplay},
+              ${entry.notes},
+              CURRENT_TIMESTAMP
+            )
+          `)
+        }
+      }
     })
 
     revalidatePath("/operations")

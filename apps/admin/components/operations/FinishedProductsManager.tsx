@@ -2,6 +2,7 @@
 
 import { Fragment, useDeferredValue, useMemo, useState } from "react"
 import { ImageDropField } from "./ImageDropField"
+import { MaterialSelector } from "./MaterialSelector"
 
 type FinishedProduct = {
   id: string
@@ -30,6 +31,13 @@ type FinishedProduct = {
 
 type FinishedProductsManagerProps = {
   products: FinishedProduct[]
+  rawMaterials: Array<{
+    id: string
+    sku: string
+    itemName: string
+    availableQty: number
+    unitOfMeasure: string
+  }>
 }
 
 function formatPeso(value: number) {
@@ -40,8 +48,11 @@ function formatPeso(value: number) {
   }).format(value)
 }
 
-export function FinishedProductsManager({ products }: FinishedProductsManagerProps) {
+const PAGE_SIZE = 10
+
+export function FinishedProductsManager({ products, rawMaterials }: FinishedProductsManagerProps) {
   const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
   const [openProductId, setOpenProductId] = useState<string | null>(null)
   const deferredSearch = useDeferredValue(search)
 
@@ -68,6 +79,11 @@ export function FinishedProductsManager({ products }: FinishedProductsManagerPro
     })
   }, [deferredSearch, products])
 
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageStart = (currentPage - 1) * PAGE_SIZE
+  const pagedProducts = filteredProducts.slice(pageStart, pageStart + PAGE_SIZE)
+
   return (
     <div className="space-y-4">
       <section className="rounded-[28px] border border-[#e5e7eb] bg-white p-5 shadow-sm">
@@ -78,7 +94,10 @@ export function FinishedProductsManager({ products }: FinishedProductsManagerPro
           <div className="w-full max-w-md">
             <input
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => {
+                setSearch(event.target.value)
+                setPage(1)
+              }}
               placeholder="Search by name, SKU, category, warehouse, or material"
               className="w-full rounded-2xl border border-[#dbe4f0] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
             />
@@ -109,7 +128,7 @@ export function FinishedProductsManager({ products }: FinishedProductsManagerPro
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts.map((product) => {
+                {pagedProducts.map((product) => {
                   const isOpen = openProductId === product.id
 
                   return (
@@ -162,7 +181,7 @@ export function FinishedProductsManager({ products }: FinishedProductsManagerPro
                             <form
                               method="post"
                               action="/api/admin/operations/products/update"
-                              className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px]"
+                              className="grid gap-4 xl:grid-cols-[1fr_minmax(400px,0.8fr)]"
                             >
                               <input type="hidden" name="productId" value={product.id} />
                               <input type="hidden" name="stockItemId" value={product.stockItemId} />
@@ -246,34 +265,57 @@ export function FinishedProductsManager({ products }: FinishedProductsManagerPro
 
                                 <div>
                                   <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Recipe</p>
-                                  <p className="mt-1 text-[13px] leading-6 text-[#475569]">{product.materialSummary}</p>
+                                  <p className="mt-1 mb-4 text-[13px] leading-6 text-[#475569]">{product.materialSummary}</p>
+                                  <MaterialSelector
+                                    materials={rawMaterials}
+                                    defaultSelectedIds={product.recipeDetails.map((m) => m.id)}
+                                    defaultQuantities={Object.fromEntries(
+                                      product.recipeDetails.map((m) => [m.id, m.quantityDisplay ?? ""])
+                                    )}
+                                    defaultNotes={Object.fromEntries(
+                                      product.recipeDetails.map((m) => [m.id, m.notes ?? ""])
+                                    )}
+                                  />
                                 </div>
 
-                                <div className="space-y-2">
-                                  {product.recipeDetails.slice(0, 4).map((material) => (
-                                    <div
-                                      key={`${product.id}-${material.id}`}
-                                      className="rounded-2xl border border-[#e2e8f0] bg-[#fbfdff] px-3 py-2"
-                                    >
-                                      <p className="text-[12px] font-medium text-[#0f172a]">
-                                        {material.itemName} <span className="text-[#94a3b8]">({material.sku})</span>
-                                      </p>
-                                      <p className="mt-1 text-[11px] text-[#64748b]">
-                                        {material.quantityDisplay || "Quantity not specified"}
-                                      </p>
-                                    </div>
-                                  ))}
-                                  {product.recipeDetails.length > 4 ? (
-                                    <p className="text-[11px] text-[#94a3b8]">+{product.recipeDetails.length - 4} more materials</p>
-                                  ) : null}
-                                </div>
+                                <div className="flex items-center justify-between border-t border-[#e2e8f0] pt-4">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.preventDefault()
+                                      const confirmed = confirm(`Are you sure you want to delete ${product.name}?`)
+                                      if (confirmed) {
+                                        const form = document.createElement("form")
+                                        form.method = "post"
+                                        form.action = "/api/admin/operations/products/delete"
 
-                                <button
-                                  type="submit"
-                                  className="rounded-2xl bg-[#111827] px-4 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90"
-                                >
-                                  Save product changes
-                                </button>
+                                        const idInput = document.createElement("input")
+                                        idInput.type = "hidden"
+                                        idInput.name = "productId"
+                                        idInput.value = product.id
+                                        form.appendChild(idInput)
+
+                                        const stockInput = document.createElement("input")
+                                        stockInput.type = "hidden"
+                                        stockInput.name = "stockItemId"
+                                        stockInput.value = product.stockItemId
+                                        form.appendChild(stockInput)
+
+                                        document.body.appendChild(form)
+                                        form.submit()
+                                      }
+                                    }}
+                                    className="rounded-xl px-4 py-3 text-[14px] font-medium text-[#b91c1c] transition-colors hover:bg-[#fef2f2]"
+                                  >
+                                    Delete product
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    className="rounded-2xl bg-[#111827] px-4 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+                                  >
+                                    Save product changes
+                                  </button>
+                                </div>
                               </div>
                             </form>
                           </td>
@@ -285,6 +327,50 @@ export function FinishedProductsManager({ products }: FinishedProductsManagerPro
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {filteredProducts.length > 0 && (
+        <div className="mt-5 flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage(1)}
+            disabled={currentPage <= 1}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="First page"
+          >
+            &lt;&lt;
+          </button>
+          <button
+            type="button"
+            onClick={() => setPage((value) => Math.max(1, value - 1))}
+            disabled={currentPage <= 1}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Previous page"
+          >
+            &lt;
+          </button>
+          <div className="min-w-[112px] rounded-md border border-[#111827] bg-white px-4 py-2 text-center text-[13px] font-semibold text-[#6b7280] shadow-sm">
+            <span className="rounded-md bg-[#020617] px-2 py-1 text-white">{currentPage}</span> of {totalPages}
+          </div>
+          <button
+            type="button"
+            onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+            disabled={currentPage >= totalPages}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Next page"
+          >
+            &gt;
+          </button>
+          <button
+            type="button"
+            onClick={() => setPage(totalPages)}
+            disabled={currentPage >= totalPages}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+            aria-label="Last page"
+          >
+            &gt;&gt;
+          </button>
         </div>
       )}
     </div>

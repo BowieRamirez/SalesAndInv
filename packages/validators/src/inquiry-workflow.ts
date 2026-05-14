@@ -36,15 +36,15 @@ export const INQUIRY_WORKFLOW_LABELS: Record<AnyInquiryWorkflowStatus, string> =
 }
 
 export const INQUIRY_WORKFLOW_STYLES: Record<AnyInquiryWorkflowStatus, string> = {
-  RECEIVED: "bg-[#eef2ff] text-[#4338ca]",
-  ACCEPTED: "bg-[#ecfdf3] text-[#047857]",
-  PENDING_INVENTORY_APPROVAL: "bg-[#eff6ff] text-[#1d4ed8]",
-  WAITING_FOR_PAYMENT: "bg-[#fff1f2] text-[#be123c]",
-  PENDING_ACCOUNTING_APPROVAL: "bg-[#fff7ed] text-[#c2410c]",
-  GETTING_READY_FOR_BUILDING: "bg-[#fff7e6] text-[#b45309]",
-  READY_FOR_SHIPMENT: "bg-[#ecfeff] text-[#155e75]",
-  READY_FOR_SHIPPING: "bg-[#ecfeff] text-[#155e75]",
-  COMPLETED: "bg-[#ecfdf3] text-[#166534]",
+  RECEIVED: "border border-[#d1d5db] text-[#374151]",
+  ACCEPTED: "border border-[#d1d5db] text-[#374151]",
+  PENDING_INVENTORY_APPROVAL: "border border-[#d1d5db] text-[#374151]",
+  WAITING_FOR_PAYMENT: "border border-[#d1d5db] text-[#374151]",
+  PENDING_ACCOUNTING_APPROVAL: "border border-[#d1d5db] text-[#374151]",
+  GETTING_READY_FOR_BUILDING: "border border-[#d1d5db] text-[#374151]",
+  READY_FOR_SHIPMENT: "border border-[#d1d5db] text-[#374151]",
+  READY_FOR_SHIPPING: "border border-[#d1d5db] text-[#374151]",
+  COMPLETED: "border border-[#d1d5db] text-[#374151]",
 }
 
 export const ACTIVE_INQUIRY_WORKFLOW_STATUSES = [

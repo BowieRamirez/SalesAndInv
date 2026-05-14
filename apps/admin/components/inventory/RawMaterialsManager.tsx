@@ -24,6 +24,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
   const [stockAction, setStockAction] = useState<"ADD" | "REMOVE">("ADD")
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [showBulkModal, setShowBulkModal] = useState(false)
+  const [bulkSearch, setBulkSearch] = useState("")
 
   const filteredRows = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -57,14 +58,24 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
   }
 
   const toggleAll = () => {
-    if (selectedIds.size === pagedRows.length && pagedRows.length > 0) {
+    const allFilteredIds = filteredRows.map((r) => r.id)
+    const allSelected = allFilteredIds.length > 0 && allFilteredIds.every((id) => selectedIds.has(id))
+    if (allSelected) {
       setSelectedIds(new Set())
     } else {
-      setSelectedIds(new Set(pagedRows.map((r) => r.id)))
+      setSelectedIds(new Set(allFilteredIds))
     }
   }
 
   const selectedRows = rows.filter((r) => selectedIds.has(r.id))
+
+  const visibleBulkRows = useMemo(() => {
+    const q = bulkSearch.trim().toLowerCase()
+    if (!q) return selectedRows
+    return selectedRows.filter((r) =>
+      [r.sku, r.itemName, r.warehouseName].some((v) => v.toLowerCase().includes(q))
+    )
+  }, [selectedRows, bulkSearch])
 
   return (
     <>
@@ -101,9 +112,10 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                 <th className="py-3 pr-4">
                   <input 
                     type="checkbox" 
-                    checked={pagedRows.length > 0 && selectedIds.size === pagedRows.length}
+                    checked={filteredRows.length > 0 && filteredRows.every((r) => selectedIds.has(r.id))}
                     onChange={toggleAll}
                     className="h-4 w-4 rounded border-[#d1d5db]"
+                    title="Select all filtered rows"
                   />
                 </th>
                 <th className="py-3 pr-4 font-medium">SKU</th>
@@ -257,7 +269,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                   type="submit"
                   className={`flex-1 rounded-xl px-4 py-3 text-[13px] font-medium text-white transition-colors ${
                     stockAction === "ADD" 
-                      ? "bg-[#1d4ed8] hover:bg-[#1d4ed8]/90" 
+                      ? "bg-[#111827] hover:bg-[#111827]/90" 
                       : "bg-red-600 hover:bg-red-600/90"
                   }`}
                 >
@@ -277,9 +289,24 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
               <h4 className="mt-2 text-[22px] font-semibold text-[#111827]">Updating {selectedRows.length} items</h4>
             </div>
 
+            <div className="mb-4">
+              <input
+                type="text"
+                value={bulkSearch}
+                onChange={(e) => setBulkSearch(e.target.value)}
+                placeholder="Search by SKU, item, or warehouse…"
+                className="w-full rounded-xl border border-[#d1d5dc] bg-[#f8fafc] px-4 py-2.5 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              />
+              {bulkSearch && (
+                <p className="mt-1.5 text-[12px] text-[#6b7280]">
+                  Showing {visibleBulkRows.length} of {selectedRows.length} selected
+                </p>
+              )}
+            </div>
+
             <form method="post" action="/api/admin/inventory/raw-materials/bulk-restock" className="space-y-4">
               <div className="max-h-[50vh] overflow-y-auto pr-2 space-y-3">
-                {selectedRows.map((row) => (
+                {visibleBulkRows.map((row) => (
                   <div key={row.id} className="flex items-center gap-4 rounded-xl border border-[#e5e7eb] p-4">
                     <div className="flex-1">
                       <p className="text-[14px] font-semibold text-[#111827]">{row.itemName}</p>
@@ -298,6 +325,9 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                     </div>
                   </div>
                 ))}
+                {visibleBulkRows.length === 0 && (
+                  <p className="py-6 text-center text-[13px] text-[#6b7280]">No items match your search.</p>
+                )}
               </div>
               <label className="block mt-4">
                 <span className="mb-2 block text-[12px] font-medium uppercase tracking-[0.12em] text-[#6b7280]">
@@ -315,6 +345,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                   onClick={() => {
                     setShowBulkModal(false)
                     setSelectedIds(new Set())
+                    setBulkSearch("")
                   }}
                   className="flex-1 rounded-xl border border-[#d1d5db] px-4 py-3 text-[13px] font-medium text-[#111827] transition-colors hover:bg-[#f8fafc]"
                 >
@@ -322,7 +353,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-xl bg-[#1d4ed8] px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#1d4ed8]/90"
+                  className="flex-1 rounded-xl bg-[#111827] px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
                 >
                   Save all stocks
                 </button>

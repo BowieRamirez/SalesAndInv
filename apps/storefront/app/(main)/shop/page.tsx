@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
-import { getStorefrontProducts } from "@furnitrack/db"
+import { getStorefrontProducts, prisma } from "@furnitrack/db"
 import { Footer } from "../../../components/Footer"
 import { ShopBrowser } from "../../../components/ShopBrowser"
 
@@ -30,10 +30,14 @@ export const dynamic = "force-dynamic"
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {}
-  const products = await getStorefrontProducts()
+  const [products, categoriesRows] = await Promise.all([
+    getStorefrontProducts(),
+    prisma.$queryRaw<Array<{ name: string }>>`SELECT name FROM public.storefront_categories ORDER BY name ASC /* bust_v3 */`.catch(() => [])
+  ])
+
+  const definedCategories = categoriesRows.map(row => row.name)
 
   const initialCategories = readListParam(resolvedSearchParams.category)
-  const initialMaterials = readListParam(resolvedSearchParams.material)
   const initialSort = readStringParam(resolvedSearchParams.sort) ?? "default"
   const initialQuery = readStringParam(resolvedSearchParams.q)?.trim() ?? ""
   const initialMaxPriceParam = Number(readStringParam(resolvedSearchParams.maxPrice) ?? "90000")
@@ -76,8 +80,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
       <ShopBrowser
         products={products}
+        definedCategories={definedCategories}
         initialCategories={initialCategories}
-        initialMaterials={initialMaterials}
         initialSort={initialSort}
         initialQuery={initialQuery}
         initialMaxPrice={initialMaxPrice}

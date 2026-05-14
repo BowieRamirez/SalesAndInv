@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 import { notFound, redirect } from "next/navigation"
 import { formatInquiryWorkflowStatus } from "@furnitrack/validators"
 import { OrderChatPanel } from "@/components/sales/OrderChatPanel"
@@ -62,10 +63,14 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
     <main className="min-h-screen bg-[#fcfcfc] p-8">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
-          <Link href={backHref} className="text-[13px] font-medium text-[#2563eb] hover:underline">
+          <Link
+            href={backHref}
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-[13px] font-medium text-[#111827] shadow-sm ring-1 ring-inset ring-[#d1d5db] transition-colors hover:bg-[#f8fafc]"
+          >
+            <ArrowLeft className="h-4 w-4" />
             {backLabel}
           </Link>
-          <h1 className="mt-3 text-[28px] font-semibold text-[#111827]">{inquiry.productName}</h1>
+          <h1 className="mt-5 text-[28px] font-semibold text-[#111827]">{inquiry.productName}</h1>
           <p className="mt-2 text-[14px] text-[#6b7280]">
             {isChatView
               ? "Order-specific customer conversation with quick context."

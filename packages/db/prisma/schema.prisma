@@ -708,3 +708,12 @@ model AuditLog {
   @@index([companyId, createdAt])
   @@map("audit_logs")
 }
+
+model StorefrontCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("storefront_categories")
+}

@@ -7,6 +7,7 @@ import {
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { FinishedProductsManager } from "@/components/operations/FinishedProductsManager"
 import { ImageDropField } from "@/components/operations/ImageDropField"
+import { StorefrontFilterManager } from "@/components/operations/StorefrontFilterManager"
 import { MaterialSelector } from "@/components/operations/MaterialSelector"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { ROLE_REDIRECT } from "@/lib/rbac"
@@ -41,7 +42,7 @@ type ProductCardData = {
   }>
 }
 
-const OPERATIONS_TABS = new Set(["design", "new-products", "finished-products", "approvals", "delivery", "company-code"])
+const OPERATIONS_TABS = new Set(["design", "new-products", "finished-products", "storefront-filters", "approvals", "delivery"])
 
 function getSearchValue(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value
@@ -77,17 +78,6 @@ function asImageUrl(value: Prisma.JsonValue | null) {
   return value.find((entry): entry is string => typeof entry === "string") ?? ""
 }
 
-function PlaceholderCard({
-  title,
-}: {
-  title: string
-}) {
-  return (
-    <div className="rounded-xl border border-[#e5e7eb] bg-white p-8 shadow-sm">
-      <h3 className="text-[16px] font-semibold text-[#111827]">{title}</h3>
-    </div>
-  )
-}
 
 function StatCard({
   label,
@@ -367,7 +357,9 @@ function DeliveryQueueCard({
 }
 
 async function getOperationsWorkspaceData() {
-  const [warehouses, rawMaterials, products, recipes] = await Promise.all([
+
+
+  const [warehouses, rawMaterials, products, recipes, storefrontCategories] = await Promise.all([
     prisma.warehouse.findMany({
       select: {
         id: true,
@@ -395,7 +387,7 @@ async function getOperationsWorkspaceData() {
         "unitOfMeasure"
       FROM public.stock_items
       WHERE "itemType" = 'RAW_MATERIAL'::"InventoryItemType"
-      ORDER BY "itemName" ASC
+      ORDER BY "itemName" ASC /* bust_v3 */
     `,
     prisma.$queryRaw<
       Array<{
@@ -442,7 +434,7 @@ async function getOperationsWorkspaceData() {
         FROM public.product_materials pm
         WHERE pm."productId" = p.id
       ) recipe_counts ON TRUE
-      ORDER BY p."createdAt" DESC, p.name ASC
+      ORDER BY p."createdAt" DESC, p.name ASC /* bust_v3 */
     `,
     prisma.$queryRaw<
       Array<{
@@ -464,7 +456,10 @@ async function getOperationsWorkspaceData() {
       FROM public.product_materials pm
       INNER JOIN public.stock_items si
         ON si.id = pm."stockItemId"
-      ORDER BY pm."createdAt" ASC
+      ORDER BY pm."createdAt" ASC /* bust_v3 */
+    `,
+    prisma.$queryRaw<Array<{ id: string; name: string }>>`
+      SELECT id, name FROM public.storefront_categories ORDER BY name ASC /* bust_v3 */
     `,
   ])
 
@@ -504,6 +499,7 @@ async function getOperationsWorkspaceData() {
     warehouses,
     rawMaterials,
     finishedProducts,
+    storefrontCategories: storefrontCategories || [],
   }
 }
 
@@ -520,7 +516,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
   const activeTab = resolveTab(resolvedSearchParams.tab)
   const message = getSearchValue(resolvedSearchParams.message)
   const tone = getSearchValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
-  const [{ warehouses, rawMaterials, finishedProducts }, operationsInquiries] = await Promise.all([
+  const [{ warehouses, rawMaterials, finishedProducts, storefrontCategories }, operationsInquiries] = await Promise.all([
     getOperationsWorkspaceData(),
     getInquiryWorkflowRows(["GETTING_READY_FOR_BUILDING", "READY_FOR_SHIPPING"]),
   ])
@@ -768,7 +764,11 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
         )}
 
         {activeTab === "finished-products" && (
-          <FinishedProductsManager products={finishedProducts} />
+          <FinishedProductsManager products={finishedProducts} rawMaterials={rawMaterials} />
+        )}
+
+        {activeTab === "storefront-filters" && (
+          <StorefrontFilterManager categories={storefrontCategories} products={finishedProducts} />
         )}
 
         {activeTab === "approvals" && (
@@ -838,11 +838,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           </div>
         )}
 
-        {activeTab === "company-code" && (
-          <PlaceholderCard
-            title="Company Code Checks"
-          />
-        )}
+
       </div>
     </main>
   )

@@ -69,6 +69,16 @@ export type Product = $Result.DefaultSelection<Prisma.$ProductPayload>
  */
 export type CustomerInquiry = $Result.DefaultSelection<Prisma.$CustomerInquiryPayload>
 /**
+ * Model OrderChatMessage
+ * 
+ */
+export type OrderChatMessage = $Result.DefaultSelection<Prisma.$OrderChatMessagePayload>
+/**
+ * Model OrderChatAttachment
+ * 
+ */
+export type OrderChatAttachment = $Result.DefaultSelection<Prisma.$OrderChatAttachmentPayload>
+/**
  * Model ProductMaterial
  * 
  */
@@ -118,6 +128,11 @@ export type ApprovalHistory = $Result.DefaultSelection<Prisma.$ApprovalHistoryPa
  * 
  */
 export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
+/**
+ * Model StorefrontCategory
+ * 
+ */
+export type StorefrontCategory = $Result.DefaultSelection<Prisma.$StorefrontCategoryPayload>
 
 /**
  * Enums
@@ -736,6 +751,26 @@ export class PrismaClient<
   get customerInquiry(): Prisma.CustomerInquiryDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.orderChatMessage`: Exposes CRUD operations for the **OrderChatMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrderChatMessages
+    * const orderChatMessages = await prisma.orderChatMessage.findMany()
+    * ```
+    */
+  get orderChatMessage(): Prisma.OrderChatMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.orderChatAttachment`: Exposes CRUD operations for the **OrderChatAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrderChatAttachments
+    * const orderChatAttachments = await prisma.orderChatAttachment.findMany()
+    * ```
+    */
+  get orderChatAttachment(): Prisma.OrderChatAttachmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.productMaterial`: Exposes CRUD operations for the **ProductMaterial** model.
     * Example usage:
     * ```ts
@@ -834,6 +869,16 @@ export class PrismaClient<
     * ```
     */
   get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.storefrontCategory`: Exposes CRUD operations for the **StorefrontCategory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StorefrontCategories
+    * const storefrontCategories = await prisma.storefrontCategory.findMany()
+    * ```
+    */
+  get storefrontCategory(): Prisma.StorefrontCategoryDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1286,6 +1331,8 @@ export namespace Prisma {
     StockItem: 'StockItem',
     Product: 'Product',
     CustomerInquiry: 'CustomerInquiry',
+    OrderChatMessage: 'OrderChatMessage',
+    OrderChatAttachment: 'OrderChatAttachment',
     ProductMaterial: 'ProductMaterial',
     StockMovement: 'StockMovement',
     StockRequest: 'StockRequest',
@@ -1295,7 +1342,8 @@ export namespace Prisma {
     PaymentRecord: 'PaymentRecord',
     DeliverySchedule: 'DeliverySchedule',
     ApprovalHistory: 'ApprovalHistory',
-    AuditLog: 'AuditLog'
+    AuditLog: 'AuditLog',
+    StorefrontCategory: 'StorefrontCategory'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1314,7 +1362,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "stockItem" | "product" | "customerInquiry" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog"
+      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "stockItem" | "product" | "customerInquiry" | "orderChatMessage" | "orderChatAttachment" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog" | "storefrontCategory"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2132,6 +2180,154 @@ export namespace Prisma {
           }
         }
       }
+      OrderChatMessage: {
+        payload: Prisma.$OrderChatMessagePayload<ExtArgs>
+        fields: Prisma.OrderChatMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrderChatMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrderChatMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.OrderChatMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrderChatMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>
+          }
+          findMany: {
+            args: Prisma.OrderChatMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>[]
+          }
+          create: {
+            args: Prisma.OrderChatMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>
+          }
+          createMany: {
+            args: Prisma.OrderChatMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OrderChatMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.OrderChatMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>
+          }
+          update: {
+            args: Prisma.OrderChatMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.OrderChatMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrderChatMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OrderChatMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.OrderChatMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.OrderChatMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOrderChatMessage>
+          }
+          groupBy: {
+            args: Prisma.OrderChatMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OrderChatMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrderChatMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<OrderChatMessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      OrderChatAttachment: {
+        payload: Prisma.$OrderChatAttachmentPayload<ExtArgs>
+        fields: Prisma.OrderChatAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrderChatAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrderChatAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.OrderChatAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrderChatAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.OrderChatAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.OrderChatAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.OrderChatAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OrderChatAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.OrderChatAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>
+          }
+          update: {
+            args: Prisma.OrderChatAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.OrderChatAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrderChatAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OrderChatAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.OrderChatAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrderChatAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.OrderChatAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOrderChatAttachment>
+          }
+          groupBy: {
+            args: Prisma.OrderChatAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OrderChatAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrderChatAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<OrderChatAttachmentCountAggregateOutputType> | number
+          }
+        }
+      }
       ProductMaterial: {
         payload: Prisma.$ProductMaterialPayload<ExtArgs>
         fields: Prisma.ProductMaterialFieldRefs
@@ -2872,6 +3068,80 @@ export namespace Prisma {
           }
         }
       }
+      StorefrontCategory: {
+        payload: Prisma.$StorefrontCategoryPayload<ExtArgs>
+        fields: Prisma.StorefrontCategoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StorefrontCategoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StorefrontCategoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>
+          }
+          findFirst: {
+            args: Prisma.StorefrontCategoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StorefrontCategoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>
+          }
+          findMany: {
+            args: Prisma.StorefrontCategoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>[]
+          }
+          create: {
+            args: Prisma.StorefrontCategoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>
+          }
+          createMany: {
+            args: Prisma.StorefrontCategoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StorefrontCategoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>[]
+          }
+          delete: {
+            args: Prisma.StorefrontCategoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>
+          }
+          update: {
+            args: Prisma.StorefrontCategoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.StorefrontCategoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StorefrontCategoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StorefrontCategoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.StorefrontCategoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StorefrontCategoryPayload>
+          }
+          aggregate: {
+            args: Prisma.StorefrontCategoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStorefrontCategory>
+          }
+          groupBy: {
+            args: Prisma.StorefrontCategoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StorefrontCategoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StorefrontCategoryCountArgs<ExtArgs>
+            result: $Utils.Optional<StorefrontCategoryCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2979,6 +3249,8 @@ export namespace Prisma {
     stockItem?: StockItemOmit
     product?: ProductOmit
     customerInquiry?: CustomerInquiryOmit
+    orderChatMessage?: OrderChatMessageOmit
+    orderChatAttachment?: OrderChatAttachmentOmit
     productMaterial?: ProductMaterialOmit
     stockMovement?: StockMovementOmit
     stockRequest?: StockRequestOmit
@@ -2989,6 +3261,7 @@ export namespace Prisma {
     deliverySchedule?: DeliveryScheduleOmit
     approvalHistory?: ApprovalHistoryOmit
     auditLog?: AuditLogOmit
+    storefrontCategory?: StorefrontCategoryOmit
   }
 
   /* Types for Logging */
@@ -3148,6 +3421,7 @@ export namespace Prisma {
     deliveryAssigned: number
     deliveryConfirmed: number
     customerInquiries: number
+    orderChatMessages: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3163,6 +3437,7 @@ export namespace Prisma {
     deliveryAssigned?: boolean | UserCountOutputTypeCountDeliveryAssignedArgs
     deliveryConfirmed?: boolean | UserCountOutputTypeCountDeliveryConfirmedArgs
     customerInquiries?: boolean | UserCountOutputTypeCountCustomerInquiriesArgs
+    orderChatMessages?: boolean | UserCountOutputTypeCountOrderChatMessagesArgs
   }
 
   // Custom InputTypes
@@ -3258,6 +3533,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCustomerInquiriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CustomerInquiryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountOrderChatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderChatMessageWhereInput
   }
 
 
@@ -3516,6 +3798,68 @@ export namespace Prisma {
    */
   export type ProductCountOutputTypeCountInquiriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CustomerInquiryWhereInput
+  }
+
+
+  /**
+   * Count Type CustomerInquiryCountOutputType
+   */
+
+  export type CustomerInquiryCountOutputType = {
+    chatMessages: number
+  }
+
+  export type CustomerInquiryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chatMessages?: boolean | CustomerInquiryCountOutputTypeCountChatMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CustomerInquiryCountOutputType without action
+   */
+  export type CustomerInquiryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiryCountOutputType
+     */
+    select?: CustomerInquiryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CustomerInquiryCountOutputType without action
+   */
+  export type CustomerInquiryCountOutputTypeCountChatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderChatMessageWhereInput
+  }
+
+
+  /**
+   * Count Type OrderChatMessageCountOutputType
+   */
+
+  export type OrderChatMessageCountOutputType = {
+    attachments: number
+  }
+
+  export type OrderChatMessageCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attachments?: boolean | OrderChatMessageCountOutputTypeCountAttachmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * OrderChatMessageCountOutputType without action
+   */
+  export type OrderChatMessageCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessageCountOutputType
+     */
+    select?: OrderChatMessageCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * OrderChatMessageCountOutputType without action
+   */
+  export type OrderChatMessageCountOutputTypeCountAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderChatAttachmentWhereInput
   }
 
 
@@ -5065,6 +5409,7 @@ export namespace Prisma {
     deliveryAssigned?: boolean | User$deliveryAssignedArgs<ExtArgs>
     deliveryConfirmed?: boolean | User$deliveryConfirmedArgs<ExtArgs>
     customerInquiries?: boolean | User$customerInquiriesArgs<ExtArgs>
+    orderChatMessages?: boolean | User$orderChatMessagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5130,6 +5475,7 @@ export namespace Prisma {
     deliveryAssigned?: boolean | User$deliveryAssignedArgs<ExtArgs>
     deliveryConfirmed?: boolean | User$deliveryConfirmedArgs<ExtArgs>
     customerInquiries?: boolean | User$customerInquiriesArgs<ExtArgs>
+    orderChatMessages?: boolean | User$orderChatMessagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5155,6 +5501,7 @@ export namespace Prisma {
       deliveryAssigned: Prisma.$DeliverySchedulePayload<ExtArgs>[]
       deliveryConfirmed: Prisma.$DeliverySchedulePayload<ExtArgs>[]
       customerInquiries: Prisma.$CustomerInquiryPayload<ExtArgs>[]
+      orderChatMessages: Prisma.$OrderChatMessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5576,6 +5923,7 @@ export namespace Prisma {
     deliveryAssigned<T extends User$deliveryAssignedArgs<ExtArgs> = {}>(args?: Subset<T, User$deliveryAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliverySchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     deliveryConfirmed<T extends User$deliveryConfirmedArgs<ExtArgs> = {}>(args?: Subset<T, User$deliveryConfirmedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliverySchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customerInquiries<T extends User$customerInquiriesArgs<ExtArgs> = {}>(args?: Subset<T, User$customerInquiriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    orderChatMessages<T extends User$orderChatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$orderChatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6317,6 +6665,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CustomerInquiryScalarFieldEnum | CustomerInquiryScalarFieldEnum[]
+  }
+
+  /**
+   * User.orderChatMessages
+   */
+  export type User$orderChatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    where?: OrderChatMessageWhereInput
+    orderBy?: OrderChatMessageOrderByWithRelationInput | OrderChatMessageOrderByWithRelationInput[]
+    cursor?: OrderChatMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderChatMessageScalarFieldEnum | OrderChatMessageScalarFieldEnum[]
   }
 
   /**
@@ -16847,6 +17219,8 @@ export namespace Prisma {
     updatedAt?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
+    chatMessages?: boolean | CustomerInquiry$chatMessagesArgs<ExtArgs>
+    _count?: boolean | CustomerInquiryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customerInquiry"]>
 
   export type CustomerInquirySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -16899,6 +17273,8 @@ export namespace Prisma {
   export type CustomerInquiryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
+    chatMessages?: boolean | CustomerInquiry$chatMessagesArgs<ExtArgs>
+    _count?: boolean | CustomerInquiryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerInquiryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
@@ -16914,6 +17290,7 @@ export namespace Prisma {
     objects: {
       product: Prisma.$ProductPayload<ExtArgs>
       customerUser: Prisma.$UserPayload<ExtArgs> | null
+      chatMessages: Prisma.$OrderChatMessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -17323,6 +17700,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customerUser<T extends CustomerInquiry$customerUserArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$customerUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    chatMessages<T extends CustomerInquiry$chatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17778,6 +18156,30 @@ export namespace Prisma {
   }
 
   /**
+   * CustomerInquiry.chatMessages
+   */
+  export type CustomerInquiry$chatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    where?: OrderChatMessageWhereInput
+    orderBy?: OrderChatMessageOrderByWithRelationInput | OrderChatMessageOrderByWithRelationInput[]
+    cursor?: OrderChatMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderChatMessageScalarFieldEnum | OrderChatMessageScalarFieldEnum[]
+  }
+
+  /**
    * CustomerInquiry without action
    */
   export type CustomerInquiryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17793,6 +18195,2218 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CustomerInquiryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OrderChatMessage
+   */
+
+  export type AggregateOrderChatMessage = {
+    _count: OrderChatMessageCountAggregateOutputType | null
+    _min: OrderChatMessageMinAggregateOutputType | null
+    _max: OrderChatMessageMaxAggregateOutputType | null
+  }
+
+  export type OrderChatMessageMinAggregateOutputType = {
+    id: string | null
+    inquiryId: string | null
+    senderUserId: string | null
+    senderRole: string | null
+    body: string | null
+    createdAt: Date | null
+  }
+
+  export type OrderChatMessageMaxAggregateOutputType = {
+    id: string | null
+    inquiryId: string | null
+    senderUserId: string | null
+    senderRole: string | null
+    body: string | null
+    createdAt: Date | null
+  }
+
+  export type OrderChatMessageCountAggregateOutputType = {
+    id: number
+    inquiryId: number
+    senderUserId: number
+    senderRole: number
+    body: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type OrderChatMessageMinAggregateInputType = {
+    id?: true
+    inquiryId?: true
+    senderUserId?: true
+    senderRole?: true
+    body?: true
+    createdAt?: true
+  }
+
+  export type OrderChatMessageMaxAggregateInputType = {
+    id?: true
+    inquiryId?: true
+    senderUserId?: true
+    senderRole?: true
+    body?: true
+    createdAt?: true
+  }
+
+  export type OrderChatMessageCountAggregateInputType = {
+    id?: true
+    inquiryId?: true
+    senderUserId?: true
+    senderRole?: true
+    body?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type OrderChatMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderChatMessage to aggregate.
+     */
+    where?: OrderChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatMessages to fetch.
+     */
+    orderBy?: OrderChatMessageOrderByWithRelationInput | OrderChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrderChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OrderChatMessages
+    **/
+    _count?: true | OrderChatMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrderChatMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrderChatMessageMaxAggregateInputType
+  }
+
+  export type GetOrderChatMessageAggregateType<T extends OrderChatMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrderChatMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrderChatMessage[P]>
+      : GetScalarType<T[P], AggregateOrderChatMessage[P]>
+  }
+
+
+
+
+  export type OrderChatMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderChatMessageWhereInput
+    orderBy?: OrderChatMessageOrderByWithAggregationInput | OrderChatMessageOrderByWithAggregationInput[]
+    by: OrderChatMessageScalarFieldEnum[] | OrderChatMessageScalarFieldEnum
+    having?: OrderChatMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrderChatMessageCountAggregateInputType | true
+    _min?: OrderChatMessageMinAggregateInputType
+    _max?: OrderChatMessageMaxAggregateInputType
+  }
+
+  export type OrderChatMessageGroupByOutputType = {
+    id: string
+    inquiryId: string
+    senderUserId: string | null
+    senderRole: string
+    body: string | null
+    createdAt: Date
+    _count: OrderChatMessageCountAggregateOutputType | null
+    _min: OrderChatMessageMinAggregateOutputType | null
+    _max: OrderChatMessageMaxAggregateOutputType | null
+  }
+
+  type GetOrderChatMessageGroupByPayload<T extends OrderChatMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrderChatMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrderChatMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrderChatMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], OrderChatMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrderChatMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inquiryId?: boolean
+    senderUserId?: boolean
+    senderRole?: boolean
+    body?: boolean
+    createdAt?: boolean
+    inquiry?: boolean | CustomerInquiryDefaultArgs<ExtArgs>
+    sender?: boolean | OrderChatMessage$senderArgs<ExtArgs>
+    attachments?: boolean | OrderChatMessage$attachmentsArgs<ExtArgs>
+    _count?: boolean | OrderChatMessageCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orderChatMessage"]>
+
+  export type OrderChatMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inquiryId?: boolean
+    senderUserId?: boolean
+    senderRole?: boolean
+    body?: boolean
+    createdAt?: boolean
+    inquiry?: boolean | CustomerInquiryDefaultArgs<ExtArgs>
+    sender?: boolean | OrderChatMessage$senderArgs<ExtArgs>
+  }, ExtArgs["result"]["orderChatMessage"]>
+
+  export type OrderChatMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inquiryId?: boolean
+    senderUserId?: boolean
+    senderRole?: boolean
+    body?: boolean
+    createdAt?: boolean
+    inquiry?: boolean | CustomerInquiryDefaultArgs<ExtArgs>
+    sender?: boolean | OrderChatMessage$senderArgs<ExtArgs>
+  }, ExtArgs["result"]["orderChatMessage"]>
+
+  export type OrderChatMessageSelectScalar = {
+    id?: boolean
+    inquiryId?: boolean
+    senderUserId?: boolean
+    senderRole?: boolean
+    body?: boolean
+    createdAt?: boolean
+  }
+
+  export type OrderChatMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "inquiryId" | "senderUserId" | "senderRole" | "body" | "createdAt", ExtArgs["result"]["orderChatMessage"]>
+  export type OrderChatMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inquiry?: boolean | CustomerInquiryDefaultArgs<ExtArgs>
+    sender?: boolean | OrderChatMessage$senderArgs<ExtArgs>
+    attachments?: boolean | OrderChatMessage$attachmentsArgs<ExtArgs>
+    _count?: boolean | OrderChatMessageCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type OrderChatMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inquiry?: boolean | CustomerInquiryDefaultArgs<ExtArgs>
+    sender?: boolean | OrderChatMessage$senderArgs<ExtArgs>
+  }
+  export type OrderChatMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inquiry?: boolean | CustomerInquiryDefaultArgs<ExtArgs>
+    sender?: boolean | OrderChatMessage$senderArgs<ExtArgs>
+  }
+
+  export type $OrderChatMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OrderChatMessage"
+    objects: {
+      inquiry: Prisma.$CustomerInquiryPayload<ExtArgs>
+      sender: Prisma.$UserPayload<ExtArgs> | null
+      attachments: Prisma.$OrderChatAttachmentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      inquiryId: string
+      senderUserId: string | null
+      senderRole: string
+      body: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["orderChatMessage"]>
+    composites: {}
+  }
+
+  type OrderChatMessageGetPayload<S extends boolean | null | undefined | OrderChatMessageDefaultArgs> = $Result.GetResult<Prisma.$OrderChatMessagePayload, S>
+
+  type OrderChatMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OrderChatMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OrderChatMessageCountAggregateInputType | true
+    }
+
+  export interface OrderChatMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OrderChatMessage'], meta: { name: 'OrderChatMessage' } }
+    /**
+     * Find zero or one OrderChatMessage that matches the filter.
+     * @param {OrderChatMessageFindUniqueArgs} args - Arguments to find a OrderChatMessage
+     * @example
+     * // Get one OrderChatMessage
+     * const orderChatMessage = await prisma.orderChatMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OrderChatMessageFindUniqueArgs>(args: SelectSubset<T, OrderChatMessageFindUniqueArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OrderChatMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OrderChatMessageFindUniqueOrThrowArgs} args - Arguments to find a OrderChatMessage
+     * @example
+     * // Get one OrderChatMessage
+     * const orderChatMessage = await prisma.orderChatMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OrderChatMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, OrderChatMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrderChatMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatMessageFindFirstArgs} args - Arguments to find a OrderChatMessage
+     * @example
+     * // Get one OrderChatMessage
+     * const orderChatMessage = await prisma.orderChatMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OrderChatMessageFindFirstArgs>(args?: SelectSubset<T, OrderChatMessageFindFirstArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrderChatMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatMessageFindFirstOrThrowArgs} args - Arguments to find a OrderChatMessage
+     * @example
+     * // Get one OrderChatMessage
+     * const orderChatMessage = await prisma.orderChatMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OrderChatMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, OrderChatMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OrderChatMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OrderChatMessages
+     * const orderChatMessages = await prisma.orderChatMessage.findMany()
+     * 
+     * // Get first 10 OrderChatMessages
+     * const orderChatMessages = await prisma.orderChatMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const orderChatMessageWithIdOnly = await prisma.orderChatMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OrderChatMessageFindManyArgs>(args?: SelectSubset<T, OrderChatMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OrderChatMessage.
+     * @param {OrderChatMessageCreateArgs} args - Arguments to create a OrderChatMessage.
+     * @example
+     * // Create one OrderChatMessage
+     * const OrderChatMessage = await prisma.orderChatMessage.create({
+     *   data: {
+     *     // ... data to create a OrderChatMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends OrderChatMessageCreateArgs>(args: SelectSubset<T, OrderChatMessageCreateArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OrderChatMessages.
+     * @param {OrderChatMessageCreateManyArgs} args - Arguments to create many OrderChatMessages.
+     * @example
+     * // Create many OrderChatMessages
+     * const orderChatMessage = await prisma.orderChatMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OrderChatMessageCreateManyArgs>(args?: SelectSubset<T, OrderChatMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OrderChatMessages and returns the data saved in the database.
+     * @param {OrderChatMessageCreateManyAndReturnArgs} args - Arguments to create many OrderChatMessages.
+     * @example
+     * // Create many OrderChatMessages
+     * const orderChatMessage = await prisma.orderChatMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OrderChatMessages and only return the `id`
+     * const orderChatMessageWithIdOnly = await prisma.orderChatMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OrderChatMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, OrderChatMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OrderChatMessage.
+     * @param {OrderChatMessageDeleteArgs} args - Arguments to delete one OrderChatMessage.
+     * @example
+     * // Delete one OrderChatMessage
+     * const OrderChatMessage = await prisma.orderChatMessage.delete({
+     *   where: {
+     *     // ... filter to delete one OrderChatMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OrderChatMessageDeleteArgs>(args: SelectSubset<T, OrderChatMessageDeleteArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OrderChatMessage.
+     * @param {OrderChatMessageUpdateArgs} args - Arguments to update one OrderChatMessage.
+     * @example
+     * // Update one OrderChatMessage
+     * const orderChatMessage = await prisma.orderChatMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OrderChatMessageUpdateArgs>(args: SelectSubset<T, OrderChatMessageUpdateArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OrderChatMessages.
+     * @param {OrderChatMessageDeleteManyArgs} args - Arguments to filter OrderChatMessages to delete.
+     * @example
+     * // Delete a few OrderChatMessages
+     * const { count } = await prisma.orderChatMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OrderChatMessageDeleteManyArgs>(args?: SelectSubset<T, OrderChatMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrderChatMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OrderChatMessages
+     * const orderChatMessage = await prisma.orderChatMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OrderChatMessageUpdateManyArgs>(args: SelectSubset<T, OrderChatMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrderChatMessages and returns the data updated in the database.
+     * @param {OrderChatMessageUpdateManyAndReturnArgs} args - Arguments to update many OrderChatMessages.
+     * @example
+     * // Update many OrderChatMessages
+     * const orderChatMessage = await prisma.orderChatMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OrderChatMessages and only return the `id`
+     * const orderChatMessageWithIdOnly = await prisma.orderChatMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OrderChatMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, OrderChatMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OrderChatMessage.
+     * @param {OrderChatMessageUpsertArgs} args - Arguments to update or create a OrderChatMessage.
+     * @example
+     * // Update or create a OrderChatMessage
+     * const orderChatMessage = await prisma.orderChatMessage.upsert({
+     *   create: {
+     *     // ... data to create a OrderChatMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OrderChatMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OrderChatMessageUpsertArgs>(args: SelectSubset<T, OrderChatMessageUpsertArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OrderChatMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatMessageCountArgs} args - Arguments to filter OrderChatMessages to count.
+     * @example
+     * // Count the number of OrderChatMessages
+     * const count = await prisma.orderChatMessage.count({
+     *   where: {
+     *     // ... the filter for the OrderChatMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrderChatMessageCountArgs>(
+      args?: Subset<T, OrderChatMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrderChatMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OrderChatMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrderChatMessageAggregateArgs>(args: Subset<T, OrderChatMessageAggregateArgs>): Prisma.PrismaPromise<GetOrderChatMessageAggregateType<T>>
+
+    /**
+     * Group by OrderChatMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrderChatMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrderChatMessageGroupByArgs['orderBy'] }
+        : { orderBy?: OrderChatMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrderChatMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrderChatMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OrderChatMessage model
+   */
+  readonly fields: OrderChatMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OrderChatMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrderChatMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    inquiry<T extends CustomerInquiryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiryDefaultArgs<ExtArgs>>): Prisma__CustomerInquiryClient<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sender<T extends OrderChatMessage$senderArgs<ExtArgs> = {}>(args?: Subset<T, OrderChatMessage$senderArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    attachments<T extends OrderChatMessage$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, OrderChatMessage$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OrderChatMessage model
+   */
+  interface OrderChatMessageFieldRefs {
+    readonly id: FieldRef<"OrderChatMessage", 'String'>
+    readonly inquiryId: FieldRef<"OrderChatMessage", 'String'>
+    readonly senderUserId: FieldRef<"OrderChatMessage", 'String'>
+    readonly senderRole: FieldRef<"OrderChatMessage", 'String'>
+    readonly body: FieldRef<"OrderChatMessage", 'String'>
+    readonly createdAt: FieldRef<"OrderChatMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OrderChatMessage findUnique
+   */
+  export type OrderChatMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatMessage to fetch.
+     */
+    where: OrderChatMessageWhereUniqueInput
+  }
+
+  /**
+   * OrderChatMessage findUniqueOrThrow
+   */
+  export type OrderChatMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatMessage to fetch.
+     */
+    where: OrderChatMessageWhereUniqueInput
+  }
+
+  /**
+   * OrderChatMessage findFirst
+   */
+  export type OrderChatMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatMessage to fetch.
+     */
+    where?: OrderChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatMessages to fetch.
+     */
+    orderBy?: OrderChatMessageOrderByWithRelationInput | OrderChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderChatMessages.
+     */
+    cursor?: OrderChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderChatMessages.
+     */
+    distinct?: OrderChatMessageScalarFieldEnum | OrderChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * OrderChatMessage findFirstOrThrow
+   */
+  export type OrderChatMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatMessage to fetch.
+     */
+    where?: OrderChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatMessages to fetch.
+     */
+    orderBy?: OrderChatMessageOrderByWithRelationInput | OrderChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderChatMessages.
+     */
+    cursor?: OrderChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderChatMessages.
+     */
+    distinct?: OrderChatMessageScalarFieldEnum | OrderChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * OrderChatMessage findMany
+   */
+  export type OrderChatMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatMessages to fetch.
+     */
+    where?: OrderChatMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatMessages to fetch.
+     */
+    orderBy?: OrderChatMessageOrderByWithRelationInput | OrderChatMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OrderChatMessages.
+     */
+    cursor?: OrderChatMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatMessages.
+     */
+    skip?: number
+    distinct?: OrderChatMessageScalarFieldEnum | OrderChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * OrderChatMessage create
+   */
+  export type OrderChatMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OrderChatMessage.
+     */
+    data: XOR<OrderChatMessageCreateInput, OrderChatMessageUncheckedCreateInput>
+  }
+
+  /**
+   * OrderChatMessage createMany
+   */
+  export type OrderChatMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OrderChatMessages.
+     */
+    data: OrderChatMessageCreateManyInput | OrderChatMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OrderChatMessage createManyAndReturn
+   */
+  export type OrderChatMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many OrderChatMessages.
+     */
+    data: OrderChatMessageCreateManyInput | OrderChatMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrderChatMessage update
+   */
+  export type OrderChatMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OrderChatMessage.
+     */
+    data: XOR<OrderChatMessageUpdateInput, OrderChatMessageUncheckedUpdateInput>
+    /**
+     * Choose, which OrderChatMessage to update.
+     */
+    where: OrderChatMessageWhereUniqueInput
+  }
+
+  /**
+   * OrderChatMessage updateMany
+   */
+  export type OrderChatMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OrderChatMessages.
+     */
+    data: XOR<OrderChatMessageUpdateManyMutationInput, OrderChatMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which OrderChatMessages to update
+     */
+    where?: OrderChatMessageWhereInput
+    /**
+     * Limit how many OrderChatMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrderChatMessage updateManyAndReturn
+   */
+  export type OrderChatMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update OrderChatMessages.
+     */
+    data: XOR<OrderChatMessageUpdateManyMutationInput, OrderChatMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which OrderChatMessages to update
+     */
+    where?: OrderChatMessageWhereInput
+    /**
+     * Limit how many OrderChatMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrderChatMessage upsert
+   */
+  export type OrderChatMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OrderChatMessage to update in case it exists.
+     */
+    where: OrderChatMessageWhereUniqueInput
+    /**
+     * In case the OrderChatMessage found by the `where` argument doesn't exist, create a new OrderChatMessage with this data.
+     */
+    create: XOR<OrderChatMessageCreateInput, OrderChatMessageUncheckedCreateInput>
+    /**
+     * In case the OrderChatMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrderChatMessageUpdateInput, OrderChatMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * OrderChatMessage delete
+   */
+  export type OrderChatMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+    /**
+     * Filter which OrderChatMessage to delete.
+     */
+    where: OrderChatMessageWhereUniqueInput
+  }
+
+  /**
+   * OrderChatMessage deleteMany
+   */
+  export type OrderChatMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderChatMessages to delete
+     */
+    where?: OrderChatMessageWhereInput
+    /**
+     * Limit how many OrderChatMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrderChatMessage.sender
+   */
+  export type OrderChatMessage$senderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * OrderChatMessage.attachments
+   */
+  export type OrderChatMessage$attachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    where?: OrderChatAttachmentWhereInput
+    orderBy?: OrderChatAttachmentOrderByWithRelationInput | OrderChatAttachmentOrderByWithRelationInput[]
+    cursor?: OrderChatAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderChatAttachmentScalarFieldEnum | OrderChatAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * OrderChatMessage without action
+   */
+  export type OrderChatMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatMessage
+     */
+    select?: OrderChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatMessage
+     */
+    omit?: OrderChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OrderChatAttachment
+   */
+
+  export type AggregateOrderChatAttachment = {
+    _count: OrderChatAttachmentCountAggregateOutputType | null
+    _min: OrderChatAttachmentMinAggregateOutputType | null
+    _max: OrderChatAttachmentMaxAggregateOutputType | null
+  }
+
+  export type OrderChatAttachmentMinAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    fileName: string | null
+    mimeType: string | null
+    attachmentType: string | null
+    dataUrl: string | null
+    createdAt: Date | null
+  }
+
+  export type OrderChatAttachmentMaxAggregateOutputType = {
+    id: string | null
+    messageId: string | null
+    fileName: string | null
+    mimeType: string | null
+    attachmentType: string | null
+    dataUrl: string | null
+    createdAt: Date | null
+  }
+
+  export type OrderChatAttachmentCountAggregateOutputType = {
+    id: number
+    messageId: number
+    fileName: number
+    mimeType: number
+    attachmentType: number
+    dataUrl: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type OrderChatAttachmentMinAggregateInputType = {
+    id?: true
+    messageId?: true
+    fileName?: true
+    mimeType?: true
+    attachmentType?: true
+    dataUrl?: true
+    createdAt?: true
+  }
+
+  export type OrderChatAttachmentMaxAggregateInputType = {
+    id?: true
+    messageId?: true
+    fileName?: true
+    mimeType?: true
+    attachmentType?: true
+    dataUrl?: true
+    createdAt?: true
+  }
+
+  export type OrderChatAttachmentCountAggregateInputType = {
+    id?: true
+    messageId?: true
+    fileName?: true
+    mimeType?: true
+    attachmentType?: true
+    dataUrl?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type OrderChatAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderChatAttachment to aggregate.
+     */
+    where?: OrderChatAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatAttachments to fetch.
+     */
+    orderBy?: OrderChatAttachmentOrderByWithRelationInput | OrderChatAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrderChatAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OrderChatAttachments
+    **/
+    _count?: true | OrderChatAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrderChatAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrderChatAttachmentMaxAggregateInputType
+  }
+
+  export type GetOrderChatAttachmentAggregateType<T extends OrderChatAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrderChatAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrderChatAttachment[P]>
+      : GetScalarType<T[P], AggregateOrderChatAttachment[P]>
+  }
+
+
+
+
+  export type OrderChatAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderChatAttachmentWhereInput
+    orderBy?: OrderChatAttachmentOrderByWithAggregationInput | OrderChatAttachmentOrderByWithAggregationInput[]
+    by: OrderChatAttachmentScalarFieldEnum[] | OrderChatAttachmentScalarFieldEnum
+    having?: OrderChatAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrderChatAttachmentCountAggregateInputType | true
+    _min?: OrderChatAttachmentMinAggregateInputType
+    _max?: OrderChatAttachmentMaxAggregateInputType
+  }
+
+  export type OrderChatAttachmentGroupByOutputType = {
+    id: string
+    messageId: string
+    fileName: string
+    mimeType: string
+    attachmentType: string
+    dataUrl: string
+    createdAt: Date
+    _count: OrderChatAttachmentCountAggregateOutputType | null
+    _min: OrderChatAttachmentMinAggregateOutputType | null
+    _max: OrderChatAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetOrderChatAttachmentGroupByPayload<T extends OrderChatAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrderChatAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrderChatAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrderChatAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], OrderChatAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrderChatAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    attachmentType?: boolean
+    dataUrl?: boolean
+    createdAt?: boolean
+    message?: boolean | OrderChatMessageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orderChatAttachment"]>
+
+  export type OrderChatAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    attachmentType?: boolean
+    dataUrl?: boolean
+    createdAt?: boolean
+    message?: boolean | OrderChatMessageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orderChatAttachment"]>
+
+  export type OrderChatAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    messageId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    attachmentType?: boolean
+    dataUrl?: boolean
+    createdAt?: boolean
+    message?: boolean | OrderChatMessageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["orderChatAttachment"]>
+
+  export type OrderChatAttachmentSelectScalar = {
+    id?: boolean
+    messageId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    attachmentType?: boolean
+    dataUrl?: boolean
+    createdAt?: boolean
+  }
+
+  export type OrderChatAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "messageId" | "fileName" | "mimeType" | "attachmentType" | "dataUrl" | "createdAt", ExtArgs["result"]["orderChatAttachment"]>
+  export type OrderChatAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | OrderChatMessageDefaultArgs<ExtArgs>
+  }
+  export type OrderChatAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | OrderChatMessageDefaultArgs<ExtArgs>
+  }
+  export type OrderChatAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message?: boolean | OrderChatMessageDefaultArgs<ExtArgs>
+  }
+
+  export type $OrderChatAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OrderChatAttachment"
+    objects: {
+      message: Prisma.$OrderChatMessagePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      messageId: string
+      fileName: string
+      mimeType: string
+      attachmentType: string
+      dataUrl: string
+      createdAt: Date
+    }, ExtArgs["result"]["orderChatAttachment"]>
+    composites: {}
+  }
+
+  type OrderChatAttachmentGetPayload<S extends boolean | null | undefined | OrderChatAttachmentDefaultArgs> = $Result.GetResult<Prisma.$OrderChatAttachmentPayload, S>
+
+  type OrderChatAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OrderChatAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OrderChatAttachmentCountAggregateInputType | true
+    }
+
+  export interface OrderChatAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OrderChatAttachment'], meta: { name: 'OrderChatAttachment' } }
+    /**
+     * Find zero or one OrderChatAttachment that matches the filter.
+     * @param {OrderChatAttachmentFindUniqueArgs} args - Arguments to find a OrderChatAttachment
+     * @example
+     * // Get one OrderChatAttachment
+     * const orderChatAttachment = await prisma.orderChatAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OrderChatAttachmentFindUniqueArgs>(args: SelectSubset<T, OrderChatAttachmentFindUniqueArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OrderChatAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OrderChatAttachmentFindUniqueOrThrowArgs} args - Arguments to find a OrderChatAttachment
+     * @example
+     * // Get one OrderChatAttachment
+     * const orderChatAttachment = await prisma.orderChatAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OrderChatAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, OrderChatAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrderChatAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatAttachmentFindFirstArgs} args - Arguments to find a OrderChatAttachment
+     * @example
+     * // Get one OrderChatAttachment
+     * const orderChatAttachment = await prisma.orderChatAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OrderChatAttachmentFindFirstArgs>(args?: SelectSubset<T, OrderChatAttachmentFindFirstArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrderChatAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatAttachmentFindFirstOrThrowArgs} args - Arguments to find a OrderChatAttachment
+     * @example
+     * // Get one OrderChatAttachment
+     * const orderChatAttachment = await prisma.orderChatAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OrderChatAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, OrderChatAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OrderChatAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OrderChatAttachments
+     * const orderChatAttachments = await prisma.orderChatAttachment.findMany()
+     * 
+     * // Get first 10 OrderChatAttachments
+     * const orderChatAttachments = await prisma.orderChatAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const orderChatAttachmentWithIdOnly = await prisma.orderChatAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OrderChatAttachmentFindManyArgs>(args?: SelectSubset<T, OrderChatAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OrderChatAttachment.
+     * @param {OrderChatAttachmentCreateArgs} args - Arguments to create a OrderChatAttachment.
+     * @example
+     * // Create one OrderChatAttachment
+     * const OrderChatAttachment = await prisma.orderChatAttachment.create({
+     *   data: {
+     *     // ... data to create a OrderChatAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends OrderChatAttachmentCreateArgs>(args: SelectSubset<T, OrderChatAttachmentCreateArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OrderChatAttachments.
+     * @param {OrderChatAttachmentCreateManyArgs} args - Arguments to create many OrderChatAttachments.
+     * @example
+     * // Create many OrderChatAttachments
+     * const orderChatAttachment = await prisma.orderChatAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OrderChatAttachmentCreateManyArgs>(args?: SelectSubset<T, OrderChatAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OrderChatAttachments and returns the data saved in the database.
+     * @param {OrderChatAttachmentCreateManyAndReturnArgs} args - Arguments to create many OrderChatAttachments.
+     * @example
+     * // Create many OrderChatAttachments
+     * const orderChatAttachment = await prisma.orderChatAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OrderChatAttachments and only return the `id`
+     * const orderChatAttachmentWithIdOnly = await prisma.orderChatAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OrderChatAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, OrderChatAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OrderChatAttachment.
+     * @param {OrderChatAttachmentDeleteArgs} args - Arguments to delete one OrderChatAttachment.
+     * @example
+     * // Delete one OrderChatAttachment
+     * const OrderChatAttachment = await prisma.orderChatAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one OrderChatAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OrderChatAttachmentDeleteArgs>(args: SelectSubset<T, OrderChatAttachmentDeleteArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OrderChatAttachment.
+     * @param {OrderChatAttachmentUpdateArgs} args - Arguments to update one OrderChatAttachment.
+     * @example
+     * // Update one OrderChatAttachment
+     * const orderChatAttachment = await prisma.orderChatAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OrderChatAttachmentUpdateArgs>(args: SelectSubset<T, OrderChatAttachmentUpdateArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OrderChatAttachments.
+     * @param {OrderChatAttachmentDeleteManyArgs} args - Arguments to filter OrderChatAttachments to delete.
+     * @example
+     * // Delete a few OrderChatAttachments
+     * const { count } = await prisma.orderChatAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OrderChatAttachmentDeleteManyArgs>(args?: SelectSubset<T, OrderChatAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrderChatAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OrderChatAttachments
+     * const orderChatAttachment = await prisma.orderChatAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OrderChatAttachmentUpdateManyArgs>(args: SelectSubset<T, OrderChatAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrderChatAttachments and returns the data updated in the database.
+     * @param {OrderChatAttachmentUpdateManyAndReturnArgs} args - Arguments to update many OrderChatAttachments.
+     * @example
+     * // Update many OrderChatAttachments
+     * const orderChatAttachment = await prisma.orderChatAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OrderChatAttachments and only return the `id`
+     * const orderChatAttachmentWithIdOnly = await prisma.orderChatAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OrderChatAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, OrderChatAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OrderChatAttachment.
+     * @param {OrderChatAttachmentUpsertArgs} args - Arguments to update or create a OrderChatAttachment.
+     * @example
+     * // Update or create a OrderChatAttachment
+     * const orderChatAttachment = await prisma.orderChatAttachment.upsert({
+     *   create: {
+     *     // ... data to create a OrderChatAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OrderChatAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OrderChatAttachmentUpsertArgs>(args: SelectSubset<T, OrderChatAttachmentUpsertArgs<ExtArgs>>): Prisma__OrderChatAttachmentClient<$Result.GetResult<Prisma.$OrderChatAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OrderChatAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatAttachmentCountArgs} args - Arguments to filter OrderChatAttachments to count.
+     * @example
+     * // Count the number of OrderChatAttachments
+     * const count = await prisma.orderChatAttachment.count({
+     *   where: {
+     *     // ... the filter for the OrderChatAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrderChatAttachmentCountArgs>(
+      args?: Subset<T, OrderChatAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrderChatAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OrderChatAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrderChatAttachmentAggregateArgs>(args: Subset<T, OrderChatAttachmentAggregateArgs>): Prisma.PrismaPromise<GetOrderChatAttachmentAggregateType<T>>
+
+    /**
+     * Group by OrderChatAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderChatAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrderChatAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrderChatAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: OrderChatAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrderChatAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrderChatAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OrderChatAttachment model
+   */
+  readonly fields: OrderChatAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OrderChatAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrderChatAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    message<T extends OrderChatMessageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderChatMessageDefaultArgs<ExtArgs>>): Prisma__OrderChatMessageClient<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OrderChatAttachment model
+   */
+  interface OrderChatAttachmentFieldRefs {
+    readonly id: FieldRef<"OrderChatAttachment", 'String'>
+    readonly messageId: FieldRef<"OrderChatAttachment", 'String'>
+    readonly fileName: FieldRef<"OrderChatAttachment", 'String'>
+    readonly mimeType: FieldRef<"OrderChatAttachment", 'String'>
+    readonly attachmentType: FieldRef<"OrderChatAttachment", 'String'>
+    readonly dataUrl: FieldRef<"OrderChatAttachment", 'String'>
+    readonly createdAt: FieldRef<"OrderChatAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OrderChatAttachment findUnique
+   */
+  export type OrderChatAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatAttachment to fetch.
+     */
+    where: OrderChatAttachmentWhereUniqueInput
+  }
+
+  /**
+   * OrderChatAttachment findUniqueOrThrow
+   */
+  export type OrderChatAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatAttachment to fetch.
+     */
+    where: OrderChatAttachmentWhereUniqueInput
+  }
+
+  /**
+   * OrderChatAttachment findFirst
+   */
+  export type OrderChatAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatAttachment to fetch.
+     */
+    where?: OrderChatAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatAttachments to fetch.
+     */
+    orderBy?: OrderChatAttachmentOrderByWithRelationInput | OrderChatAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderChatAttachments.
+     */
+    cursor?: OrderChatAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderChatAttachments.
+     */
+    distinct?: OrderChatAttachmentScalarFieldEnum | OrderChatAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * OrderChatAttachment findFirstOrThrow
+   */
+  export type OrderChatAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatAttachment to fetch.
+     */
+    where?: OrderChatAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatAttachments to fetch.
+     */
+    orderBy?: OrderChatAttachmentOrderByWithRelationInput | OrderChatAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderChatAttachments.
+     */
+    cursor?: OrderChatAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderChatAttachments.
+     */
+    distinct?: OrderChatAttachmentScalarFieldEnum | OrderChatAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * OrderChatAttachment findMany
+   */
+  export type OrderChatAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderChatAttachments to fetch.
+     */
+    where?: OrderChatAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderChatAttachments to fetch.
+     */
+    orderBy?: OrderChatAttachmentOrderByWithRelationInput | OrderChatAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OrderChatAttachments.
+     */
+    cursor?: OrderChatAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderChatAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderChatAttachments.
+     */
+    skip?: number
+    distinct?: OrderChatAttachmentScalarFieldEnum | OrderChatAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * OrderChatAttachment create
+   */
+  export type OrderChatAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OrderChatAttachment.
+     */
+    data: XOR<OrderChatAttachmentCreateInput, OrderChatAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * OrderChatAttachment createMany
+   */
+  export type OrderChatAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OrderChatAttachments.
+     */
+    data: OrderChatAttachmentCreateManyInput | OrderChatAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OrderChatAttachment createManyAndReturn
+   */
+  export type OrderChatAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many OrderChatAttachments.
+     */
+    data: OrderChatAttachmentCreateManyInput | OrderChatAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrderChatAttachment update
+   */
+  export type OrderChatAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OrderChatAttachment.
+     */
+    data: XOR<OrderChatAttachmentUpdateInput, OrderChatAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which OrderChatAttachment to update.
+     */
+    where: OrderChatAttachmentWhereUniqueInput
+  }
+
+  /**
+   * OrderChatAttachment updateMany
+   */
+  export type OrderChatAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OrderChatAttachments.
+     */
+    data: XOR<OrderChatAttachmentUpdateManyMutationInput, OrderChatAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which OrderChatAttachments to update
+     */
+    where?: OrderChatAttachmentWhereInput
+    /**
+     * Limit how many OrderChatAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrderChatAttachment updateManyAndReturn
+   */
+  export type OrderChatAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update OrderChatAttachments.
+     */
+    data: XOR<OrderChatAttachmentUpdateManyMutationInput, OrderChatAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which OrderChatAttachments to update
+     */
+    where?: OrderChatAttachmentWhereInput
+    /**
+     * Limit how many OrderChatAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrderChatAttachment upsert
+   */
+  export type OrderChatAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OrderChatAttachment to update in case it exists.
+     */
+    where: OrderChatAttachmentWhereUniqueInput
+    /**
+     * In case the OrderChatAttachment found by the `where` argument doesn't exist, create a new OrderChatAttachment with this data.
+     */
+    create: XOR<OrderChatAttachmentCreateInput, OrderChatAttachmentUncheckedCreateInput>
+    /**
+     * In case the OrderChatAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrderChatAttachmentUpdateInput, OrderChatAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * OrderChatAttachment delete
+   */
+  export type OrderChatAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which OrderChatAttachment to delete.
+     */
+    where: OrderChatAttachmentWhereUniqueInput
+  }
+
+  /**
+   * OrderChatAttachment deleteMany
+   */
+  export type OrderChatAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderChatAttachments to delete
+     */
+    where?: OrderChatAttachmentWhereInput
+    /**
+     * Limit how many OrderChatAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrderChatAttachment without action
+   */
+  export type OrderChatAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderChatAttachment
+     */
+    select?: OrderChatAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrderChatAttachment
+     */
+    omit?: OrderChatAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderChatAttachmentInclude<ExtArgs> | null
   }
 
 
@@ -29182,6 +31796,988 @@ export namespace Prisma {
 
 
   /**
+   * Model StorefrontCategory
+   */
+
+  export type AggregateStorefrontCategory = {
+    _count: StorefrontCategoryCountAggregateOutputType | null
+    _min: StorefrontCategoryMinAggregateOutputType | null
+    _max: StorefrontCategoryMaxAggregateOutputType | null
+  }
+
+  export type StorefrontCategoryMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StorefrontCategoryMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StorefrontCategoryCountAggregateOutputType = {
+    id: number
+    name: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StorefrontCategoryMinAggregateInputType = {
+    id?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StorefrontCategoryMaxAggregateInputType = {
+    id?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StorefrontCategoryCountAggregateInputType = {
+    id?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StorefrontCategoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StorefrontCategory to aggregate.
+     */
+    where?: StorefrontCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StorefrontCategories to fetch.
+     */
+    orderBy?: StorefrontCategoryOrderByWithRelationInput | StorefrontCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StorefrontCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StorefrontCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StorefrontCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StorefrontCategories
+    **/
+    _count?: true | StorefrontCategoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StorefrontCategoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StorefrontCategoryMaxAggregateInputType
+  }
+
+  export type GetStorefrontCategoryAggregateType<T extends StorefrontCategoryAggregateArgs> = {
+        [P in keyof T & keyof AggregateStorefrontCategory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStorefrontCategory[P]>
+      : GetScalarType<T[P], AggregateStorefrontCategory[P]>
+  }
+
+
+
+
+  export type StorefrontCategoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StorefrontCategoryWhereInput
+    orderBy?: StorefrontCategoryOrderByWithAggregationInput | StorefrontCategoryOrderByWithAggregationInput[]
+    by: StorefrontCategoryScalarFieldEnum[] | StorefrontCategoryScalarFieldEnum
+    having?: StorefrontCategoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StorefrontCategoryCountAggregateInputType | true
+    _min?: StorefrontCategoryMinAggregateInputType
+    _max?: StorefrontCategoryMaxAggregateInputType
+  }
+
+  export type StorefrontCategoryGroupByOutputType = {
+    id: string
+    name: string
+    createdAt: Date
+    updatedAt: Date
+    _count: StorefrontCategoryCountAggregateOutputType | null
+    _min: StorefrontCategoryMinAggregateOutputType | null
+    _max: StorefrontCategoryMaxAggregateOutputType | null
+  }
+
+  type GetStorefrontCategoryGroupByPayload<T extends StorefrontCategoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StorefrontCategoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StorefrontCategoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StorefrontCategoryGroupByOutputType[P]>
+            : GetScalarType<T[P], StorefrontCategoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StorefrontCategorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["storefrontCategory"]>
+
+  export type StorefrontCategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["storefrontCategory"]>
+
+  export type StorefrontCategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["storefrontCategory"]>
+
+  export type StorefrontCategorySelectScalar = {
+    id?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StorefrontCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["storefrontCategory"]>
+
+  export type $StorefrontCategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StorefrontCategory"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["storefrontCategory"]>
+    composites: {}
+  }
+
+  type StorefrontCategoryGetPayload<S extends boolean | null | undefined | StorefrontCategoryDefaultArgs> = $Result.GetResult<Prisma.$StorefrontCategoryPayload, S>
+
+  type StorefrontCategoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StorefrontCategoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StorefrontCategoryCountAggregateInputType | true
+    }
+
+  export interface StorefrontCategoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StorefrontCategory'], meta: { name: 'StorefrontCategory' } }
+    /**
+     * Find zero or one StorefrontCategory that matches the filter.
+     * @param {StorefrontCategoryFindUniqueArgs} args - Arguments to find a StorefrontCategory
+     * @example
+     * // Get one StorefrontCategory
+     * const storefrontCategory = await prisma.storefrontCategory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StorefrontCategoryFindUniqueArgs>(args: SelectSubset<T, StorefrontCategoryFindUniqueArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StorefrontCategory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StorefrontCategoryFindUniqueOrThrowArgs} args - Arguments to find a StorefrontCategory
+     * @example
+     * // Get one StorefrontCategory
+     * const storefrontCategory = await prisma.storefrontCategory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StorefrontCategoryFindUniqueOrThrowArgs>(args: SelectSubset<T, StorefrontCategoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StorefrontCategory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StorefrontCategoryFindFirstArgs} args - Arguments to find a StorefrontCategory
+     * @example
+     * // Get one StorefrontCategory
+     * const storefrontCategory = await prisma.storefrontCategory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StorefrontCategoryFindFirstArgs>(args?: SelectSubset<T, StorefrontCategoryFindFirstArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StorefrontCategory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StorefrontCategoryFindFirstOrThrowArgs} args - Arguments to find a StorefrontCategory
+     * @example
+     * // Get one StorefrontCategory
+     * const storefrontCategory = await prisma.storefrontCategory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StorefrontCategoryFindFirstOrThrowArgs>(args?: SelectSubset<T, StorefrontCategoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StorefrontCategories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StorefrontCategoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StorefrontCategories
+     * const storefrontCategories = await prisma.storefrontCategory.findMany()
+     * 
+     * // Get first 10 StorefrontCategories
+     * const storefrontCategories = await prisma.storefrontCategory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const storefrontCategoryWithIdOnly = await prisma.storefrontCategory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StorefrontCategoryFindManyArgs>(args?: SelectSubset<T, StorefrontCategoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StorefrontCategory.
+     * @param {StorefrontCategoryCreateArgs} args - Arguments to create a StorefrontCategory.
+     * @example
+     * // Create one StorefrontCategory
+     * const StorefrontCategory = await prisma.storefrontCategory.create({
+     *   data: {
+     *     // ... data to create a StorefrontCategory
+     *   }
+     * })
+     * 
+     */
+    create<T extends StorefrontCategoryCreateArgs>(args: SelectSubset<T, StorefrontCategoryCreateArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StorefrontCategories.
+     * @param {StorefrontCategoryCreateManyArgs} args - Arguments to create many StorefrontCategories.
+     * @example
+     * // Create many StorefrontCategories
+     * const storefrontCategory = await prisma.storefrontCategory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StorefrontCategoryCreateManyArgs>(args?: SelectSubset<T, StorefrontCategoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StorefrontCategories and returns the data saved in the database.
+     * @param {StorefrontCategoryCreateManyAndReturnArgs} args - Arguments to create many StorefrontCategories.
+     * @example
+     * // Create many StorefrontCategories
+     * const storefrontCategory = await prisma.storefrontCategory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StorefrontCategories and only return the `id`
+     * const storefrontCategoryWithIdOnly = await prisma.storefrontCategory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StorefrontCategoryCreateManyAndReturnArgs>(args?: SelectSubset<T, StorefrontCategoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StorefrontCategory.
+     * @param {StorefrontCategoryDeleteArgs} args - Arguments to delete one StorefrontCategory.
+     * @example
+     * // Delete one StorefrontCategory
+     * const StorefrontCategory = await prisma.storefrontCategory.delete({
+     *   where: {
+     *     // ... filter to delete one StorefrontCategory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StorefrontCategoryDeleteArgs>(args: SelectSubset<T, StorefrontCategoryDeleteArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StorefrontCategory.
+     * @param {StorefrontCategoryUpdateArgs} args - Arguments to update one StorefrontCategory.
+     * @example
+     * // Update one StorefrontCategory
+     * const storefrontCategory = await prisma.storefrontCategory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StorefrontCategoryUpdateArgs>(args: SelectSubset<T, StorefrontCategoryUpdateArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StorefrontCategories.
+     * @param {StorefrontCategoryDeleteManyArgs} args - Arguments to filter StorefrontCategories to delete.
+     * @example
+     * // Delete a few StorefrontCategories
+     * const { count } = await prisma.storefrontCategory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StorefrontCategoryDeleteManyArgs>(args?: SelectSubset<T, StorefrontCategoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StorefrontCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StorefrontCategoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StorefrontCategories
+     * const storefrontCategory = await prisma.storefrontCategory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StorefrontCategoryUpdateManyArgs>(args: SelectSubset<T, StorefrontCategoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StorefrontCategories and returns the data updated in the database.
+     * @param {StorefrontCategoryUpdateManyAndReturnArgs} args - Arguments to update many StorefrontCategories.
+     * @example
+     * // Update many StorefrontCategories
+     * const storefrontCategory = await prisma.storefrontCategory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StorefrontCategories and only return the `id`
+     * const storefrontCategoryWithIdOnly = await prisma.storefrontCategory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StorefrontCategoryUpdateManyAndReturnArgs>(args: SelectSubset<T, StorefrontCategoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StorefrontCategory.
+     * @param {StorefrontCategoryUpsertArgs} args - Arguments to update or create a StorefrontCategory.
+     * @example
+     * // Update or create a StorefrontCategory
+     * const storefrontCategory = await prisma.storefrontCategory.upsert({
+     *   create: {
+     *     // ... data to create a StorefrontCategory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StorefrontCategory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StorefrontCategoryUpsertArgs>(args: SelectSubset<T, StorefrontCategoryUpsertArgs<ExtArgs>>): Prisma__StorefrontCategoryClient<$Result.GetResult<Prisma.$StorefrontCategoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StorefrontCategories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StorefrontCategoryCountArgs} args - Arguments to filter StorefrontCategories to count.
+     * @example
+     * // Count the number of StorefrontCategories
+     * const count = await prisma.storefrontCategory.count({
+     *   where: {
+     *     // ... the filter for the StorefrontCategories we want to count
+     *   }
+     * })
+    **/
+    count<T extends StorefrontCategoryCountArgs>(
+      args?: Subset<T, StorefrontCategoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StorefrontCategoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StorefrontCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StorefrontCategoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StorefrontCategoryAggregateArgs>(args: Subset<T, StorefrontCategoryAggregateArgs>): Prisma.PrismaPromise<GetStorefrontCategoryAggregateType<T>>
+
+    /**
+     * Group by StorefrontCategory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StorefrontCategoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StorefrontCategoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StorefrontCategoryGroupByArgs['orderBy'] }
+        : { orderBy?: StorefrontCategoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StorefrontCategoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStorefrontCategoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StorefrontCategory model
+   */
+  readonly fields: StorefrontCategoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StorefrontCategory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StorefrontCategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StorefrontCategory model
+   */
+  interface StorefrontCategoryFieldRefs {
+    readonly id: FieldRef<"StorefrontCategory", 'String'>
+    readonly name: FieldRef<"StorefrontCategory", 'String'>
+    readonly createdAt: FieldRef<"StorefrontCategory", 'DateTime'>
+    readonly updatedAt: FieldRef<"StorefrontCategory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StorefrontCategory findUnique
+   */
+  export type StorefrontCategoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * Filter, which StorefrontCategory to fetch.
+     */
+    where: StorefrontCategoryWhereUniqueInput
+  }
+
+  /**
+   * StorefrontCategory findUniqueOrThrow
+   */
+  export type StorefrontCategoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * Filter, which StorefrontCategory to fetch.
+     */
+    where: StorefrontCategoryWhereUniqueInput
+  }
+
+  /**
+   * StorefrontCategory findFirst
+   */
+  export type StorefrontCategoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * Filter, which StorefrontCategory to fetch.
+     */
+    where?: StorefrontCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StorefrontCategories to fetch.
+     */
+    orderBy?: StorefrontCategoryOrderByWithRelationInput | StorefrontCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StorefrontCategories.
+     */
+    cursor?: StorefrontCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StorefrontCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StorefrontCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StorefrontCategories.
+     */
+    distinct?: StorefrontCategoryScalarFieldEnum | StorefrontCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * StorefrontCategory findFirstOrThrow
+   */
+  export type StorefrontCategoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * Filter, which StorefrontCategory to fetch.
+     */
+    where?: StorefrontCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StorefrontCategories to fetch.
+     */
+    orderBy?: StorefrontCategoryOrderByWithRelationInput | StorefrontCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StorefrontCategories.
+     */
+    cursor?: StorefrontCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StorefrontCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StorefrontCategories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StorefrontCategories.
+     */
+    distinct?: StorefrontCategoryScalarFieldEnum | StorefrontCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * StorefrontCategory findMany
+   */
+  export type StorefrontCategoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * Filter, which StorefrontCategories to fetch.
+     */
+    where?: StorefrontCategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StorefrontCategories to fetch.
+     */
+    orderBy?: StorefrontCategoryOrderByWithRelationInput | StorefrontCategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StorefrontCategories.
+     */
+    cursor?: StorefrontCategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StorefrontCategories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StorefrontCategories.
+     */
+    skip?: number
+    distinct?: StorefrontCategoryScalarFieldEnum | StorefrontCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * StorefrontCategory create
+   */
+  export type StorefrontCategoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * The data needed to create a StorefrontCategory.
+     */
+    data: XOR<StorefrontCategoryCreateInput, StorefrontCategoryUncheckedCreateInput>
+  }
+
+  /**
+   * StorefrontCategory createMany
+   */
+  export type StorefrontCategoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StorefrontCategories.
+     */
+    data: StorefrontCategoryCreateManyInput | StorefrontCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StorefrontCategory createManyAndReturn
+   */
+  export type StorefrontCategoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many StorefrontCategories.
+     */
+    data: StorefrontCategoryCreateManyInput | StorefrontCategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StorefrontCategory update
+   */
+  export type StorefrontCategoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * The data needed to update a StorefrontCategory.
+     */
+    data: XOR<StorefrontCategoryUpdateInput, StorefrontCategoryUncheckedUpdateInput>
+    /**
+     * Choose, which StorefrontCategory to update.
+     */
+    where: StorefrontCategoryWhereUniqueInput
+  }
+
+  /**
+   * StorefrontCategory updateMany
+   */
+  export type StorefrontCategoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StorefrontCategories.
+     */
+    data: XOR<StorefrontCategoryUpdateManyMutationInput, StorefrontCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which StorefrontCategories to update
+     */
+    where?: StorefrontCategoryWhereInput
+    /**
+     * Limit how many StorefrontCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StorefrontCategory updateManyAndReturn
+   */
+  export type StorefrontCategoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * The data used to update StorefrontCategories.
+     */
+    data: XOR<StorefrontCategoryUpdateManyMutationInput, StorefrontCategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which StorefrontCategories to update
+     */
+    where?: StorefrontCategoryWhereInput
+    /**
+     * Limit how many StorefrontCategories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StorefrontCategory upsert
+   */
+  export type StorefrontCategoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * The filter to search for the StorefrontCategory to update in case it exists.
+     */
+    where: StorefrontCategoryWhereUniqueInput
+    /**
+     * In case the StorefrontCategory found by the `where` argument doesn't exist, create a new StorefrontCategory with this data.
+     */
+    create: XOR<StorefrontCategoryCreateInput, StorefrontCategoryUncheckedCreateInput>
+    /**
+     * In case the StorefrontCategory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StorefrontCategoryUpdateInput, StorefrontCategoryUncheckedUpdateInput>
+  }
+
+  /**
+   * StorefrontCategory delete
+   */
+  export type StorefrontCategoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+    /**
+     * Filter which StorefrontCategory to delete.
+     */
+    where: StorefrontCategoryWhereUniqueInput
+  }
+
+  /**
+   * StorefrontCategory deleteMany
+   */
+  export type StorefrontCategoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StorefrontCategories to delete
+     */
+    where?: StorefrontCategoryWhereInput
+    /**
+     * Limit how many StorefrontCategories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StorefrontCategory without action
+   */
+  export type StorefrontCategoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StorefrontCategory
+     */
+    select?: StorefrontCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StorefrontCategory
+     */
+    omit?: StorefrontCategoryOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -29412,6 +33008,31 @@ export namespace Prisma {
   export type CustomerInquiryScalarFieldEnum = (typeof CustomerInquiryScalarFieldEnum)[keyof typeof CustomerInquiryScalarFieldEnum]
 
 
+  export const OrderChatMessageScalarFieldEnum: {
+    id: 'id',
+    inquiryId: 'inquiryId',
+    senderUserId: 'senderUserId',
+    senderRole: 'senderRole',
+    body: 'body',
+    createdAt: 'createdAt'
+  };
+
+  export type OrderChatMessageScalarFieldEnum = (typeof OrderChatMessageScalarFieldEnum)[keyof typeof OrderChatMessageScalarFieldEnum]
+
+
+  export const OrderChatAttachmentScalarFieldEnum: {
+    id: 'id',
+    messageId: 'messageId',
+    fileName: 'fileName',
+    mimeType: 'mimeType',
+    attachmentType: 'attachmentType',
+    dataUrl: 'dataUrl',
+    createdAt: 'createdAt'
+  };
+
+  export type OrderChatAttachmentScalarFieldEnum = (typeof OrderChatAttachmentScalarFieldEnum)[keyof typeof OrderChatAttachmentScalarFieldEnum]
+
+
   export const ProductMaterialScalarFieldEnum: {
     id: 'id',
     productId: 'productId',
@@ -29563,6 +33184,16 @@ export namespace Prisma {
   };
 
   export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+  export const StorefrontCategoryScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StorefrontCategoryScalarFieldEnum = (typeof StorefrontCategoryScalarFieldEnum)[keyof typeof StorefrontCategoryScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -30176,6 +33807,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleListRelationFilter
     deliveryConfirmed?: DeliveryScheduleListRelationFilter
     customerInquiries?: CustomerInquiryListRelationFilter
+    orderChatMessages?: OrderChatMessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -30204,6 +33836,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleOrderByRelationAggregateInput
     deliveryConfirmed?: DeliveryScheduleOrderByRelationAggregateInput
     customerInquiries?: CustomerInquiryOrderByRelationAggregateInput
+    orderChatMessages?: OrderChatMessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -30235,6 +33868,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleListRelationFilter
     deliveryConfirmed?: DeliveryScheduleListRelationFilter
     customerInquiries?: CustomerInquiryListRelationFilter
+    orderChatMessages?: OrderChatMessageListRelationFilter
   }, "id" | "authUserId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -31192,6 +34826,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     customerUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    chatMessages?: OrderChatMessageListRelationFilter
   }
 
   export type CustomerInquiryOrderByWithRelationInput = {
@@ -31208,6 +34843,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     product?: ProductOrderByWithRelationInput
     customerUser?: UserOrderByWithRelationInput
+    chatMessages?: OrderChatMessageOrderByRelationAggregateInput
   }
 
   export type CustomerInquiryWhereUniqueInput = Prisma.AtLeast<{
@@ -31227,6 +34863,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     customerUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    chatMessages?: OrderChatMessageListRelationFilter
   }, "id">
 
   export type CustomerInquiryOrderByWithAggregationInput = {
@@ -31261,6 +34898,137 @@ export namespace Prisma {
     statusNote?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"CustomerInquiry"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CustomerInquiry"> | Date | string
+  }
+
+  export type OrderChatMessageWhereInput = {
+    AND?: OrderChatMessageWhereInput | OrderChatMessageWhereInput[]
+    OR?: OrderChatMessageWhereInput[]
+    NOT?: OrderChatMessageWhereInput | OrderChatMessageWhereInput[]
+    id?: StringFilter<"OrderChatMessage"> | string
+    inquiryId?: StringFilter<"OrderChatMessage"> | string
+    senderUserId?: StringNullableFilter<"OrderChatMessage"> | string | null
+    senderRole?: StringFilter<"OrderChatMessage"> | string
+    body?: StringNullableFilter<"OrderChatMessage"> | string | null
+    createdAt?: DateTimeFilter<"OrderChatMessage"> | Date | string
+    inquiry?: XOR<CustomerInquiryScalarRelationFilter, CustomerInquiryWhereInput>
+    sender?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    attachments?: OrderChatAttachmentListRelationFilter
+  }
+
+  export type OrderChatMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    senderUserId?: SortOrderInput | SortOrder
+    senderRole?: SortOrder
+    body?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    inquiry?: CustomerInquiryOrderByWithRelationInput
+    sender?: UserOrderByWithRelationInput
+    attachments?: OrderChatAttachmentOrderByRelationAggregateInput
+  }
+
+  export type OrderChatMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: OrderChatMessageWhereInput | OrderChatMessageWhereInput[]
+    OR?: OrderChatMessageWhereInput[]
+    NOT?: OrderChatMessageWhereInput | OrderChatMessageWhereInput[]
+    inquiryId?: StringFilter<"OrderChatMessage"> | string
+    senderUserId?: StringNullableFilter<"OrderChatMessage"> | string | null
+    senderRole?: StringFilter<"OrderChatMessage"> | string
+    body?: StringNullableFilter<"OrderChatMessage"> | string | null
+    createdAt?: DateTimeFilter<"OrderChatMessage"> | Date | string
+    inquiry?: XOR<CustomerInquiryScalarRelationFilter, CustomerInquiryWhereInput>
+    sender?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    attachments?: OrderChatAttachmentListRelationFilter
+  }, "id">
+
+  export type OrderChatMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    senderUserId?: SortOrderInput | SortOrder
+    senderRole?: SortOrder
+    body?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: OrderChatMessageCountOrderByAggregateInput
+    _max?: OrderChatMessageMaxOrderByAggregateInput
+    _min?: OrderChatMessageMinOrderByAggregateInput
+  }
+
+  export type OrderChatMessageScalarWhereWithAggregatesInput = {
+    AND?: OrderChatMessageScalarWhereWithAggregatesInput | OrderChatMessageScalarWhereWithAggregatesInput[]
+    OR?: OrderChatMessageScalarWhereWithAggregatesInput[]
+    NOT?: OrderChatMessageScalarWhereWithAggregatesInput | OrderChatMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OrderChatMessage"> | string
+    inquiryId?: StringWithAggregatesFilter<"OrderChatMessage"> | string
+    senderUserId?: StringNullableWithAggregatesFilter<"OrderChatMessage"> | string | null
+    senderRole?: StringWithAggregatesFilter<"OrderChatMessage"> | string
+    body?: StringNullableWithAggregatesFilter<"OrderChatMessage"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"OrderChatMessage"> | Date | string
+  }
+
+  export type OrderChatAttachmentWhereInput = {
+    AND?: OrderChatAttachmentWhereInput | OrderChatAttachmentWhereInput[]
+    OR?: OrderChatAttachmentWhereInput[]
+    NOT?: OrderChatAttachmentWhereInput | OrderChatAttachmentWhereInput[]
+    id?: StringFilter<"OrderChatAttachment"> | string
+    messageId?: StringFilter<"OrderChatAttachment"> | string
+    fileName?: StringFilter<"OrderChatAttachment"> | string
+    mimeType?: StringFilter<"OrderChatAttachment"> | string
+    attachmentType?: StringFilter<"OrderChatAttachment"> | string
+    dataUrl?: StringFilter<"OrderChatAttachment"> | string
+    createdAt?: DateTimeFilter<"OrderChatAttachment"> | Date | string
+    message?: XOR<OrderChatMessageScalarRelationFilter, OrderChatMessageWhereInput>
+  }
+
+  export type OrderChatAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    attachmentType?: SortOrder
+    dataUrl?: SortOrder
+    createdAt?: SortOrder
+    message?: OrderChatMessageOrderByWithRelationInput
+  }
+
+  export type OrderChatAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: OrderChatAttachmentWhereInput | OrderChatAttachmentWhereInput[]
+    OR?: OrderChatAttachmentWhereInput[]
+    NOT?: OrderChatAttachmentWhereInput | OrderChatAttachmentWhereInput[]
+    messageId?: StringFilter<"OrderChatAttachment"> | string
+    fileName?: StringFilter<"OrderChatAttachment"> | string
+    mimeType?: StringFilter<"OrderChatAttachment"> | string
+    attachmentType?: StringFilter<"OrderChatAttachment"> | string
+    dataUrl?: StringFilter<"OrderChatAttachment"> | string
+    createdAt?: DateTimeFilter<"OrderChatAttachment"> | Date | string
+    message?: XOR<OrderChatMessageScalarRelationFilter, OrderChatMessageWhereInput>
+  }, "id">
+
+  export type OrderChatAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    attachmentType?: SortOrder
+    dataUrl?: SortOrder
+    createdAt?: SortOrder
+    _count?: OrderChatAttachmentCountOrderByAggregateInput
+    _max?: OrderChatAttachmentMaxOrderByAggregateInput
+    _min?: OrderChatAttachmentMinOrderByAggregateInput
+  }
+
+  export type OrderChatAttachmentScalarWhereWithAggregatesInput = {
+    AND?: OrderChatAttachmentScalarWhereWithAggregatesInput | OrderChatAttachmentScalarWhereWithAggregatesInput[]
+    OR?: OrderChatAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: OrderChatAttachmentScalarWhereWithAggregatesInput | OrderChatAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OrderChatAttachment"> | string
+    messageId?: StringWithAggregatesFilter<"OrderChatAttachment"> | string
+    fileName?: StringWithAggregatesFilter<"OrderChatAttachment"> | string
+    mimeType?: StringWithAggregatesFilter<"OrderChatAttachment"> | string
+    attachmentType?: StringWithAggregatesFilter<"OrderChatAttachment"> | string
+    dataUrl?: StringWithAggregatesFilter<"OrderChatAttachment"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"OrderChatAttachment"> | Date | string
   }
 
   export type ProductMaterialWhereInput = {
@@ -32073,6 +35841,53 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
   }
 
+  export type StorefrontCategoryWhereInput = {
+    AND?: StorefrontCategoryWhereInput | StorefrontCategoryWhereInput[]
+    OR?: StorefrontCategoryWhereInput[]
+    NOT?: StorefrontCategoryWhereInput | StorefrontCategoryWhereInput[]
+    id?: StringFilter<"StorefrontCategory"> | string
+    name?: StringFilter<"StorefrontCategory"> | string
+    createdAt?: DateTimeFilter<"StorefrontCategory"> | Date | string
+    updatedAt?: DateTimeFilter<"StorefrontCategory"> | Date | string
+  }
+
+  export type StorefrontCategoryOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StorefrontCategoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: StorefrontCategoryWhereInput | StorefrontCategoryWhereInput[]
+    OR?: StorefrontCategoryWhereInput[]
+    NOT?: StorefrontCategoryWhereInput | StorefrontCategoryWhereInput[]
+    createdAt?: DateTimeFilter<"StorefrontCategory"> | Date | string
+    updatedAt?: DateTimeFilter<"StorefrontCategory"> | Date | string
+  }, "id" | "name">
+
+  export type StorefrontCategoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StorefrontCategoryCountOrderByAggregateInput
+    _max?: StorefrontCategoryMaxOrderByAggregateInput
+    _min?: StorefrontCategoryMinOrderByAggregateInput
+  }
+
+  export type StorefrontCategoryScalarWhereWithAggregatesInput = {
+    AND?: StorefrontCategoryScalarWhereWithAggregatesInput | StorefrontCategoryScalarWhereWithAggregatesInput[]
+    OR?: StorefrontCategoryScalarWhereWithAggregatesInput[]
+    NOT?: StorefrontCategoryScalarWhereWithAggregatesInput | StorefrontCategoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StorefrontCategory"> | string
+    name?: StringWithAggregatesFilter<"StorefrontCategory"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"StorefrontCategory"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StorefrontCategory"> | Date | string
+  }
+
   export type CompanyCreateInput = {
     id?: string
     code: string
@@ -32209,6 +36024,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -32236,6 +36052,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserUpdateInput = {
@@ -32263,6 +36080,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -32290,6 +36108,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -33394,6 +37213,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     product: ProductCreateNestedOneWithoutInquiriesInput
     customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryUncheckedCreateInput = {
@@ -33408,6 +37228,7 @@ export namespace Prisma {
     statusNote?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryUpdateInput = {
@@ -33422,6 +37243,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
     customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateInput = {
@@ -33436,6 +37258,7 @@ export namespace Prisma {
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryCreateManyInput = {
@@ -33476,6 +37299,140 @@ export namespace Prisma {
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatMessageCreateInput = {
+    id: string
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+    inquiry: CustomerInquiryCreateNestedOneWithoutChatMessagesInput
+    sender?: UserCreateNestedOneWithoutOrderChatMessagesInput
+    attachments?: OrderChatAttachmentCreateNestedManyWithoutMessageInput
+  }
+
+  export type OrderChatMessageUncheckedCreateInput = {
+    id: string
+    inquiryId: string
+    senderUserId?: string | null
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+    attachments?: OrderChatAttachmentUncheckedCreateNestedManyWithoutMessageInput
+  }
+
+  export type OrderChatMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inquiry?: CustomerInquiryUpdateOneRequiredWithoutChatMessagesNestedInput
+    sender?: UserUpdateOneWithoutOrderChatMessagesNestedInput
+    attachments?: OrderChatAttachmentUpdateManyWithoutMessageNestedInput
+  }
+
+  export type OrderChatMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    senderUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attachments?: OrderChatAttachmentUncheckedUpdateManyWithoutMessageNestedInput
+  }
+
+  export type OrderChatMessageCreateManyInput = {
+    id: string
+    inquiryId: string
+    senderUserId?: string | null
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+  }
+
+  export type OrderChatMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    senderUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatAttachmentCreateInput = {
+    id: string
+    fileName: string
+    mimeType: string
+    attachmentType: string
+    dataUrl: string
+    createdAt?: Date | string
+    message: OrderChatMessageCreateNestedOneWithoutAttachmentsInput
+  }
+
+  export type OrderChatAttachmentUncheckedCreateInput = {
+    id: string
+    messageId: string
+    fileName: string
+    mimeType: string
+    attachmentType: string
+    dataUrl: string
+    createdAt?: Date | string
+  }
+
+  export type OrderChatAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    attachmentType?: StringFieldUpdateOperationsInput | string
+    dataUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    message?: OrderChatMessageUpdateOneRequiredWithoutAttachmentsNestedInput
+  }
+
+  export type OrderChatAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    attachmentType?: StringFieldUpdateOperationsInput | string
+    dataUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatAttachmentCreateManyInput = {
+    id: string
+    messageId: string
+    fileName: string
+    mimeType: string
+    attachmentType: string
+    dataUrl: string
+    createdAt?: Date | string
+  }
+
+  export type OrderChatAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    attachmentType?: StringFieldUpdateOperationsInput | string
+    dataUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    messageId?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    attachmentType?: StringFieldUpdateOperationsInput | string
+    dataUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductMaterialCreateInput = {
@@ -34327,6 +38284,55 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StorefrontCategoryCreateInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StorefrontCategoryUncheckedCreateInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StorefrontCategoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StorefrontCategoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StorefrontCategoryCreateManyInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StorefrontCategoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StorefrontCategoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -34601,6 +38607,12 @@ export namespace Prisma {
     none?: CustomerInquiryWhereInput
   }
 
+  export type OrderChatMessageListRelationFilter = {
+    every?: OrderChatMessageWhereInput
+    some?: OrderChatMessageWhereInput
+    none?: OrderChatMessageWhereInput
+  }
+
   export type StockRequestOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -34618,6 +38630,10 @@ export namespace Prisma {
   }
 
   export type CustomerInquiryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrderChatMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -35767,6 +39783,83 @@ export namespace Prisma {
     _max?: NestedEnumInquiryStatusFilter<$PrismaModel>
   }
 
+  export type CustomerInquiryScalarRelationFilter = {
+    is?: CustomerInquiryWhereInput
+    isNot?: CustomerInquiryWhereInput
+  }
+
+  export type OrderChatAttachmentListRelationFilter = {
+    every?: OrderChatAttachmentWhereInput
+    some?: OrderChatAttachmentWhereInput
+    none?: OrderChatAttachmentWhereInput
+  }
+
+  export type OrderChatAttachmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrderChatMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    senderUserId?: SortOrder
+    senderRole?: SortOrder
+    body?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderChatMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    senderUserId?: SortOrder
+    senderRole?: SortOrder
+    body?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderChatMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    senderUserId?: SortOrder
+    senderRole?: SortOrder
+    body?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderChatMessageScalarRelationFilter = {
+    is?: OrderChatMessageWhereInput
+    isNot?: OrderChatMessageWhereInput
+  }
+
+  export type OrderChatAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    attachmentType?: SortOrder
+    dataUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderChatAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    attachmentType?: SortOrder
+    dataUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OrderChatAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    messageId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    attachmentType?: SortOrder
+    dataUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type ProductMaterialProductIdStockItemIdQuantityDisplayCompoundUniqueInput = {
     productId: string
     stockItemId: string
@@ -36356,6 +40449,27 @@ export namespace Prisma {
     _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
   }
 
+  export type StorefrontCategoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StorefrontCategoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StorefrontCategoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type UserCreateNestedManyWithoutCompanyInput = {
     create?: XOR<UserCreateWithoutCompanyInput, UserUncheckedCreateWithoutCompanyInput> | UserCreateWithoutCompanyInput[] | UserUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCompanyInput | UserCreateOrConnectWithoutCompanyInput[]
@@ -36672,6 +40786,13 @@ export namespace Prisma {
     connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
   }
 
+  export type OrderChatMessageCreateNestedManyWithoutSenderInput = {
+    create?: XOR<OrderChatMessageCreateWithoutSenderInput, OrderChatMessageUncheckedCreateWithoutSenderInput> | OrderChatMessageCreateWithoutSenderInput[] | OrderChatMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutSenderInput | OrderChatMessageCreateOrConnectWithoutSenderInput[]
+    createMany?: OrderChatMessageCreateManySenderInputEnvelope
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+  }
+
   export type LeadUncheckedCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<LeadCreateWithoutCreatedByInput, LeadUncheckedCreateWithoutCreatedByInput> | LeadCreateWithoutCreatedByInput[] | LeadUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: LeadCreateOrConnectWithoutCreatedByInput | LeadCreateOrConnectWithoutCreatedByInput[]
@@ -36754,6 +40875,13 @@ export namespace Prisma {
     connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCustomerUserInput | CustomerInquiryCreateOrConnectWithoutCustomerUserInput[]
     createMany?: CustomerInquiryCreateManyCustomerUserInputEnvelope
     connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput = {
+    create?: XOR<OrderChatMessageCreateWithoutSenderInput, OrderChatMessageUncheckedCreateWithoutSenderInput> | OrderChatMessageCreateWithoutSenderInput[] | OrderChatMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutSenderInput | OrderChatMessageCreateOrConnectWithoutSenderInput[]
+    createMany?: OrderChatMessageCreateManySenderInputEnvelope
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
   }
 
   export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -36946,6 +41074,20 @@ export namespace Prisma {
     deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
   }
 
+  export type OrderChatMessageUpdateManyWithoutSenderNestedInput = {
+    create?: XOR<OrderChatMessageCreateWithoutSenderInput, OrderChatMessageUncheckedCreateWithoutSenderInput> | OrderChatMessageCreateWithoutSenderInput[] | OrderChatMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutSenderInput | OrderChatMessageCreateOrConnectWithoutSenderInput[]
+    upsert?: OrderChatMessageUpsertWithWhereUniqueWithoutSenderInput | OrderChatMessageUpsertWithWhereUniqueWithoutSenderInput[]
+    createMany?: OrderChatMessageCreateManySenderInputEnvelope
+    set?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    disconnect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    delete?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    update?: OrderChatMessageUpdateWithWhereUniqueWithoutSenderInput | OrderChatMessageUpdateWithWhereUniqueWithoutSenderInput[]
+    updateMany?: OrderChatMessageUpdateManyWithWhereWithoutSenderInput | OrderChatMessageUpdateManyWithWhereWithoutSenderInput[]
+    deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
+  }
+
   export type LeadUncheckedUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<LeadCreateWithoutCreatedByInput, LeadUncheckedCreateWithoutCreatedByInput> | LeadCreateWithoutCreatedByInput[] | LeadUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: LeadCreateOrConnectWithoutCreatedByInput | LeadCreateOrConnectWithoutCreatedByInput[]
@@ -37112,6 +41254,20 @@ export namespace Prisma {
     update?: CustomerInquiryUpdateWithWhereUniqueWithoutCustomerUserInput | CustomerInquiryUpdateWithWhereUniqueWithoutCustomerUserInput[]
     updateMany?: CustomerInquiryUpdateManyWithWhereWithoutCustomerUserInput | CustomerInquiryUpdateManyWithWhereWithoutCustomerUserInput[]
     deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput = {
+    create?: XOR<OrderChatMessageCreateWithoutSenderInput, OrderChatMessageUncheckedCreateWithoutSenderInput> | OrderChatMessageCreateWithoutSenderInput[] | OrderChatMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutSenderInput | OrderChatMessageCreateOrConnectWithoutSenderInput[]
+    upsert?: OrderChatMessageUpsertWithWhereUniqueWithoutSenderInput | OrderChatMessageUpsertWithWhereUniqueWithoutSenderInput[]
+    createMany?: OrderChatMessageCreateManySenderInputEnvelope
+    set?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    disconnect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    delete?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    update?: OrderChatMessageUpdateWithWhereUniqueWithoutSenderInput | OrderChatMessageUpdateWithWhereUniqueWithoutSenderInput[]
+    updateMany?: OrderChatMessageUpdateManyWithWhereWithoutSenderInput | OrderChatMessageUpdateManyWithWhereWithoutSenderInput[]
+    deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
   }
 
   export type CompanyCreateNestedOneWithoutLeadsInput = {
@@ -38032,6 +42188,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type OrderChatMessageCreateNestedManyWithoutInquiryInput = {
+    create?: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput> | OrderChatMessageCreateWithoutInquiryInput[] | OrderChatMessageUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutInquiryInput | OrderChatMessageCreateOrConnectWithoutInquiryInput[]
+    createMany?: OrderChatMessageCreateManyInquiryInputEnvelope
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+  }
+
+  export type OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput = {
+    create?: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput> | OrderChatMessageCreateWithoutInquiryInput[] | OrderChatMessageUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutInquiryInput | OrderChatMessageCreateOrConnectWithoutInquiryInput[]
+    createMany?: OrderChatMessageCreateManyInquiryInputEnvelope
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+  }
+
   export type EnumInquiryStatusFieldUpdateOperationsInput = {
     set?: $Enums.InquiryStatus
   }
@@ -38052,6 +42222,120 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCustomerInquiriesInput, UserUpdateWithoutCustomerInquiriesInput>, UserUncheckedUpdateWithoutCustomerInquiriesInput>
+  }
+
+  export type OrderChatMessageUpdateManyWithoutInquiryNestedInput = {
+    create?: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput> | OrderChatMessageCreateWithoutInquiryInput[] | OrderChatMessageUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutInquiryInput | OrderChatMessageCreateOrConnectWithoutInquiryInput[]
+    upsert?: OrderChatMessageUpsertWithWhereUniqueWithoutInquiryInput | OrderChatMessageUpsertWithWhereUniqueWithoutInquiryInput[]
+    createMany?: OrderChatMessageCreateManyInquiryInputEnvelope
+    set?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    disconnect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    delete?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    update?: OrderChatMessageUpdateWithWhereUniqueWithoutInquiryInput | OrderChatMessageUpdateWithWhereUniqueWithoutInquiryInput[]
+    updateMany?: OrderChatMessageUpdateManyWithWhereWithoutInquiryInput | OrderChatMessageUpdateManyWithWhereWithoutInquiryInput[]
+    deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
+  }
+
+  export type OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput = {
+    create?: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput> | OrderChatMessageCreateWithoutInquiryInput[] | OrderChatMessageUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutInquiryInput | OrderChatMessageCreateOrConnectWithoutInquiryInput[]
+    upsert?: OrderChatMessageUpsertWithWhereUniqueWithoutInquiryInput | OrderChatMessageUpsertWithWhereUniqueWithoutInquiryInput[]
+    createMany?: OrderChatMessageCreateManyInquiryInputEnvelope
+    set?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    disconnect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    delete?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+    update?: OrderChatMessageUpdateWithWhereUniqueWithoutInquiryInput | OrderChatMessageUpdateWithWhereUniqueWithoutInquiryInput[]
+    updateMany?: OrderChatMessageUpdateManyWithWhereWithoutInquiryInput | OrderChatMessageUpdateManyWithWhereWithoutInquiryInput[]
+    deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
+  }
+
+  export type CustomerInquiryCreateNestedOneWithoutChatMessagesInput = {
+    create?: XOR<CustomerInquiryCreateWithoutChatMessagesInput, CustomerInquiryUncheckedCreateWithoutChatMessagesInput>
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutChatMessagesInput
+    connect?: CustomerInquiryWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutOrderChatMessagesInput = {
+    create?: XOR<UserCreateWithoutOrderChatMessagesInput, UserUncheckedCreateWithoutOrderChatMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOrderChatMessagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type OrderChatAttachmentCreateNestedManyWithoutMessageInput = {
+    create?: XOR<OrderChatAttachmentCreateWithoutMessageInput, OrderChatAttachmentUncheckedCreateWithoutMessageInput> | OrderChatAttachmentCreateWithoutMessageInput[] | OrderChatAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: OrderChatAttachmentCreateOrConnectWithoutMessageInput | OrderChatAttachmentCreateOrConnectWithoutMessageInput[]
+    createMany?: OrderChatAttachmentCreateManyMessageInputEnvelope
+    connect?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+  }
+
+  export type OrderChatAttachmentUncheckedCreateNestedManyWithoutMessageInput = {
+    create?: XOR<OrderChatAttachmentCreateWithoutMessageInput, OrderChatAttachmentUncheckedCreateWithoutMessageInput> | OrderChatAttachmentCreateWithoutMessageInput[] | OrderChatAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: OrderChatAttachmentCreateOrConnectWithoutMessageInput | OrderChatAttachmentCreateOrConnectWithoutMessageInput[]
+    createMany?: OrderChatAttachmentCreateManyMessageInputEnvelope
+    connect?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryUpdateOneRequiredWithoutChatMessagesNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutChatMessagesInput, CustomerInquiryUncheckedCreateWithoutChatMessagesInput>
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutChatMessagesInput
+    upsert?: CustomerInquiryUpsertWithoutChatMessagesInput
+    connect?: CustomerInquiryWhereUniqueInput
+    update?: XOR<XOR<CustomerInquiryUpdateToOneWithWhereWithoutChatMessagesInput, CustomerInquiryUpdateWithoutChatMessagesInput>, CustomerInquiryUncheckedUpdateWithoutChatMessagesInput>
+  }
+
+  export type UserUpdateOneWithoutOrderChatMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutOrderChatMessagesInput, UserUncheckedCreateWithoutOrderChatMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOrderChatMessagesInput
+    upsert?: UserUpsertWithoutOrderChatMessagesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOrderChatMessagesInput, UserUpdateWithoutOrderChatMessagesInput>, UserUncheckedUpdateWithoutOrderChatMessagesInput>
+  }
+
+  export type OrderChatAttachmentUpdateManyWithoutMessageNestedInput = {
+    create?: XOR<OrderChatAttachmentCreateWithoutMessageInput, OrderChatAttachmentUncheckedCreateWithoutMessageInput> | OrderChatAttachmentCreateWithoutMessageInput[] | OrderChatAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: OrderChatAttachmentCreateOrConnectWithoutMessageInput | OrderChatAttachmentCreateOrConnectWithoutMessageInput[]
+    upsert?: OrderChatAttachmentUpsertWithWhereUniqueWithoutMessageInput | OrderChatAttachmentUpsertWithWhereUniqueWithoutMessageInput[]
+    createMany?: OrderChatAttachmentCreateManyMessageInputEnvelope
+    set?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    disconnect?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    delete?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    connect?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    update?: OrderChatAttachmentUpdateWithWhereUniqueWithoutMessageInput | OrderChatAttachmentUpdateWithWhereUniqueWithoutMessageInput[]
+    updateMany?: OrderChatAttachmentUpdateManyWithWhereWithoutMessageInput | OrderChatAttachmentUpdateManyWithWhereWithoutMessageInput[]
+    deleteMany?: OrderChatAttachmentScalarWhereInput | OrderChatAttachmentScalarWhereInput[]
+  }
+
+  export type OrderChatAttachmentUncheckedUpdateManyWithoutMessageNestedInput = {
+    create?: XOR<OrderChatAttachmentCreateWithoutMessageInput, OrderChatAttachmentUncheckedCreateWithoutMessageInput> | OrderChatAttachmentCreateWithoutMessageInput[] | OrderChatAttachmentUncheckedCreateWithoutMessageInput[]
+    connectOrCreate?: OrderChatAttachmentCreateOrConnectWithoutMessageInput | OrderChatAttachmentCreateOrConnectWithoutMessageInput[]
+    upsert?: OrderChatAttachmentUpsertWithWhereUniqueWithoutMessageInput | OrderChatAttachmentUpsertWithWhereUniqueWithoutMessageInput[]
+    createMany?: OrderChatAttachmentCreateManyMessageInputEnvelope
+    set?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    disconnect?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    delete?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    connect?: OrderChatAttachmentWhereUniqueInput | OrderChatAttachmentWhereUniqueInput[]
+    update?: OrderChatAttachmentUpdateWithWhereUniqueWithoutMessageInput | OrderChatAttachmentUpdateWithWhereUniqueWithoutMessageInput[]
+    updateMany?: OrderChatAttachmentUpdateManyWithWhereWithoutMessageInput | OrderChatAttachmentUpdateManyWithWhereWithoutMessageInput[]
+    deleteMany?: OrderChatAttachmentScalarWhereInput | OrderChatAttachmentScalarWhereInput[]
+  }
+
+  export type OrderChatMessageCreateNestedOneWithoutAttachmentsInput = {
+    create?: XOR<OrderChatMessageCreateWithoutAttachmentsInput, OrderChatMessageUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutAttachmentsInput
+    connect?: OrderChatMessageWhereUniqueInput
+  }
+
+  export type OrderChatMessageUpdateOneRequiredWithoutAttachmentsNestedInput = {
+    create?: XOR<OrderChatMessageCreateWithoutAttachmentsInput, OrderChatMessageUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: OrderChatMessageCreateOrConnectWithoutAttachmentsInput
+    upsert?: OrderChatMessageUpsertWithoutAttachmentsInput
+    connect?: OrderChatMessageWhereUniqueInput
+    update?: XOR<XOR<OrderChatMessageUpdateToOneWithWhereWithoutAttachmentsInput, OrderChatMessageUpdateWithoutAttachmentsInput>, OrderChatMessageUncheckedUpdateWithoutAttachmentsInput>
   }
 
   export type ProductCreateNestedOneWithoutMaterialsInput = {
@@ -39218,6 +43502,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutCompanyInput = {
@@ -39244,6 +43529,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutCompanyInput = {
@@ -40161,6 +44447,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     product: ProductCreateNestedOneWithoutInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryUncheckedCreateWithoutCustomerUserInput = {
@@ -40174,6 +44461,7 @@ export namespace Prisma {
     statusNote?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryCreateOrConnectWithoutCustomerUserInput = {
@@ -40183,6 +44471,34 @@ export namespace Prisma {
 
   export type CustomerInquiryCreateManyCustomerUserInputEnvelope = {
     data: CustomerInquiryCreateManyCustomerUserInput | CustomerInquiryCreateManyCustomerUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrderChatMessageCreateWithoutSenderInput = {
+    id: string
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+    inquiry: CustomerInquiryCreateNestedOneWithoutChatMessagesInput
+    attachments?: OrderChatAttachmentCreateNestedManyWithoutMessageInput
+  }
+
+  export type OrderChatMessageUncheckedCreateWithoutSenderInput = {
+    id: string
+    inquiryId: string
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+    attachments?: OrderChatAttachmentUncheckedCreateNestedManyWithoutMessageInput
+  }
+
+  export type OrderChatMessageCreateOrConnectWithoutSenderInput = {
+    where: OrderChatMessageWhereUniqueInput
+    create: XOR<OrderChatMessageCreateWithoutSenderInput, OrderChatMessageUncheckedCreateWithoutSenderInput>
+  }
+
+  export type OrderChatMessageCreateManySenderInputEnvelope = {
+    data: OrderChatMessageCreateManySenderInput | OrderChatMessageCreateManySenderInput[]
     skipDuplicates?: boolean
   }
 
@@ -40505,6 +44821,34 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
   }
 
+  export type OrderChatMessageUpsertWithWhereUniqueWithoutSenderInput = {
+    where: OrderChatMessageWhereUniqueInput
+    update: XOR<OrderChatMessageUpdateWithoutSenderInput, OrderChatMessageUncheckedUpdateWithoutSenderInput>
+    create: XOR<OrderChatMessageCreateWithoutSenderInput, OrderChatMessageUncheckedCreateWithoutSenderInput>
+  }
+
+  export type OrderChatMessageUpdateWithWhereUniqueWithoutSenderInput = {
+    where: OrderChatMessageWhereUniqueInput
+    data: XOR<OrderChatMessageUpdateWithoutSenderInput, OrderChatMessageUncheckedUpdateWithoutSenderInput>
+  }
+
+  export type OrderChatMessageUpdateManyWithWhereWithoutSenderInput = {
+    where: OrderChatMessageScalarWhereInput
+    data: XOR<OrderChatMessageUpdateManyMutationInput, OrderChatMessageUncheckedUpdateManyWithoutSenderInput>
+  }
+
+  export type OrderChatMessageScalarWhereInput = {
+    AND?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
+    OR?: OrderChatMessageScalarWhereInput[]
+    NOT?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
+    id?: StringFilter<"OrderChatMessage"> | string
+    inquiryId?: StringFilter<"OrderChatMessage"> | string
+    senderUserId?: StringNullableFilter<"OrderChatMessage"> | string | null
+    senderRole?: StringFilter<"OrderChatMessage"> | string
+    body?: StringNullableFilter<"OrderChatMessage"> | string | null
+    createdAt?: DateTimeFilter<"OrderChatMessage"> | Date | string
+  }
+
   export type CompanyCreateWithoutLeadsInput = {
     id?: string
     code: string
@@ -40568,6 +44912,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutLeadsCreatedInput = {
@@ -40594,6 +44939,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutLeadsCreatedInput = {
@@ -40737,6 +45083,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLeadsCreatedInput = {
@@ -40763,6 +45110,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type QuotationUpsertWithWhereUniqueWithoutLeadInput = {
@@ -40879,6 +45227,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutQuotationsCreatedInput = {
@@ -40905,6 +45254,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutQuotationsCreatedInput = {
@@ -41186,6 +45536,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutQuotationsCreatedInput = {
@@ -41212,6 +45563,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type QuotationLineItemUpsertWithWhereUniqueWithoutQuotationInput = {
@@ -41513,6 +45865,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutSalesOrdersCreatedInput = {
@@ -41539,6 +45892,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutSalesOrdersCreatedInput = {
@@ -41857,6 +46211,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSalesOrdersCreatedInput = {
@@ -41883,6 +46238,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type QuotationUpsertWithoutSalesOrderInput = {
@@ -42686,6 +47042,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryUncheckedCreateWithoutProductInput = {
@@ -42699,6 +47056,7 @@ export namespace Prisma {
     statusNote?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryCreateOrConnectWithoutProductInput = {
@@ -42869,6 +47227,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutCustomerInquiriesInput = {
@@ -42895,11 +47254,40 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutCustomerInquiriesInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCustomerInquiriesInput, UserUncheckedCreateWithoutCustomerInquiriesInput>
+  }
+
+  export type OrderChatMessageCreateWithoutInquiryInput = {
+    id: string
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+    sender?: UserCreateNestedOneWithoutOrderChatMessagesInput
+    attachments?: OrderChatAttachmentCreateNestedManyWithoutMessageInput
+  }
+
+  export type OrderChatMessageUncheckedCreateWithoutInquiryInput = {
+    id: string
+    senderUserId?: string | null
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+    attachments?: OrderChatAttachmentUncheckedCreateNestedManyWithoutMessageInput
+  }
+
+  export type OrderChatMessageCreateOrConnectWithoutInquiryInput = {
+    where: OrderChatMessageWhereUniqueInput
+    create: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput>
+  }
+
+  export type OrderChatMessageCreateManyInquiryInputEnvelope = {
+    data: OrderChatMessageCreateManyInquiryInput | OrderChatMessageCreateManyInquiryInput[]
+    skipDuplicates?: boolean
   }
 
   export type ProductUpsertWithoutInquiriesInput = {
@@ -42996,6 +47384,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCustomerInquiriesInput = {
@@ -43022,6 +47411,328 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
+  export type OrderChatMessageUpsertWithWhereUniqueWithoutInquiryInput = {
+    where: OrderChatMessageWhereUniqueInput
+    update: XOR<OrderChatMessageUpdateWithoutInquiryInput, OrderChatMessageUncheckedUpdateWithoutInquiryInput>
+    create: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput>
+  }
+
+  export type OrderChatMessageUpdateWithWhereUniqueWithoutInquiryInput = {
+    where: OrderChatMessageWhereUniqueInput
+    data: XOR<OrderChatMessageUpdateWithoutInquiryInput, OrderChatMessageUncheckedUpdateWithoutInquiryInput>
+  }
+
+  export type OrderChatMessageUpdateManyWithWhereWithoutInquiryInput = {
+    where: OrderChatMessageScalarWhereInput
+    data: XOR<OrderChatMessageUpdateManyMutationInput, OrderChatMessageUncheckedUpdateManyWithoutInquiryInput>
+  }
+
+  export type CustomerInquiryCreateWithoutChatMessagesInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutChatMessagesInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutChatMessagesInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutChatMessagesInput, CustomerInquiryUncheckedCreateWithoutChatMessagesInput>
+  }
+
+  export type UserCreateWithoutOrderChatMessagesInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+  }
+
+  export type UserUncheckedCreateWithoutOrderChatMessagesInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+  }
+
+  export type UserCreateOrConnectWithoutOrderChatMessagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutOrderChatMessagesInput, UserUncheckedCreateWithoutOrderChatMessagesInput>
+  }
+
+  export type OrderChatAttachmentCreateWithoutMessageInput = {
+    id: string
+    fileName: string
+    mimeType: string
+    attachmentType: string
+    dataUrl: string
+    createdAt?: Date | string
+  }
+
+  export type OrderChatAttachmentUncheckedCreateWithoutMessageInput = {
+    id: string
+    fileName: string
+    mimeType: string
+    attachmentType: string
+    dataUrl: string
+    createdAt?: Date | string
+  }
+
+  export type OrderChatAttachmentCreateOrConnectWithoutMessageInput = {
+    where: OrderChatAttachmentWhereUniqueInput
+    create: XOR<OrderChatAttachmentCreateWithoutMessageInput, OrderChatAttachmentUncheckedCreateWithoutMessageInput>
+  }
+
+  export type OrderChatAttachmentCreateManyMessageInputEnvelope = {
+    data: OrderChatAttachmentCreateManyMessageInput | OrderChatAttachmentCreateManyMessageInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerInquiryUpsertWithoutChatMessagesInput = {
+    update: XOR<CustomerInquiryUpdateWithoutChatMessagesInput, CustomerInquiryUncheckedUpdateWithoutChatMessagesInput>
+    create: XOR<CustomerInquiryCreateWithoutChatMessagesInput, CustomerInquiryUncheckedCreateWithoutChatMessagesInput>
+    where?: CustomerInquiryWhereInput
+  }
+
+  export type CustomerInquiryUpdateToOneWithWhereWithoutChatMessagesInput = {
+    where?: CustomerInquiryWhereInput
+    data: XOR<CustomerInquiryUpdateWithoutChatMessagesInput, CustomerInquiryUncheckedUpdateWithoutChatMessagesInput>
+  }
+
+  export type CustomerInquiryUpdateWithoutChatMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutChatMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutOrderChatMessagesInput = {
+    update: XOR<UserUpdateWithoutOrderChatMessagesInput, UserUncheckedUpdateWithoutOrderChatMessagesInput>
+    create: XOR<UserCreateWithoutOrderChatMessagesInput, UserUncheckedCreateWithoutOrderChatMessagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutOrderChatMessagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutOrderChatMessagesInput, UserUncheckedUpdateWithoutOrderChatMessagesInput>
+  }
+
+  export type UserUpdateWithoutOrderChatMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOrderChatMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+  }
+
+  export type OrderChatAttachmentUpsertWithWhereUniqueWithoutMessageInput = {
+    where: OrderChatAttachmentWhereUniqueInput
+    update: XOR<OrderChatAttachmentUpdateWithoutMessageInput, OrderChatAttachmentUncheckedUpdateWithoutMessageInput>
+    create: XOR<OrderChatAttachmentCreateWithoutMessageInput, OrderChatAttachmentUncheckedCreateWithoutMessageInput>
+  }
+
+  export type OrderChatAttachmentUpdateWithWhereUniqueWithoutMessageInput = {
+    where: OrderChatAttachmentWhereUniqueInput
+    data: XOR<OrderChatAttachmentUpdateWithoutMessageInput, OrderChatAttachmentUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type OrderChatAttachmentUpdateManyWithWhereWithoutMessageInput = {
+    where: OrderChatAttachmentScalarWhereInput
+    data: XOR<OrderChatAttachmentUpdateManyMutationInput, OrderChatAttachmentUncheckedUpdateManyWithoutMessageInput>
+  }
+
+  export type OrderChatAttachmentScalarWhereInput = {
+    AND?: OrderChatAttachmentScalarWhereInput | OrderChatAttachmentScalarWhereInput[]
+    OR?: OrderChatAttachmentScalarWhereInput[]
+    NOT?: OrderChatAttachmentScalarWhereInput | OrderChatAttachmentScalarWhereInput[]
+    id?: StringFilter<"OrderChatAttachment"> | string
+    messageId?: StringFilter<"OrderChatAttachment"> | string
+    fileName?: StringFilter<"OrderChatAttachment"> | string
+    mimeType?: StringFilter<"OrderChatAttachment"> | string
+    attachmentType?: StringFilter<"OrderChatAttachment"> | string
+    dataUrl?: StringFilter<"OrderChatAttachment"> | string
+    createdAt?: DateTimeFilter<"OrderChatAttachment"> | Date | string
+  }
+
+  export type OrderChatMessageCreateWithoutAttachmentsInput = {
+    id: string
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+    inquiry: CustomerInquiryCreateNestedOneWithoutChatMessagesInput
+    sender?: UserCreateNestedOneWithoutOrderChatMessagesInput
+  }
+
+  export type OrderChatMessageUncheckedCreateWithoutAttachmentsInput = {
+    id: string
+    inquiryId: string
+    senderUserId?: string | null
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+  }
+
+  export type OrderChatMessageCreateOrConnectWithoutAttachmentsInput = {
+    where: OrderChatMessageWhereUniqueInput
+    create: XOR<OrderChatMessageCreateWithoutAttachmentsInput, OrderChatMessageUncheckedCreateWithoutAttachmentsInput>
+  }
+
+  export type OrderChatMessageUpsertWithoutAttachmentsInput = {
+    update: XOR<OrderChatMessageUpdateWithoutAttachmentsInput, OrderChatMessageUncheckedUpdateWithoutAttachmentsInput>
+    create: XOR<OrderChatMessageCreateWithoutAttachmentsInput, OrderChatMessageUncheckedCreateWithoutAttachmentsInput>
+    where?: OrderChatMessageWhereInput
+  }
+
+  export type OrderChatMessageUpdateToOneWithWhereWithoutAttachmentsInput = {
+    where?: OrderChatMessageWhereInput
+    data: XOR<OrderChatMessageUpdateWithoutAttachmentsInput, OrderChatMessageUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type OrderChatMessageUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inquiry?: CustomerInquiryUpdateOneRequiredWithoutChatMessagesNestedInput
+    sender?: UserUpdateOneWithoutOrderChatMessagesNestedInput
+  }
+
+  export type OrderChatMessageUncheckedUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    senderUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductCreateWithoutMaterialsInput = {
@@ -43413,6 +48124,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutStockRequestsRaisedInput = {
@@ -43439,6 +48151,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutStockRequestsRaisedInput = {
@@ -43470,6 +48183,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutStockRequestsCheckedInput = {
@@ -43496,6 +48210,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutStockRequestsCheckedInput = {
@@ -43639,6 +48354,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStockRequestsRaisedInput = {
@@ -43665,6 +48381,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUpsertWithoutStockRequestsCheckedInput = {
@@ -43702,6 +48419,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStockRequestsCheckedInput = {
@@ -43728,6 +48446,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type StockRequestLineUpsertWithWhereUniqueWithoutStockRequestInput = {
@@ -43999,6 +48718,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutDesignRequestedInput = {
@@ -44025,6 +48745,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutDesignRequestedInput = {
@@ -44056,6 +48777,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutDesignAssignedInput = {
@@ -44082,6 +48804,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutDesignAssignedInput = {
@@ -44231,6 +48954,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDesignRequestedInput = {
@@ -44257,6 +48981,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUpsertWithoutDesignAssignedInput = {
@@ -44294,6 +49019,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDesignAssignedInput = {
@@ -44320,6 +49046,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type DesignAssetUpsertWithWhereUniqueWithoutDesignRequestInput = {
@@ -44391,6 +49118,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutDesignAssetsUploadedInput = {
@@ -44417,6 +49145,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutDesignAssetsUploadedInput = {
@@ -44494,6 +49223,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDesignAssetsUploadedInput = {
@@ -44520,6 +49250,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type SalesOrderCreateWithoutPaymentRecordsInput = {
@@ -44666,6 +49397,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutPaymentsRecordedInput = {
@@ -44692,6 +49424,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutPaymentsRecordedInput = {
@@ -44866,6 +49599,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPaymentsRecordedInput = {
@@ -44892,6 +49626,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type SalesOrderCreateWithoutDeliverySchedulesInput = {
@@ -45026,6 +49761,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutDeliveryAssignedInput = {
@@ -45052,6 +49788,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutDeliveryAssignedInput = {
@@ -45083,6 +49820,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutDeliveryConfirmedInput = {
@@ -45109,6 +49847,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutDeliveryConfirmedInput = {
@@ -45271,6 +50010,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeliveryAssignedInput = {
@@ -45297,6 +50037,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUpsertWithoutDeliveryConfirmedInput = {
@@ -45334,6 +50075,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeliveryConfirmedInput = {
@@ -45360,6 +50102,7 @@ export namespace Prisma {
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserCreateManyCompanyInput = {
@@ -45475,6 +50218,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyInput = {
@@ -45501,6 +50245,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCompanyInput = {
@@ -45932,6 +50677,14 @@ export namespace Prisma {
     statusNote?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type OrderChatMessageCreateManySenderInput = {
+    id: string
+    inquiryId: string
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
   }
 
   export type LeadUpdateWithoutCreatedByInput = {
@@ -46454,6 +51207,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateWithoutCustomerUserInput = {
@@ -46467,6 +51221,7 @@ export namespace Prisma {
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateManyWithoutCustomerUserInput = {
@@ -46480,6 +51235,32 @@ export namespace Prisma {
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatMessageUpdateWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inquiry?: CustomerInquiryUpdateOneRequiredWithoutChatMessagesNestedInput
+    attachments?: OrderChatAttachmentUpdateManyWithoutMessageNestedInput
+  }
+
+  export type OrderChatMessageUncheckedUpdateWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attachments?: OrderChatAttachmentUncheckedUpdateManyWithoutMessageNestedInput
+  }
+
+  export type OrderChatMessageUncheckedUpdateManyWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuotationCreateManyLeadInput = {
@@ -47196,6 +51977,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateWithoutProductInput = {
@@ -47209,6 +51991,7 @@ export namespace Prisma {
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateManyWithoutProductInput = {
@@ -47222,6 +52005,76 @@ export namespace Prisma {
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatMessageCreateManyInquiryInput = {
+    id: string
+    senderUserId?: string | null
+    senderRole: string
+    body?: string | null
+    createdAt?: Date | string
+  }
+
+  export type OrderChatMessageUpdateWithoutInquiryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sender?: UserUpdateOneWithoutOrderChatMessagesNestedInput
+    attachments?: OrderChatAttachmentUpdateManyWithoutMessageNestedInput
+  }
+
+  export type OrderChatMessageUncheckedUpdateWithoutInquiryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attachments?: OrderChatAttachmentUncheckedUpdateManyWithoutMessageNestedInput
+  }
+
+  export type OrderChatMessageUncheckedUpdateManyWithoutInquiryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderRole?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatAttachmentCreateManyMessageInput = {
+    id: string
+    fileName: string
+    mimeType: string
+    attachmentType: string
+    dataUrl: string
+    createdAt?: Date | string
+  }
+
+  export type OrderChatAttachmentUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    attachmentType?: StringFieldUpdateOperationsInput | string
+    dataUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatAttachmentUncheckedUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    attachmentType?: StringFieldUpdateOperationsInput | string
+    dataUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderChatAttachmentUncheckedUpdateManyWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    attachmentType?: StringFieldUpdateOperationsInput | string
+    dataUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StockRequestLineCreateManyStockRequestInput = {

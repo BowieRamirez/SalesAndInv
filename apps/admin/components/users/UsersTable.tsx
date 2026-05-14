@@ -2,8 +2,6 @@
 
 import { Fragment, useMemo, useState } from "react"
 import {
-  ChevronLeft,
-  ChevronRight,
   Crown,
   MoreHorizontal,
   Search,
@@ -103,7 +101,7 @@ export function UsersTable({
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("")
   const [roleFilter, setRoleFilter] = useState<string>("")
-  const [pageSize, setPageSize] = useState(10)
+  const [pageSize] = useState(10)
   const [page, setPage] = useState(1)
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
@@ -352,7 +350,7 @@ export function UsersTable({
                                 />
                                 <button
                                   type="submit"
-                                  className="rounded-lg bg-blue-600 px-3 py-2 text-[13px] font-medium text-white transition-colors hover:bg-blue-700"
+                                  className="rounded-lg bg-[#111827] px-3 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
                                 >
                                   Update
                                 </button>
@@ -397,52 +395,46 @@ export function UsersTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-3">
-        <p className="text-[12px] text-slate-500">
-          {filtered.length} {filtered.length === 1 ? "user" : "users"}
-        </p>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-[12px] text-slate-500">
-            <span>Rows per page</span>
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value))
-                setPage(1)
-              }}
-              className="rounded-md border border-slate-200 bg-white px-2 py-1 text-[12px] text-slate-700 outline-none focus:border-slate-400"
-            >
-              {[5, 10, 20, 50].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </div>
-          <span className="text-[12px] text-slate-500">
-            Page {safePage} of {totalPages}
-          </span>
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={safePage === 1}
-              className="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent"
-              aria-label="Previous page"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={safePage === totalPages}
-              className="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent"
-              aria-label="Next page"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
+      <div className="flex items-center justify-center gap-2 border-t border-slate-100 px-5 py-5">
+        <button
+          type="button"
+          onClick={() => setPage(1)}
+          disabled={safePage <= 1}
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="First page"
+        >
+          {"<<"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={safePage <= 1}
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="Previous page"
+        >
+          {"<"}
+        </button>
+        <div className="min-w-[112px] rounded-md border border-[#111827] bg-white px-4 py-2 text-center text-[13px] font-semibold text-[#6b7280] shadow-sm">
+          <span className="rounded-md bg-[#020617] px-2 py-1 text-white">{safePage}</span> of {totalPages}
         </div>
+        <button
+          type="button"
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={safePage >= totalPages}
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="Next page"
+        >
+          {">"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setPage(totalPages)}
+          disabled={safePage >= totalPages}
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
+          aria-label="Last page"
+        >
+          {">>"}       
+        </button>
       </div>
     </section>
   )

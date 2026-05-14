@@ -4,11 +4,13 @@ import {
   formatInquiryWorkflowStatus,
   getInquiryWorkflowStyle,
 } from "@furnitrack/validators"
+import { DamagedMaterialsTable } from "@/components/inventory/DamagedMaterialsTable"
 import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
 import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { ROLE_REDIRECT } from "@/lib/rbac"
+
 
 type InventoryRow = {
   id: string
@@ -393,51 +395,6 @@ function RequestSummary({ rows }: { rows: StockRequestSummaryRow[] }) {
 }
 
 
-function DamagedMaterialsTable({ rows }: { rows: DamagedMaterialRow[] }) {
-  if (rows.length === 0) {
-    return <EmptyState message="Damaged materials from completed returns will appear here." />
-  }
-
-  return (
-    <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
-      <div className="mb-4">
-        <h3 className="text-[18px] font-semibold text-[#111827]">Damaged materials from returns</h3>
-        <p className="mt-2 max-w-[720px] text-[13px] leading-[22px] text-[#6b7280]">
-          These entries are recorded when sales completes a customer return and the product recipe is added back into
-          inventory as damaged materials.
-        </p>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-[13px]">
-          <thead>
-            <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-              <th className="py-3 pr-4 font-medium">Recorded</th>
-              <th className="py-3 pr-4 font-medium">SKU</th>
-              <th className="py-3 pr-4 font-medium">Material</th>
-              <th className="py-3 pr-4 font-medium">Warehouse</th>
-              <th className="py-3 pr-4 font-medium">Qty</th>
-              <th className="py-3 pr-4 font-medium">Source</th>
-              <th className="py-3 font-medium">Reference</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
-                <td className="py-3 pr-4 text-[#111827]">{new Date(row.createdAt).toLocaleString()}</td>
-                <td className="py-3 pr-4 text-[#111827]">{row.sku}</td>
-                <td className="py-3 pr-4 text-[#111827]">{row.itemName}</td>
-                <td className="py-3 pr-4 text-[#6b7280]">{row.warehouseName}</td>
-                <td className="py-3 pr-4 text-[#111827]">{row.quantity}</td>
-                <td className="py-3 pr-4 text-[#6b7280]">{row.projectPurpose ?? row.requesterName ?? "Customer return"}</td>
-                <td className="py-3 text-[#6b7280]">{row.referenceNumber ?? "Not set"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  )
-}
 
 function WorkflowBadge({ status }: { status: string }) {
   return (

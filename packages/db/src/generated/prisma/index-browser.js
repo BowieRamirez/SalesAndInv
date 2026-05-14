@@ -305,6 +305,25 @@ exports.Prisma.CustomerInquiryScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.OrderChatMessageScalarFieldEnum = {
+  id: 'id',
+  inquiryId: 'inquiryId',
+  senderUserId: 'senderUserId',
+  senderRole: 'senderRole',
+  body: 'body',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.OrderChatAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  attachmentType: 'attachmentType',
+  dataUrl: 'dataUrl',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ProductMaterialScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
@@ -426,6 +445,13 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   companyCodeSnapshot: 'companyCodeSnapshot',
   metadata: 'metadata',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.StorefrontCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -673,6 +699,8 @@ exports.Prisma.ModelName = {
   StockItem: 'StockItem',
   Product: 'Product',
   CustomerInquiry: 'CustomerInquiry',
+  OrderChatMessage: 'OrderChatMessage',
+  OrderChatAttachment: 'OrderChatAttachment',
   ProductMaterial: 'ProductMaterial',
   StockMovement: 'StockMovement',
   StockRequest: 'StockRequest',
@@ -682,7 +710,8 @@ exports.Prisma.ModelName = {
   PaymentRecord: 'PaymentRecord',
   DeliverySchedule: 'DeliverySchedule',
   ApprovalHistory: 'ApprovalHistory',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  StorefrontCategory: 'StorefrontCategory'
 };
 
 /**

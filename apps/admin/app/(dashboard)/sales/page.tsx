@@ -9,6 +9,7 @@ import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { CustomerReturnsTable } from "@/components/sales/CustomerReturnsTable"
+import { SalesOrdersTable } from "@/components/sales/SalesOrdersTable"
 
 type SalesPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -92,30 +93,6 @@ function formatPeso(value: number) {
   }).format(value)
 }
 
-function SalesOrderRow({ inquiry }: { inquiry: InquiryWorkflowRow }) {
-  return (
-    <tr className="border-b border-[#eef2f7] last:border-b-0">
-      <td className="py-4 pr-4 text-[#111827]">{inquiry.productName}</td>
-      <td className="py-4 pr-4 text-[#4b5563]">
-        {inquiry.customerName}
-        <br />
-        <span className="text-[11px] text-[#94a3b8]">{inquiry.customerEmail}</span>
-      </td>
-      <td className="py-4 pr-4 text-[#111827] whitespace-nowrap">{formatPeso(inquiry.total)}</td>
-      <td className="py-4 pr-4">
-        <WorkflowBadge status={inquiry.workflowStatus} />
-      </td>
-      <td className="py-4 text-right">
-        <Link
-          href={`/sales/orders/${inquiry.id}?tab=orders`}
-          className="rounded-lg bg-[#111827] px-3 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#111827]/90"
-        >
-          View order
-        </Link>
-      </td>
-    </tr>
-  )
-}
 
 
 
@@ -381,29 +358,7 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
       )}
 
       {activeTab === "orders" && (
-        <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
-          <div className="mb-5">
-            <h2 className="text-[20px] font-semibold text-[#111827]">Orders in the new approval flow</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-[13px]">
-              <thead>
-                <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-                  <th className="py-3 pr-4 font-medium">Product</th>
-                  <th className="py-3 pr-4 font-medium">Customer</th>
-                  <th className="py-3 pr-4 font-medium">Quotation total</th>
-                  <th className="py-3 pr-4 font-medium">Current stage</th>
-                  <th className="py-3 font-medium text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {inquiries.map((inquiry) => (
-                  <SalesOrderRow key={inquiry.id} inquiry={inquiry} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+        <SalesOrdersTable inquiries={inquiries} />
       )}
 
       {activeTab === "chats" && (

@@ -12,12 +12,20 @@ type Material = {
 
 type MaterialSelectorProps = {
   materials: Material[]
+  defaultSelectedIds?: string[]
+  defaultQuantities?: Record<string, string>
+  defaultNotes?: Record<string, string>
 }
 
-export function MaterialSelector({ materials }: MaterialSelectorProps) {
+export function MaterialSelector({
+  materials,
+  defaultSelectedIds = [],
+  defaultQuantities = {},
+  defaultNotes = {},
+}: MaterialSelectorProps) {
   const [search, setSearch] = useState("")
   const [showSelectedOnly, setShowSelectedOnly] = useState(false)
-  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [selectedIds, setSelectedIds] = useState<string[]>(defaultSelectedIds)
   const deferredSearch = useDeferredValue(search)
 
   const visibleMaterials = useMemo(() => {
@@ -114,6 +122,7 @@ export function MaterialSelector({ materials }: MaterialSelectorProps) {
                   <td className="px-4 py-4">
                     <input
                       name={`quantityDisplay:${material.id}`}
+                      defaultValue={defaultQuantities[material.id] ?? ""}
                       placeholder={`e.g. 2 ${material.unitOfMeasure}`}
                       className="w-full rounded-xl border border-[#dbe4f0] bg-white px-3 py-2.5 text-[13px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
                     />
@@ -121,6 +130,7 @@ export function MaterialSelector({ materials }: MaterialSelectorProps) {
                   <td className="px-4 py-4">
                     <input
                       name={`notes:${material.id}`}
+                      defaultValue={defaultNotes[material.id] ?? ""}
                       placeholder="Optional usage note"
                       className="w-full rounded-xl border border-[#dbe4f0] bg-white px-3 py-2.5 text-[13px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
                     />
