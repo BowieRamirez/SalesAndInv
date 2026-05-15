@@ -27,9 +27,8 @@ const AUTH_ROLE_CASE_SQL = Prisma.sql`
   CASE
     WHEN auth.role IN ('ADMIN', 'ANALYTICS', 'ADMIN_MANAGEMENT') THEN 'ADMIN_MANAGEMENT'
     WHEN auth.role = 'SALES' THEN 'SALES'
-    WHEN auth.role = 'INVENTORY' THEN 'INVENTORY'
+    WHEN auth.role IN ('INVENTORY', 'OPERATIONS_DESIGN') THEN 'OPERATIONS_DESIGN'
     WHEN auth.role = 'ACCOUNTING' THEN 'ACCOUNTING'
-    WHEN auth.role = 'OPERATIONS_DESIGN' THEN 'OPERATIONS_DESIGN'
     ELSE 'CLIENT'
   END
 `
@@ -65,8 +64,7 @@ async function getManagedAccounts() {
         WHEN 'SALES' THEN 1
         WHEN 'OPERATIONS_DESIGN' THEN 2
         WHEN 'ACCOUNTING' THEN 3
-        WHEN 'INVENTORY' THEN 4
-        ELSE 5
+        ELSE 4
       END,
       LOWER(auth.email) ASC
   `)

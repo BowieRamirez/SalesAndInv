@@ -70,20 +70,6 @@ const navConfigs: Record<AppRole, NavConfig> = {
     allowedPaths: ["/sales"],
     defaultHref: "/sales?tab=lead",
   },
-  INVENTORY: {
-    links: [
-      { name: "Warehouse Locations", href: "/inventory?tab=locations", icon: Box, tab: "locations" },
-      { name: "All Stocks", href: "/inventory?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
-      { name: "Reserved Materials", href: "/inventory?tab=reserved", icon: CheckSquare, tab: "reserved" },
-      { name: "Damaged Materials", href: "/inventory?tab=damaged-materials", icon: History, tab: "damaged-materials" },
-      { name: "Approvals", href: "/inventory?tab=approvals", icon: CheckSquare, tab: "approvals" },
-      { name: "Audit Logs", href: "/inventory?tab=audit", icon: History, tab: "audit" },
-    ],
-    roleLabel: "Inventory",
-    color: "bg-blue-500",
-    allowedPaths: ["/inventory"],
-    defaultHref: "/inventory?tab=all-stocks",
-  },
   ACCOUNTING: {
     links: [
       { name: "Approvals", href: "/accounting?tab=approvals", icon: CheckSquare, tab: "approvals" },
@@ -98,16 +84,21 @@ const navConfigs: Record<AppRole, NavConfig> = {
   },
   OPERATIONS_DESIGN: {
     links: [
-      { name: "New Products", href: "/operations?tab=new-products", icon: FileEdit, tab: "new-products" },
       { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
       { name: "Storefront Filters", href: "/operations?tab=storefront-filters", icon: SlidersHorizontal, tab: "storefront-filters" },
       { name: "Approvals", href: "/operations?tab=approvals", icon: CheckSquare, tab: "approvals" },
       { name: "Delivery Schedule", href: "/operations?tab=delivery", icon: Truck, tab: "delivery" },
+      { name: "Warehouse Locations", href: "/operations?tab=locations", icon: Box, tab: "locations" },
+      { name: "All Stocks", href: "/operations?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
+      { name: "Reserved Materials", href: "/operations?tab=reserved", icon: CheckSquare, tab: "reserved" },
+      { name: "Damaged Materials", href: "/operations?tab=damaged-materials", icon: History, tab: "damaged-materials" },
+      { name: "Inventory Approvals", href: "/operations?tab=inv-approvals", icon: CheckSquare, tab: "inv-approvals" },
+      { name: "Audit Logs", href: "/operations?tab=audit", icon: History, tab: "audit" },
     ],
     roleLabel: "Operations / Design",
     color: "bg-rose-500",
     allowedPaths: ["/operations"],
-    defaultHref: "/operations?tab=new-products",
+    defaultHref: "/operations?tab=finished-products",
   },
   CLIENT: {
     links: [],

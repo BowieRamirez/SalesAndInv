@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { prisma, type Prisma } from "@furnitrack/db"
+import { prisma, Prisma } from "@furnitrack/db"
 import {
   formatInquiryWorkflowStatus,
   getInquiryWorkflowStyle,
@@ -9,6 +9,9 @@ import { FinishedProductsManager } from "@/components/operations/FinishedProduct
 import { ImageDropField } from "@/components/operations/ImageDropField"
 import { StorefrontFilterManager } from "@/components/operations/StorefrontFilterManager"
 import { MaterialSelector } from "@/components/operations/MaterialSelector"
+import { DamagedMaterialsTable } from "@/components/inventory/DamagedMaterialsTable"
+import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
+import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { OPERATIONS_DEFAULT_TAB, OPERATIONS_PRODUCT_CATEGORIES } from "@/lib/operations-products"
@@ -42,7 +45,71 @@ type ProductCardData = {
   }>
 }
 
-const OPERATIONS_TABS = new Set(["design", "new-products", "finished-products", "storefront-filters", "approvals", "delivery"])
+type InventoryRow = {
+  id: string
+  sku: string
+  itemName: string
+  itemType: string
+  warehouseId: string
+  warehouseName: string
+  availableQty: number
+  reservedQty: number
+  reorderThreshold: number
+  unitOfMeasure: string
+}
+
+type WarehouseSummaryRow = {
+  id: string
+  code: string
+  name: string
+  address: string
+  itemCount: number
+}
+
+type StockRequestSummaryRow = {
+  status: string
+  count: number
+}
+
+type DetailedAuditLog = {
+  id: string
+  action: string
+  sku: string | null
+  itemName: string | null
+  quantity: number | null
+  actorName: string | null
+  createdAt: Date
+}
+
+type DamagedMaterialRow = {
+  id: string
+  stockItemId: string
+  sku: string
+  itemName: string
+  warehouseName: string
+  quantity: number
+  requesterName: string | null
+  projectPurpose: string | null
+  referenceNumber: string | null
+  createdAt: Date
+}
+
+type ReservedMaterialRow = {
+  stockItemId: string
+  sku: string
+  itemName: string
+  warehouseName: string
+  unitOfMeasure: string
+  reservedQty: number
+  orderCount: number
+  orderNumbers: string
+}
+
+const OPERATIONS_TABS = new Set([
+  "design", "new-products", "finished-products", "storefront-filters",
+  "approvals", "delivery",
+  "locations", "all-stocks", "reserved", "damaged-materials", "inv-approvals", "audit",
+])
 
 function getSearchValue(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value
@@ -503,6 +570,178 @@ async function getOperationsWorkspaceData() {
   }
 }
 
+async function getInventoryRows() {
+  return prisma.$queryRaw<InventoryRow[]>(Prisma.sql`
+    SELECT
+      s.id,
+      s.sku,
+      s."itemName",
+      COALESCE(s."itemType"::text, 'RAW_MATERIAL') AS "itemType",
+      s."warehouseId",
+      w.name AS "warehouseName",
+      s."availableQty",
+      s."reservedQty",
+      s."reorderThreshold",
+      s."unitOfMeasure"
+    FROM public.stock_items s
+    INNER JOIN public.warehouses w
+      ON w.id = s."warehouseId"
+    ORDER BY s."itemType" DESC, s."itemName" ASC
+  `)
+}
+
+async function getWarehouseSummaries() {
+  return prisma.$queryRaw<WarehouseSummaryRow[]>(Prisma.sql`
+    SELECT
+      w.id,
+      w.code,
+      w.name,
+      w.address,
+      COUNT(s.id)::int AS "itemCount"
+    FROM public.warehouses w
+    LEFT JOIN public.stock_items s
+      ON s."warehouseId" = w.id
+    GROUP BY w.id, w.code, w.name, w.address
+    ORDER BY w.name ASC
+  `)
+}
+
+async function getStockRequestSummaries() {
+  return prisma.$queryRaw<StockRequestSummaryRow[]>(Prisma.sql`
+    SELECT
+      status::text AS status,
+      COUNT(*)::int AS count
+    FROM public.stock_requests
+    GROUP BY status
+    ORDER BY status
+  `)
+}
+
+async function getAuditLogs() {
+  return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
+    SELECT
+      a.id,
+      COALESCE(a.metadata->>'auditLabel', a.action::text) AS action,
+      a.metadata->>'sku' AS sku,
+      a.metadata->>'itemName' AS "itemName",
+      CAST(a.metadata->>'quantity' AS INTEGER) AS quantity,
+      u.name AS "actorName",
+      a."createdAt"
+    FROM public.audit_logs a
+    LEFT JOIN public.users u ON u.id = a."actorId"
+    ORDER BY a."createdAt" DESC
+    LIMIT 200
+  `)
+}
+
+async function getDamagedMaterialRows() {
+  return prisma.$queryRaw<DamagedMaterialRow[]>(Prisma.sql`
+    SELECT
+      sm.id,
+      sm."stockItemId",
+      si.sku,
+      si."itemName",
+      w.name AS "warehouseName",
+      sm.quantity,
+      sm."requesterName",
+      sm."projectPurpose",
+      sm."referenceNumber",
+      sm."createdAt"
+    FROM public.stock_movements sm
+    INNER JOIN public.stock_items si
+      ON si.id = sm."stockItemId"
+    INNER JOIN public.warehouses w
+      ON w.id = si."warehouseId"
+    WHERE sm.type = 'DAMAGE'::"StockMovementType"
+    ORDER BY sm."createdAt" DESC
+  `)
+}
+
+async function getReservedMaterialRows() {
+  return prisma.$queryRaw<ReservedMaterialRow[]>(Prisma.sql`
+    WITH active_stock_request_reservations AS (
+      SELECT
+        si.id AS "stockItemId",
+        si.sku,
+        si."itemName",
+        w.name AS "warehouseName",
+        si."unitOfMeasure",
+        COALESCE(SUM(srl."quantityApproved"), 0)::int AS "reservedQty",
+        COUNT(DISTINCT so.id)::int AS "orderCount",
+        STRING_AGG(DISTINCT so."soNumber", ', ' ORDER BY so."soNumber") AS "orderNumbers"
+      FROM public.stock_request_line_items srl
+      INNER JOIN public.stock_requests sr
+        ON sr.id = srl."stockRequestId"
+      INNER JOIN public.sales_orders so
+        ON so.id = sr."salesOrderId"
+      INNER JOIN public.stock_items si
+        ON si.id = srl."stockItemId"
+      INNER JOIN public.warehouses w
+        ON w.id = si."warehouseId"
+      WHERE srl."quantityApproved" > 0
+        AND sr.status IN ('APPROVED'::"InventoryRequestStatus", 'PARTIALLY_APPROVED'::"InventoryRequestStatus")
+        AND so.status NOT IN ('DELIVERED'::"SalesOrderStatus", 'CANCELLED'::"SalesOrderStatus")
+      GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure"
+    ),
+    active_accounting_reservations AS (
+      SELECT
+        si.id AS "stockItemId",
+        si.sku,
+        si."itemName",
+        w.name AS "warehouseName",
+        si."unitOfMeasure",
+        COALESCE(SUM(sm.quantity), 0)::int AS "reservedQty",
+        COUNT(DISTINCT sm."referenceNumber")::int AS "orderCount",
+        STRING_AGG(
+          DISTINCT COALESCE(p.name || ' - ' || ci."customerName", sm."referenceNumber"),
+          ', '
+          ORDER BY COALESCE(p.name || ' - ' || ci."customerName", sm."referenceNumber")
+        ) AS "orderNumbers"
+      FROM public.stock_movements sm
+      INNER JOIN public.stock_items si
+        ON si.id = sm."stockItemId"
+      INNER JOIN public.warehouses w
+        ON w.id = si."warehouseId"
+      LEFT JOIN public.customer_inquiries ci
+        ON ci.id = sm."referenceNumber"
+      LEFT JOIN public.products p
+        ON p.id = ci."productId"
+      WHERE sm.type = 'ADJUSTMENT'::"StockMovementType"
+        AND sm."projectPurpose" = 'Reserved for Build Order'
+        AND NOT EXISTS (
+          SELECT 1
+          FROM public.stock_movements consumed
+          WHERE consumed."referenceNumber" = sm."referenceNumber"
+            AND consumed."stockItemId" = sm."stockItemId"
+            AND consumed."projectPurpose" = 'Build Order'
+            AND consumed.type = 'OUT'::"StockMovementType"
+        )
+      GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure"
+    ),
+    combined AS (
+      SELECT * FROM active_stock_request_reservations
+      UNION ALL
+      SELECT * FROM active_accounting_reservations
+    )
+    SELECT
+      si.id AS "stockItemId",
+      si.sku,
+      si."itemName",
+      w.name AS "warehouseName",
+      si."unitOfMeasure",
+      COALESCE(SUM(combined."reservedQty"), 0)::int AS "reservedQty",
+      COALESCE(SUM(combined."orderCount"), 0)::int AS "orderCount",
+      STRING_AGG(DISTINCT combined."orderNumbers", ', ' ORDER BY combined."orderNumbers") AS "orderNumbers"
+    FROM combined
+    INNER JOIN public.stock_items si
+      ON si.id = combined."stockItemId"
+    INNER JOIN public.warehouses w
+      ON w.id = si."warehouseId"
+    GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure"
+    ORDER BY "reservedQty" DESC, si."itemName" ASC
+  `)
+}
+
 export const dynamic = "force-dynamic"
 
 export default async function OperationsDashboard({ searchParams }: OperationsPageProps) {
@@ -516,13 +755,32 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
   const activeTab = resolveTab(resolvedSearchParams.tab)
   const message = getSearchValue(resolvedSearchParams.message)
   const tone = getSearchValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
-  const [{ warehouses, rawMaterials, finishedProducts, storefrontCategories }, operationsInquiries] = await Promise.all([
+  const [
+    { warehouses, rawMaterials, finishedProducts, storefrontCategories },
+    operationsInquiries,
+    inventoryRows,
+    warehouseSummaries,
+    requestSummary,
+    auditSummary,
+    inventoryInquiries,
+    damagedMaterials,
+    reservedMaterials,
+  ] = await Promise.all([
     getOperationsWorkspaceData(),
     getInquiryWorkflowRows(["GETTING_READY_FOR_BUILDING", "READY_FOR_SHIPPING"]),
+    getInventoryRows(),
+    getWarehouseSummaries(),
+    getStockRequestSummaries(),
+    getAuditLogs(),
+    getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
+    getDamagedMaterialRows(),
+    getReservedMaterialRows(),
   ])
   const publishedProducts = finishedProducts.filter((product) => product.isPublished).length
   const buildingQueue = operationsInquiries.filter((inquiry) => inquiry.workflowStatus === "GETTING_READY_FOR_BUILDING")
   const shippingQueue = operationsInquiries.filter((inquiry) => inquiry.workflowStatus === "READY_FOR_SHIPPING")
+  const rawMaterialsInv = inventoryRows.filter((row) => row.itemType !== "FINISHED_PRODUCT")
+  const lowStockItems = rawMaterialsInv.filter((row) => row.availableQty <= row.reorderThreshold)
 
   return (
     <main className="min-h-screen overflow-auto bg-[#fcfcfc] p-8">
@@ -543,7 +801,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           </div>
         ) : null}
 
-        {(activeTab === "new-products" || activeTab === "finished-products") && (
+        {activeTab === "finished-products" && (
           <div className="grid gap-5 md:grid-cols-3">
             <StatCard
               label="Catalog Products"
@@ -560,211 +818,8 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           </div>
         )}
 
-        {activeTab === "new-products" && (
-          <div className="space-y-6">
-            <section className="rounded-[28px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
-              <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-                <div>
-                  <h2 className="text-[22px] font-semibold text-[#111827]">Create finished product</h2>
-                </div>
-                <div className="rounded-2xl border border-[#dbe4f0] bg-[#f8fafc] px-4 py-3 text-[13px] text-[#475569]">
-                  Neon `products` and `stock_items`
-                </div>
-              </div>
-
-              {rawMaterials.length === 0 ? (
-                <div className="mt-6 rounded-2xl border border-dashed border-[#fca5a5] bg-[#fff7f7] p-6 text-[14px] text-[#b91c1c]">
-                  No raw materials exist in inventory yet, so finished products cannot be created. Add the needed
-                  materials in Inventory first.
-                </div>
-              ) : null}
-
-              <form method="post" action="/api/admin/operations/products/create" className="mt-6 space-y-6">
-                <div className="grid gap-4 xl:grid-cols-2">
-                  <div className="grid gap-4 rounded-3xl border border-[#e2e8f0] bg-[#fbfdff] p-5">
-                    <div>
-                      <h3 className="text-[14px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">
-                        Catalog details
-                      </h3>
-                    </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Product name</span>
-                        <input
-                          name="name"
-                          placeholder="Executive desk"
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Storefront category</span>
-                        <select
-                          name="category"
-                          defaultValue={OPERATIONS_PRODUCT_CATEGORIES[0]}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        >
-                          {OPERATIONS_PRODUCT_CATEGORIES.map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Warehouse</span>
-                        <select
-                          name="warehouseId"
-                          defaultValue={warehouses[0]?.id ?? ""}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        >
-                          {warehouses.map((warehouse) => (
-                            <option key={warehouse.id} value={warehouse.id}>
-                              {warehouse.name} ({warehouse.code})
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Price</span>
-                        <input
-                          name="price"
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="15000"
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="md:col-span-2 grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Product image</span>
-                        <ImageDropField name="imageUrl" />
-                      </label>
-                      <label className="md:col-span-2 grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Description</span>
-                        <textarea
-                          name="description"
-                          rows={5}
-                          placeholder="Describe the finished product as it should appear in the storefront."
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 rounded-3xl border border-[#e2e8f0] bg-[#fbfdff] p-5">
-                    <div>
-                      <h3 className="text-[14px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">
-                        Stock and storefront settings
-                      </h3>
-                    </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Opening stock</span>
-                        <input
-                          name="openingQty"
-                          type="number"
-                          min="0"
-                          defaultValue={0}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Reorder threshold</span>
-                        <input
-                          name="reorderThreshold"
-                          type="number"
-                          min="0"
-                          defaultValue={10}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Width (cm)</span>
-                        <input
-                          name="widthCm"
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          defaultValue={0}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Depth (cm)</span>
-                        <input
-                          name="depthCm"
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          defaultValue={0}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Height (cm)</span>
-                        <input
-                          name="heightCm"
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          defaultValue={0}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Weight (kg)</span>
-                        <input
-                          name="weightKg"
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          defaultValue={0}
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Unit of measure</span>
-                        <input
-                          name="unitOfMeasure"
-                          defaultValue="pcs"
-                          placeholder="pcs"
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#94a3b8]">Badge</span>
-                        <input
-                          name="badge"
-                          placeholder="SALE, HOT, BEST_SELLER"
-                          className="w-full rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a]"
-                        />
-                      </label>
-                    </div>
-                    <label className="inline-flex items-center gap-3 rounded-2xl border border-[#dbe4f0] bg-white px-4 py-3 text-[14px] text-[#334155]">
-                      <input type="checkbox" name="isPublished" defaultChecked className="h-4 w-4" />
-                      Publish this product to the customer storefront immediately.
-                    </label>
-                  </div>
-                </div>
-
-                <MaterialSelector materials={rawMaterials} />
-
-                <div className="flex items-center justify-between gap-4 rounded-3xl border border-[#e2e8f0] bg-[#fbfdff] px-5 py-4">
-                  <button
-                    type="submit"
-                    disabled={rawMaterials.length === 0}
-                    className="rounded-2xl bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#cbd5e1]"
-                  >
-                    Create finished product
-                  </button>
-                </div>
-              </form>
-            </section>
-          </div>
-        )}
-
         {activeTab === "finished-products" && (
-          <FinishedProductsManager products={finishedProducts} rawMaterials={rawMaterials} />
+          <FinishedProductsManager products={finishedProducts} rawMaterials={rawMaterials} warehouses={warehouses} categories={OPERATIONS_PRODUCT_CATEGORIES} />
         )}
 
         {activeTab === "storefront-filters" && (
@@ -838,6 +893,232 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           </div>
         )}
 
+        {activeTab === "locations" && (
+          <div className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-[20px] font-semibold text-[#111827]">Warehouse Locations</h2>
+            </div>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {[{label:"Warehouses",value:warehouseSummaries.length},{label:"Tracked Materials",value:rawMaterialsInv.length},{label:"Low Stock Items",value:lowStockItems.length}].map(r=>(
+                <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+                  <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
+                  <p className="mt-2 text-[28px] font-semibold text-[#111827]">{r.value}</p>
+                </div>
+              ))}
+            </div>
+            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Add new warehouse location</h3>
+              <form method="post" action="/api/admin/inventory/warehouses/create" className="mt-5 grid gap-3 lg:grid-cols-[0.7fr_1fr_1.4fr_auto]">
+                <input name="code" placeholder="Warehouse code" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <input name="name" placeholder="Warehouse name" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <input name="address" placeholder="Address or location" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <button type="submit" className="rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90">Add warehouse</button>
+              </form>
+            </section>
+            {warehouseSummaries.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-[#d1d5db] bg-white p-10 text-center text-[13px] text-[#6b7280]">No warehouses have been configured yet.</div>
+            ) : (
+              <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-left text-[13px]">
+                    <thead><tr className="border-b border-[#e5e7eb] text-[#6b7280]">
+                      <th className="py-3 pr-4 font-medium">Code</th>
+                      <th className="py-3 pr-4 font-medium">Warehouse</th>
+                      <th className="py-3 pr-4 font-medium">Address</th>
+                      <th className="py-3 font-medium">Tracked Items</th>
+                    </tr></thead>
+                    <tbody>{warehouseSummaries.map(row=>(
+                      <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
+                        <td className="py-3 pr-4 text-[#111827]">{row.code}</td>
+                        <td className="py-3 pr-4 text-[#111827]">{row.name}</td>
+                        <td className="py-3 pr-4 text-[#6b7280]">{row.address}</td>
+                        <td className="py-3 text-[#111827]">{row.itemCount}</td>
+                      </tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+          </div>
+        )}
+
+        {activeTab === "all-stocks" && (
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {[{label:"Raw Materials",value:rawMaterialsInv.length},{label:"Low Stock",value:lowStockItems.length},{label:"Warehouses",value:warehouseSummaries.length}].map(r=>(
+                <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+                  <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
+                  <p className="mt-2 text-[28px] font-semibold text-[#111827]">{r.value}</p>
+                </div>
+              ))}
+            </div>
+            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Add new raw material</h3>
+              <form method="post" action="/api/admin/inventory/raw-materials/create" className="mt-5 grid gap-3 xl:grid-cols-[1.2fr_1.1fr_1fr_0.9fr]">
+                <input name="itemName" placeholder="Material name" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <input name="sku" placeholder="SKU (optional auto-generate)" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <select name="warehouseId" defaultValue="" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]">
+                  <option value="" disabled>Select warehouse</option>
+                  {warehouseSummaries.map(w=>(<option key={w.id} value={w.id}>{w.name}</option>))}
+                </select>
+                <input name="unitOfMeasure" defaultValue="pcs" placeholder="Unit" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <input name="reorderThreshold" type="number" min="0" defaultValue="10" placeholder="Reorder threshold" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <input name="openingQty" type="number" min="0" defaultValue="0" placeholder="Opening stock" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                <input name="referenceNumber" placeholder="Reference number (optional)" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] xl:col-span-2" />
+                <textarea name="description" placeholder="Description (optional)" className="min-h-[96px] rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] xl:col-span-3" />
+                <button type="submit" className="rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 xl:self-stretch">Add raw material</button>
+              </form>
+            </section>
+            <RawMaterialsManager rows={rawMaterialsInv} />
+          </div>
+        )}
+
+        {activeTab === "reserved" && (
+          <div className="space-y-6">
+            <div className="mb-6"><h2 className="text-[20px] font-semibold text-[#111827]">Reserved Materials From Orders</h2></div>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {[{label:"Reserved Material Types",value:reservedMaterials.length},{label:"Reserved Units",value:reservedMaterials.reduce((t,r)=>t+r.reservedQty,0)},{label:"Linked Orders",value:reservedMaterials.reduce((t,r)=>t+r.orderCount,0)}].map(r=>(
+                <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+                  <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
+                  <p className="mt-2 text-[28px] font-semibold text-[#111827]">{r.value}</p>
+                </div>
+              ))}
+            </div>
+            {reservedMaterials.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-[#d1d5db] bg-white p-10 text-center text-[13px] text-[#6b7280]">No materials are currently reserved for active orders.</div>
+            ) : (
+              <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-left text-[13px]">
+                    <thead><tr className="border-b border-[#e5e7eb] text-[#6b7280]">
+                      <th className="py-3 pr-4 font-medium">SKU</th><th className="py-3 pr-4 font-medium">Material</th>
+                      <th className="py-3 pr-4 font-medium">Warehouse</th><th className="py-3 pr-4 font-medium">Reserved</th>
+                      <th className="py-3 pr-4 font-medium">Orders</th><th className="py-3 font-medium">Order Numbers</th>
+                    </tr></thead>
+                    <tbody>{reservedMaterials.map(row=>(
+                      <tr key={row.stockItemId} className="border-b border-[#f3f4f6] last:border-b-0">
+                        <td className="py-3 pr-4 text-[#111827]">{row.sku}</td>
+                        <td className="py-3 pr-4 text-[#111827]">{row.itemName}</td>
+                        <td className="py-3 pr-4 text-[#6b7280]">{row.warehouseName}</td>
+                        <td className="py-3 pr-4 text-[#111827]">{row.reservedQty} {row.unitOfMeasure}</td>
+                        <td className="py-3 pr-4 text-[#111827]">{row.orderCount}</td>
+                        <td className="py-3 text-[#6b7280]">{row.orderNumbers}</td>
+                      </tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+          </div>
+        )}
+
+        {activeTab === "damaged-materials" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {[
+                {label:"Damaged Entries",value:damagedMaterials.length},
+                {label:"Unique Materials",value:new Set(damagedMaterials.map(r=>r.stockItemId)).size},
+                {label:"Return References",value:new Set(damagedMaterials.map(r=>r.referenceNumber).filter(Boolean)).size},
+              ].map(r=>(
+                <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+                  <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
+                  <p className="mt-2 text-[28px] font-semibold text-[#111827]">{r.value}</p>
+                </div>
+              ))}
+            </div>
+            <DamagedMaterialsTable rows={damagedMaterials} />
+          </div>
+        )}
+
+        {activeTab === "inv-approvals" && (
+          <div className="space-y-6">
+            <div className="mb-6"><h2 className="text-[20px] font-semibold text-[#111827]">Inventory Approval — Order Stock Check</h2></div>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {[
+                {label:"Orders Waiting",value:inventoryInquiries.length},
+                {label:"Low Stock Items",value:lowStockItems.length},
+                {label:"Stock Request Logs",value:requestSummary.reduce((t,r)=>t+r.count,0)},
+              ].map(r=>(
+                <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+                  <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
+                  <p className="mt-2 text-[28px] font-semibold text-[#111827]">{r.value}</p>
+                </div>
+              ))}
+            </div>
+            {requestSummary.length > 0 && (
+              <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-left text-[13px]">
+                    <thead><tr className="border-b border-[#e5e7eb] text-[#6b7280]">
+                      <th className="py-3 pr-4 font-medium">Request Status</th><th className="py-3 font-medium">Count</th>
+                    </tr></thead>
+                    <tbody>{requestSummary.map(row=>(
+                      <tr key={row.status} className="border-b border-[#f3f4f6] last:border-b-0">
+                        <td className="py-3 pr-4 text-[#111827]">{row.status.replaceAll("_"," ")}</td>
+                        <td className="py-3 text-[#111827]">{row.count}</td>
+                      </tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+              <div className="mb-5">
+                <h2 className="text-[20px] font-semibold text-[#111827]">Customer orders waiting for stock confirmation</h2>
+                <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
+                  Sales has already checked these orders. Approve them here once material availability is confirmed so accounting can continue with payment processing.
+                </p>
+              </div>
+              {inventoryInquiries.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-[#d1d5db] bg-white p-10 text-center text-[13px] text-[#6b7280]">No customer orders are currently waiting on inventory approval.</div>
+              ) : (
+                <div className="space-y-4">
+                  {inventoryInquiries.map(inquiry=>(
+                    <article key={inquiry.id} className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-5">
+                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                        <div>
+                          <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Material approval request</p>
+                          <h3 className="mt-1 text-[20px] font-semibold text-[#111827]">{inquiry.productName}</h3>
+                          <p className="mt-2 text-[13px] text-[#6b7280]">{inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}</p>
+                          <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
+                          {inquiry.workflowNote ? (
+                            <p className="mt-3 rounded-xl bg-white px-4 py-3 text-[13px] text-[#4b5563]">Latest note: {inquiry.workflowNote}</p>
+                          ) : null}
+                        </div>
+                        <div className="flex flex-col items-start gap-3 text-[12px] text-[#6b7280] lg:items-end">
+                          <span className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(inquiry.workflowStatus)}`}>
+                            {formatInquiryWorkflowStatus(inquiry.workflowStatus)}
+                          </span>
+                          <div>
+                            <p>Created {new Date(inquiry.createdAt).toLocaleDateString()}</p>
+                            <p className="mt-1">Updated {new Date(inquiry.updatedAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <form method="post" action="/api/admin/approvals/inventory" className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+                        <input type="hidden" name="inquiryId" value={inquiry.id} />
+                        <label className="block">
+                          <span className="mb-2 block text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Inventory approval note</span>
+                          <input name="statusNote" defaultValue={inquiry.workflowNote ?? ""} placeholder="Confirm stock readiness for accounting" className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                        </label>
+                        <div className="flex items-end">
+                          <button type="submit" className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90">Approve materials</button>
+                        </div>
+                      </form>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        )}
+
+        {activeTab === "audit" && (
+          <div className="space-y-6">
+            <div className="mb-6"><h2 className="text-[20px] font-semibold text-[#111827]">Audit Logs</h2></div>
+            <AuditLogsTable rows={auditSummary} />
+          </div>
+        )}
 
       </div>
     </main>

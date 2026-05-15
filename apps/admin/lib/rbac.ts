@@ -1,7 +1,6 @@
 export const APP_ROLES = [
   "ADMIN_MANAGEMENT",
   "SALES",
-  "INVENTORY",
   "ACCOUNTING",
   "OPERATIONS_DESIGN",
   "CLIENT",
@@ -12,6 +11,7 @@ export type AppRole = (typeof APP_ROLES)[number]
 const LEGACY_ROLE_ALIASES: Record<string, AppRole> = {
   ADMIN: "ADMIN_MANAGEMENT",
   ANALYTICS: "ADMIN_MANAGEMENT",
+  INVENTORY: "OPERATIONS_DESIGN",
 }
 
 export function normalizeAppRole(role?: string | null): AppRole {
@@ -31,7 +31,6 @@ export function normalizeAppRole(role?: string | null): AppRole {
 export const ROLE_REDIRECT: Record<AppRole, string> = {
   ADMIN_MANAGEMENT: "/",
   SALES: "/sales",
-  INVENTORY: "/inventory",
   ACCOUNTING: "/accounting",
   OPERATIONS_DESIGN: "/operations",
   CLIENT: "/",
@@ -40,7 +39,6 @@ export const ROLE_REDIRECT: Record<AppRole, string> = {
 export const ROLE_LABELS: Record<AppRole, string> = {
   ADMIN_MANAGEMENT: "Admin / Management",
   SALES: "Sales",
-  INVENTORY: "Inventory",
   ACCOUNTING: "Accounting",
   OPERATIONS_DESIGN: "Operations / Design",
   CLIENT: "Client",
@@ -64,13 +62,6 @@ export const ROLE_PERMISSION_MATRIX: Record<AppRole, string[]> = {
     "design_requests.submit",
     "payments.submit_to_accounting",
   ],
-  INVENTORY: [
-    "inventory_items.manage",
-    "stock_movements.manage",
-    "stock_requests.approve",
-    "stock_thresholds.manage",
-    "stock_deductions.print",
-  ],
   ACCOUNTING: [
     "quotations.view_billing_basis",
     "payments.record",
@@ -84,6 +75,11 @@ export const ROLE_PERMISSION_MATRIX: Record<AppRole, string[]> = {
     "deliveries.schedule",
     "transactions.confirm_company_code",
     "client_visibility.manage",
+    "inventory_items.manage",
+    "stock_movements.manage",
+    "stock_requests.approve",
+    "stock_thresholds.manage",
+    "stock_deductions.print",
   ],
   CLIENT: [
     "portal.view_own_records",

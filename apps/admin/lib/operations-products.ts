@@ -9,7 +9,7 @@ export const OPERATIONS_PRODUCT_CATEGORIES = [
   "Outdoor",
 ] as const
 
-export const OPERATIONS_DEFAULT_TAB = "new-products"
+export const OPERATIONS_DEFAULT_TAB = "finished-products"
 
 export function slugifyProductName(value: string) {
   return value
