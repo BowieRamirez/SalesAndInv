@@ -291,6 +291,16 @@ exports.Prisma.ProductScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.DraftProductScalarFieldEnum = {
+  id: 'id',
+  createdById: 'createdById',
+  name: 'name',
+  payload: 'payload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.CustomerInquiryScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
@@ -461,6 +471,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -698,6 +712,7 @@ exports.Prisma.ModelName = {
   Warehouse: 'Warehouse',
   StockItem: 'StockItem',
   Product: 'Product',
+  DraftProduct: 'DraftProduct',
   CustomerInquiry: 'CustomerInquiry',
   OrderChatMessage: 'OrderChatMessage',
   OrderChatAttachment: 'OrderChatAttachment',

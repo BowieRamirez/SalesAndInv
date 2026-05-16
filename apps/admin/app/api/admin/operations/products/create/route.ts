@@ -53,6 +53,7 @@ export async function POST(request: Request) {
   const badge = String(formData.get("badge") ?? "").trim() || null
   const isPublished = String(formData.get("isPublished") ?? "").trim() === "on"
   const selectedMaterialIds = collectSelectedMaterialIds(formData)
+  const draftId = String(formData.get("draftId") ?? "").trim()
 
   if (!name || !category || !description || !warehouseId) {
     return buildRedirect(request, "Name, category, description, and warehouse are required.", "error")
@@ -230,6 +231,17 @@ export async function POST(request: Request) {
 
       return { sku }
     })
+
+    if (draftId) {
+      await prisma.$executeRaw(Prisma.sql`
+        UPDATE public.draft_products
+        SET "deletedAt" = CURRENT_TIMESTAMP,
+            "updatedAt" = CURRENT_TIMESTAMP
+        WHERE id = ${draftId}
+          AND "createdById" = ${currentUser.id}
+          AND "deletedAt" IS NULL
+      `)
+    }
 
     revalidatePath("/operations")
     revalidatePath("/shop")

@@ -5,7 +5,7 @@ import { Prisma, prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
-  const url = new URL("/inventory", request.url)
+  const url = new URL("/operations", request.url)
   url.searchParams.set("tab", "locations")
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
@@ -15,8 +15,8 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["INVENTORY", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
-    return buildRedirect(request, "Only inventory or executive admins can add warehouse locations.", "error")
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+    return buildRedirect(request, "Only operations or executive admins can add warehouse locations.", "error")
   }
 
   const requestOrigin = request.headers.get("origin")
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       `)
     })
 
-    revalidatePath("/inventory")
+    revalidatePath("/operations")
     return buildRedirect(request, "Warehouse location was added.", "success")
   } catch (error) {
     const message = error instanceof Error && error.message ? error.message : "Neon DB could not create that warehouse location."

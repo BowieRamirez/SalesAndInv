@@ -268,6 +268,8 @@ model User {
   deliveryAssigned     DeliverySchedule[] @relation("DeliveryAssignedBy")
   deliveryConfirmed    DeliverySchedule[] @relation("DeliveryConfirmedBy")
   customerInquiries    CustomerInquiry[]  @relation("CustomerInquiryUser")
+  orderChatMessages    OrderChatMessage[]
+  draftProducts        DraftProduct[]     @relation("DraftProductCreatedBy")
 
   @@index([companyId, role, status])
   @@map("users")
@@ -473,6 +475,21 @@ model Product {
   @@map("products")
 }
 
+model DraftProduct {
+  id          String    @id @default(cuid())
+  createdById String
+  name        String?
+  payload     Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  createdBy User @relation("DraftProductCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([createdById, deletedAt, updatedAt])
+  @@map("draft_products")
+}
+
 model CustomerInquiry {
   id             String        @id @default(cuid())
   productId      String
@@ -486,12 +503,44 @@ model CustomerInquiry {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
-  product      Product @relation(fields: [productId], references: [id])
-  customerUser User?   @relation("CustomerInquiryUser", fields: [customerUserId], references: [id])
+  product      Product            @relation(fields: [productId], references: [id])
+  customerUser User?              @relation("CustomerInquiryUser", fields: [customerUserId], references: [id])
+  chatMessages OrderChatMessage[]
 
   @@index([customerUserId, status, createdAt])
   @@index([productId, status, createdAt])
   @@map("customer_inquiries")
+}
+
+model OrderChatMessage {
+  id           String   @id
+  inquiryId    String   @map("inquiry_id")
+  senderUserId String?  @map("sender_user_id")
+  senderRole   String   @map("sender_role")
+  body         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  inquiry     CustomerInquiry       @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  sender      User?                 @relation(fields: [senderUserId], references: [id], onDelete: SetNull)
+  attachments OrderChatAttachment[]
+
+  @@index([inquiryId, createdAt])
+  @@map("order_chat_messages")
+}
+
+model OrderChatAttachment {
+  id             String   @id
+  messageId      String   @map("message_id")
+  fileName       String   @map("file_name")
+  mimeType       String   @map("mime_type")
+  attachmentType String   @map("attachment_type")
+  dataUrl        String   @map("data_url")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  message OrderChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("order_chat_attachments")
 }
 
 model ProductMaterial {
@@ -674,4 +723,13 @@ model AuditLog {
   @@index([entityType, entityId, createdAt])
   @@index([companyId, createdAt])
   @@map("audit_logs")
+}
+
+model StorefrontCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("storefront_categories")
 }

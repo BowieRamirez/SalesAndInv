@@ -5,7 +5,7 @@ import { Prisma, prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
-  const url = new URL("/inventory", request.url)
+  const url = new URL("/operations", request.url)
   url.searchParams.set("tab", "all-stocks")
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
@@ -38,8 +38,8 @@ async function generateRawMaterialSku() {
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["INVENTORY", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
-    return buildRedirect(request, "Only inventory or executive admins can add raw materials.", "error")
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+    return buildRedirect(request, "Only operations or executive admins can add raw materials.", "error")
   }
 
   const requestOrigin = request.headers.get("origin")
@@ -186,7 +186,7 @@ export async function POST(request: Request) {
       `)
     }
 
-    revalidatePath("/inventory")
+    revalidatePath("/operations")
     return buildRedirect(request, `Added raw material ${sku} to Neon DB.`, "success")
   } catch (error) {
     const message =

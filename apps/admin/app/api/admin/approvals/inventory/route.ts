@@ -4,8 +4,8 @@ import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { updateInquiryWorkflowStatus } from "@/lib/inquiries"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
-  const url = new URL("/inventory", request.url)
-  url.searchParams.set("tab", "approvals")
+  const url = new URL("/operations", request.url)
+  url.searchParams.set("tab", "inv-approvals")
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
   return NextResponse.redirect(url, { status: 303 })
@@ -18,8 +18,8 @@ export async function POST(request: Request) {
     return buildRedirect(request, "Your session could not be confirmed. Please sign in again.", "error")
   }
 
-  if (!["INVENTORY", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
-    return buildRedirect(request, "Only inventory or executive admins can approve this step.", "error")
+  if (!["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+    return buildRedirect(request, "Only operations or executive admins can approve this step.", "error")
   }
 
   const requestOrigin = request.headers.get("origin")
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       statusNote,
     })
 
-    revalidatePath("/inventory")
+    revalidatePath("/operations")
     revalidatePath("/accounting")
     revalidatePath("/sales")
     revalidatePath("/account/status")

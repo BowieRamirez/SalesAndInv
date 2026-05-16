@@ -1,0 +1,275 @@
+
+> furnitrack@ dev C:\Users\karll\Documents\SalesInvSystem
+> turbo run dev
+
+
+   • Packages in scope: @furnitrack/config, @furnitrack/db, @furnitrack/ui, @furnitrack/validators, admin, storefront
+   • Running dev in 6 packages
+   • Remote caching disabled
+
+storefront:dev: cache bypass, force executing 037143a73d22059b
+admin:dev: cache bypass, force executing 5e9793cd456cc8e3
+admin:dev: 
+admin:dev: > admin@0.0.1 dev C:\Users\karll\Documents\SalesInvSystem\apps\admin
+admin:dev: > next dev --port 3001
+admin:dev: 
+storefront:dev: 
+storefront:dev: > storefront@0.0.1 dev C:\Users\karll\Documents\SalesInvSystem\apps\storefront
+storefront:dev: > next dev --port 3000
+storefront:dev: 
+admin:dev: ▲ Next.js 16.2.6 (Turbopack)
+admin:dev: - Local:         http://localhost:3001
+admin:dev: - Network:       http://192.168.68.55:3001
+admin:dev: - Environments: .env.local
+admin:dev: ✓ Ready in 599ms
+storefront:dev: ▲ Next.js 16.2.6 (Turbopack)
+storefront:dev: - Local:         http://localhost:3000
+storefront:dev: - Network:       http://192.168.68.55:3000
+storefront:dev: - Environments: .env.local
+storefront:dev: ✓ Ready in 593ms
+admin:dev: ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+storefront:dev: 
+admin:dev: 
+admin:dev:  GET /operations?tab=finished-products 200 in 3.2s (next.js: 273ms, proxy.ts: 75ms, application-code: 2.9s)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 367ms (next.js: 192ms, application-code: 175ms)
+storefront:dev:  GET /sign-in 200 in 529ms (next.js: 236ms, application-code: 293ms)
+admin:dev: ✓ Compiled in 641ms
+admin:dev:  GET /operations?tab=finished-products 200 in 1064ms (next.js: 166ms, proxy.ts: 63ms, application-code: 834ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 552ms (next.js: 3ms, proxy.ts: 4ms, application-code: 544ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 301ms (next.js: 72ms, application-code: 230ms)
+admin:dev: ✓ Compiled in 160ms
+admin:dev: ⨯ ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22
+admin:dev: Expected '</', got 'jsx text'
+admin:dev:   [90m925 |[0m                   ) : [36mnull[0m}
+admin:dev:   [90m926 |[0m                 </div>
+admin:dev: [31m[1m>[0m [90m927 |[0m               </form>
+admin:dev:   [90m    |[0m                      [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+admin:dev: [31m[1m>[0m [90m928 |[0m             </div>
+admin:dev:   [90m    |[0m [31m[1m^^^^^^^^^^^^[0m
+admin:dev:   [90m929 |[0m           </div>
+admin:dev:   [90m930 |[0m         </div>
+admin:dev:   [90m931 |[0m       )}
+admin:dev: 
+admin:dev: Parsing ecmascript source code failed
+admin:dev: 
+admin:dev: Import trace:
+admin:dev:   Server Component:
+admin:dev:     ./apps/admin/components/operations/FinishedProductsManager.tsx
+admin:dev:     ./apps/admin/app/(dashboard)/operations/page.tsx
+admin:dev: 
+admin:dev: 
+admin:dev:  GET /operations?tab=finished-products 500 in 1481ms (next.js: 1270ms, proxy.ts: 18ms, application-code: 193ms)
+admin:dev: ⨯ ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22
+admin:dev: Expected '</', got 'jsx text'
+admin:dev:   [90m925 |[0m                   ) : [36mnull[0m}
+admin:dev:   [90m926 |[0m                 </div>
+admin:dev: [31m[1m>[0m [90m927 |[0m               </form>
+admin:dev:   [90m    |[0m                      [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+admin:dev: [31m[1m>[0m [90m928 |[0m             </div>
+admin:dev:   [90m    |[0m [31m[1m^^^^^^^^^^^^[0m
+admin:dev:   [90m929 |[0m           </div>
+admin:dev:   [90m930 |[0m         </div>
+admin:dev:   [90m931 |[0m       )}
+admin:dev: 
+admin:dev: Parsing ecmascript source code failed
+admin:dev: 
+admin:dev: Import trace:
+admin:dev:   Server Component:
+admin:dev:     ./apps/admin/components/operations/FinishedProductsManager.tsx
+admin:dev:     ./apps/admin/app/(dashboard)/operations/page.tsx
+admin:dev: 
+admin:dev: 
+admin:dev:  GET /operations?tab=finished-products 500 in 43ms (next.js: 17ms, proxy.ts: 5ms, application-code: 20ms)
+admin:dev: ⨯ ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22
+admin:dev: Expected '</', got 'jsx text'
+admin:dev:   [90m925 |[0m                   ) : [36mnull[0m}
+admin:dev:   [90m926 |[0m                 </div>
+admin:dev: [31m[1m>[0m [90m927 |[0m               </form>
+admin:dev:   [90m    |[0m                      [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+admin:dev: [31m[1m>[0m [90m928 |[0m             </div>
+admin:dev:   [90m    |[0m [31m[1m^^^^^^^^^^^^[0m
+admin:dev:   [90m929 |[0m           </div>
+admin:dev:   [90m930 |[0m         </div>
+admin:dev:   [90m931 |[0m       )}
+admin:dev: 
+admin:dev: Parsing ecmascript source code failed
+admin:dev: 
+admin:dev: Import trace:
+admin:dev:   Server Component:
+admin:dev:     ./apps/admin/components/operations/FinishedProductsManager.tsx
+admin:dev:     ./apps/admin/app/(dashboard)/operations/page.tsx
+admin:dev: 
+admin:dev: 
+admin:dev:  GET /operations?tab=finished-products 500 in 38ms (next.js: 17ms, proxy.ts: 4ms, application-code: 17ms)
+admin:dev: [browser] Uncaught Error: ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22
+admin:dev: Expected '</', got 'jsx text'
+admin:dev:   925 |                   ) : null}
+admin:dev:   926 |                 </div>
+admin:dev: > 927 |               </form>
+admin:dev:       |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+admin:dev: > 928 |             </div>
+admin:dev:       | ^^^^^^^^^^^^
+admin:dev:   929 |           </div>
+admin:dev:   930 |         </div>
+admin:dev:   931 |       )}
+admin:dev: 
+admin:dev: Parsing ecmascript source code failed
+admin:dev: 
+admin:dev: Import trace:
+admin:dev:   Server Component:
+admin:dev:     ./apps/admin/components/operations/FinishedProductsManager.tsx
+admin:dev:     ./apps/admin/app/(dashboard)/operations/page.tsx
+admin:dev: 
+admin:dev: 
+admin:dev:     at <unknown> (Error: ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22)
+admin:dev:     at <unknown> (Error: (./apps/admin/components/operations/FinishedProductsManager.tsx:927:22)
+admin:dev: [browser] ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22
+admin:dev: Expected '</', got 'jsx text'
+admin:dev:   925 |                   ) : null}
+admin:dev:   926 |                 </div>
+admin:dev: > 927 |               </form>
+admin:dev:       |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+admin:dev: > 928 |             </div>
+admin:dev:       | ^^^^^^^^^^^^
+admin:dev:   929 |           </div>
+admin:dev:   930 |         </div>
+admin:dev:   931 |       )}
+admin:dev: 
+admin:dev: Parsing ecmascript source code failed
+admin:dev: 
+admin:dev: Import trace:
+admin:dev:   Server Component:
+admin:dev:     ./apps/admin/components/operations/FinishedProductsManager.tsx
+admin:dev:     ./apps/admin/app/(dashboard)/operations/page.tsx 
+admin:dev: [browser] ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22
+admin:dev: Expected '</', got 'jsx text'
+admin:dev:   925 |                   ) : null}
+admin:dev:   926 |                 </div>
+admin:dev: > 927 |               </form>
+admin:dev:       |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+admin:dev: > 928 |             </div>
+admin:dev:       | ^^^^^^^^^^^^
+admin:dev:   929 |           </div>
+admin:dev:   930 |         </div>
+admin:dev:   931 |       )}
+admin:dev: 
+admin:dev: Parsing ecmascript source code failed
+admin:dev: 
+admin:dev: Import trace:
+admin:dev:   Server Component:
+admin:dev:     ./apps/admin/components/operations/FinishedProductsManager.tsx
+admin:dev:     ./apps/admin/app/(dashboard)/operations/page.tsx 
+admin:dev: [browser] ./apps/admin/components/operations/FinishedProductsManager.tsx:927:22
+admin:dev: Expected '</', got 'jsx text'
+admin:dev:   925 |                   ) : null}
+admin:dev:   926 |                 </div>
+admin:dev: > 927 |               </form>
+admin:dev:       |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+admin:dev: > 928 |             </div>
+admin:dev:       | ^^^^^^^^^^^^
+admin:dev:   929 |           </div>
+admin:dev:   930 |         </div>
+admin:dev:   931 |       )}
+admin:dev: 
+admin:dev: Parsing ecmascript source code failed
+admin:dev: 
+admin:dev: Import trace:
+admin:dev:   Server Component:
+admin:dev:     ./apps/admin/components/operations/FinishedProductsManager.tsx
+admin:dev:     ./apps/admin/app/(dashboard)/operations/page.tsx 
+admin:dev: ✓ Compiled in 98ms
+admin:dev:  GET /operations?tab=finished-products 200 in 1325ms (next.js: 102ms, proxy.ts: 9ms, application-code: 1214ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 239ms (next.js: 76ms, application-code: 163ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 342ms (next.js: 3ms, proxy.ts: 4ms, application-code: 335ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 245ms (next.js: 6ms, application-code: 239ms)
+admin:dev:  GET /operations?tab=storefront-filters 200 in 251ms (next.js: 3ms, proxy.ts: 3ms, application-code: 244ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 333ms (next.js: 4ms, proxy.ts: 5ms, application-code: 324ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 103ms (next.js: 4ms, application-code: 99ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 159ms (next.js: 4ms, application-code: 154ms)
+admin:dev:  GET /operations?tab=storefront-filters 200 in 239ms (next.js: 4ms, proxy.ts: 5ms, application-code: 230ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 573ms (next.js: 9ms, proxy.ts: 4ms, application-code: 559ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 98ms (next.js: 11ms, application-code: 87ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 143ms (next.js: 7ms, application-code: 136ms)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev:  GET /operations?tab=inv-approvals 200 in 1515ms (next.js: 6ms, proxy.ts: 7ms, application-code: 1503ms)
+admin:dev:  GET /operations?tab=delivery 200 in 999ms (next.js: 5ms, proxy.ts: 3ms, application-code: 990ms)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev:  GET /operations?tab=all-stocks 200 in 284ms (next.js: 9ms, proxy.ts: 6ms, application-code: 270ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 426ms (next.js: 8ms, proxy.ts: 4ms, application-code: 414ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 181ms (next.js: 6ms, application-code: 175ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 174ms (next.js: 5ms, application-code: 170ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 245ms (next.js: 3ms, application-code: 242ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 119ms (next.js: 4ms, application-code: 115ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 501ms (next.js: 3ms, application-code: 498ms)
+admin:dev: ✓ Compiled in 138ms
+admin:dev:  GET /operations?tab=finished-products 200 in 1369ms (next.js: 389ms, proxy.ts: 48ms, application-code: 933ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 223ms (next.js: 62ms, application-code: 161ms)
+admin:dev:  DELETE /api/admin/operations/products/drafts/346914e4-f416-45ef-be21-637e1eabb19b 200 in 808ms (next.js: 683ms, application-code: 125ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 130ms (next.js: 5ms, application-code: 125ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 122ms (next.js: 3ms, application-code: 119ms)
+admin:dev: ✓ Compiled in 79ms
+admin:dev:  GET /operations?tab=finished-products 200 in 524ms (next.js: 93ms, proxy.ts: 31ms, application-code: 399ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 245ms (next.js: 63ms, application-code: 182ms)
+admin:dev:  DELETE /api/admin/operations/products/drafts/5a66727c-bdd8-4b78-b070-4f98c60e9994 200 in 135ms (next.js: 22ms, application-code: 112ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 82ms (next.js: 1959µs, application-code: 80ms)
+admin:dev:  DELETE /api/admin/operations/products/drafts/c30d9ba2-41ec-49b4-aebd-b891e076dc94 200 in 86ms (next.js: 8ms, application-code: 77ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 429ms (next.js: 5ms, proxy.ts: 5ms, application-code: 419ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 123ms (next.js: 3ms, application-code: 120ms)
+admin:dev:  DELETE /api/admin/operations/products/drafts/805a5518-c259-452c-9fd9-3f083bffe18e 200 in 120ms (next.js: 8ms, application-code: 113ms)
+admin:dev:  DELETE /api/admin/operations/products/drafts/d2c77b06-7707-431a-bfd6-3f46b7c418a1 200 in 102ms (next.js: 22ms, application-code: 80ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 130ms (next.js: 3ms, application-code: 127ms)
+admin:dev: ✓ Compiled in 54ms
+admin:dev:  GET /operations?tab=finished-products 200 in 490ms (next.js: 68ms, proxy.ts: 14ms, application-code: 407ms)
+admin:dev:  DELETE /api/admin/operations/products/drafts/c6a0b182-66f3-4fb8-8303-05572b445a77 200 in 206ms (next.js: 55ms, application-code: 151ms)
+admin:dev:  POST /api/admin/operations/products/drafts 200 in 134ms (next.js: 19ms, application-code: 115ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 285ms (next.js: 3ms, proxy.ts: 4ms, application-code: 278ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 157ms (next.js: 2ms, application-code: 154ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 573ms (next.js: 4ms, proxy.ts: 4ms, application-code: 565ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 170ms (next.js: 6ms, application-code: 164ms)
+admin:dev: ✓ Compiled in 59ms
+admin:dev:  GET /operations?tab=finished-products 200 in 351ms (next.js: 76ms, proxy.ts: 18ms, application-code: 257ms)
+admin:dev: ✓ Compiled in 61ms
+admin:dev:  GET /operations?tab=finished-products 200 in 882ms (next.js: 83ms, proxy.ts: 17ms, application-code: 782ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 363ms (next.js: 3ms, proxy.ts: 3ms, application-code: 357ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 178ms (next.js: 64ms, application-code: 114ms)
+admin:dev: ✓ Compiled in 179ms
+admin:dev:  GET /operations?tab=finished-products 200 in 502ms (next.js: 81ms, proxy.ts: 26ms, application-code: 395ms)
+admin:dev: ✓ Compiled in 315ms
+admin:dev:  GET /operations?tab=finished-products 200 in 612ms (next.js: 152ms, proxy.ts: 15ms, application-code: 444ms)
+admin:dev: ✓ Compiled in 184ms
+admin:dev:  GET /operations?tab=finished-products 200 in 1041ms (next.js: 130ms, proxy.ts: 21ms, application-code: 890ms)
+admin:dev: ✓ Compiled in 93ms
+admin:dev:  GET /operations?tab=finished-products 200 in 576ms (next.js: 123ms, proxy.ts: 32ms, application-code: 422ms)
+admin:dev: ✓ Compiled in 107ms
+admin:dev:  GET /operations?tab=finished-products 200 in 467ms (next.js: 111ms, proxy.ts: 25ms, application-code: 330ms)
+admin:dev: ✓ Compiled in 75ms
+admin:dev:  GET /operations?tab=finished-products 200 in 706ms (next.js: 114ms, proxy.ts: 25ms, application-code: 567ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 972ms (next.js: 8ms, proxy.ts: 8ms, application-code: 956ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 262ms (next.js: 99ms, application-code: 162ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 363ms (next.js: 4ms, proxy.ts: 7ms, application-code: 351ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 162ms (next.js: 4ms, application-code: 157ms)
+admin:dev: ✓ Compiled in 140ms
+admin:dev:  GET /operations?tab=finished-products 200 in 1133ms (next.js: 185ms, proxy.ts: 44ms, application-code: 904ms)
+admin:dev: ✓ Compiled in 197ms
+admin:dev:  GET /operations?tab=finished-products 200 in 772ms (next.js: 140ms, proxy.ts: 31ms, application-code: 601ms)
+admin:dev: ✓ Compiled in 199ms
+admin:dev:  GET /operations?tab=finished-products 200 in 802ms (next.js: 99ms, proxy.ts: 26ms, application-code: 678ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 666ms (next.js: 19ms, proxy.ts: 12ms, application-code: 635ms)
+admin:dev: ✓ Compiled in 60ms
+admin:dev:  GET /operations?tab=finished-products 200 in 484ms (next.js: 88ms, proxy.ts: 27ms, application-code: 369ms)
+admin:dev: ✓ Compiled in 108ms
+admin:dev:  GET /operations?tab=finished-products 200 in 1481ms (next.js: 115ms, proxy.ts: 36ms, application-code: 1329ms)
+admin:dev:  DELETE /api/admin/operations/products/drafts/26116767-905c-4440-84f1-2b1ecf6a1c00 200 in 378ms (next.js: 92ms, application-code: 287ms)
+admin:dev:  POST /api/admin/operations/products/update 303 in 1549ms (next.js: 385ms, application-code: 1164ms)
+admin:dev:  GET /operations?tab=finished-products&message=Updated+CONFERENCE+TABLE+in+Neon+DB.&tone=success 200 in 419ms (next.js: 2ms, proxy.ts: 3ms, application-code: 413ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 240ms (next.js: 64ms, application-code: 176ms)
+admin:dev:  POST /api/admin/operations/products/update 303 in 996ms (next.js: 5ms, application-code: 991ms)
+admin:dev:  GET /operations?tab=finished-products&message=Updated+TEST+in+Neon+DB.&tone=success 200 in 776ms (next.js: 7ms, proxy.ts: 4ms, application-code: 766ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 235ms (next.js: 6ms, application-code: 229ms)
+admin:dev:  GET /operations?tab=audit 200 in 374ms (next.js: 5ms, proxy.ts: 6ms, application-code: 364ms)
+admin:dev:  GET /operations?tab=finished-products 200 in 370ms (next.js: 4ms, proxy.ts: 3ms, application-code: 363ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 184ms (next.js: 15ms, application-code: 169ms)
+admin:dev:  GET /api/admin/operations/products/drafts 200 in 239ms (next.js: 7ms, application-code: 232ms)
+admin:dev:  GET /operations?tab=storefront-filters 200 in 790ms (next.js: 6ms, proxy.ts: 7ms, application-code: 778ms)

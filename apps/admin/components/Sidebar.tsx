@@ -17,6 +17,7 @@ import {
   Calculator,
   CheckSquare,
   ChevronLeft,
+  ChevronRight,
   FileEdit,
   FileText,
   History,
@@ -30,17 +31,27 @@ import {
 } from "lucide-react";
 import type { AppRole } from "@/lib/rbac";
 
+const HIDE_SCROLLBAR_CLASS = "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+
 type NavConfig = {
-  links: Array<{
-    name: string
-    href: string
-    icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
-    tab?: string
-  }>
+  links: NavLink[]
+  groups?: NavGroup[]
   roleLabel: string
   color: string
   allowedPaths: string[]
   defaultHref: string
+}
+
+type NavLink = {
+  name: string
+  href: string
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
+  tab?: string
+}
+
+type NavGroup = {
+  label: string
+  links: NavLink[]
 }
 
 const navConfigs: Record<AppRole, NavConfig> = {
@@ -83,17 +94,38 @@ const navConfigs: Record<AppRole, NavConfig> = {
     defaultHref: "/accounting?tab=approvals",
   },
   OPERATIONS_DESIGN: {
-    links: [
-      { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
-      { name: "Storefront Filters", href: "/operations?tab=storefront-filters", icon: SlidersHorizontal, tab: "storefront-filters" },
-      { name: "Approvals", href: "/operations?tab=approvals", icon: CheckSquare, tab: "approvals" },
-      { name: "Delivery Schedule", href: "/operations?tab=delivery", icon: Truck, tab: "delivery" },
-      { name: "Warehouse Locations", href: "/operations?tab=locations", icon: Box, tab: "locations" },
-      { name: "All Stocks", href: "/operations?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
-      { name: "Reserved Materials", href: "/operations?tab=reserved", icon: CheckSquare, tab: "reserved" },
-      { name: "Damaged Materials", href: "/operations?tab=damaged-materials", icon: History, tab: "damaged-materials" },
-      { name: "Inventory Approvals", href: "/operations?tab=inv-approvals", icon: CheckSquare, tab: "inv-approvals" },
-      { name: "Audit Logs", href: "/operations?tab=audit", icon: History, tab: "audit" },
+    links: [],
+    groups: [
+      {
+        label: "Product",
+        links: [
+          { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
+          { name: "Storefront", href: "/operations?tab=storefront-filters", icon: SlidersHorizontal, tab: "storefront-filters" },
+        ],
+      },
+      {
+        label: "Stocks and Warehouse",
+        links: [
+          { name: "Warehouse Locations", href: "/operations?tab=locations", icon: Box, tab: "locations" },
+          { name: "All Stocks", href: "/operations?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
+          { name: "Reserved Materials", href: "/operations?tab=reserved", icon: CheckSquare, tab: "reserved" },
+          { name: "Damaged Materials", href: "/operations?tab=damaged-materials", icon: History, tab: "damaged-materials" },
+        ],
+      },
+      {
+        label: "Approvals and Delivery",
+        links: [
+          { name: "Inventory Approvals", href: "/operations?tab=inv-approvals", icon: CheckSquare, tab: "inv-approvals" },
+          { name: "Approvals", href: "/operations?tab=approvals", icon: CheckSquare, tab: "approvals" },
+          { name: "Delivery Schedule", href: "/operations?tab=delivery", icon: Truck, tab: "delivery" },
+        ],
+      },
+      {
+        label: "System",
+        links: [
+          { name: "Audit Logs", href: "/operations?tab=audit", icon: History, tab: "audit" },
+        ],
+      },
     ],
     roleLabel: "Operations / Design",
     color: "bg-rose-500",
@@ -165,6 +197,20 @@ const itemVariants = {
   }),
 };
 
+const sectionVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.1 + i * 0.08,
+      type: "spring" as const,
+      stiffness: 220,
+      damping: 24,
+    },
+  }),
+};
+
 const drawerVariants = {
   closed: {
     x: "-100%",
@@ -183,7 +229,8 @@ const overlayVariants = {
 
 type NavBodyProps = {
   config: NavConfig;
-  links: NavConfig["links"];
+  links: NavLink[];
+  groups?: NavGroup[];
   currentUser: SidebarUser;
   pathname: string;
   currentTab: string | null;
@@ -191,7 +238,159 @@ type NavBodyProps = {
   showCloseHint?: boolean;
 };
 
-function NavBody({ config, links, currentUser, pathname, currentTab, onLinkClick, showCloseHint }: NavBodyProps) {
+function NavItem({
+  item,
+  index,
+  pathname,
+  currentTab,
+  onLinkClick,
+}: {
+  item: NavLink
+  index: number
+  pathname: string
+  currentTab: string | null
+  onLinkClick?: () => void
+}) {
+  const isActive = pathname === item.href || (item.tab ? item.tab === currentTab : pathname === item.href)
+
+  return (
+    <motion.div
+      key={item.name}
+      custom={index}
+      variants={itemVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <Link
+        href={item.href}
+        onClick={onLinkClick}
+        className={`relative flex items-center space-x-4 overflow-hidden px-4 py-3 rounded-lg transition-colors duration-200 group ${
+          isActive
+            ? "bg-[#252839] text-white"
+            : "text-[#8b92a5] hover:bg-[#252839]/50 hover:text-white"
+        }`}
+      >
+        {isActive ? (
+          <motion.span
+            layoutId="sidebar-active-pill"
+            className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-blue-400"
+            transition={{ type: "spring", stiffness: 420, damping: 34 }}
+          />
+        ) : null}
+        <motion.span
+          aria-hidden="true"
+          className="absolute inset-0 bg-white/0"
+          whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }}
+          transition={{ duration: 0.18 }}
+        />
+        <motion.span
+          whileHover={{ scale: 1.15, rotate: 8 }}
+          whileTap={{ scale: 0.95 }}
+          className={`p-1.5 rounded-md ${
+            isActive ? "bg-blue-500/20 text-blue-300" : "bg-[#252839] text-current"
+          } group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300`}
+        >
+          <item.icon className="w-[16px] h-[16px]" strokeWidth={2} />
+        </motion.span>
+        <span className="text-[13px] font-medium tracking-wide">{item.name}</span>
+      </Link>
+    </motion.div>
+  )
+}
+
+function NavSection({
+  group,
+  groupIndex,
+  indexOffset,
+  pathname,
+  currentTab,
+  isOpen,
+  onToggle,
+  onLinkClick,
+}: {
+  group: NavGroup
+  groupIndex: number
+  indexOffset: number
+  pathname: string
+  currentTab: string | null
+  isOpen: boolean
+  onToggle: () => void
+  onLinkClick?: () => void
+}) {
+  return (
+    <motion.div
+      custom={groupIndex}
+      variants={sectionVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-1"
+    >
+      <motion.button
+        type="button"
+        onClick={onToggle}
+        className="group flex w-full items-center justify-between rounded-lg px-4 pb-2 pt-4 text-left text-[10px] font-bold uppercase tracking-[0.2em] text-[#667086] transition-colors hover:text-[#aeb8d2] first:pt-0"
+        whileHover={{ x: 2 }}
+        whileTap={{ scale: 0.99 }}
+        transition={{ duration: 0.18 }}
+        aria-expanded={isOpen}
+      >
+        <span>{group.label}</span>
+        <motion.span
+          animate={{ rotate: isOpen ? 90 : 0 }}
+          transition={{ type: "spring", stiffness: 340, damping: 24 }}
+          className="rounded-md p-0.5 text-[#7d879d] group-hover:text-[#cbd5e1]"
+        >
+          <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.4} />
+        </motion.span>
+      </motion.button>
+
+      <AnimatePresence initial={false}>
+        {isOpen ? (
+          <motion.div
+            key="accordion-panel"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 260, damping: 28 }}
+            className="overflow-hidden"
+          >
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="space-y-1 border-l border-[#303449] pl-3"
+            >
+              {group.links.map((item, index) => (
+                <NavItem
+                  key={item.name}
+                  item={item}
+                  index={indexOffset + index}
+                  pathname={pathname}
+                  currentTab={currentTab}
+                  onLinkClick={onLinkClick}
+                />
+              ))}
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+function NavBody({ config, links, groups, currentUser, pathname, currentTab, onLinkClick, showCloseHint }: NavBodyProps) {
+  const navGroups = groups?.length ? groups : [{ label: "", links }]
+  const activeGroupLabel = groups?.find((group) => group.links.some((link) => link.tab === currentTab))?.label
+  const [openGroup, setOpenGroup] = useState(() => activeGroupLabel ?? navGroups[0]?.label ?? "")
+
+  useEffect(() => {
+    if (!activeGroupLabel) {
+      return
+    }
+
+    setOpenGroup(activeGroupLabel)
+  }, [activeGroupLabel])
+
   return (
     <div className="flex flex-col h-full justify-between">
       <div>
@@ -211,40 +410,32 @@ function NavBody({ config, links, currentUser, pathname, currentTab, onLinkClick
 
         <div className="px-4 py-6">
           <nav className="space-y-1">
-            {links.map((item, i) => {
-              const isActive = pathname === item.href || (item.tab ? item.tab === currentTab : pathname === item.href);
-
-              return (
-                <motion.div
-                  key={item.name}
-                  custom={i}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <Link
-                    href={item.href}
-                    onClick={onLinkClick}
-                    className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors duration-200 group ${
-                      isActive
-                        ? "bg-[#252839] text-white"
-                        : "text-[#8b92a5] hover:bg-[#252839]/50 hover:text-white"
-                    }`}
-                  >
-                    <motion.span
-                      whileHover={{ scale: 1.15, rotate: 8 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`p-1.5 rounded-md ${
-                        isActive ? "bg-blue-500/20 text-blue-300" : "bg-[#252839] text-current"
-                      } group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300`}
-                    >
-                      <item.icon className="w-[16px] h-[16px]" strokeWidth={2} />
-                    </motion.span>
-                    <span className="text-[13px] font-medium tracking-wide">{item.name}</span>
-                  </Link>
-                </motion.div>
-              );
-            })}
+            {navGroups.map((group, groupIndex) => (
+              groups?.length ? (
+                <NavSection
+                  key={group.label}
+                  group={group}
+                  groupIndex={groupIndex}
+                  indexOffset={navGroups.slice(0, groupIndex).reduce((total, current) => total + current.links.length, 0)}
+                  pathname={pathname}
+                  currentTab={currentTab}
+                  isOpen={openGroup === group.label}
+                  onToggle={() => setOpenGroup((current) => (current === group.label ? "" : group.label))}
+                  onLinkClick={onLinkClick}
+                />
+              ) : (
+                group.links.map((item, index) => (
+                  <NavItem
+                    key={item.name}
+                    item={item}
+                    index={index}
+                    pathname={pathname}
+                    currentTab={currentTab}
+                    onLinkClick={onLinkClick}
+                  />
+                ))
+              )
+            ))}
           </nav>
         </div>
       </div>
@@ -306,7 +497,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
   const dragOpacity = useTransform(dragX, [-200, 0], [0, 1]);
 
   const config = navConfigs[currentUser.role];
-  const { links } = config;
+  const links = config.groups?.flatMap((group) => group.links) ?? config.links;
   const currentTab = searchParams.get("tab") || links[0]?.tab || null;
 
   useEffect(() => {
@@ -362,7 +553,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
           initial={false}
           animate={{ opacity: isDesktopOpen ? 1 : 0 }}
           transition={{ duration: 0.2 }}
-          className="w-[280px] h-full overflow-y-auto relative pointer-events-auto"
+          className={`w-[280px] h-full overflow-y-auto relative pointer-events-auto ${HIDE_SCROLLBAR_CLASS}`}
           style={{ pointerEvents: isDesktopOpen ? "auto" : "none" }}
         >
           {/* Collapse button (inside sidebar) */}
@@ -379,6 +570,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
           <NavBody
             config={config}
             links={links}
+            groups={config.groups}
             currentUser={currentUser}
             pathname={pathname}
             currentTab={currentTab}
@@ -426,7 +618,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
             style={{ x: dragX }}
-            className="md:hidden fixed top-0 left-0 h-full w-[280px] z-50 bg-[#1a1c29] text-white shadow-2xl border-r border-[#2a2c3d]"
+            className={`md:hidden fixed top-0 left-0 h-full w-[280px] z-50 overflow-y-auto bg-[#1a1c29] text-white shadow-2xl border-r border-[#2a2c3d] ${HIDE_SCROLLBAR_CLASS}`}
           >
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
@@ -451,6 +643,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
             <NavBody
               config={config}
               links={links}
+              groups={config.groups}
               currentUser={currentUser}
               pathname={pathname}
               currentTab={currentTab}

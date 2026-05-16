@@ -64,6 +64,11 @@ export type StockItem = $Result.DefaultSelection<Prisma.$StockItemPayload>
  */
 export type Product = $Result.DefaultSelection<Prisma.$ProductPayload>
 /**
+ * Model DraftProduct
+ * 
+ */
+export type DraftProduct = $Result.DefaultSelection<Prisma.$DraftProductPayload>
+/**
  * Model CustomerInquiry
  * 
  */
@@ -741,6 +746,16 @@ export class PrismaClient<
   get product(): Prisma.ProductDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.draftProduct`: Exposes CRUD operations for the **DraftProduct** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DraftProducts
+    * const draftProducts = await prisma.draftProduct.findMany()
+    * ```
+    */
+  get draftProduct(): Prisma.DraftProductDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.customerInquiry`: Exposes CRUD operations for the **CustomerInquiry** model.
     * Example usage:
     * ```ts
@@ -1330,6 +1345,7 @@ export namespace Prisma {
     Warehouse: 'Warehouse',
     StockItem: 'StockItem',
     Product: 'Product',
+    DraftProduct: 'DraftProduct',
     CustomerInquiry: 'CustomerInquiry',
     OrderChatMessage: 'OrderChatMessage',
     OrderChatAttachment: 'OrderChatAttachment',
@@ -1362,7 +1378,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "stockItem" | "product" | "customerInquiry" | "orderChatMessage" | "orderChatAttachment" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog" | "storefrontCategory"
+      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "stockItem" | "product" | "draftProduct" | "customerInquiry" | "orderChatMessage" | "orderChatAttachment" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog" | "storefrontCategory"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2103,6 +2119,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ProductCountArgs<ExtArgs>
             result: $Utils.Optional<ProductCountAggregateOutputType> | number
+          }
+        }
+      }
+      DraftProduct: {
+        payload: Prisma.$DraftProductPayload<ExtArgs>
+        fields: Prisma.DraftProductFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DraftProductFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DraftProductFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>
+          }
+          findFirst: {
+            args: Prisma.DraftProductFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DraftProductFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>
+          }
+          findMany: {
+            args: Prisma.DraftProductFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>[]
+          }
+          create: {
+            args: Prisma.DraftProductCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>
+          }
+          createMany: {
+            args: Prisma.DraftProductCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DraftProductCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>[]
+          }
+          delete: {
+            args: Prisma.DraftProductDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>
+          }
+          update: {
+            args: Prisma.DraftProductUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>
+          }
+          deleteMany: {
+            args: Prisma.DraftProductDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DraftProductUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DraftProductUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>[]
+          }
+          upsert: {
+            args: Prisma.DraftProductUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DraftProductPayload>
+          }
+          aggregate: {
+            args: Prisma.DraftProductAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDraftProduct>
+          }
+          groupBy: {
+            args: Prisma.DraftProductGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DraftProductGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DraftProductCountArgs<ExtArgs>
+            result: $Utils.Optional<DraftProductCountAggregateOutputType> | number
           }
         }
       }
@@ -3248,6 +3338,7 @@ export namespace Prisma {
     warehouse?: WarehouseOmit
     stockItem?: StockItemOmit
     product?: ProductOmit
+    draftProduct?: DraftProductOmit
     customerInquiry?: CustomerInquiryOmit
     orderChatMessage?: OrderChatMessageOmit
     orderChatAttachment?: OrderChatAttachmentOmit
@@ -3422,6 +3513,7 @@ export namespace Prisma {
     deliveryConfirmed: number
     customerInquiries: number
     orderChatMessages: number
+    draftProducts: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3438,6 +3530,7 @@ export namespace Prisma {
     deliveryConfirmed?: boolean | UserCountOutputTypeCountDeliveryConfirmedArgs
     customerInquiries?: boolean | UserCountOutputTypeCountCustomerInquiriesArgs
     orderChatMessages?: boolean | UserCountOutputTypeCountOrderChatMessagesArgs
+    draftProducts?: boolean | UserCountOutputTypeCountDraftProductsArgs
   }
 
   // Custom InputTypes
@@ -3540,6 +3633,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountOrderChatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrderChatMessageWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDraftProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DraftProductWhereInput
   }
 
 
@@ -5410,6 +5510,7 @@ export namespace Prisma {
     deliveryConfirmed?: boolean | User$deliveryConfirmedArgs<ExtArgs>
     customerInquiries?: boolean | User$customerInquiriesArgs<ExtArgs>
     orderChatMessages?: boolean | User$orderChatMessagesArgs<ExtArgs>
+    draftProducts?: boolean | User$draftProductsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5476,6 +5577,7 @@ export namespace Prisma {
     deliveryConfirmed?: boolean | User$deliveryConfirmedArgs<ExtArgs>
     customerInquiries?: boolean | User$customerInquiriesArgs<ExtArgs>
     orderChatMessages?: boolean | User$orderChatMessagesArgs<ExtArgs>
+    draftProducts?: boolean | User$draftProductsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5502,6 +5604,7 @@ export namespace Prisma {
       deliveryConfirmed: Prisma.$DeliverySchedulePayload<ExtArgs>[]
       customerInquiries: Prisma.$CustomerInquiryPayload<ExtArgs>[]
       orderChatMessages: Prisma.$OrderChatMessagePayload<ExtArgs>[]
+      draftProducts: Prisma.$DraftProductPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5924,6 +6027,7 @@ export namespace Prisma {
     deliveryConfirmed<T extends User$deliveryConfirmedArgs<ExtArgs> = {}>(args?: Subset<T, User$deliveryConfirmedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliverySchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customerInquiries<T extends User$customerInquiriesArgs<ExtArgs> = {}>(args?: Subset<T, User$customerInquiriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orderChatMessages<T extends User$orderChatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$orderChatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    draftProducts<T extends User$draftProductsArgs<ExtArgs> = {}>(args?: Subset<T, User$draftProductsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6689,6 +6793,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: OrderChatMessageScalarFieldEnum | OrderChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * User.draftProducts
+   */
+  export type User$draftProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    where?: DraftProductWhereInput
+    orderBy?: DraftProductOrderByWithRelationInput | DraftProductOrderByWithRelationInput[]
+    cursor?: DraftProductWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DraftProductScalarFieldEnum | DraftProductScalarFieldEnum[]
   }
 
   /**
@@ -17002,6 +17130,1086 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProductInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DraftProduct
+   */
+
+  export type AggregateDraftProduct = {
+    _count: DraftProductCountAggregateOutputType | null
+    _min: DraftProductMinAggregateOutputType | null
+    _max: DraftProductMaxAggregateOutputType | null
+  }
+
+  export type DraftProductMinAggregateOutputType = {
+    id: string | null
+    createdById: string | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type DraftProductMaxAggregateOutputType = {
+    id: string | null
+    createdById: string | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type DraftProductCountAggregateOutputType = {
+    id: number
+    createdById: number
+    name: number
+    payload: number
+    createdAt: number
+    updatedAt: number
+    deletedAt: number
+    _all: number
+  }
+
+
+  export type DraftProductMinAggregateInputType = {
+    id?: true
+    createdById?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type DraftProductMaxAggregateInputType = {
+    id?: true
+    createdById?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+  }
+
+  export type DraftProductCountAggregateInputType = {
+    id?: true
+    createdById?: true
+    name?: true
+    payload?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+    _all?: true
+  }
+
+  export type DraftProductAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DraftProduct to aggregate.
+     */
+    where?: DraftProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DraftProducts to fetch.
+     */
+    orderBy?: DraftProductOrderByWithRelationInput | DraftProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DraftProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DraftProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DraftProducts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DraftProducts
+    **/
+    _count?: true | DraftProductCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DraftProductMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DraftProductMaxAggregateInputType
+  }
+
+  export type GetDraftProductAggregateType<T extends DraftProductAggregateArgs> = {
+        [P in keyof T & keyof AggregateDraftProduct]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDraftProduct[P]>
+      : GetScalarType<T[P], AggregateDraftProduct[P]>
+  }
+
+
+
+
+  export type DraftProductGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DraftProductWhereInput
+    orderBy?: DraftProductOrderByWithAggregationInput | DraftProductOrderByWithAggregationInput[]
+    by: DraftProductScalarFieldEnum[] | DraftProductScalarFieldEnum
+    having?: DraftProductScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DraftProductCountAggregateInputType | true
+    _min?: DraftProductMinAggregateInputType
+    _max?: DraftProductMaxAggregateInputType
+  }
+
+  export type DraftProductGroupByOutputType = {
+    id: string
+    createdById: string
+    name: string | null
+    payload: JsonValue
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
+    _count: DraftProductCountAggregateOutputType | null
+    _min: DraftProductMinAggregateOutputType | null
+    _max: DraftProductMaxAggregateOutputType | null
+  }
+
+  type GetDraftProductGroupByPayload<T extends DraftProductGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DraftProductGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DraftProductGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DraftProductGroupByOutputType[P]>
+            : GetScalarType<T[P], DraftProductGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DraftProductSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdById?: boolean
+    name?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["draftProduct"]>
+
+  export type DraftProductSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdById?: boolean
+    name?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["draftProduct"]>
+
+  export type DraftProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdById?: boolean
+    name?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["draftProduct"]>
+
+  export type DraftProductSelectScalar = {
+    id?: boolean
+    createdById?: boolean
+    name?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+  }
+
+  export type DraftProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdById" | "name" | "payload" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["draftProduct"]>
+  export type DraftProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DraftProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DraftProductIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $DraftProductPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DraftProduct"
+    objects: {
+      createdBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      createdById: string
+      name: string | null
+      payload: Prisma.JsonValue
+      createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
+    }, ExtArgs["result"]["draftProduct"]>
+    composites: {}
+  }
+
+  type DraftProductGetPayload<S extends boolean | null | undefined | DraftProductDefaultArgs> = $Result.GetResult<Prisma.$DraftProductPayload, S>
+
+  type DraftProductCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DraftProductFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DraftProductCountAggregateInputType | true
+    }
+
+  export interface DraftProductDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DraftProduct'], meta: { name: 'DraftProduct' } }
+    /**
+     * Find zero or one DraftProduct that matches the filter.
+     * @param {DraftProductFindUniqueArgs} args - Arguments to find a DraftProduct
+     * @example
+     * // Get one DraftProduct
+     * const draftProduct = await prisma.draftProduct.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DraftProductFindUniqueArgs>(args: SelectSubset<T, DraftProductFindUniqueArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DraftProduct that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DraftProductFindUniqueOrThrowArgs} args - Arguments to find a DraftProduct
+     * @example
+     * // Get one DraftProduct
+     * const draftProduct = await prisma.draftProduct.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DraftProductFindUniqueOrThrowArgs>(args: SelectSubset<T, DraftProductFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DraftProduct that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DraftProductFindFirstArgs} args - Arguments to find a DraftProduct
+     * @example
+     * // Get one DraftProduct
+     * const draftProduct = await prisma.draftProduct.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DraftProductFindFirstArgs>(args?: SelectSubset<T, DraftProductFindFirstArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DraftProduct that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DraftProductFindFirstOrThrowArgs} args - Arguments to find a DraftProduct
+     * @example
+     * // Get one DraftProduct
+     * const draftProduct = await prisma.draftProduct.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DraftProductFindFirstOrThrowArgs>(args?: SelectSubset<T, DraftProductFindFirstOrThrowArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DraftProducts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DraftProductFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DraftProducts
+     * const draftProducts = await prisma.draftProduct.findMany()
+     * 
+     * // Get first 10 DraftProducts
+     * const draftProducts = await prisma.draftProduct.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const draftProductWithIdOnly = await prisma.draftProduct.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DraftProductFindManyArgs>(args?: SelectSubset<T, DraftProductFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DraftProduct.
+     * @param {DraftProductCreateArgs} args - Arguments to create a DraftProduct.
+     * @example
+     * // Create one DraftProduct
+     * const DraftProduct = await prisma.draftProduct.create({
+     *   data: {
+     *     // ... data to create a DraftProduct
+     *   }
+     * })
+     * 
+     */
+    create<T extends DraftProductCreateArgs>(args: SelectSubset<T, DraftProductCreateArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DraftProducts.
+     * @param {DraftProductCreateManyArgs} args - Arguments to create many DraftProducts.
+     * @example
+     * // Create many DraftProducts
+     * const draftProduct = await prisma.draftProduct.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DraftProductCreateManyArgs>(args?: SelectSubset<T, DraftProductCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DraftProducts and returns the data saved in the database.
+     * @param {DraftProductCreateManyAndReturnArgs} args - Arguments to create many DraftProducts.
+     * @example
+     * // Create many DraftProducts
+     * const draftProduct = await prisma.draftProduct.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DraftProducts and only return the `id`
+     * const draftProductWithIdOnly = await prisma.draftProduct.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DraftProductCreateManyAndReturnArgs>(args?: SelectSubset<T, DraftProductCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DraftProduct.
+     * @param {DraftProductDeleteArgs} args - Arguments to delete one DraftProduct.
+     * @example
+     * // Delete one DraftProduct
+     * const DraftProduct = await prisma.draftProduct.delete({
+     *   where: {
+     *     // ... filter to delete one DraftProduct
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DraftProductDeleteArgs>(args: SelectSubset<T, DraftProductDeleteArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DraftProduct.
+     * @param {DraftProductUpdateArgs} args - Arguments to update one DraftProduct.
+     * @example
+     * // Update one DraftProduct
+     * const draftProduct = await prisma.draftProduct.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DraftProductUpdateArgs>(args: SelectSubset<T, DraftProductUpdateArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DraftProducts.
+     * @param {DraftProductDeleteManyArgs} args - Arguments to filter DraftProducts to delete.
+     * @example
+     * // Delete a few DraftProducts
+     * const { count } = await prisma.draftProduct.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DraftProductDeleteManyArgs>(args?: SelectSubset<T, DraftProductDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DraftProducts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DraftProductUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DraftProducts
+     * const draftProduct = await prisma.draftProduct.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DraftProductUpdateManyArgs>(args: SelectSubset<T, DraftProductUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DraftProducts and returns the data updated in the database.
+     * @param {DraftProductUpdateManyAndReturnArgs} args - Arguments to update many DraftProducts.
+     * @example
+     * // Update many DraftProducts
+     * const draftProduct = await prisma.draftProduct.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DraftProducts and only return the `id`
+     * const draftProductWithIdOnly = await prisma.draftProduct.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DraftProductUpdateManyAndReturnArgs>(args: SelectSubset<T, DraftProductUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DraftProduct.
+     * @param {DraftProductUpsertArgs} args - Arguments to update or create a DraftProduct.
+     * @example
+     * // Update or create a DraftProduct
+     * const draftProduct = await prisma.draftProduct.upsert({
+     *   create: {
+     *     // ... data to create a DraftProduct
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DraftProduct we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DraftProductUpsertArgs>(args: SelectSubset<T, DraftProductUpsertArgs<ExtArgs>>): Prisma__DraftProductClient<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DraftProducts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DraftProductCountArgs} args - Arguments to filter DraftProducts to count.
+     * @example
+     * // Count the number of DraftProducts
+     * const count = await prisma.draftProduct.count({
+     *   where: {
+     *     // ... the filter for the DraftProducts we want to count
+     *   }
+     * })
+    **/
+    count<T extends DraftProductCountArgs>(
+      args?: Subset<T, DraftProductCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DraftProductCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DraftProduct.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DraftProductAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DraftProductAggregateArgs>(args: Subset<T, DraftProductAggregateArgs>): Prisma.PrismaPromise<GetDraftProductAggregateType<T>>
+
+    /**
+     * Group by DraftProduct.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DraftProductGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DraftProductGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DraftProductGroupByArgs['orderBy'] }
+        : { orderBy?: DraftProductGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DraftProductGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDraftProductGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DraftProduct model
+   */
+  readonly fields: DraftProductFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DraftProduct.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DraftProductClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DraftProduct model
+   */
+  interface DraftProductFieldRefs {
+    readonly id: FieldRef<"DraftProduct", 'String'>
+    readonly createdById: FieldRef<"DraftProduct", 'String'>
+    readonly name: FieldRef<"DraftProduct", 'String'>
+    readonly payload: FieldRef<"DraftProduct", 'Json'>
+    readonly createdAt: FieldRef<"DraftProduct", 'DateTime'>
+    readonly updatedAt: FieldRef<"DraftProduct", 'DateTime'>
+    readonly deletedAt: FieldRef<"DraftProduct", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DraftProduct findUnique
+   */
+  export type DraftProductFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * Filter, which DraftProduct to fetch.
+     */
+    where: DraftProductWhereUniqueInput
+  }
+
+  /**
+   * DraftProduct findUniqueOrThrow
+   */
+  export type DraftProductFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * Filter, which DraftProduct to fetch.
+     */
+    where: DraftProductWhereUniqueInput
+  }
+
+  /**
+   * DraftProduct findFirst
+   */
+  export type DraftProductFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * Filter, which DraftProduct to fetch.
+     */
+    where?: DraftProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DraftProducts to fetch.
+     */
+    orderBy?: DraftProductOrderByWithRelationInput | DraftProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DraftProducts.
+     */
+    cursor?: DraftProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DraftProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DraftProducts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DraftProducts.
+     */
+    distinct?: DraftProductScalarFieldEnum | DraftProductScalarFieldEnum[]
+  }
+
+  /**
+   * DraftProduct findFirstOrThrow
+   */
+  export type DraftProductFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * Filter, which DraftProduct to fetch.
+     */
+    where?: DraftProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DraftProducts to fetch.
+     */
+    orderBy?: DraftProductOrderByWithRelationInput | DraftProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DraftProducts.
+     */
+    cursor?: DraftProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DraftProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DraftProducts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DraftProducts.
+     */
+    distinct?: DraftProductScalarFieldEnum | DraftProductScalarFieldEnum[]
+  }
+
+  /**
+   * DraftProduct findMany
+   */
+  export type DraftProductFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * Filter, which DraftProducts to fetch.
+     */
+    where?: DraftProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DraftProducts to fetch.
+     */
+    orderBy?: DraftProductOrderByWithRelationInput | DraftProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DraftProducts.
+     */
+    cursor?: DraftProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DraftProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DraftProducts.
+     */
+    skip?: number
+    distinct?: DraftProductScalarFieldEnum | DraftProductScalarFieldEnum[]
+  }
+
+  /**
+   * DraftProduct create
+   */
+  export type DraftProductCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DraftProduct.
+     */
+    data: XOR<DraftProductCreateInput, DraftProductUncheckedCreateInput>
+  }
+
+  /**
+   * DraftProduct createMany
+   */
+  export type DraftProductCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DraftProducts.
+     */
+    data: DraftProductCreateManyInput | DraftProductCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DraftProduct createManyAndReturn
+   */
+  export type DraftProductCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * The data used to create many DraftProducts.
+     */
+    data: DraftProductCreateManyInput | DraftProductCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DraftProduct update
+   */
+  export type DraftProductUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DraftProduct.
+     */
+    data: XOR<DraftProductUpdateInput, DraftProductUncheckedUpdateInput>
+    /**
+     * Choose, which DraftProduct to update.
+     */
+    where: DraftProductWhereUniqueInput
+  }
+
+  /**
+   * DraftProduct updateMany
+   */
+  export type DraftProductUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DraftProducts.
+     */
+    data: XOR<DraftProductUpdateManyMutationInput, DraftProductUncheckedUpdateManyInput>
+    /**
+     * Filter which DraftProducts to update
+     */
+    where?: DraftProductWhereInput
+    /**
+     * Limit how many DraftProducts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DraftProduct updateManyAndReturn
+   */
+  export type DraftProductUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * The data used to update DraftProducts.
+     */
+    data: XOR<DraftProductUpdateManyMutationInput, DraftProductUncheckedUpdateManyInput>
+    /**
+     * Filter which DraftProducts to update
+     */
+    where?: DraftProductWhereInput
+    /**
+     * Limit how many DraftProducts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DraftProduct upsert
+   */
+  export type DraftProductUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DraftProduct to update in case it exists.
+     */
+    where: DraftProductWhereUniqueInput
+    /**
+     * In case the DraftProduct found by the `where` argument doesn't exist, create a new DraftProduct with this data.
+     */
+    create: XOR<DraftProductCreateInput, DraftProductUncheckedCreateInput>
+    /**
+     * In case the DraftProduct was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DraftProductUpdateInput, DraftProductUncheckedUpdateInput>
+  }
+
+  /**
+   * DraftProduct delete
+   */
+  export type DraftProductDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
+    /**
+     * Filter which DraftProduct to delete.
+     */
+    where: DraftProductWhereUniqueInput
+  }
+
+  /**
+   * DraftProduct deleteMany
+   */
+  export type DraftProductDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DraftProducts to delete
+     */
+    where?: DraftProductWhereInput
+    /**
+     * Limit how many DraftProducts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DraftProduct without action
+   */
+  export type DraftProductDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DraftProduct
+     */
+    select?: DraftProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DraftProduct
+     */
+    omit?: DraftProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DraftProductInclude<ExtArgs> | null
   }
 
 
@@ -32991,6 +34199,19 @@ export namespace Prisma {
   export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
+  export const DraftProductScalarFieldEnum: {
+    id: 'id',
+    createdById: 'createdById',
+    name: 'name',
+    payload: 'payload',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
+  };
+
+  export type DraftProductScalarFieldEnum = (typeof DraftProductScalarFieldEnum)[keyof typeof DraftProductScalarFieldEnum]
+
+
   export const CustomerInquiryScalarFieldEnum: {
     id: 'id',
     productId: 'productId',
@@ -33210,6 +34431,13 @@ export namespace Prisma {
   };
 
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -33808,6 +35036,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleListRelationFilter
     customerInquiries?: CustomerInquiryListRelationFilter
     orderChatMessages?: OrderChatMessageListRelationFilter
+    draftProducts?: DraftProductListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -33837,6 +35066,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleOrderByRelationAggregateInput
     customerInquiries?: CustomerInquiryOrderByRelationAggregateInput
     orderChatMessages?: OrderChatMessageOrderByRelationAggregateInput
+    draftProducts?: DraftProductOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -33869,6 +35099,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleListRelationFilter
     customerInquiries?: CustomerInquiryListRelationFilter
     orderChatMessages?: OrderChatMessageListRelationFilter
+    draftProducts?: DraftProductListRelationFilter
   }, "id" | "authUserId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -34807,6 +36038,71 @@ export namespace Prisma {
     isPublished?: BoolWithAggregatesFilter<"Product"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
+  }
+
+  export type DraftProductWhereInput = {
+    AND?: DraftProductWhereInput | DraftProductWhereInput[]
+    OR?: DraftProductWhereInput[]
+    NOT?: DraftProductWhereInput | DraftProductWhereInput[]
+    id?: StringFilter<"DraftProduct"> | string
+    createdById?: StringFilter<"DraftProduct"> | string
+    name?: StringNullableFilter<"DraftProduct"> | string | null
+    payload?: JsonFilter<"DraftProduct">
+    createdAt?: DateTimeFilter<"DraftProduct"> | Date | string
+    updatedAt?: DateTimeFilter<"DraftProduct"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"DraftProduct"> | Date | string | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type DraftProductOrderByWithRelationInput = {
+    id?: SortOrder
+    createdById?: SortOrder
+    name?: SortOrderInput | SortOrder
+    payload?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type DraftProductWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DraftProductWhereInput | DraftProductWhereInput[]
+    OR?: DraftProductWhereInput[]
+    NOT?: DraftProductWhereInput | DraftProductWhereInput[]
+    createdById?: StringFilter<"DraftProduct"> | string
+    name?: StringNullableFilter<"DraftProduct"> | string | null
+    payload?: JsonFilter<"DraftProduct">
+    createdAt?: DateTimeFilter<"DraftProduct"> | Date | string
+    updatedAt?: DateTimeFilter<"DraftProduct"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"DraftProduct"> | Date | string | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type DraftProductOrderByWithAggregationInput = {
+    id?: SortOrder
+    createdById?: SortOrder
+    name?: SortOrderInput | SortOrder
+    payload?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    _count?: DraftProductCountOrderByAggregateInput
+    _max?: DraftProductMaxOrderByAggregateInput
+    _min?: DraftProductMinOrderByAggregateInput
+  }
+
+  export type DraftProductScalarWhereWithAggregatesInput = {
+    AND?: DraftProductScalarWhereWithAggregatesInput | DraftProductScalarWhereWithAggregatesInput[]
+    OR?: DraftProductScalarWhereWithAggregatesInput[]
+    NOT?: DraftProductScalarWhereWithAggregatesInput | DraftProductScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DraftProduct"> | string
+    createdById?: StringWithAggregatesFilter<"DraftProduct"> | string
+    name?: StringNullableWithAggregatesFilter<"DraftProduct"> | string | null
+    payload?: JsonWithAggregatesFilter<"DraftProduct">
+    createdAt?: DateTimeWithAggregatesFilter<"DraftProduct"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"DraftProduct"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"DraftProduct"> | Date | string | null
   }
 
   export type CustomerInquiryWhereInput = {
@@ -36025,6 +37321,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -36053,6 +37350,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -36081,6 +37379,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -36109,6 +37408,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -37199,6 +38499,75 @@ export namespace Prisma {
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DraftProductCreateInput = {
+    id?: string
+    name?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    createdBy: UserCreateNestedOneWithoutDraftProductsInput
+  }
+
+  export type DraftProductUncheckedCreateInput = {
+    id?: string
+    createdById: string
+    name?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type DraftProductUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: UserUpdateOneRequiredWithoutDraftProductsNestedInput
+  }
+
+  export type DraftProductUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DraftProductCreateManyInput = {
+    id?: string
+    createdById: string
+    name?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type DraftProductUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DraftProductUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CustomerInquiryCreateInput = {
@@ -38613,6 +39982,12 @@ export namespace Prisma {
     none?: OrderChatMessageWhereInput
   }
 
+  export type DraftProductListRelationFilter = {
+    every?: DraftProductWhereInput
+    some?: DraftProductWhereInput
+    none?: DraftProductWhereInput
+  }
+
   export type StockRequestOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -38634,6 +40009,10 @@ export namespace Prisma {
   }
 
   export type OrderChatMessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DraftProductOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -39712,6 +41091,83 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type DraftProductCountOrderByAggregateInput = {
+    id?: SortOrder
+    createdById?: SortOrder
+    name?: SortOrder
+    payload?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type DraftProductMaxOrderByAggregateInput = {
+    id?: SortOrder
+    createdById?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type DraftProductMinOrderByAggregateInput = {
+    id?: SortOrder
+    createdById?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type EnumInquiryStatusFilter<$PrismaModel = never> = {
@@ -40793,6 +42249,13 @@ export namespace Prisma {
     connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
   }
 
+  export type DraftProductCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<DraftProductCreateWithoutCreatedByInput, DraftProductUncheckedCreateWithoutCreatedByInput> | DraftProductCreateWithoutCreatedByInput[] | DraftProductUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: DraftProductCreateOrConnectWithoutCreatedByInput | DraftProductCreateOrConnectWithoutCreatedByInput[]
+    createMany?: DraftProductCreateManyCreatedByInputEnvelope
+    connect?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+  }
+
   export type LeadUncheckedCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<LeadCreateWithoutCreatedByInput, LeadUncheckedCreateWithoutCreatedByInput> | LeadCreateWithoutCreatedByInput[] | LeadUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: LeadCreateOrConnectWithoutCreatedByInput | LeadCreateOrConnectWithoutCreatedByInput[]
@@ -40882,6 +42345,13 @@ export namespace Prisma {
     connectOrCreate?: OrderChatMessageCreateOrConnectWithoutSenderInput | OrderChatMessageCreateOrConnectWithoutSenderInput[]
     createMany?: OrderChatMessageCreateManySenderInputEnvelope
     connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+  }
+
+  export type DraftProductUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<DraftProductCreateWithoutCreatedByInput, DraftProductUncheckedCreateWithoutCreatedByInput> | DraftProductCreateWithoutCreatedByInput[] | DraftProductUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: DraftProductCreateOrConnectWithoutCreatedByInput | DraftProductCreateOrConnectWithoutCreatedByInput[]
+    createMany?: DraftProductCreateManyCreatedByInputEnvelope
+    connect?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
   }
 
   export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -41088,6 +42558,20 @@ export namespace Prisma {
     deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
   }
 
+  export type DraftProductUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<DraftProductCreateWithoutCreatedByInput, DraftProductUncheckedCreateWithoutCreatedByInput> | DraftProductCreateWithoutCreatedByInput[] | DraftProductUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: DraftProductCreateOrConnectWithoutCreatedByInput | DraftProductCreateOrConnectWithoutCreatedByInput[]
+    upsert?: DraftProductUpsertWithWhereUniqueWithoutCreatedByInput | DraftProductUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: DraftProductCreateManyCreatedByInputEnvelope
+    set?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    disconnect?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    delete?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    connect?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    update?: DraftProductUpdateWithWhereUniqueWithoutCreatedByInput | DraftProductUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: DraftProductUpdateManyWithWhereWithoutCreatedByInput | DraftProductUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: DraftProductScalarWhereInput | DraftProductScalarWhereInput[]
+  }
+
   export type LeadUncheckedUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<LeadCreateWithoutCreatedByInput, LeadUncheckedCreateWithoutCreatedByInput> | LeadCreateWithoutCreatedByInput[] | LeadUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: LeadCreateOrConnectWithoutCreatedByInput | LeadCreateOrConnectWithoutCreatedByInput[]
@@ -41268,6 +42752,20 @@ export namespace Prisma {
     update?: OrderChatMessageUpdateWithWhereUniqueWithoutSenderInput | OrderChatMessageUpdateWithWhereUniqueWithoutSenderInput[]
     updateMany?: OrderChatMessageUpdateManyWithWhereWithoutSenderInput | OrderChatMessageUpdateManyWithWhereWithoutSenderInput[]
     deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
+  }
+
+  export type DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<DraftProductCreateWithoutCreatedByInput, DraftProductUncheckedCreateWithoutCreatedByInput> | DraftProductCreateWithoutCreatedByInput[] | DraftProductUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: DraftProductCreateOrConnectWithoutCreatedByInput | DraftProductCreateOrConnectWithoutCreatedByInput[]
+    upsert?: DraftProductUpsertWithWhereUniqueWithoutCreatedByInput | DraftProductUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: DraftProductCreateManyCreatedByInputEnvelope
+    set?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    disconnect?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    delete?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    connect?: DraftProductWhereUniqueInput | DraftProductWhereUniqueInput[]
+    update?: DraftProductUpdateWithWhereUniqueWithoutCreatedByInput | DraftProductUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: DraftProductUpdateManyWithWhereWithoutCreatedByInput | DraftProductUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: DraftProductScalarWhereInput | DraftProductScalarWhereInput[]
   }
 
   export type CompanyCreateNestedOneWithoutLeadsInput = {
@@ -42174,6 +43672,20 @@ export namespace Prisma {
     update?: CustomerInquiryUpdateWithWhereUniqueWithoutProductInput | CustomerInquiryUpdateWithWhereUniqueWithoutProductInput[]
     updateMany?: CustomerInquiryUpdateManyWithWhereWithoutProductInput | CustomerInquiryUpdateManyWithWhereWithoutProductInput[]
     deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutDraftProductsInput = {
+    create?: XOR<UserCreateWithoutDraftProductsInput, UserUncheckedCreateWithoutDraftProductsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDraftProductsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutDraftProductsNestedInput = {
+    create?: XOR<UserCreateWithoutDraftProductsInput, UserUncheckedCreateWithoutDraftProductsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDraftProductsInput
+    upsert?: UserUpsertWithoutDraftProductsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDraftProductsInput, UserUpdateWithoutDraftProductsInput>, UserUncheckedUpdateWithoutDraftProductsInput>
   }
 
   export type ProductCreateNestedOneWithoutInquiriesInput = {
@@ -43290,6 +44802,29 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumInquiryStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.InquiryStatus | EnumInquiryStatusFieldRefInput<$PrismaModel>
@@ -43503,6 +45038,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCompanyInput = {
@@ -43530,6 +45066,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCompanyInput = {
@@ -44502,6 +46039,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DraftProductCreateWithoutCreatedByInput = {
+    id?: string
+    name?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type DraftProductUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    name?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type DraftProductCreateOrConnectWithoutCreatedByInput = {
+    where: DraftProductWhereUniqueInput
+    create: XOR<DraftProductCreateWithoutCreatedByInput, DraftProductUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type DraftProductCreateManyCreatedByInputEnvelope = {
+    data: DraftProductCreateManyCreatedByInput | DraftProductCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CompanyUpsertWithoutUsersInput = {
     update: XOR<CompanyUpdateWithoutUsersInput, CompanyUncheckedUpdateWithoutUsersInput>
     create: XOR<CompanyCreateWithoutUsersInput, CompanyUncheckedCreateWithoutUsersInput>
@@ -44849,6 +46414,35 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"OrderChatMessage"> | Date | string
   }
 
+  export type DraftProductUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: DraftProductWhereUniqueInput
+    update: XOR<DraftProductUpdateWithoutCreatedByInput, DraftProductUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<DraftProductCreateWithoutCreatedByInput, DraftProductUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type DraftProductUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: DraftProductWhereUniqueInput
+    data: XOR<DraftProductUpdateWithoutCreatedByInput, DraftProductUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type DraftProductUpdateManyWithWhereWithoutCreatedByInput = {
+    where: DraftProductScalarWhereInput
+    data: XOR<DraftProductUpdateManyMutationInput, DraftProductUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type DraftProductScalarWhereInput = {
+    AND?: DraftProductScalarWhereInput | DraftProductScalarWhereInput[]
+    OR?: DraftProductScalarWhereInput[]
+    NOT?: DraftProductScalarWhereInput | DraftProductScalarWhereInput[]
+    id?: StringFilter<"DraftProduct"> | string
+    createdById?: StringFilter<"DraftProduct"> | string
+    name?: StringNullableFilter<"DraftProduct"> | string | null
+    payload?: JsonFilter<"DraftProduct">
+    createdAt?: DateTimeFilter<"DraftProduct"> | Date | string
+    updatedAt?: DateTimeFilter<"DraftProduct"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"DraftProduct"> | Date | string | null
+  }
+
   export type CompanyCreateWithoutLeadsInput = {
     id?: string
     code: string
@@ -44913,6 +46507,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutLeadsCreatedInput = {
@@ -44940,6 +46535,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutLeadsCreatedInput = {
@@ -45084,6 +46680,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLeadsCreatedInput = {
@@ -45111,6 +46708,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type QuotationUpsertWithWhereUniqueWithoutLeadInput = {
@@ -45228,6 +46826,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutQuotationsCreatedInput = {
@@ -45255,6 +46854,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutQuotationsCreatedInput = {
@@ -45537,6 +47137,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutQuotationsCreatedInput = {
@@ -45564,6 +47165,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type QuotationLineItemUpsertWithWhereUniqueWithoutQuotationInput = {
@@ -45866,6 +47468,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSalesOrdersCreatedInput = {
@@ -45893,6 +47496,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSalesOrdersCreatedInput = {
@@ -46212,6 +47816,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSalesOrdersCreatedInput = {
@@ -46239,6 +47844,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type QuotationUpsertWithoutSalesOrderInput = {
@@ -47150,6 +48756,134 @@ export namespace Prisma {
     data: XOR<CustomerInquiryUpdateManyMutationInput, CustomerInquiryUncheckedUpdateManyWithoutProductInput>
   }
 
+  export type UserCreateWithoutDraftProductsInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserUncheckedCreateWithoutDraftProductsInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserCreateOrConnectWithoutDraftProductsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDraftProductsInput, UserUncheckedCreateWithoutDraftProductsInput>
+  }
+
+  export type UserUpsertWithoutDraftProductsInput = {
+    update: XOR<UserUpdateWithoutDraftProductsInput, UserUncheckedUpdateWithoutDraftProductsInput>
+    create: XOR<UserCreateWithoutDraftProductsInput, UserUncheckedCreateWithoutDraftProductsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDraftProductsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDraftProductsInput, UserUncheckedUpdateWithoutDraftProductsInput>
+  }
+
+  export type UserUpdateWithoutDraftProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDraftProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
   export type ProductCreateWithoutInquiriesInput = {
     id?: string
     slug: string
@@ -47228,6 +48962,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCustomerInquiriesInput = {
@@ -47255,6 +48990,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCustomerInquiriesInput = {
@@ -47385,6 +49121,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCustomerInquiriesInput = {
@@ -47412,6 +49149,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrderChatMessageUpsertWithWhereUniqueWithoutInquiryInput = {
@@ -47488,6 +49226,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutOrderChatMessagesInput = {
@@ -47515,6 +49254,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutOrderChatMessagesInput = {
@@ -47625,6 +49365,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrderChatMessagesInput = {
@@ -47652,6 +49393,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrderChatAttachmentUpsertWithWhereUniqueWithoutMessageInput = {
@@ -48125,6 +49867,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutStockRequestsRaisedInput = {
@@ -48152,6 +49895,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutStockRequestsRaisedInput = {
@@ -48184,6 +49928,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutStockRequestsCheckedInput = {
@@ -48211,6 +49956,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutStockRequestsCheckedInput = {
@@ -48355,6 +50101,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStockRequestsRaisedInput = {
@@ -48382,6 +50129,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutStockRequestsCheckedInput = {
@@ -48420,6 +50168,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStockRequestsCheckedInput = {
@@ -48447,6 +50196,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type StockRequestLineUpsertWithWhereUniqueWithoutStockRequestInput = {
@@ -48719,6 +50469,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutDesignRequestedInput = {
@@ -48746,6 +50497,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutDesignRequestedInput = {
@@ -48778,6 +50530,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutDesignAssignedInput = {
@@ -48805,6 +50558,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutDesignAssignedInput = {
@@ -48955,6 +50709,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDesignRequestedInput = {
@@ -48982,6 +50737,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutDesignAssignedInput = {
@@ -49020,6 +50776,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDesignAssignedInput = {
@@ -49047,6 +50804,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type DesignAssetUpsertWithWhereUniqueWithoutDesignRequestInput = {
@@ -49119,6 +50877,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutDesignAssetsUploadedInput = {
@@ -49146,6 +50905,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutDesignAssetsUploadedInput = {
@@ -49224,6 +50984,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDesignAssetsUploadedInput = {
@@ -49251,6 +51012,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type SalesOrderCreateWithoutPaymentRecordsInput = {
@@ -49398,6 +51160,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPaymentsRecordedInput = {
@@ -49425,6 +51188,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPaymentsRecordedInput = {
@@ -49600,6 +51364,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPaymentsRecordedInput = {
@@ -49627,6 +51392,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type SalesOrderCreateWithoutDeliverySchedulesInput = {
@@ -49762,6 +51528,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutDeliveryAssignedInput = {
@@ -49789,6 +51556,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutDeliveryAssignedInput = {
@@ -49821,6 +51589,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutDeliveryConfirmedInput = {
@@ -49848,6 +51617,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutDeliveryConfirmedInput = {
@@ -50011,6 +51781,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeliveryAssignedInput = {
@@ -50038,6 +51809,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutDeliveryConfirmedInput = {
@@ -50076,6 +51848,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeliveryConfirmedInput = {
@@ -50103,6 +51876,7 @@ export namespace Prisma {
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyCompanyInput = {
@@ -50219,6 +51993,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyInput = {
@@ -50246,6 +52021,7 @@ export namespace Prisma {
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCompanyInput = {
@@ -50685,6 +52461,15 @@ export namespace Prisma {
     senderRole: string
     body?: string | null
     createdAt?: Date | string
+  }
+
+  export type DraftProductCreateManyCreatedByInput = {
+    id?: string
+    name?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type LeadUpdateWithoutCreatedByInput = {
@@ -51261,6 +53046,33 @@ export namespace Prisma {
     senderRole?: StringFieldUpdateOperationsInput | string
     body?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DraftProductUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DraftProductUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type DraftProductUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type QuotationCreateManyLeadInput = {

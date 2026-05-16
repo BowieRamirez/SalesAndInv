@@ -107,8 +107,8 @@ type ReservedMaterialRow = {
 
 const OPERATIONS_TABS = new Set([
   "design", "new-products", "finished-products", "storefront-filters",
-  "approvals", "delivery",
-  "locations", "all-stocks", "reserved", "damaged-materials", "inv-approvals", "audit",
+  "locations", "all-stocks", "reserved", "damaged-materials",
+  "inv-approvals", "approvals", "delivery", "audit",
 ])
 
 function getSearchValue(value?: string | string[]) {
@@ -784,7 +784,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
 
   return (
     <main className="min-h-screen overflow-auto bg-[#fcfcfc] p-8">
-      <div className="mx-auto max-w-7xl space-y-8">
+      <div className="mx-auto max-w-[1600px] space-y-8">
         <div>
           <h1 className="text-[28px] font-semibold text-[#111827]">Operations Product Workspace</h1>
         </div>

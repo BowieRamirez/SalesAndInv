@@ -4,7 +4,7 @@ import { Prisma, prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
-  const url = new URL("/inventory", request.url)
+  const url = new URL("/operations", request.url)
   url.searchParams.set("tab", "all-stocks")
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
@@ -14,8 +14,8 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["INVENTORY", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
-    return buildRedirect(request, "Only inventory or executive admins can add stock.", "error")
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+    return buildRedirect(request, "Only operations or executive admins can add stock.", "error")
   }
 
   const requestOrigin = request.headers.get("origin")
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
       }
     })
 
-    revalidatePath("/inventory")
+    revalidatePath("/operations")
     return buildRedirect(request, `Successfully restocked ${updates.length} raw materials.`, "success")
   } catch (error) {
     const message = error instanceof Error && error.message ? error.message : "Neon DB could not process the bulk restock."
