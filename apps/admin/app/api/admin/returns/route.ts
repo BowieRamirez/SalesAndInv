@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { approveReturnRequest, completeReturnRequest } from "@furnitrack/db"
+import { approveReturnRequest, completeReturnRequest, logAudit } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     return buildRedirect(request, "Your session could not be confirmed. Please sign in again.", "error")
   }
 
-  if (!["SALES", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["SALES", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only sales or executive admins can manage returns.", "error")
   }
 
@@ -62,6 +62,19 @@ export async function POST(request: Request) {
       revalidatePath("/sales")
       revalidatePath("/account/status")
 
+      if (updatedRows > 0) {
+        await logAudit({
+          actorId: currentUser.authUserId,
+          action: "RETURN_ACCEPTED",
+          entityType: "RETURN_REQUEST",
+          entityId: returnRequestId,
+          metadata: {
+            stage: "APPROVED",
+            salesNote,
+          },
+        })
+      }
+
       return buildRedirect(
         request,
         updatedRows > 0 ? "Return approved and pickup schedule saved." : "That return is no longer waiting for approval.",
@@ -79,6 +92,19 @@ export async function POST(request: Request) {
       revalidatePath("/sales")
       revalidatePath("/account/status")
       revalidatePath("/inventory")
+
+      if (updatedRows > 0) {
+        await logAudit({
+          actorId: currentUser.authUserId,
+          action: "RETURN_ACCEPTED",
+          entityType: "RETURN_REQUEST",
+          entityId: returnRequestId,
+          metadata: {
+            stage: "COMPLETED",
+            salesNote,
+          },
+        })
+      }
 
       return buildRedirect(
         request,

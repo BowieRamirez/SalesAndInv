@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     return buildRedirect(request, "Your session could not be confirmed. Please sign in again.", "error")
   }
 
-  if (!["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only operations or executive admins can approve this step.", "error")
   }
 

@@ -747,7 +747,7 @@ export const dynamic = "force-dynamic"
 export default async function OperationsDashboard({ searchParams }: OperationsPageProps) {
   const currentUser = await requireAuthenticatedAppUser()
 
-  if (!["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     redirect(ROLE_REDIRECT[currentUser.role])
   }
 

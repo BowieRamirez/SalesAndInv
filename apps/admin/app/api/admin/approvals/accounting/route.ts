@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { Prisma, prisma } from "@furnitrack/db"
+import { Prisma, prisma, logAudit } from "@furnitrack/db"
 import {
   formatAccountingPaymentMethod,
   isAccountingPaymentMethod,
@@ -218,6 +218,20 @@ export async function POST(request: Request) {
         `)
         throw reservationError
       }
+    }
+
+    if (updatedRows > 0) {
+      await logAudit({
+        actorId: currentUser.authUserId,
+        action: "PAYMENT_ACCEPTED",
+        entityType: "PAYMENT",
+        entityId: inquiryId,
+        metadata: {
+          paymentMethod: paymentMethodLabel,
+          paymentStatus: paymentStatusValue,
+          paidAmount: paidAmountValue,
+        },
+      })
     }
 
     revalidatePath("/accounting")

@@ -14,7 +14,7 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only operations or executive admins can add stock.", "error")
   }
 
@@ -104,8 +104,8 @@ export async function POST(request: Request) {
           VALUES (
             gen_random_uuid(),
             ${currentUser.id},
-            'USER_UPDATED'::"AuditAction",
-            'USER'::"AuditEntityType",
+            'STOCK_ADDED'::"AuditAction",
+            'STOCK'::"AuditEntityType",
             ${stockItemId},
             ${JSON.stringify({
               auditLabel: "RAW_MATERIAL_STOCK_ADDED",

@@ -21,11 +21,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.2
+ * Prisma Client JS version: 6.19.3
  * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
  */
 Prisma.prismaVersion = {
-  client: "6.19.2",
+  client: "6.19.3",
   engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
 }
 
@@ -146,7 +146,8 @@ exports.Prisma.UserScalarFieldEnum = {
   accessExpiresAt: 'accessExpiresAt',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  permissions: 'permissions'
 };
 
 exports.Prisma.LeadScalarFieldEnum = {
@@ -464,6 +465,42 @@ exports.Prisma.StorefrontCategoryScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AdminAccountArchiveScalarFieldEnum = {
+  id: 'id',
+  originalUserId: 'originalUserId',
+  name: 'name',
+  email: 'email',
+  role: 'role',
+  archivedAt: 'archivedAt'
+};
+
+exports.Prisma.AdminActionArchiveScalarFieldEnum = {
+  id: 'id',
+  archiveId: 'archiveId',
+  actionType: 'actionType',
+  description: 'description',
+  performedAt: 'performedAt',
+  metadata: 'metadata'
+};
+
+exports.Prisma.ReturnRequestScalarFieldEnum = {
+  id: 'id',
+  inquiryId: 'inquiryId',
+  customerUserId: 'customerUserId',
+  status: 'status',
+  reason: 'reason',
+  details: 'details',
+  imageUrls: 'imageUrls',
+  salesNote: 'salesNote',
+  pickupScheduledAt: 'pickupScheduledAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  completedById: 'completedById',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -505,6 +542,7 @@ exports.UserRole = exports.$Enums.UserRole = {
   INVENTORY: 'INVENTORY',
   ACCOUNTING: 'ACCOUNTING',
   OPERATIONS_DESIGN: 'OPERATIONS_DESIGN',
+  CUSTOM: 'CUSTOM',
   CLIENT: 'CLIENT'
 };
 
@@ -688,7 +726,17 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   STOCK_REQUEST_APPROVED: 'STOCK_REQUEST_APPROVED',
   STOCK_REQUEST_REJECTED: 'STOCK_REQUEST_REJECTED',
   PAYMENT_UPDATED: 'PAYMENT_UPDATED',
-  DELIVERY_SCHEDULE_CHANGED: 'DELIVERY_SCHEDULE_CHANGED'
+  DELIVERY_SCHEDULE_CHANGED: 'DELIVERY_SCHEDULE_CHANGED',
+  PAYMENT_ACCEPTED: 'PAYMENT_ACCEPTED',
+  RETURN_ACCEPTED: 'RETURN_ACCEPTED',
+  CHAT_MESSAGE_SENT: 'CHAT_MESSAGE_SENT',
+  INVENTORY_REQUESTED: 'INVENTORY_REQUESTED',
+  STOCK_ADDED: 'STOCK_ADDED',
+  STOCK_REMOVED: 'STOCK_REMOVED',
+  BUILDING_APPROVED: 'BUILDING_APPROVED',
+  DELIVERY_SCHEDULED: 'DELIVERY_SCHEDULED',
+  PRODUCT_CREATED: 'PRODUCT_CREATED',
+  PRODUCT_UPDATED: 'PRODUCT_UPDATED'
 };
 
 exports.AuditEntityType = exports.$Enums.AuditEntityType = {
@@ -698,7 +746,13 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   SALES_ORDER: 'SALES_ORDER',
   STOCK_REQUEST: 'STOCK_REQUEST',
   PAYMENT: 'PAYMENT',
-  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE',
+  RETURN_REQUEST: 'RETURN_REQUEST',
+  CHAT: 'CHAT',
+  INVENTORY: 'INVENTORY',
+  STOCK: 'STOCK',
+  BUILDING_PROJECT: 'BUILDING_PROJECT',
+  PRODUCT: 'PRODUCT'
 };
 
 exports.Prisma.ModelName = {
@@ -726,7 +780,10 @@ exports.Prisma.ModelName = {
   DeliverySchedule: 'DeliverySchedule',
   ApprovalHistory: 'ApprovalHistory',
   AuditLog: 'AuditLog',
-  StorefrontCategory: 'StorefrontCategory'
+  StorefrontCategory: 'StorefrontCategory',
+  AdminAccountArchive: 'AdminAccountArchive',
+  AdminActionArchive: 'AdminActionArchive',
+  ReturnRequest: 'ReturnRequest'
 };
 
 /**

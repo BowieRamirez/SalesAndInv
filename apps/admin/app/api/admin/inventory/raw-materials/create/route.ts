@@ -38,7 +38,7 @@ async function generateRawMaterialSku() {
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only operations or executive admins can add raw materials.", "error")
   }
 

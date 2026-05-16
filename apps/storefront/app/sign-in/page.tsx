@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { SharedLoginPage } from "@furnitrack/ui"
 import { UserPlus } from "lucide-react"
@@ -12,6 +12,7 @@ type AppRole =
   | "INVENTORY"
   | "ACCOUNTING"
   | "OPERATIONS_DESIGN"
+  | "CUSTOM"
   | "CLIENT"
 
 const ROLE_REDIRECT: Record<AppRole, string> = {
@@ -20,6 +21,7 @@ const ROLE_REDIRECT: Record<AppRole, string> = {
   INVENTORY: "/inventory",
   ACCOUNTING: "/accounting",
   OPERATIONS_DESIGN: "/operations",
+  CUSTOM: "/",
   CLIENT: "/",
 }
 
@@ -36,6 +38,7 @@ function normalizeAppRole(role?: string | null): AppRole {
     normalized === "INVENTORY" ||
     normalized === "ACCOUNTING" ||
     normalized === "OPERATIONS_DESIGN" ||
+    normalized === "CUSTOM" ||
     normalized === "CLIENT"
   ) {
     return normalized

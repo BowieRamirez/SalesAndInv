@@ -15,7 +15,7 @@ function forbidden(message: string, status = 403) {
 async function requireOperationsUser() {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return null
   }
 

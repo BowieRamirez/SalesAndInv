@@ -3,6 +3,7 @@ export const APP_ROLES = [
   "SALES",
   "ACCOUNTING",
   "OPERATIONS_DESIGN",
+  "CUSTOM",
   "CLIENT",
 ] as const
 
@@ -33,6 +34,7 @@ export const ROLE_REDIRECT: Record<AppRole, string> = {
   SALES: "/sales",
   ACCOUNTING: "/accounting",
   OPERATIONS_DESIGN: "/operations",
+  CUSTOM: "/",
   CLIENT: "/",
 }
 
@@ -41,6 +43,7 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   SALES: "Sales",
   ACCOUNTING: "Accounting",
   OPERATIONS_DESIGN: "Operations / Design",
+  CUSTOM: "Custom Admin",
   CLIENT: "Client",
 }
 
@@ -86,6 +89,7 @@ export const ROLE_PERMISSION_MATRIX: Record<AppRole, string[]> = {
     "portal.approve_quotation",
     "portal.approve_sales_order_outline",
   ],
+  CUSTOM: [],
 }
 
 export function canAccessCompanyScopedRecord(params: {

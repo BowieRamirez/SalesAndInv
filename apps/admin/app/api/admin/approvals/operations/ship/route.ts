@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { setInquiryShippingSchedule, updateInquiryWorkflowStatus } from "@/lib/inquiries"
+import { logAudit } from "@furnitrack/db"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/operations", request.url)
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
     return buildRedirect(request, "Your session could not be confirmed. Please sign in again.", "error")
   }
 
-  if (!["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only operations or executive admins can complete shipping.", "error")
   }
 
@@ -67,6 +68,20 @@ export async function POST(request: Request) {
     revalidatePath("/operations")
     revalidatePath("/sales")
     revalidatePath("/account/status")
+
+    if (updatedRows > 0) {
+      await logAudit({
+        actorId: currentUser.authUserId,
+        action: "DELIVERY_SCHEDULED",
+        entityType: "DELIVERY_SCHEDULE",
+        entityId: inquiryId,
+        metadata: {
+          submitMode,
+          statusNote,
+          shippingScheduledAt: submitMode === "schedule" ? shippingScheduledAtRaw : undefined,
+        },
+      })
+    }
 
     return buildRedirect(
       request,

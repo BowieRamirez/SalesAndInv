@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
+import { logAudit, prisma } from "@furnitrack/db"
 import { APP_ROLES, type AppRole } from "@/lib/rbac"
 
 const INTERNAL_ROLES = APP_ROLES.filter((role) => role !== "CLIENT")
@@ -79,6 +79,7 @@ async function syncManagedUserRecord(params: {
   email: string
   name: string
   role: AppRole
+  permissions?: Record<string, boolean> | null
 }) {
   const existingUser = await prisma.user.findFirst({
     where: {
@@ -97,6 +98,7 @@ async function syncManagedUserRecord(params: {
         role: params.role,
         status: "ACTIVE",
         companyId: null,
+        permissions: params.permissions ? params.permissions : undefined,
       },
     })
 
@@ -112,6 +114,7 @@ async function syncManagedUserRecord(params: {
       role: params.role,
       status: "ACTIVE",
       companyId: null,
+      permissions: params.permissions ? params.permissions : undefined,
     },
   })
 }
@@ -141,6 +144,16 @@ export async function POST(request: Request) {
     .toLowerCase()
   const password = String(formData.get("password") ?? "")
   const role = normalizeStaffRole(formData.get("role"))
+
+  let permissions: Record<string, boolean> | null = null
+  if (role === "CUSTOM") {
+    permissions = { audit: true }
+    for (const [key, value] of formData.entries()) {
+      if (key.startsWith("tab_") && value === "on") {
+        permissions[key.replace("tab_", "")] = true
+      }
+    }
+  }
 
   if (!name || !email || !password || !role) {
     return buildRedirect(
@@ -228,6 +241,20 @@ export async function POST(request: Request) {
       email,
       name,
       role,
+      permissions,
+    })
+
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "USER_CREATED",
+      entityType: "USER",
+      entityId: authIdentity.authUserId,
+      metadata: {
+        createdEmail: email,
+        createdName: name,
+        assignedRole: role,
+        permissions,
+      },
     })
 
     revalidatePath("/users")

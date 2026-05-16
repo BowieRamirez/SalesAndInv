@@ -1,8 +1,8 @@
 import { revalidatePath } from "next/cache"
 import { randomBytes, scryptSync } from "node:crypto"
 import { NextResponse } from "next/server"
-import { Prisma, prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
+import { logAudit, Prisma, prisma } from "@furnitrack/db"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/users", request.url)
@@ -61,6 +61,17 @@ export async function POST(request: Request) {
     if (updatedRows === 0) {
       return buildRedirect(request, "No credential login record was found for that account.", "error")
     }
+
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "USER_UPDATED",
+      entityType: "USER",
+      entityId: authUserId,
+      metadata: {
+        updatedEmail: email,
+        changed: "PASSWORD",
+      },
+    })
 
     revalidatePath("/users")
     return buildRedirect(request, `Password updated for ${email}.`, "success")

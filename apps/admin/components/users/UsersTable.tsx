@@ -23,6 +23,7 @@ export type ManagedAccount = {
   createdAt: string | null
   updatedAt: string | null
   company?: string | null
+  permissions?: Record<string, boolean> | null
 }
 
 export type RoleOption = {
@@ -213,6 +214,11 @@ export function UsersTable({
                 const isCurrentUser = account.authUserId === currentAuthUserId
                 const isExpanded = expandedId === account.authUserId
                 const isExecutive = account.role === "ADMIN_MANAGEMENT"
+                
+                const baselineAccounts = ['admin@sims.com', 'sales@sims.com', 'operations@sims.com', 'accounting@sims.com']
+                const isBaseline = baselineAccounts.includes(account.email)
+                const isCustomizable = !isBaseline && (account.role === "SALES" || account.role === "OPERATIONS_DESIGN" || account.role === "CUSTOM")
+                
                 const editableRoles = isCurrentUser ? internalRoleOptions : staffRoleOptions
                 const expandColSpan = variant === "customer" ? 8 : 7
 
@@ -324,7 +330,100 @@ export function UsersTable({
                                   {isExecutive ? "Locked" : "Save"}
                                 </button>
                               </div>
-                              <p className="mt-2 text-[11px] text-slate-500">
+                              {isCustomizable && (
+                                <div className="mt-4 pt-4 border-t border-slate-100">
+                                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                                    Custom Admin Permissions
+                                  </p>
+                                  
+                                  <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 text-[13px] text-slate-700">
+                                    {/* Sales Permissions */}
+                                    {(account.role === "SALES" || account.role === "CUSTOM") ? (
+                                      <div>
+                                        <p className="mb-2 text-[11px] font-bold text-slate-400">SALES PAGES</p>
+                                        <div className="flex flex-col gap-2">
+                                          <label className="flex items-center gap-2">
+                                            <input type="checkbox" name="tab_lead" defaultChecked={account.permissions?.lead ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                            Dashboard (Lead)
+                                          </label>
+                                          <label className="flex items-center gap-2">
+                                            <input type="checkbox" name="tab_sales_approvals" defaultChecked={account.permissions?.sales_approvals ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                            Approvals
+                                          </label>
+                                          <label className="flex items-center gap-2">
+                                            <input type="checkbox" name="tab_returns" defaultChecked={account.permissions?.returns ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                            Returns
+                                          </label>
+                                          <label className="flex items-center gap-2">
+                                            <input type="checkbox" name="tab_orders" defaultChecked={account.permissions?.orders ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                            Sales Orders
+                                          </label>
+                                          <label className="flex items-center gap-2">
+                                            <input type="checkbox" name="tab_chats" defaultChecked={account.permissions?.chats ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                            Order Chats
+                                          </label>
+                                        </div>
+                                      </div>
+                                    ) : null}
+
+                                    {(account.role === "OPERATIONS_DESIGN" || account.role === "CUSTOM") ? (
+                                      <>
+                                        {/* Operations - Products & Warehouse */}
+                                        <div>
+                                          <p className="mb-2 text-[11px] font-bold text-slate-400">OPERATIONS - PRODUCTS & WAREHOUSE</p>
+                                          <div className="flex flex-col gap-2">
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_finished-products" defaultChecked={account.permissions?.['finished-products'] ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              Finished Products
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_locations" defaultChecked={account.permissions?.locations ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              Warehouse Locations
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_all-stocks" defaultChecked={account.permissions?.['all-stocks'] ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              All Stocks
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_reserved" defaultChecked={account.permissions?.reserved ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              Reserved Materials
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_damaged-materials" defaultChecked={account.permissions?.['damaged-materials'] ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              Damaged Materials
+                                            </label>
+                                          </div>
+                                        </div>
+
+                                        {/* Operations - Approvals & Delivery */}
+                                        <div>
+                                          <p className="mb-2 text-[11px] font-bold text-slate-400">OPERATIONS - APPROVALS & DELIVERY</p>
+                                          <div className="flex flex-col gap-2">
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_inv-approvals" defaultChecked={account.permissions?.['inv-approvals'] ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              Inventory Approvals
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_ops_approvals" defaultChecked={account.permissions?.ops_approvals ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              Approvals
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                              <input type="checkbox" name="tab_delivery" defaultChecked={account.permissions?.delivery ?? true} className="rounded border-slate-300 w-4 h-4" />
+                                              Delivery Schedule
+                                            </label>
+                                            <label className="flex items-center gap-2 text-slate-400" title="Always included">
+                                              <input type="checkbox" disabled checked className="rounded border-slate-300 w-4 h-4" />
+                                              Audit Logs (Always Included)
+                                            </label>
+                                          </div>
+                                        </div>
+                                      </>
+                                    ) : null}
+                                  </div>
+                                  <p className="mt-2 text-[11px] text-slate-500">Uncheck to restrict access. Leave checked to grant access.</p>
+                                </div>
+                              )}
+                              <p className="mt-3 text-[11px] text-slate-500">
                                 {isExecutive
                                   ? "This protected executive account cannot be edited here."
                                   : "Admin / Management is reserved for the executive account."}

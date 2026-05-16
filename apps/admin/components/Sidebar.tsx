@@ -62,10 +62,11 @@ const navConfigs: Record<AppRole, NavConfig> = {
       { name: "Admin Access", href: "/users", icon: Users },
       { name: "Customers", href: "/customers", icon: Users },
       { name: "Reports", href: "/analytics", icon: BarChart3 },
+      { name: "Archives", href: "/archives", icon: History },
     ],
     roleLabel: "Admin / Management",
     color: "bg-[#34384d]",
-    allowedPaths: ["/", "/approvals", "/users", "/customers", "/analytics"],
+    allowedPaths: ["/", "/approvals", "/users", "/customers", "/analytics", "/archives"],
     defaultHref: "/",
   },
   SALES: {
@@ -132,6 +133,14 @@ const navConfigs: Record<AppRole, NavConfig> = {
     allowedPaths: ["/operations"],
     defaultHref: "/operations?tab=finished-products",
   },
+  CUSTOM: {
+    links: [],
+    groups: [],
+    roleLabel: "Custom Admin",
+    color: "bg-purple-500",
+    allowedPaths: ["/sales", "/operations"],
+    defaultHref: "/",
+  },
   CLIENT: {
     links: [],
     roleLabel: "Client",
@@ -144,6 +153,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
 type SidebarUser = {
   name: string
   role: AppRole
+  permissions?: Record<string, boolean> | null
 }
 
 function getInitials(name: string) {
@@ -496,7 +506,69 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
   const dragX = useMotionValue(0);
   const dragOpacity = useTransform(dragX, [-200, 0], [0, 1]);
 
-  const config = navConfigs[currentUser.role];
+  const baseConfig = navConfigs[currentUser.role];
+
+  const config = React.useMemo(() => {
+    if (!currentUser.permissions) return baseConfig;
+
+    const p = currentUser.permissions;
+    const cloned = { ...baseConfig, links: [...baseConfig.links], groups: baseConfig.groups ? [...baseConfig.groups] : undefined };
+
+    if (currentUser.role === "SALES" || currentUser.role === "CUSTOM") {
+      const salesConfig = navConfigs["SALES"];
+      const salesLinks = salesConfig.links?.filter(l => {
+        if (!p) return true;
+        if (l.tab === "approvals" && p.sales_approvals != null) return p.sales_approvals === true;
+        return p[l.tab] === true || (p[l.tab] == null && currentUser.role !== "CUSTOM");
+      }) ?? [];
+      
+      if (currentUser.role === "SALES") {
+        cloned.links = salesLinks;
+        if (cloned.links.length > 0) cloned.defaultHref = cloned.links[0].href;
+      } else {
+        if (!cloned.groups) cloned.groups = [];
+        if (salesLinks.length > 0) {
+          cloned.groups.push({
+            label: "Sales",
+            links: salesLinks.map(l => ({ ...l, href: `/sales?tab=${l.tab}` }))
+          });
+        }
+      }
+    }
+
+    if (currentUser.role === "OPERATIONS_DESIGN" || currentUser.role === "CUSTOM") {
+      const opsConfig = navConfigs["OPERATIONS_DESIGN"];
+      const opsGroups = opsConfig.groups?.map(g => ({ ...g, links: [...g.links] })).filter(g => {
+        g.links = g.links.filter(l => {
+          if (!p) return true;
+          if (l.tab === "audit") return true; // Audit logs always accessible
+          if (l.tab === "approvals" && p.ops_approvals != null) return p.ops_approvals === true;
+          return p[l.tab] === true || (p[l.tab] == null && currentUser.role !== "CUSTOM");
+        });
+        return g.links.length > 0;
+      }) ?? [];
+
+      if (currentUser.role === "OPERATIONS_DESIGN") {
+        cloned.groups = opsGroups;
+        const allLinks = cloned.groups.flatMap(g => g.links);
+        if (allLinks.length > 0) cloned.defaultHref = allLinks[0].href;
+      } else {
+        if (!cloned.groups) cloned.groups = [];
+        if (opsGroups.length > 0) {
+          cloned.groups.push(...opsGroups);
+        }
+      }
+    }
+    
+    if (currentUser.role === "CUSTOM") {
+      cloned.links = []; // Use groups instead
+      const allLinks = cloned.groups?.flatMap(g => g.links) ?? [];
+      if (allLinks.length > 0) cloned.defaultHref = allLinks[0].href;
+    }
+
+    return cloned;
+  }, [baseConfig, currentUser.permissions, currentUser.role]);
+
   const links = config.groups?.flatMap((group) => group.links) ?? config.links;
   const currentTab = searchParams.get("tab") || links[0]?.tab || null;
 

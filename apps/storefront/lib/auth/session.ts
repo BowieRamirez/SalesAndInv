@@ -35,6 +35,7 @@ type AppRole =
   | "INVENTORY"
   | "ACCOUNTING"
   | "OPERATIONS_DESIGN"
+  | "CUSTOM"
   | "CLIENT"
 
 function normalizeAppRole(role?: string | null): AppRole {
@@ -46,6 +47,7 @@ function normalizeAppRole(role?: string | null): AppRole {
     normalized === "INVENTORY" ||
     normalized === "ACCOUNTING" ||
     normalized === "OPERATIONS_DESIGN" ||
+    normalized === "CUSTOM" ||
     normalized === "CLIENT"
   ) {
     return normalized

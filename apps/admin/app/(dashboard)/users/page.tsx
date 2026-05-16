@@ -3,6 +3,7 @@ import { Prisma, prisma } from "@furnitrack/db"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { APP_ROLES, ROLE_LABELS, ROLE_REDIRECT, type AppRole } from "@/lib/rbac"
 import { UsersTable, type ManagedAccount } from "@/components/users/UsersTable"
+import { AddUserForm } from "@/components/users/AddUserForm"
 
 type UsersPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -18,6 +19,7 @@ type ManagedAccountRow = {
   lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  permissions: any | null
 }
 
 const INTERNAL_ROLES = APP_ROLES.filter((role) => role !== "CLIENT")
@@ -29,6 +31,7 @@ const AUTH_ROLE_CASE_SQL = Prisma.sql`
     WHEN auth.role = 'SALES' THEN 'SALES'
     WHEN auth.role IN ('INVENTORY', 'OPERATIONS_DESIGN') THEN 'OPERATIONS_DESIGN'
     WHEN auth.role = 'ACCOUNTING' THEN 'ACCOUNTING'
+    WHEN auth.role = 'CUSTOM' THEN 'CUSTOM'
     ELSE 'CLIENT'
   END
 `
@@ -48,7 +51,8 @@ async function getManagedAccounts() {
       COALESCE(app.status::text, 'ACTIVE') AS status,
       app."lastLoginAt",
       COALESCE(app."createdAt", auth."createdAt") AS "createdAt",
-      COALESCE(app."updatedAt", auth."updatedAt") AS "updatedAt"
+      COALESCE(app."updatedAt", auth."updatedAt") AS "updatedAt",
+      app.permissions
     FROM neon_auth."user" auth
     LEFT JOIN LATERAL (
       SELECT *
@@ -120,6 +124,7 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
     lastLoginAt: a.lastLoginAt ? new Date(a.lastLoginAt).toISOString() : null,
     createdAt: a.createdAt ? new Date(a.createdAt).toISOString() : null,
     updatedAt: a.updatedAt ? new Date(a.updatedAt).toISOString() : null,
+    permissions: a.permissions ? (typeof a.permissions === 'string' ? JSON.parse(a.permissions) : a.permissions) : null,
   }))
 
   const staffRoleOptions = STAFF_ROLES.map((role) => ({ value: role, label: ROLE_LABELS[role] }))
@@ -183,46 +188,7 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
               Creates a Neon Auth login and syncs the staff record.
             </p>
           </div>
-          <form
-            method="post"
-            action="/api/admin/accounts/create"
-            className="grid gap-3 lg:grid-cols-[1.2fr_1.2fr_1fr_1fr_auto]"
-          >
-            <input
-              name="name"
-              placeholder="Full name"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-[13px] text-slate-900 outline-none focus:border-slate-400"
-            />
-            <input
-              name="email"
-              type="email"
-              placeholder="staff@sims.com"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-[13px] text-slate-900 outline-none focus:border-slate-400"
-            />
-            <input
-              name="password"
-              type="password"
-              placeholder="Temporary password"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-[13px] text-slate-900 outline-none focus:border-slate-400"
-            />
-            <select
-              name="role"
-              defaultValue="SALES"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-[13px] text-slate-900 outline-none focus:border-slate-400"
-            >
-              {STAFF_ROLES.map((role) => (
-                <option key={role} value={role}>
-                  {ROLE_LABELS[role]}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              className="rounded-lg bg-slate-900 px-5 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-slate-800"
-            >
-              Add account
-            </button>
-          </form>
+          <AddUserForm roles={staffRoleOptions} />
         </section>
       </div>
     </main>

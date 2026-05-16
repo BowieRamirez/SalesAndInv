@@ -54,6 +54,31 @@ export async function POST(request: Request) {
 
   try {
     await prisma.$transaction(async (tx) => {
+      // 1. Fetch user details to archive
+      const targetAppUser = await tx.user.findFirst({
+        where: { OR: [{ authUserId }, { email }] },
+      })
+      const targetNeonUser = await tx.$queryRaw<any[]>(Prisma.sql`SELECT * FROM neon_auth."user" WHERE id::text = ${authUserId}`)
+      
+      const name = targetAppUser?.name || targetNeonUser[0]?.name || email.split('@')[0]
+      const role = targetAppUser?.role || targetNeonUser[0]?.role || "UNKNOWN"
+
+      // 2. Save to archive
+      try {
+        await tx.adminAccountArchive.upsert({
+          where: { originalUserId: authUserId },
+          update: { role, name, email },
+          create: {
+            originalUserId: authUserId,
+            name,
+            email,
+            role,
+          }
+        })
+      } catch (e) {
+        // Ignore if schema isn't fully ready
+      }
+
       await tx.user.deleteMany({
         where: {
           OR: [{ authUserId }, { email }],

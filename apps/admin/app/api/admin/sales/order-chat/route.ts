@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { canSalesAccessInquiry, createOrderChatMessage, getOrderChatMessages, type OrderChatAttachmentInput } from "@/lib/order-chat"
+import { logAudit } from "@furnitrack/db"
 
 const MAX_BODY_LENGTH = 3000
 const MAX_ATTACHMENTS = 3
@@ -58,7 +59,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "Your session could not be confirmed. Please sign in again." }, { status: 401 })
   }
 
-  if (!["SALES", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["SALES", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return NextResponse.json({ message: "Only sales admins can view order chat messages." }, { status: 403 })
   }
 
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
     return buildResponse(request, inquiryId, "Your session could not be confirmed. Please sign in again.", "error", 401)
   }
 
-  if (!["SALES", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["SALES", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildResponse(request, inquiryId, "Only sales admins can send order chat messages.", "error", 403)
   }
 
@@ -113,6 +114,18 @@ export async function POST(request: Request) {
   revalidatePath("/sales")
   revalidatePath(`/sales/orders/${inquiryId}`)
   revalidatePath("/account/status")
+
+  await logAudit({
+    actorId: currentUser.authUserId,
+    action: "CHAT_MESSAGE_SENT",
+    entityType: "CHAT",
+    entityId: messageId,
+    metadata: {
+      inquiryId,
+      hasAttachments: attachments.length > 0,
+      bodyLength: body.length,
+    },
+  })
 
   if (wantsJson(request)) {
     return NextResponse.json({

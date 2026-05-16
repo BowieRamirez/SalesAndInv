@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto"
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { Prisma, prisma } from "@furnitrack/db"
+import { Prisma, prisma, logAudit } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import {
   buildProductMaterialSummary,
@@ -25,7 +25,7 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only operations or executive admins can create finished products.", "error")
   }
 
@@ -246,6 +246,19 @@ export async function POST(request: Request) {
     revalidatePath("/operations")
     revalidatePath("/shop")
     revalidatePath("/")
+
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "PRODUCT_CREATED",
+      entityType: "PRODUCT",
+      entityId: productId,
+      metadata: {
+        sku: created.sku,
+        name,
+        category,
+        isPublished,
+      },
+    })
 
     return buildRedirect(request, `Created finished product ${created.sku} in Neon DB.`, "success")
   } catch (error) {

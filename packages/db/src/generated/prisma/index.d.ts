@@ -138,6 +138,21 @@ export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
  * 
  */
 export type StorefrontCategory = $Result.DefaultSelection<Prisma.$StorefrontCategoryPayload>
+/**
+ * Model AdminAccountArchive
+ * 
+ */
+export type AdminAccountArchive = $Result.DefaultSelection<Prisma.$AdminAccountArchivePayload>
+/**
+ * Model AdminActionArchive
+ * 
+ */
+export type AdminActionArchive = $Result.DefaultSelection<Prisma.$AdminActionArchivePayload>
+/**
+ * Model ReturnRequest
+ * 
+ */
+export type ReturnRequest = $Result.DefaultSelection<Prisma.$ReturnRequestPayload>
 
 /**
  * Enums
@@ -149,6 +164,7 @@ export namespace $Enums {
   INVENTORY: 'INVENTORY',
   ACCOUNTING: 'ACCOUNTING',
   OPERATIONS_DESIGN: 'OPERATIONS_DESIGN',
+  CUSTOM: 'CUSTOM',
   CLIENT: 'CLIENT'
 };
 
@@ -384,7 +400,17 @@ export const AuditAction: {
   STOCK_REQUEST_APPROVED: 'STOCK_REQUEST_APPROVED',
   STOCK_REQUEST_REJECTED: 'STOCK_REQUEST_REJECTED',
   PAYMENT_UPDATED: 'PAYMENT_UPDATED',
-  DELIVERY_SCHEDULE_CHANGED: 'DELIVERY_SCHEDULE_CHANGED'
+  DELIVERY_SCHEDULE_CHANGED: 'DELIVERY_SCHEDULE_CHANGED',
+  PAYMENT_ACCEPTED: 'PAYMENT_ACCEPTED',
+  RETURN_ACCEPTED: 'RETURN_ACCEPTED',
+  CHAT_MESSAGE_SENT: 'CHAT_MESSAGE_SENT',
+  INVENTORY_REQUESTED: 'INVENTORY_REQUESTED',
+  STOCK_ADDED: 'STOCK_ADDED',
+  STOCK_REMOVED: 'STOCK_REMOVED',
+  BUILDING_APPROVED: 'BUILDING_APPROVED',
+  DELIVERY_SCHEDULED: 'DELIVERY_SCHEDULED',
+  PRODUCT_CREATED: 'PRODUCT_CREATED',
+  PRODUCT_UPDATED: 'PRODUCT_UPDATED'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -397,7 +423,13 @@ export const AuditEntityType: {
   SALES_ORDER: 'SALES_ORDER',
   STOCK_REQUEST: 'STOCK_REQUEST',
   PAYMENT: 'PAYMENT',
-  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE',
+  RETURN_REQUEST: 'RETURN_REQUEST',
+  CHAT: 'CHAT',
+  INVENTORY: 'INVENTORY',
+  STOCK: 'STOCK',
+  BUILDING_PROJECT: 'BUILDING_PROJECT',
+  PRODUCT: 'PRODUCT'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -894,6 +926,36 @@ export class PrismaClient<
     * ```
     */
   get storefrontCategory(): Prisma.StorefrontCategoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.adminAccountArchive`: Exposes CRUD operations for the **AdminAccountArchive** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdminAccountArchives
+    * const adminAccountArchives = await prisma.adminAccountArchive.findMany()
+    * ```
+    */
+  get adminAccountArchive(): Prisma.AdminAccountArchiveDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.adminActionArchive`: Exposes CRUD operations for the **AdminActionArchive** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdminActionArchives
+    * const adminActionArchives = await prisma.adminActionArchive.findMany()
+    * ```
+    */
+  get adminActionArchive(): Prisma.AdminActionArchiveDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.returnRequest`: Exposes CRUD operations for the **ReturnRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReturnRequests
+    * const returnRequests = await prisma.returnRequest.findMany()
+    * ```
+    */
+  get returnRequest(): Prisma.ReturnRequestDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -952,7 +1014,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.19.2
+   * Prisma Client JS version: 6.19.3
    * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
    */
   export type PrismaVersion = {
@@ -1359,7 +1421,10 @@ export namespace Prisma {
     DeliverySchedule: 'DeliverySchedule',
     ApprovalHistory: 'ApprovalHistory',
     AuditLog: 'AuditLog',
-    StorefrontCategory: 'StorefrontCategory'
+    StorefrontCategory: 'StorefrontCategory',
+    AdminAccountArchive: 'AdminAccountArchive',
+    AdminActionArchive: 'AdminActionArchive',
+    ReturnRequest: 'ReturnRequest'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1378,7 +1443,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "stockItem" | "product" | "draftProduct" | "customerInquiry" | "orderChatMessage" | "orderChatAttachment" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog" | "storefrontCategory"
+      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "stockItem" | "product" | "draftProduct" | "customerInquiry" | "orderChatMessage" | "orderChatAttachment" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog" | "storefrontCategory" | "adminAccountArchive" | "adminActionArchive" | "returnRequest"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3232,6 +3297,228 @@ export namespace Prisma {
           }
         }
       }
+      AdminAccountArchive: {
+        payload: Prisma.$AdminAccountArchivePayload<ExtArgs>
+        fields: Prisma.AdminAccountArchiveFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminAccountArchiveFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminAccountArchiveFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>
+          }
+          findFirst: {
+            args: Prisma.AdminAccountArchiveFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminAccountArchiveFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>
+          }
+          findMany: {
+            args: Prisma.AdminAccountArchiveFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>[]
+          }
+          create: {
+            args: Prisma.AdminAccountArchiveCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>
+          }
+          createMany: {
+            args: Prisma.AdminAccountArchiveCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminAccountArchiveCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>[]
+          }
+          delete: {
+            args: Prisma.AdminAccountArchiveDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>
+          }
+          update: {
+            args: Prisma.AdminAccountArchiveUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminAccountArchiveDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminAccountArchiveUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminAccountArchiveUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminAccountArchiveUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminAccountArchivePayload>
+          }
+          aggregate: {
+            args: Prisma.AdminAccountArchiveAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdminAccountArchive>
+          }
+          groupBy: {
+            args: Prisma.AdminAccountArchiveGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminAccountArchiveGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminAccountArchiveCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminAccountArchiveCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdminActionArchive: {
+        payload: Prisma.$AdminActionArchivePayload<ExtArgs>
+        fields: Prisma.AdminActionArchiveFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminActionArchiveFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminActionArchiveFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>
+          }
+          findFirst: {
+            args: Prisma.AdminActionArchiveFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminActionArchiveFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>
+          }
+          findMany: {
+            args: Prisma.AdminActionArchiveFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>[]
+          }
+          create: {
+            args: Prisma.AdminActionArchiveCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>
+          }
+          createMany: {
+            args: Prisma.AdminActionArchiveCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminActionArchiveCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>[]
+          }
+          delete: {
+            args: Prisma.AdminActionArchiveDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>
+          }
+          update: {
+            args: Prisma.AdminActionArchiveUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminActionArchiveDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminActionArchiveUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminActionArchiveUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminActionArchiveUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminActionArchivePayload>
+          }
+          aggregate: {
+            args: Prisma.AdminActionArchiveAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdminActionArchive>
+          }
+          groupBy: {
+            args: Prisma.AdminActionArchiveGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminActionArchiveGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminActionArchiveCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminActionArchiveCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReturnRequest: {
+        payload: Prisma.$ReturnRequestPayload<ExtArgs>
+        fields: Prisma.ReturnRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReturnRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReturnRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.ReturnRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReturnRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>
+          }
+          findMany: {
+            args: Prisma.ReturnRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>[]
+          }
+          create: {
+            args: Prisma.ReturnRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>
+          }
+          createMany: {
+            args: Prisma.ReturnRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReturnRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.ReturnRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>
+          }
+          update: {
+            args: Prisma.ReturnRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReturnRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReturnRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReturnRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReturnRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReturnRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.ReturnRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReturnRequest>
+          }
+          groupBy: {
+            args: Prisma.ReturnRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReturnRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReturnRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<ReturnRequestCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3353,6 +3640,9 @@ export namespace Prisma {
     approvalHistory?: ApprovalHistoryOmit
     auditLog?: AuditLogOmit
     storefrontCategory?: StorefrontCategoryOmit
+    adminAccountArchive?: AdminAccountArchiveOmit
+    adminActionArchive?: AdminActionArchiveOmit
+    returnRequest?: ReturnRequestOmit
   }
 
   /* Types for Logging */
@@ -4022,6 +4312,37 @@ export namespace Prisma {
    */
   export type DesignRequestCountOutputTypeCountAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DesignAssetWhereInput
+  }
+
+
+  /**
+   * Count Type AdminAccountArchiveCountOutputType
+   */
+
+  export type AdminAccountArchiveCountOutputType = {
+    actions: number
+  }
+
+  export type AdminAccountArchiveCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actions?: boolean | AdminAccountArchiveCountOutputTypeCountActionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AdminAccountArchiveCountOutputType without action
+   */
+  export type AdminAccountArchiveCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchiveCountOutputType
+     */
+    select?: AdminAccountArchiveCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AdminAccountArchiveCountOutputType without action
+   */
+  export type AdminAccountArchiveCountOutputTypeCountActionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminActionArchiveWhereInput
   }
 
 
@@ -5329,6 +5650,7 @@ export namespace Prisma {
     lastLoginAt: number
     createdAt: number
     updatedAt: number
+    permissions: number
     _all: number
   }
 
@@ -5376,6 +5698,7 @@ export namespace Prisma {
     lastLoginAt?: true
     createdAt?: true
     updatedAt?: true
+    permissions?: true
     _all?: true
   }
 
@@ -5464,6 +5787,7 @@ export namespace Prisma {
     lastLoginAt: Date | null
     createdAt: Date
     updatedAt: Date
+    permissions: JsonValue | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -5496,6 +5820,7 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    permissions?: boolean
     company?: boolean | User$companyArgs<ExtArgs>
     leadsCreated?: boolean | User$leadsCreatedArgs<ExtArgs>
     quotationsCreated?: boolean | User$quotationsCreatedArgs<ExtArgs>
@@ -5527,6 +5852,7 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    permissions?: boolean
     company?: boolean | User$companyArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5543,6 +5869,7 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    permissions?: boolean
     company?: boolean | User$companyArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5559,9 +5886,10 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    permissions?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "authUserId" | "companyId" | "name" | "email" | "role" | "status" | "accessStartsAt" | "accessExpiresAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "authUserId" | "companyId" | "name" | "email" | "role" | "status" | "accessStartsAt" | "accessExpiresAt" | "lastLoginAt" | "createdAt" | "updatedAt" | "permissions", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | User$companyArgs<ExtArgs>
     leadsCreated?: boolean | User$leadsCreatedArgs<ExtArgs>
@@ -5619,6 +5947,7 @@ export namespace Prisma {
       lastLoginAt: Date | null
       createdAt: Date
       updatedAt: Date
+      permissions: Prisma.JsonValue | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -6069,6 +6398,7 @@ export namespace Prisma {
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly permissions: FieldRef<"User", 'Json'>
   }
     
 
@@ -33986,6 +34316,3277 @@ export namespace Prisma {
 
 
   /**
+   * Model AdminAccountArchive
+   */
+
+  export type AggregateAdminAccountArchive = {
+    _count: AdminAccountArchiveCountAggregateOutputType | null
+    _min: AdminAccountArchiveMinAggregateOutputType | null
+    _max: AdminAccountArchiveMaxAggregateOutputType | null
+  }
+
+  export type AdminAccountArchiveMinAggregateOutputType = {
+    id: string | null
+    originalUserId: string | null
+    name: string | null
+    email: string | null
+    role: string | null
+    archivedAt: Date | null
+  }
+
+  export type AdminAccountArchiveMaxAggregateOutputType = {
+    id: string | null
+    originalUserId: string | null
+    name: string | null
+    email: string | null
+    role: string | null
+    archivedAt: Date | null
+  }
+
+  export type AdminAccountArchiveCountAggregateOutputType = {
+    id: number
+    originalUserId: number
+    name: number
+    email: number
+    role: number
+    archivedAt: number
+    _all: number
+  }
+
+
+  export type AdminAccountArchiveMinAggregateInputType = {
+    id?: true
+    originalUserId?: true
+    name?: true
+    email?: true
+    role?: true
+    archivedAt?: true
+  }
+
+  export type AdminAccountArchiveMaxAggregateInputType = {
+    id?: true
+    originalUserId?: true
+    name?: true
+    email?: true
+    role?: true
+    archivedAt?: true
+  }
+
+  export type AdminAccountArchiveCountAggregateInputType = {
+    id?: true
+    originalUserId?: true
+    name?: true
+    email?: true
+    role?: true
+    archivedAt?: true
+    _all?: true
+  }
+
+  export type AdminAccountArchiveAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminAccountArchive to aggregate.
+     */
+    where?: AdminAccountArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminAccountArchives to fetch.
+     */
+    orderBy?: AdminAccountArchiveOrderByWithRelationInput | AdminAccountArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminAccountArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminAccountArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminAccountArchives.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdminAccountArchives
+    **/
+    _count?: true | AdminAccountArchiveCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminAccountArchiveMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminAccountArchiveMaxAggregateInputType
+  }
+
+  export type GetAdminAccountArchiveAggregateType<T extends AdminAccountArchiveAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdminAccountArchive]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdminAccountArchive[P]>
+      : GetScalarType<T[P], AggregateAdminAccountArchive[P]>
+  }
+
+
+
+
+  export type AdminAccountArchiveGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminAccountArchiveWhereInput
+    orderBy?: AdminAccountArchiveOrderByWithAggregationInput | AdminAccountArchiveOrderByWithAggregationInput[]
+    by: AdminAccountArchiveScalarFieldEnum[] | AdminAccountArchiveScalarFieldEnum
+    having?: AdminAccountArchiveScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminAccountArchiveCountAggregateInputType | true
+    _min?: AdminAccountArchiveMinAggregateInputType
+    _max?: AdminAccountArchiveMaxAggregateInputType
+  }
+
+  export type AdminAccountArchiveGroupByOutputType = {
+    id: string
+    originalUserId: string
+    name: string
+    email: string
+    role: string
+    archivedAt: Date
+    _count: AdminAccountArchiveCountAggregateOutputType | null
+    _min: AdminAccountArchiveMinAggregateOutputType | null
+    _max: AdminAccountArchiveMaxAggregateOutputType | null
+  }
+
+  type GetAdminAccountArchiveGroupByPayload<T extends AdminAccountArchiveGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminAccountArchiveGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminAccountArchiveGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminAccountArchiveGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminAccountArchiveGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminAccountArchiveSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    originalUserId?: boolean
+    name?: boolean
+    email?: boolean
+    role?: boolean
+    archivedAt?: boolean
+    actions?: boolean | AdminAccountArchive$actionsArgs<ExtArgs>
+    _count?: boolean | AdminAccountArchiveCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adminAccountArchive"]>
+
+  export type AdminAccountArchiveSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    originalUserId?: boolean
+    name?: boolean
+    email?: boolean
+    role?: boolean
+    archivedAt?: boolean
+  }, ExtArgs["result"]["adminAccountArchive"]>
+
+  export type AdminAccountArchiveSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    originalUserId?: boolean
+    name?: boolean
+    email?: boolean
+    role?: boolean
+    archivedAt?: boolean
+  }, ExtArgs["result"]["adminAccountArchive"]>
+
+  export type AdminAccountArchiveSelectScalar = {
+    id?: boolean
+    originalUserId?: boolean
+    name?: boolean
+    email?: boolean
+    role?: boolean
+    archivedAt?: boolean
+  }
+
+  export type AdminAccountArchiveOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "originalUserId" | "name" | "email" | "role" | "archivedAt", ExtArgs["result"]["adminAccountArchive"]>
+  export type AdminAccountArchiveInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actions?: boolean | AdminAccountArchive$actionsArgs<ExtArgs>
+    _count?: boolean | AdminAccountArchiveCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AdminAccountArchiveIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AdminAccountArchiveIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $AdminAccountArchivePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdminAccountArchive"
+    objects: {
+      actions: Prisma.$AdminActionArchivePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      originalUserId: string
+      name: string
+      email: string
+      role: string
+      archivedAt: Date
+    }, ExtArgs["result"]["adminAccountArchive"]>
+    composites: {}
+  }
+
+  type AdminAccountArchiveGetPayload<S extends boolean | null | undefined | AdminAccountArchiveDefaultArgs> = $Result.GetResult<Prisma.$AdminAccountArchivePayload, S>
+
+  type AdminAccountArchiveCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminAccountArchiveFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminAccountArchiveCountAggregateInputType | true
+    }
+
+  export interface AdminAccountArchiveDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminAccountArchive'], meta: { name: 'AdminAccountArchive' } }
+    /**
+     * Find zero or one AdminAccountArchive that matches the filter.
+     * @param {AdminAccountArchiveFindUniqueArgs} args - Arguments to find a AdminAccountArchive
+     * @example
+     * // Get one AdminAccountArchive
+     * const adminAccountArchive = await prisma.adminAccountArchive.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminAccountArchiveFindUniqueArgs>(args: SelectSubset<T, AdminAccountArchiveFindUniqueArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AdminAccountArchive that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminAccountArchiveFindUniqueOrThrowArgs} args - Arguments to find a AdminAccountArchive
+     * @example
+     * // Get one AdminAccountArchive
+     * const adminAccountArchive = await prisma.adminAccountArchive.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminAccountArchiveFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminAccountArchiveFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminAccountArchive that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAccountArchiveFindFirstArgs} args - Arguments to find a AdminAccountArchive
+     * @example
+     * // Get one AdminAccountArchive
+     * const adminAccountArchive = await prisma.adminAccountArchive.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminAccountArchiveFindFirstArgs>(args?: SelectSubset<T, AdminAccountArchiveFindFirstArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminAccountArchive that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAccountArchiveFindFirstOrThrowArgs} args - Arguments to find a AdminAccountArchive
+     * @example
+     * // Get one AdminAccountArchive
+     * const adminAccountArchive = await prisma.adminAccountArchive.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminAccountArchiveFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminAccountArchiveFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AdminAccountArchives that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAccountArchiveFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdminAccountArchives
+     * const adminAccountArchives = await prisma.adminAccountArchive.findMany()
+     * 
+     * // Get first 10 AdminAccountArchives
+     * const adminAccountArchives = await prisma.adminAccountArchive.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminAccountArchiveWithIdOnly = await prisma.adminAccountArchive.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminAccountArchiveFindManyArgs>(args?: SelectSubset<T, AdminAccountArchiveFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AdminAccountArchive.
+     * @param {AdminAccountArchiveCreateArgs} args - Arguments to create a AdminAccountArchive.
+     * @example
+     * // Create one AdminAccountArchive
+     * const AdminAccountArchive = await prisma.adminAccountArchive.create({
+     *   data: {
+     *     // ... data to create a AdminAccountArchive
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminAccountArchiveCreateArgs>(args: SelectSubset<T, AdminAccountArchiveCreateArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AdminAccountArchives.
+     * @param {AdminAccountArchiveCreateManyArgs} args - Arguments to create many AdminAccountArchives.
+     * @example
+     * // Create many AdminAccountArchives
+     * const adminAccountArchive = await prisma.adminAccountArchive.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminAccountArchiveCreateManyArgs>(args?: SelectSubset<T, AdminAccountArchiveCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdminAccountArchives and returns the data saved in the database.
+     * @param {AdminAccountArchiveCreateManyAndReturnArgs} args - Arguments to create many AdminAccountArchives.
+     * @example
+     * // Create many AdminAccountArchives
+     * const adminAccountArchive = await prisma.adminAccountArchive.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdminAccountArchives and only return the `id`
+     * const adminAccountArchiveWithIdOnly = await prisma.adminAccountArchive.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminAccountArchiveCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminAccountArchiveCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AdminAccountArchive.
+     * @param {AdminAccountArchiveDeleteArgs} args - Arguments to delete one AdminAccountArchive.
+     * @example
+     * // Delete one AdminAccountArchive
+     * const AdminAccountArchive = await prisma.adminAccountArchive.delete({
+     *   where: {
+     *     // ... filter to delete one AdminAccountArchive
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminAccountArchiveDeleteArgs>(args: SelectSubset<T, AdminAccountArchiveDeleteArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AdminAccountArchive.
+     * @param {AdminAccountArchiveUpdateArgs} args - Arguments to update one AdminAccountArchive.
+     * @example
+     * // Update one AdminAccountArchive
+     * const adminAccountArchive = await prisma.adminAccountArchive.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminAccountArchiveUpdateArgs>(args: SelectSubset<T, AdminAccountArchiveUpdateArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AdminAccountArchives.
+     * @param {AdminAccountArchiveDeleteManyArgs} args - Arguments to filter AdminAccountArchives to delete.
+     * @example
+     * // Delete a few AdminAccountArchives
+     * const { count } = await prisma.adminAccountArchive.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminAccountArchiveDeleteManyArgs>(args?: SelectSubset<T, AdminAccountArchiveDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminAccountArchives.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAccountArchiveUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdminAccountArchives
+     * const adminAccountArchive = await prisma.adminAccountArchive.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminAccountArchiveUpdateManyArgs>(args: SelectSubset<T, AdminAccountArchiveUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminAccountArchives and returns the data updated in the database.
+     * @param {AdminAccountArchiveUpdateManyAndReturnArgs} args - Arguments to update many AdminAccountArchives.
+     * @example
+     * // Update many AdminAccountArchives
+     * const adminAccountArchive = await prisma.adminAccountArchive.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AdminAccountArchives and only return the `id`
+     * const adminAccountArchiveWithIdOnly = await prisma.adminAccountArchive.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminAccountArchiveUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminAccountArchiveUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AdminAccountArchive.
+     * @param {AdminAccountArchiveUpsertArgs} args - Arguments to update or create a AdminAccountArchive.
+     * @example
+     * // Update or create a AdminAccountArchive
+     * const adminAccountArchive = await prisma.adminAccountArchive.upsert({
+     *   create: {
+     *     // ... data to create a AdminAccountArchive
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdminAccountArchive we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminAccountArchiveUpsertArgs>(args: SelectSubset<T, AdminAccountArchiveUpsertArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AdminAccountArchives.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAccountArchiveCountArgs} args - Arguments to filter AdminAccountArchives to count.
+     * @example
+     * // Count the number of AdminAccountArchives
+     * const count = await prisma.adminAccountArchive.count({
+     *   where: {
+     *     // ... the filter for the AdminAccountArchives we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminAccountArchiveCountArgs>(
+      args?: Subset<T, AdminAccountArchiveCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminAccountArchiveCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdminAccountArchive.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAccountArchiveAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminAccountArchiveAggregateArgs>(args: Subset<T, AdminAccountArchiveAggregateArgs>): Prisma.PrismaPromise<GetAdminAccountArchiveAggregateType<T>>
+
+    /**
+     * Group by AdminAccountArchive.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAccountArchiveGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminAccountArchiveGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminAccountArchiveGroupByArgs['orderBy'] }
+        : { orderBy?: AdminAccountArchiveGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminAccountArchiveGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminAccountArchiveGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdminAccountArchive model
+   */
+  readonly fields: AdminAccountArchiveFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdminAccountArchive.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminAccountArchiveClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    actions<T extends AdminAccountArchive$actionsArgs<ExtArgs> = {}>(args?: Subset<T, AdminAccountArchive$actionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdminAccountArchive model
+   */
+  interface AdminAccountArchiveFieldRefs {
+    readonly id: FieldRef<"AdminAccountArchive", 'String'>
+    readonly originalUserId: FieldRef<"AdminAccountArchive", 'String'>
+    readonly name: FieldRef<"AdminAccountArchive", 'String'>
+    readonly email: FieldRef<"AdminAccountArchive", 'String'>
+    readonly role: FieldRef<"AdminAccountArchive", 'String'>
+    readonly archivedAt: FieldRef<"AdminAccountArchive", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdminAccountArchive findUnique
+   */
+  export type AdminAccountArchiveFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminAccountArchive to fetch.
+     */
+    where: AdminAccountArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminAccountArchive findUniqueOrThrow
+   */
+  export type AdminAccountArchiveFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminAccountArchive to fetch.
+     */
+    where: AdminAccountArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminAccountArchive findFirst
+   */
+  export type AdminAccountArchiveFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminAccountArchive to fetch.
+     */
+    where?: AdminAccountArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminAccountArchives to fetch.
+     */
+    orderBy?: AdminAccountArchiveOrderByWithRelationInput | AdminAccountArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminAccountArchives.
+     */
+    cursor?: AdminAccountArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminAccountArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminAccountArchives.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminAccountArchives.
+     */
+    distinct?: AdminAccountArchiveScalarFieldEnum | AdminAccountArchiveScalarFieldEnum[]
+  }
+
+  /**
+   * AdminAccountArchive findFirstOrThrow
+   */
+  export type AdminAccountArchiveFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminAccountArchive to fetch.
+     */
+    where?: AdminAccountArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminAccountArchives to fetch.
+     */
+    orderBy?: AdminAccountArchiveOrderByWithRelationInput | AdminAccountArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminAccountArchives.
+     */
+    cursor?: AdminAccountArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminAccountArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminAccountArchives.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminAccountArchives.
+     */
+    distinct?: AdminAccountArchiveScalarFieldEnum | AdminAccountArchiveScalarFieldEnum[]
+  }
+
+  /**
+   * AdminAccountArchive findMany
+   */
+  export type AdminAccountArchiveFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminAccountArchives to fetch.
+     */
+    where?: AdminAccountArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminAccountArchives to fetch.
+     */
+    orderBy?: AdminAccountArchiveOrderByWithRelationInput | AdminAccountArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdminAccountArchives.
+     */
+    cursor?: AdminAccountArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminAccountArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminAccountArchives.
+     */
+    skip?: number
+    distinct?: AdminAccountArchiveScalarFieldEnum | AdminAccountArchiveScalarFieldEnum[]
+  }
+
+  /**
+   * AdminAccountArchive create
+   */
+  export type AdminAccountArchiveCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AdminAccountArchive.
+     */
+    data: XOR<AdminAccountArchiveCreateInput, AdminAccountArchiveUncheckedCreateInput>
+  }
+
+  /**
+   * AdminAccountArchive createMany
+   */
+  export type AdminAccountArchiveCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdminAccountArchives.
+     */
+    data: AdminAccountArchiveCreateManyInput | AdminAccountArchiveCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminAccountArchive createManyAndReturn
+   */
+  export type AdminAccountArchiveCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * The data used to create many AdminAccountArchives.
+     */
+    data: AdminAccountArchiveCreateManyInput | AdminAccountArchiveCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminAccountArchive update
+   */
+  export type AdminAccountArchiveUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AdminAccountArchive.
+     */
+    data: XOR<AdminAccountArchiveUpdateInput, AdminAccountArchiveUncheckedUpdateInput>
+    /**
+     * Choose, which AdminAccountArchive to update.
+     */
+    where: AdminAccountArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminAccountArchive updateMany
+   */
+  export type AdminAccountArchiveUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdminAccountArchives.
+     */
+    data: XOR<AdminAccountArchiveUpdateManyMutationInput, AdminAccountArchiveUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminAccountArchives to update
+     */
+    where?: AdminAccountArchiveWhereInput
+    /**
+     * Limit how many AdminAccountArchives to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminAccountArchive updateManyAndReturn
+   */
+  export type AdminAccountArchiveUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * The data used to update AdminAccountArchives.
+     */
+    data: XOR<AdminAccountArchiveUpdateManyMutationInput, AdminAccountArchiveUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminAccountArchives to update
+     */
+    where?: AdminAccountArchiveWhereInput
+    /**
+     * Limit how many AdminAccountArchives to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminAccountArchive upsert
+   */
+  export type AdminAccountArchiveUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AdminAccountArchive to update in case it exists.
+     */
+    where: AdminAccountArchiveWhereUniqueInput
+    /**
+     * In case the AdminAccountArchive found by the `where` argument doesn't exist, create a new AdminAccountArchive with this data.
+     */
+    create: XOR<AdminAccountArchiveCreateInput, AdminAccountArchiveUncheckedCreateInput>
+    /**
+     * In case the AdminAccountArchive was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminAccountArchiveUpdateInput, AdminAccountArchiveUncheckedUpdateInput>
+  }
+
+  /**
+   * AdminAccountArchive delete
+   */
+  export type AdminAccountArchiveDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+    /**
+     * Filter which AdminAccountArchive to delete.
+     */
+    where: AdminAccountArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminAccountArchive deleteMany
+   */
+  export type AdminAccountArchiveDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminAccountArchives to delete
+     */
+    where?: AdminAccountArchiveWhereInput
+    /**
+     * Limit how many AdminAccountArchives to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminAccountArchive.actions
+   */
+  export type AdminAccountArchive$actionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    where?: AdminActionArchiveWhereInput
+    orderBy?: AdminActionArchiveOrderByWithRelationInput | AdminActionArchiveOrderByWithRelationInput[]
+    cursor?: AdminActionArchiveWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdminActionArchiveScalarFieldEnum | AdminActionArchiveScalarFieldEnum[]
+  }
+
+  /**
+   * AdminAccountArchive without action
+   */
+  export type AdminAccountArchiveDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminAccountArchive
+     */
+    select?: AdminAccountArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminAccountArchive
+     */
+    omit?: AdminAccountArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminAccountArchiveInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AdminActionArchive
+   */
+
+  export type AggregateAdminActionArchive = {
+    _count: AdminActionArchiveCountAggregateOutputType | null
+    _min: AdminActionArchiveMinAggregateOutputType | null
+    _max: AdminActionArchiveMaxAggregateOutputType | null
+  }
+
+  export type AdminActionArchiveMinAggregateOutputType = {
+    id: string | null
+    archiveId: string | null
+    actionType: string | null
+    description: string | null
+    performedAt: Date | null
+  }
+
+  export type AdminActionArchiveMaxAggregateOutputType = {
+    id: string | null
+    archiveId: string | null
+    actionType: string | null
+    description: string | null
+    performedAt: Date | null
+  }
+
+  export type AdminActionArchiveCountAggregateOutputType = {
+    id: number
+    archiveId: number
+    actionType: number
+    description: number
+    performedAt: number
+    metadata: number
+    _all: number
+  }
+
+
+  export type AdminActionArchiveMinAggregateInputType = {
+    id?: true
+    archiveId?: true
+    actionType?: true
+    description?: true
+    performedAt?: true
+  }
+
+  export type AdminActionArchiveMaxAggregateInputType = {
+    id?: true
+    archiveId?: true
+    actionType?: true
+    description?: true
+    performedAt?: true
+  }
+
+  export type AdminActionArchiveCountAggregateInputType = {
+    id?: true
+    archiveId?: true
+    actionType?: true
+    description?: true
+    performedAt?: true
+    metadata?: true
+    _all?: true
+  }
+
+  export type AdminActionArchiveAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminActionArchive to aggregate.
+     */
+    where?: AdminActionArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminActionArchives to fetch.
+     */
+    orderBy?: AdminActionArchiveOrderByWithRelationInput | AdminActionArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminActionArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminActionArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminActionArchives.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdminActionArchives
+    **/
+    _count?: true | AdminActionArchiveCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminActionArchiveMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminActionArchiveMaxAggregateInputType
+  }
+
+  export type GetAdminActionArchiveAggregateType<T extends AdminActionArchiveAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdminActionArchive]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdminActionArchive[P]>
+      : GetScalarType<T[P], AggregateAdminActionArchive[P]>
+  }
+
+
+
+
+  export type AdminActionArchiveGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminActionArchiveWhereInput
+    orderBy?: AdminActionArchiveOrderByWithAggregationInput | AdminActionArchiveOrderByWithAggregationInput[]
+    by: AdminActionArchiveScalarFieldEnum[] | AdminActionArchiveScalarFieldEnum
+    having?: AdminActionArchiveScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminActionArchiveCountAggregateInputType | true
+    _min?: AdminActionArchiveMinAggregateInputType
+    _max?: AdminActionArchiveMaxAggregateInputType
+  }
+
+  export type AdminActionArchiveGroupByOutputType = {
+    id: string
+    archiveId: string
+    actionType: string
+    description: string
+    performedAt: Date
+    metadata: JsonValue | null
+    _count: AdminActionArchiveCountAggregateOutputType | null
+    _min: AdminActionArchiveMinAggregateOutputType | null
+    _max: AdminActionArchiveMaxAggregateOutputType | null
+  }
+
+  type GetAdminActionArchiveGroupByPayload<T extends AdminActionArchiveGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminActionArchiveGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminActionArchiveGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminActionArchiveGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminActionArchiveGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminActionArchiveSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    archiveId?: boolean
+    actionType?: boolean
+    description?: boolean
+    performedAt?: boolean
+    metadata?: boolean
+    adminArchive?: boolean | AdminAccountArchiveDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adminActionArchive"]>
+
+  export type AdminActionArchiveSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    archiveId?: boolean
+    actionType?: boolean
+    description?: boolean
+    performedAt?: boolean
+    metadata?: boolean
+    adminArchive?: boolean | AdminAccountArchiveDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adminActionArchive"]>
+
+  export type AdminActionArchiveSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    archiveId?: boolean
+    actionType?: boolean
+    description?: boolean
+    performedAt?: boolean
+    metadata?: boolean
+    adminArchive?: boolean | AdminAccountArchiveDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adminActionArchive"]>
+
+  export type AdminActionArchiveSelectScalar = {
+    id?: boolean
+    archiveId?: boolean
+    actionType?: boolean
+    description?: boolean
+    performedAt?: boolean
+    metadata?: boolean
+  }
+
+  export type AdminActionArchiveOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "archiveId" | "actionType" | "description" | "performedAt" | "metadata", ExtArgs["result"]["adminActionArchive"]>
+  export type AdminActionArchiveInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    adminArchive?: boolean | AdminAccountArchiveDefaultArgs<ExtArgs>
+  }
+  export type AdminActionArchiveIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    adminArchive?: boolean | AdminAccountArchiveDefaultArgs<ExtArgs>
+  }
+  export type AdminActionArchiveIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    adminArchive?: boolean | AdminAccountArchiveDefaultArgs<ExtArgs>
+  }
+
+  export type $AdminActionArchivePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdminActionArchive"
+    objects: {
+      adminArchive: Prisma.$AdminAccountArchivePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      archiveId: string
+      actionType: string
+      description: string
+      performedAt: Date
+      metadata: Prisma.JsonValue | null
+    }, ExtArgs["result"]["adminActionArchive"]>
+    composites: {}
+  }
+
+  type AdminActionArchiveGetPayload<S extends boolean | null | undefined | AdminActionArchiveDefaultArgs> = $Result.GetResult<Prisma.$AdminActionArchivePayload, S>
+
+  type AdminActionArchiveCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminActionArchiveFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminActionArchiveCountAggregateInputType | true
+    }
+
+  export interface AdminActionArchiveDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminActionArchive'], meta: { name: 'AdminActionArchive' } }
+    /**
+     * Find zero or one AdminActionArchive that matches the filter.
+     * @param {AdminActionArchiveFindUniqueArgs} args - Arguments to find a AdminActionArchive
+     * @example
+     * // Get one AdminActionArchive
+     * const adminActionArchive = await prisma.adminActionArchive.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminActionArchiveFindUniqueArgs>(args: SelectSubset<T, AdminActionArchiveFindUniqueArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AdminActionArchive that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminActionArchiveFindUniqueOrThrowArgs} args - Arguments to find a AdminActionArchive
+     * @example
+     * // Get one AdminActionArchive
+     * const adminActionArchive = await prisma.adminActionArchive.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminActionArchiveFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminActionArchiveFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminActionArchive that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminActionArchiveFindFirstArgs} args - Arguments to find a AdminActionArchive
+     * @example
+     * // Get one AdminActionArchive
+     * const adminActionArchive = await prisma.adminActionArchive.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminActionArchiveFindFirstArgs>(args?: SelectSubset<T, AdminActionArchiveFindFirstArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminActionArchive that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminActionArchiveFindFirstOrThrowArgs} args - Arguments to find a AdminActionArchive
+     * @example
+     * // Get one AdminActionArchive
+     * const adminActionArchive = await prisma.adminActionArchive.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminActionArchiveFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminActionArchiveFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AdminActionArchives that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminActionArchiveFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdminActionArchives
+     * const adminActionArchives = await prisma.adminActionArchive.findMany()
+     * 
+     * // Get first 10 AdminActionArchives
+     * const adminActionArchives = await prisma.adminActionArchive.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminActionArchiveWithIdOnly = await prisma.adminActionArchive.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminActionArchiveFindManyArgs>(args?: SelectSubset<T, AdminActionArchiveFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AdminActionArchive.
+     * @param {AdminActionArchiveCreateArgs} args - Arguments to create a AdminActionArchive.
+     * @example
+     * // Create one AdminActionArchive
+     * const AdminActionArchive = await prisma.adminActionArchive.create({
+     *   data: {
+     *     // ... data to create a AdminActionArchive
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminActionArchiveCreateArgs>(args: SelectSubset<T, AdminActionArchiveCreateArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AdminActionArchives.
+     * @param {AdminActionArchiveCreateManyArgs} args - Arguments to create many AdminActionArchives.
+     * @example
+     * // Create many AdminActionArchives
+     * const adminActionArchive = await prisma.adminActionArchive.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminActionArchiveCreateManyArgs>(args?: SelectSubset<T, AdminActionArchiveCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdminActionArchives and returns the data saved in the database.
+     * @param {AdminActionArchiveCreateManyAndReturnArgs} args - Arguments to create many AdminActionArchives.
+     * @example
+     * // Create many AdminActionArchives
+     * const adminActionArchive = await prisma.adminActionArchive.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdminActionArchives and only return the `id`
+     * const adminActionArchiveWithIdOnly = await prisma.adminActionArchive.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminActionArchiveCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminActionArchiveCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AdminActionArchive.
+     * @param {AdminActionArchiveDeleteArgs} args - Arguments to delete one AdminActionArchive.
+     * @example
+     * // Delete one AdminActionArchive
+     * const AdminActionArchive = await prisma.adminActionArchive.delete({
+     *   where: {
+     *     // ... filter to delete one AdminActionArchive
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminActionArchiveDeleteArgs>(args: SelectSubset<T, AdminActionArchiveDeleteArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AdminActionArchive.
+     * @param {AdminActionArchiveUpdateArgs} args - Arguments to update one AdminActionArchive.
+     * @example
+     * // Update one AdminActionArchive
+     * const adminActionArchive = await prisma.adminActionArchive.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminActionArchiveUpdateArgs>(args: SelectSubset<T, AdminActionArchiveUpdateArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AdminActionArchives.
+     * @param {AdminActionArchiveDeleteManyArgs} args - Arguments to filter AdminActionArchives to delete.
+     * @example
+     * // Delete a few AdminActionArchives
+     * const { count } = await prisma.adminActionArchive.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminActionArchiveDeleteManyArgs>(args?: SelectSubset<T, AdminActionArchiveDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminActionArchives.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminActionArchiveUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdminActionArchives
+     * const adminActionArchive = await prisma.adminActionArchive.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminActionArchiveUpdateManyArgs>(args: SelectSubset<T, AdminActionArchiveUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminActionArchives and returns the data updated in the database.
+     * @param {AdminActionArchiveUpdateManyAndReturnArgs} args - Arguments to update many AdminActionArchives.
+     * @example
+     * // Update many AdminActionArchives
+     * const adminActionArchive = await prisma.adminActionArchive.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AdminActionArchives and only return the `id`
+     * const adminActionArchiveWithIdOnly = await prisma.adminActionArchive.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminActionArchiveUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminActionArchiveUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AdminActionArchive.
+     * @param {AdminActionArchiveUpsertArgs} args - Arguments to update or create a AdminActionArchive.
+     * @example
+     * // Update or create a AdminActionArchive
+     * const adminActionArchive = await prisma.adminActionArchive.upsert({
+     *   create: {
+     *     // ... data to create a AdminActionArchive
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdminActionArchive we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminActionArchiveUpsertArgs>(args: SelectSubset<T, AdminActionArchiveUpsertArgs<ExtArgs>>): Prisma__AdminActionArchiveClient<$Result.GetResult<Prisma.$AdminActionArchivePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AdminActionArchives.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminActionArchiveCountArgs} args - Arguments to filter AdminActionArchives to count.
+     * @example
+     * // Count the number of AdminActionArchives
+     * const count = await prisma.adminActionArchive.count({
+     *   where: {
+     *     // ... the filter for the AdminActionArchives we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminActionArchiveCountArgs>(
+      args?: Subset<T, AdminActionArchiveCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminActionArchiveCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdminActionArchive.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminActionArchiveAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminActionArchiveAggregateArgs>(args: Subset<T, AdminActionArchiveAggregateArgs>): Prisma.PrismaPromise<GetAdminActionArchiveAggregateType<T>>
+
+    /**
+     * Group by AdminActionArchive.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminActionArchiveGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminActionArchiveGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminActionArchiveGroupByArgs['orderBy'] }
+        : { orderBy?: AdminActionArchiveGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminActionArchiveGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminActionArchiveGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdminActionArchive model
+   */
+  readonly fields: AdminActionArchiveFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdminActionArchive.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminActionArchiveClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    adminArchive<T extends AdminAccountArchiveDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AdminAccountArchiveDefaultArgs<ExtArgs>>): Prisma__AdminAccountArchiveClient<$Result.GetResult<Prisma.$AdminAccountArchivePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdminActionArchive model
+   */
+  interface AdminActionArchiveFieldRefs {
+    readonly id: FieldRef<"AdminActionArchive", 'String'>
+    readonly archiveId: FieldRef<"AdminActionArchive", 'String'>
+    readonly actionType: FieldRef<"AdminActionArchive", 'String'>
+    readonly description: FieldRef<"AdminActionArchive", 'String'>
+    readonly performedAt: FieldRef<"AdminActionArchive", 'DateTime'>
+    readonly metadata: FieldRef<"AdminActionArchive", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdminActionArchive findUnique
+   */
+  export type AdminActionArchiveFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminActionArchive to fetch.
+     */
+    where: AdminActionArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminActionArchive findUniqueOrThrow
+   */
+  export type AdminActionArchiveFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminActionArchive to fetch.
+     */
+    where: AdminActionArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminActionArchive findFirst
+   */
+  export type AdminActionArchiveFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminActionArchive to fetch.
+     */
+    where?: AdminActionArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminActionArchives to fetch.
+     */
+    orderBy?: AdminActionArchiveOrderByWithRelationInput | AdminActionArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminActionArchives.
+     */
+    cursor?: AdminActionArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminActionArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminActionArchives.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminActionArchives.
+     */
+    distinct?: AdminActionArchiveScalarFieldEnum | AdminActionArchiveScalarFieldEnum[]
+  }
+
+  /**
+   * AdminActionArchive findFirstOrThrow
+   */
+  export type AdminActionArchiveFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminActionArchive to fetch.
+     */
+    where?: AdminActionArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminActionArchives to fetch.
+     */
+    orderBy?: AdminActionArchiveOrderByWithRelationInput | AdminActionArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminActionArchives.
+     */
+    cursor?: AdminActionArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminActionArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminActionArchives.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminActionArchives.
+     */
+    distinct?: AdminActionArchiveScalarFieldEnum | AdminActionArchiveScalarFieldEnum[]
+  }
+
+  /**
+   * AdminActionArchive findMany
+   */
+  export type AdminActionArchiveFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminActionArchives to fetch.
+     */
+    where?: AdminActionArchiveWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminActionArchives to fetch.
+     */
+    orderBy?: AdminActionArchiveOrderByWithRelationInput | AdminActionArchiveOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdminActionArchives.
+     */
+    cursor?: AdminActionArchiveWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminActionArchives from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminActionArchives.
+     */
+    skip?: number
+    distinct?: AdminActionArchiveScalarFieldEnum | AdminActionArchiveScalarFieldEnum[]
+  }
+
+  /**
+   * AdminActionArchive create
+   */
+  export type AdminActionArchiveCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AdminActionArchive.
+     */
+    data: XOR<AdminActionArchiveCreateInput, AdminActionArchiveUncheckedCreateInput>
+  }
+
+  /**
+   * AdminActionArchive createMany
+   */
+  export type AdminActionArchiveCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdminActionArchives.
+     */
+    data: AdminActionArchiveCreateManyInput | AdminActionArchiveCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminActionArchive createManyAndReturn
+   */
+  export type AdminActionArchiveCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * The data used to create many AdminActionArchives.
+     */
+    data: AdminActionArchiveCreateManyInput | AdminActionArchiveCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdminActionArchive update
+   */
+  export type AdminActionArchiveUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AdminActionArchive.
+     */
+    data: XOR<AdminActionArchiveUpdateInput, AdminActionArchiveUncheckedUpdateInput>
+    /**
+     * Choose, which AdminActionArchive to update.
+     */
+    where: AdminActionArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminActionArchive updateMany
+   */
+  export type AdminActionArchiveUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdminActionArchives.
+     */
+    data: XOR<AdminActionArchiveUpdateManyMutationInput, AdminActionArchiveUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminActionArchives to update
+     */
+    where?: AdminActionArchiveWhereInput
+    /**
+     * Limit how many AdminActionArchives to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminActionArchive updateManyAndReturn
+   */
+  export type AdminActionArchiveUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * The data used to update AdminActionArchives.
+     */
+    data: XOR<AdminActionArchiveUpdateManyMutationInput, AdminActionArchiveUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminActionArchives to update
+     */
+    where?: AdminActionArchiveWhereInput
+    /**
+     * Limit how many AdminActionArchives to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdminActionArchive upsert
+   */
+  export type AdminActionArchiveUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AdminActionArchive to update in case it exists.
+     */
+    where: AdminActionArchiveWhereUniqueInput
+    /**
+     * In case the AdminActionArchive found by the `where` argument doesn't exist, create a new AdminActionArchive with this data.
+     */
+    create: XOR<AdminActionArchiveCreateInput, AdminActionArchiveUncheckedCreateInput>
+    /**
+     * In case the AdminActionArchive was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminActionArchiveUpdateInput, AdminActionArchiveUncheckedUpdateInput>
+  }
+
+  /**
+   * AdminActionArchive delete
+   */
+  export type AdminActionArchiveDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+    /**
+     * Filter which AdminActionArchive to delete.
+     */
+    where: AdminActionArchiveWhereUniqueInput
+  }
+
+  /**
+   * AdminActionArchive deleteMany
+   */
+  export type AdminActionArchiveDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminActionArchives to delete
+     */
+    where?: AdminActionArchiveWhereInput
+    /**
+     * Limit how many AdminActionArchives to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminActionArchive without action
+   */
+  export type AdminActionArchiveDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminActionArchive
+     */
+    select?: AdminActionArchiveSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminActionArchive
+     */
+    omit?: AdminActionArchiveOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminActionArchiveInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReturnRequest
+   */
+
+  export type AggregateReturnRequest = {
+    _count: ReturnRequestCountAggregateOutputType | null
+    _min: ReturnRequestMinAggregateOutputType | null
+    _max: ReturnRequestMaxAggregateOutputType | null
+  }
+
+  export type ReturnRequestMinAggregateOutputType = {
+    id: string | null
+    inquiryId: string | null
+    customerUserId: string | null
+    status: string | null
+    reason: string | null
+    details: string | null
+    salesNote: string | null
+    pickupScheduledAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    completedById: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReturnRequestMaxAggregateOutputType = {
+    id: string | null
+    inquiryId: string | null
+    customerUserId: string | null
+    status: string | null
+    reason: string | null
+    details: string | null
+    salesNote: string | null
+    pickupScheduledAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    completedById: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReturnRequestCountAggregateOutputType = {
+    id: number
+    inquiryId: number
+    customerUserId: number
+    status: number
+    reason: number
+    details: number
+    imageUrls: number
+    salesNote: number
+    pickupScheduledAt: number
+    approvedById: number
+    approvedAt: number
+    completedById: number
+    completedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReturnRequestMinAggregateInputType = {
+    id?: true
+    inquiryId?: true
+    customerUserId?: true
+    status?: true
+    reason?: true
+    details?: true
+    salesNote?: true
+    pickupScheduledAt?: true
+    approvedById?: true
+    approvedAt?: true
+    completedById?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReturnRequestMaxAggregateInputType = {
+    id?: true
+    inquiryId?: true
+    customerUserId?: true
+    status?: true
+    reason?: true
+    details?: true
+    salesNote?: true
+    pickupScheduledAt?: true
+    approvedById?: true
+    approvedAt?: true
+    completedById?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReturnRequestCountAggregateInputType = {
+    id?: true
+    inquiryId?: true
+    customerUserId?: true
+    status?: true
+    reason?: true
+    details?: true
+    imageUrls?: true
+    salesNote?: true
+    pickupScheduledAt?: true
+    approvedById?: true
+    approvedAt?: true
+    completedById?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReturnRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReturnRequest to aggregate.
+     */
+    where?: ReturnRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReturnRequests to fetch.
+     */
+    orderBy?: ReturnRequestOrderByWithRelationInput | ReturnRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReturnRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReturnRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReturnRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReturnRequests
+    **/
+    _count?: true | ReturnRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReturnRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReturnRequestMaxAggregateInputType
+  }
+
+  export type GetReturnRequestAggregateType<T extends ReturnRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateReturnRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReturnRequest[P]>
+      : GetScalarType<T[P], AggregateReturnRequest[P]>
+  }
+
+
+
+
+  export type ReturnRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReturnRequestWhereInput
+    orderBy?: ReturnRequestOrderByWithAggregationInput | ReturnRequestOrderByWithAggregationInput[]
+    by: ReturnRequestScalarFieldEnum[] | ReturnRequestScalarFieldEnum
+    having?: ReturnRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReturnRequestCountAggregateInputType | true
+    _min?: ReturnRequestMinAggregateInputType
+    _max?: ReturnRequestMaxAggregateInputType
+  }
+
+  export type ReturnRequestGroupByOutputType = {
+    id: string
+    inquiryId: string
+    customerUserId: string | null
+    status: string
+    reason: string
+    details: string | null
+    imageUrls: JsonValue | null
+    salesNote: string | null
+    pickupScheduledAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    completedById: string | null
+    completedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ReturnRequestCountAggregateOutputType | null
+    _min: ReturnRequestMinAggregateOutputType | null
+    _max: ReturnRequestMaxAggregateOutputType | null
+  }
+
+  type GetReturnRequestGroupByPayload<T extends ReturnRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReturnRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReturnRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReturnRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], ReturnRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReturnRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inquiryId?: boolean
+    customerUserId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    imageUrls?: boolean
+    salesNote?: boolean
+    pickupScheduledAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    completedById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["returnRequest"]>
+
+  export type ReturnRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inquiryId?: boolean
+    customerUserId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    imageUrls?: boolean
+    salesNote?: boolean
+    pickupScheduledAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    completedById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["returnRequest"]>
+
+  export type ReturnRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inquiryId?: boolean
+    customerUserId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    imageUrls?: boolean
+    salesNote?: boolean
+    pickupScheduledAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    completedById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["returnRequest"]>
+
+  export type ReturnRequestSelectScalar = {
+    id?: boolean
+    inquiryId?: boolean
+    customerUserId?: boolean
+    status?: boolean
+    reason?: boolean
+    details?: boolean
+    imageUrls?: boolean
+    salesNote?: boolean
+    pickupScheduledAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    completedById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReturnRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "inquiryId" | "customerUserId" | "status" | "reason" | "details" | "imageUrls" | "salesNote" | "pickupScheduledAt" | "approvedById" | "approvedAt" | "completedById" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["returnRequest"]>
+
+  export type $ReturnRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReturnRequest"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      inquiryId: string
+      customerUserId: string | null
+      status: string
+      reason: string
+      details: string | null
+      imageUrls: Prisma.JsonValue | null
+      salesNote: string | null
+      pickupScheduledAt: Date | null
+      approvedById: string | null
+      approvedAt: Date | null
+      completedById: string | null
+      completedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["returnRequest"]>
+    composites: {}
+  }
+
+  type ReturnRequestGetPayload<S extends boolean | null | undefined | ReturnRequestDefaultArgs> = $Result.GetResult<Prisma.$ReturnRequestPayload, S>
+
+  type ReturnRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReturnRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReturnRequestCountAggregateInputType | true
+    }
+
+  export interface ReturnRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReturnRequest'], meta: { name: 'ReturnRequest' } }
+    /**
+     * Find zero or one ReturnRequest that matches the filter.
+     * @param {ReturnRequestFindUniqueArgs} args - Arguments to find a ReturnRequest
+     * @example
+     * // Get one ReturnRequest
+     * const returnRequest = await prisma.returnRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReturnRequestFindUniqueArgs>(args: SelectSubset<T, ReturnRequestFindUniqueArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReturnRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReturnRequestFindUniqueOrThrowArgs} args - Arguments to find a ReturnRequest
+     * @example
+     * // Get one ReturnRequest
+     * const returnRequest = await prisma.returnRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReturnRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, ReturnRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReturnRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReturnRequestFindFirstArgs} args - Arguments to find a ReturnRequest
+     * @example
+     * // Get one ReturnRequest
+     * const returnRequest = await prisma.returnRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReturnRequestFindFirstArgs>(args?: SelectSubset<T, ReturnRequestFindFirstArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReturnRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReturnRequestFindFirstOrThrowArgs} args - Arguments to find a ReturnRequest
+     * @example
+     * // Get one ReturnRequest
+     * const returnRequest = await prisma.returnRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReturnRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, ReturnRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReturnRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReturnRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReturnRequests
+     * const returnRequests = await prisma.returnRequest.findMany()
+     * 
+     * // Get first 10 ReturnRequests
+     * const returnRequests = await prisma.returnRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const returnRequestWithIdOnly = await prisma.returnRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReturnRequestFindManyArgs>(args?: SelectSubset<T, ReturnRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReturnRequest.
+     * @param {ReturnRequestCreateArgs} args - Arguments to create a ReturnRequest.
+     * @example
+     * // Create one ReturnRequest
+     * const ReturnRequest = await prisma.returnRequest.create({
+     *   data: {
+     *     // ... data to create a ReturnRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReturnRequestCreateArgs>(args: SelectSubset<T, ReturnRequestCreateArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReturnRequests.
+     * @param {ReturnRequestCreateManyArgs} args - Arguments to create many ReturnRequests.
+     * @example
+     * // Create many ReturnRequests
+     * const returnRequest = await prisma.returnRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReturnRequestCreateManyArgs>(args?: SelectSubset<T, ReturnRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReturnRequests and returns the data saved in the database.
+     * @param {ReturnRequestCreateManyAndReturnArgs} args - Arguments to create many ReturnRequests.
+     * @example
+     * // Create many ReturnRequests
+     * const returnRequest = await prisma.returnRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReturnRequests and only return the `id`
+     * const returnRequestWithIdOnly = await prisma.returnRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReturnRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, ReturnRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReturnRequest.
+     * @param {ReturnRequestDeleteArgs} args - Arguments to delete one ReturnRequest.
+     * @example
+     * // Delete one ReturnRequest
+     * const ReturnRequest = await prisma.returnRequest.delete({
+     *   where: {
+     *     // ... filter to delete one ReturnRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReturnRequestDeleteArgs>(args: SelectSubset<T, ReturnRequestDeleteArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReturnRequest.
+     * @param {ReturnRequestUpdateArgs} args - Arguments to update one ReturnRequest.
+     * @example
+     * // Update one ReturnRequest
+     * const returnRequest = await prisma.returnRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReturnRequestUpdateArgs>(args: SelectSubset<T, ReturnRequestUpdateArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReturnRequests.
+     * @param {ReturnRequestDeleteManyArgs} args - Arguments to filter ReturnRequests to delete.
+     * @example
+     * // Delete a few ReturnRequests
+     * const { count } = await prisma.returnRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReturnRequestDeleteManyArgs>(args?: SelectSubset<T, ReturnRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReturnRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReturnRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReturnRequests
+     * const returnRequest = await prisma.returnRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReturnRequestUpdateManyArgs>(args: SelectSubset<T, ReturnRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReturnRequests and returns the data updated in the database.
+     * @param {ReturnRequestUpdateManyAndReturnArgs} args - Arguments to update many ReturnRequests.
+     * @example
+     * // Update many ReturnRequests
+     * const returnRequest = await prisma.returnRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReturnRequests and only return the `id`
+     * const returnRequestWithIdOnly = await prisma.returnRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReturnRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, ReturnRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReturnRequest.
+     * @param {ReturnRequestUpsertArgs} args - Arguments to update or create a ReturnRequest.
+     * @example
+     * // Update or create a ReturnRequest
+     * const returnRequest = await prisma.returnRequest.upsert({
+     *   create: {
+     *     // ... data to create a ReturnRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReturnRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReturnRequestUpsertArgs>(args: SelectSubset<T, ReturnRequestUpsertArgs<ExtArgs>>): Prisma__ReturnRequestClient<$Result.GetResult<Prisma.$ReturnRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReturnRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReturnRequestCountArgs} args - Arguments to filter ReturnRequests to count.
+     * @example
+     * // Count the number of ReturnRequests
+     * const count = await prisma.returnRequest.count({
+     *   where: {
+     *     // ... the filter for the ReturnRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReturnRequestCountArgs>(
+      args?: Subset<T, ReturnRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReturnRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReturnRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReturnRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReturnRequestAggregateArgs>(args: Subset<T, ReturnRequestAggregateArgs>): Prisma.PrismaPromise<GetReturnRequestAggregateType<T>>
+
+    /**
+     * Group by ReturnRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReturnRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReturnRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReturnRequestGroupByArgs['orderBy'] }
+        : { orderBy?: ReturnRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReturnRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReturnRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReturnRequest model
+   */
+  readonly fields: ReturnRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReturnRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReturnRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReturnRequest model
+   */
+  interface ReturnRequestFieldRefs {
+    readonly id: FieldRef<"ReturnRequest", 'String'>
+    readonly inquiryId: FieldRef<"ReturnRequest", 'String'>
+    readonly customerUserId: FieldRef<"ReturnRequest", 'String'>
+    readonly status: FieldRef<"ReturnRequest", 'String'>
+    readonly reason: FieldRef<"ReturnRequest", 'String'>
+    readonly details: FieldRef<"ReturnRequest", 'String'>
+    readonly imageUrls: FieldRef<"ReturnRequest", 'Json'>
+    readonly salesNote: FieldRef<"ReturnRequest", 'String'>
+    readonly pickupScheduledAt: FieldRef<"ReturnRequest", 'DateTime'>
+    readonly approvedById: FieldRef<"ReturnRequest", 'String'>
+    readonly approvedAt: FieldRef<"ReturnRequest", 'DateTime'>
+    readonly completedById: FieldRef<"ReturnRequest", 'String'>
+    readonly completedAt: FieldRef<"ReturnRequest", 'DateTime'>
+    readonly createdAt: FieldRef<"ReturnRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReturnRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReturnRequest findUnique
+   */
+  export type ReturnRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which ReturnRequest to fetch.
+     */
+    where: ReturnRequestWhereUniqueInput
+  }
+
+  /**
+   * ReturnRequest findUniqueOrThrow
+   */
+  export type ReturnRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which ReturnRequest to fetch.
+     */
+    where: ReturnRequestWhereUniqueInput
+  }
+
+  /**
+   * ReturnRequest findFirst
+   */
+  export type ReturnRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which ReturnRequest to fetch.
+     */
+    where?: ReturnRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReturnRequests to fetch.
+     */
+    orderBy?: ReturnRequestOrderByWithRelationInput | ReturnRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReturnRequests.
+     */
+    cursor?: ReturnRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReturnRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReturnRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReturnRequests.
+     */
+    distinct?: ReturnRequestScalarFieldEnum | ReturnRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ReturnRequest findFirstOrThrow
+   */
+  export type ReturnRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which ReturnRequest to fetch.
+     */
+    where?: ReturnRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReturnRequests to fetch.
+     */
+    orderBy?: ReturnRequestOrderByWithRelationInput | ReturnRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReturnRequests.
+     */
+    cursor?: ReturnRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReturnRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReturnRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReturnRequests.
+     */
+    distinct?: ReturnRequestScalarFieldEnum | ReturnRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ReturnRequest findMany
+   */
+  export type ReturnRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which ReturnRequests to fetch.
+     */
+    where?: ReturnRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReturnRequests to fetch.
+     */
+    orderBy?: ReturnRequestOrderByWithRelationInput | ReturnRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReturnRequests.
+     */
+    cursor?: ReturnRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReturnRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReturnRequests.
+     */
+    skip?: number
+    distinct?: ReturnRequestScalarFieldEnum | ReturnRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ReturnRequest create
+   */
+  export type ReturnRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ReturnRequest.
+     */
+    data: XOR<ReturnRequestCreateInput, ReturnRequestUncheckedCreateInput>
+  }
+
+  /**
+   * ReturnRequest createMany
+   */
+  export type ReturnRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReturnRequests.
+     */
+    data: ReturnRequestCreateManyInput | ReturnRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReturnRequest createManyAndReturn
+   */
+  export type ReturnRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReturnRequests.
+     */
+    data: ReturnRequestCreateManyInput | ReturnRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReturnRequest update
+   */
+  export type ReturnRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ReturnRequest.
+     */
+    data: XOR<ReturnRequestUpdateInput, ReturnRequestUncheckedUpdateInput>
+    /**
+     * Choose, which ReturnRequest to update.
+     */
+    where: ReturnRequestWhereUniqueInput
+  }
+
+  /**
+   * ReturnRequest updateMany
+   */
+  export type ReturnRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReturnRequests.
+     */
+    data: XOR<ReturnRequestUpdateManyMutationInput, ReturnRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which ReturnRequests to update
+     */
+    where?: ReturnRequestWhereInput
+    /**
+     * Limit how many ReturnRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReturnRequest updateManyAndReturn
+   */
+  export type ReturnRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update ReturnRequests.
+     */
+    data: XOR<ReturnRequestUpdateManyMutationInput, ReturnRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which ReturnRequests to update
+     */
+    where?: ReturnRequestWhereInput
+    /**
+     * Limit how many ReturnRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReturnRequest upsert
+   */
+  export type ReturnRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ReturnRequest to update in case it exists.
+     */
+    where: ReturnRequestWhereUniqueInput
+    /**
+     * In case the ReturnRequest found by the `where` argument doesn't exist, create a new ReturnRequest with this data.
+     */
+    create: XOR<ReturnRequestCreateInput, ReturnRequestUncheckedCreateInput>
+    /**
+     * In case the ReturnRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReturnRequestUpdateInput, ReturnRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * ReturnRequest delete
+   */
+  export type ReturnRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+    /**
+     * Filter which ReturnRequest to delete.
+     */
+    where: ReturnRequestWhereUniqueInput
+  }
+
+  /**
+   * ReturnRequest deleteMany
+   */
+  export type ReturnRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReturnRequests to delete
+     */
+    where?: ReturnRequestWhereInput
+    /**
+     * Limit how many ReturnRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReturnRequest without action
+   */
+  export type ReturnRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReturnRequest
+     */
+    select?: ReturnRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReturnRequest
+     */
+    omit?: ReturnRequestOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -34027,7 +37628,8 @@ export namespace Prisma {
     accessExpiresAt: 'accessExpiresAt',
     lastLoginAt: 'lastLoginAt',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    permissions: 'permissions'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -34417,6 +38019,51 @@ export namespace Prisma {
   export type StorefrontCategoryScalarFieldEnum = (typeof StorefrontCategoryScalarFieldEnum)[keyof typeof StorefrontCategoryScalarFieldEnum]
 
 
+  export const AdminAccountArchiveScalarFieldEnum: {
+    id: 'id',
+    originalUserId: 'originalUserId',
+    name: 'name',
+    email: 'email',
+    role: 'role',
+    archivedAt: 'archivedAt'
+  };
+
+  export type AdminAccountArchiveScalarFieldEnum = (typeof AdminAccountArchiveScalarFieldEnum)[keyof typeof AdminAccountArchiveScalarFieldEnum]
+
+
+  export const AdminActionArchiveScalarFieldEnum: {
+    id: 'id',
+    archiveId: 'archiveId',
+    actionType: 'actionType',
+    description: 'description',
+    performedAt: 'performedAt',
+    metadata: 'metadata'
+  };
+
+  export type AdminActionArchiveScalarFieldEnum = (typeof AdminActionArchiveScalarFieldEnum)[keyof typeof AdminActionArchiveScalarFieldEnum]
+
+
+  export const ReturnRequestScalarFieldEnum: {
+    id: 'id',
+    inquiryId: 'inquiryId',
+    customerUserId: 'customerUserId',
+    status: 'status',
+    reason: 'reason',
+    details: 'details',
+    imageUrls: 'imageUrls',
+    salesNote: 'salesNote',
+    pickupScheduledAt: 'pickupScheduledAt',
+    approvedById: 'approvedById',
+    approvedAt: 'approvedAt',
+    completedById: 'completedById',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReturnRequestScalarFieldEnum = (typeof ReturnRequestScalarFieldEnum)[keyof typeof ReturnRequestScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -34537,6 +38184,20 @@ export namespace Prisma {
    * Reference to a field of type 'AccountStatus[]'
    */
   export type ListEnumAccountStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -34719,20 +38380,6 @@ export namespace Prisma {
    * Reference to a field of type 'StockState[]'
    */
   export type ListEnumStockStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StockState[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -35022,6 +38669,7 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    permissions?: JsonNullableFilter<"User">
     company?: XOR<CompanyNullableScalarRelationFilter, CompanyWhereInput> | null
     leadsCreated?: LeadListRelationFilter
     quotationsCreated?: QuotationListRelationFilter
@@ -35052,6 +38700,7 @@ export namespace Prisma {
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    permissions?: SortOrderInput | SortOrder
     company?: CompanyOrderByWithRelationInput
     leadsCreated?: LeadOrderByRelationAggregateInput
     quotationsCreated?: QuotationOrderByRelationAggregateInput
@@ -35085,6 +38734,7 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    permissions?: JsonNullableFilter<"User">
     company?: XOR<CompanyNullableScalarRelationFilter, CompanyWhereInput> | null
     leadsCreated?: LeadListRelationFilter
     quotationsCreated?: QuotationListRelationFilter
@@ -35115,6 +38765,7 @@ export namespace Prisma {
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    permissions?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -35136,6 +38787,7 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    permissions?: JsonNullableWithAggregatesFilter<"User">
   }
 
   export type LeadWhereInput = {
@@ -36358,7 +40010,6 @@ export namespace Prisma {
 
   export type ProductMaterialWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    productId_stockItemId_quantityDisplay?: ProductMaterialProductIdStockItemIdQuantityDisplayCompoundUniqueInput
     AND?: ProductMaterialWhereInput | ProductMaterialWhereInput[]
     OR?: ProductMaterialWhereInput[]
     NOT?: ProductMaterialWhereInput | ProductMaterialWhereInput[]
@@ -36371,7 +40022,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ProductMaterial"> | Date | string
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
-  }, "id" | "productId_stockItemId_quantityDisplay">
+  }, "id">
 
   export type ProductMaterialOrderByWithAggregationInput = {
     id?: SortOrder
@@ -37184,6 +40835,228 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"StorefrontCategory"> | Date | string
   }
 
+  export type AdminAccountArchiveWhereInput = {
+    AND?: AdminAccountArchiveWhereInput | AdminAccountArchiveWhereInput[]
+    OR?: AdminAccountArchiveWhereInput[]
+    NOT?: AdminAccountArchiveWhereInput | AdminAccountArchiveWhereInput[]
+    id?: StringFilter<"AdminAccountArchive"> | string
+    originalUserId?: StringFilter<"AdminAccountArchive"> | string
+    name?: StringFilter<"AdminAccountArchive"> | string
+    email?: StringFilter<"AdminAccountArchive"> | string
+    role?: StringFilter<"AdminAccountArchive"> | string
+    archivedAt?: DateTimeFilter<"AdminAccountArchive"> | Date | string
+    actions?: AdminActionArchiveListRelationFilter
+  }
+
+  export type AdminAccountArchiveOrderByWithRelationInput = {
+    id?: SortOrder
+    originalUserId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    archivedAt?: SortOrder
+    actions?: AdminActionArchiveOrderByRelationAggregateInput
+  }
+
+  export type AdminAccountArchiveWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    originalUserId?: string
+    AND?: AdminAccountArchiveWhereInput | AdminAccountArchiveWhereInput[]
+    OR?: AdminAccountArchiveWhereInput[]
+    NOT?: AdminAccountArchiveWhereInput | AdminAccountArchiveWhereInput[]
+    name?: StringFilter<"AdminAccountArchive"> | string
+    email?: StringFilter<"AdminAccountArchive"> | string
+    role?: StringFilter<"AdminAccountArchive"> | string
+    archivedAt?: DateTimeFilter<"AdminAccountArchive"> | Date | string
+    actions?: AdminActionArchiveListRelationFilter
+  }, "id" | "originalUserId">
+
+  export type AdminAccountArchiveOrderByWithAggregationInput = {
+    id?: SortOrder
+    originalUserId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    archivedAt?: SortOrder
+    _count?: AdminAccountArchiveCountOrderByAggregateInput
+    _max?: AdminAccountArchiveMaxOrderByAggregateInput
+    _min?: AdminAccountArchiveMinOrderByAggregateInput
+  }
+
+  export type AdminAccountArchiveScalarWhereWithAggregatesInput = {
+    AND?: AdminAccountArchiveScalarWhereWithAggregatesInput | AdminAccountArchiveScalarWhereWithAggregatesInput[]
+    OR?: AdminAccountArchiveScalarWhereWithAggregatesInput[]
+    NOT?: AdminAccountArchiveScalarWhereWithAggregatesInput | AdminAccountArchiveScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdminAccountArchive"> | string
+    originalUserId?: StringWithAggregatesFilter<"AdminAccountArchive"> | string
+    name?: StringWithAggregatesFilter<"AdminAccountArchive"> | string
+    email?: StringWithAggregatesFilter<"AdminAccountArchive"> | string
+    role?: StringWithAggregatesFilter<"AdminAccountArchive"> | string
+    archivedAt?: DateTimeWithAggregatesFilter<"AdminAccountArchive"> | Date | string
+  }
+
+  export type AdminActionArchiveWhereInput = {
+    AND?: AdminActionArchiveWhereInput | AdminActionArchiveWhereInput[]
+    OR?: AdminActionArchiveWhereInput[]
+    NOT?: AdminActionArchiveWhereInput | AdminActionArchiveWhereInput[]
+    id?: StringFilter<"AdminActionArchive"> | string
+    archiveId?: StringFilter<"AdminActionArchive"> | string
+    actionType?: StringFilter<"AdminActionArchive"> | string
+    description?: StringFilter<"AdminActionArchive"> | string
+    performedAt?: DateTimeFilter<"AdminActionArchive"> | Date | string
+    metadata?: JsonNullableFilter<"AdminActionArchive">
+    adminArchive?: XOR<AdminAccountArchiveScalarRelationFilter, AdminAccountArchiveWhereInput>
+  }
+
+  export type AdminActionArchiveOrderByWithRelationInput = {
+    id?: SortOrder
+    archiveId?: SortOrder
+    actionType?: SortOrder
+    description?: SortOrder
+    performedAt?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    adminArchive?: AdminAccountArchiveOrderByWithRelationInput
+  }
+
+  export type AdminActionArchiveWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AdminActionArchiveWhereInput | AdminActionArchiveWhereInput[]
+    OR?: AdminActionArchiveWhereInput[]
+    NOT?: AdminActionArchiveWhereInput | AdminActionArchiveWhereInput[]
+    archiveId?: StringFilter<"AdminActionArchive"> | string
+    actionType?: StringFilter<"AdminActionArchive"> | string
+    description?: StringFilter<"AdminActionArchive"> | string
+    performedAt?: DateTimeFilter<"AdminActionArchive"> | Date | string
+    metadata?: JsonNullableFilter<"AdminActionArchive">
+    adminArchive?: XOR<AdminAccountArchiveScalarRelationFilter, AdminAccountArchiveWhereInput>
+  }, "id">
+
+  export type AdminActionArchiveOrderByWithAggregationInput = {
+    id?: SortOrder
+    archiveId?: SortOrder
+    actionType?: SortOrder
+    description?: SortOrder
+    performedAt?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    _count?: AdminActionArchiveCountOrderByAggregateInput
+    _max?: AdminActionArchiveMaxOrderByAggregateInput
+    _min?: AdminActionArchiveMinOrderByAggregateInput
+  }
+
+  export type AdminActionArchiveScalarWhereWithAggregatesInput = {
+    AND?: AdminActionArchiveScalarWhereWithAggregatesInput | AdminActionArchiveScalarWhereWithAggregatesInput[]
+    OR?: AdminActionArchiveScalarWhereWithAggregatesInput[]
+    NOT?: AdminActionArchiveScalarWhereWithAggregatesInput | AdminActionArchiveScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdminActionArchive"> | string
+    archiveId?: StringWithAggregatesFilter<"AdminActionArchive"> | string
+    actionType?: StringWithAggregatesFilter<"AdminActionArchive"> | string
+    description?: StringWithAggregatesFilter<"AdminActionArchive"> | string
+    performedAt?: DateTimeWithAggregatesFilter<"AdminActionArchive"> | Date | string
+    metadata?: JsonNullableWithAggregatesFilter<"AdminActionArchive">
+  }
+
+  export type ReturnRequestWhereInput = {
+    AND?: ReturnRequestWhereInput | ReturnRequestWhereInput[]
+    OR?: ReturnRequestWhereInput[]
+    NOT?: ReturnRequestWhereInput | ReturnRequestWhereInput[]
+    id?: StringFilter<"ReturnRequest"> | string
+    inquiryId?: StringFilter<"ReturnRequest"> | string
+    customerUserId?: StringNullableFilter<"ReturnRequest"> | string | null
+    status?: StringFilter<"ReturnRequest"> | string
+    reason?: StringFilter<"ReturnRequest"> | string
+    details?: StringNullableFilter<"ReturnRequest"> | string | null
+    imageUrls?: JsonNullableFilter<"ReturnRequest">
+    salesNote?: StringNullableFilter<"ReturnRequest"> | string | null
+    pickupScheduledAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
+    approvedById?: StringNullableFilter<"ReturnRequest"> | string | null
+    approvedAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
+    completedById?: StringNullableFilter<"ReturnRequest"> | string | null
+    completedAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"ReturnRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ReturnRequest"> | Date | string
+  }
+
+  export type ReturnRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    customerUserId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrderInput | SortOrder
+    imageUrls?: SortOrderInput | SortOrder
+    salesNote?: SortOrderInput | SortOrder
+    pickupScheduledAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    completedById?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReturnRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReturnRequestWhereInput | ReturnRequestWhereInput[]
+    OR?: ReturnRequestWhereInput[]
+    NOT?: ReturnRequestWhereInput | ReturnRequestWhereInput[]
+    inquiryId?: StringFilter<"ReturnRequest"> | string
+    customerUserId?: StringNullableFilter<"ReturnRequest"> | string | null
+    status?: StringFilter<"ReturnRequest"> | string
+    reason?: StringFilter<"ReturnRequest"> | string
+    details?: StringNullableFilter<"ReturnRequest"> | string | null
+    imageUrls?: JsonNullableFilter<"ReturnRequest">
+    salesNote?: StringNullableFilter<"ReturnRequest"> | string | null
+    pickupScheduledAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
+    approvedById?: StringNullableFilter<"ReturnRequest"> | string | null
+    approvedAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
+    completedById?: StringNullableFilter<"ReturnRequest"> | string | null
+    completedAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"ReturnRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ReturnRequest"> | Date | string
+  }, "id">
+
+  export type ReturnRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    customerUserId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrderInput | SortOrder
+    imageUrls?: SortOrderInput | SortOrder
+    salesNote?: SortOrderInput | SortOrder
+    pickupScheduledAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    completedById?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReturnRequestCountOrderByAggregateInput
+    _max?: ReturnRequestMaxOrderByAggregateInput
+    _min?: ReturnRequestMinOrderByAggregateInput
+  }
+
+  export type ReturnRequestScalarWhereWithAggregatesInput = {
+    AND?: ReturnRequestScalarWhereWithAggregatesInput | ReturnRequestScalarWhereWithAggregatesInput[]
+    OR?: ReturnRequestScalarWhereWithAggregatesInput[]
+    NOT?: ReturnRequestScalarWhereWithAggregatesInput | ReturnRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReturnRequest"> | string
+    inquiryId?: StringWithAggregatesFilter<"ReturnRequest"> | string
+    customerUserId?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
+    status?: StringWithAggregatesFilter<"ReturnRequest"> | string
+    reason?: StringWithAggregatesFilter<"ReturnRequest"> | string
+    details?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
+    imageUrls?: JsonNullableWithAggregatesFilter<"ReturnRequest">
+    salesNote?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
+    pickupScheduledAt?: DateTimeNullableWithAggregatesFilter<"ReturnRequest"> | Date | string | null
+    approvedById?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"ReturnRequest"> | Date | string | null
+    completedById?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"ReturnRequest"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ReturnRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReturnRequest"> | Date | string
+  }
+
   export type CompanyCreateInput = {
     id?: string
     code: string
@@ -37307,6 +41180,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -37337,6 +41211,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -37365,6 +41240,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -37395,6 +41271,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -37424,6 +41301,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UserUpdateManyMutationInput = {
@@ -37438,6 +41316,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -37453,6 +41332,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type LeadCreateInput = {
@@ -39702,6 +43582,261 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AdminAccountArchiveCreateInput = {
+    id?: string
+    originalUserId: string
+    name: string
+    email: string
+    role: string
+    archivedAt?: Date | string
+    actions?: AdminActionArchiveCreateNestedManyWithoutAdminArchiveInput
+  }
+
+  export type AdminAccountArchiveUncheckedCreateInput = {
+    id?: string
+    originalUserId: string
+    name: string
+    email: string
+    role: string
+    archivedAt?: Date | string
+    actions?: AdminActionArchiveUncheckedCreateNestedManyWithoutAdminArchiveInput
+  }
+
+  export type AdminAccountArchiveUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalUserId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actions?: AdminActionArchiveUpdateManyWithoutAdminArchiveNestedInput
+  }
+
+  export type AdminAccountArchiveUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalUserId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actions?: AdminActionArchiveUncheckedUpdateManyWithoutAdminArchiveNestedInput
+  }
+
+  export type AdminAccountArchiveCreateManyInput = {
+    id?: string
+    originalUserId: string
+    name: string
+    email: string
+    role: string
+    archivedAt?: Date | string
+  }
+
+  export type AdminAccountArchiveUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalUserId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminAccountArchiveUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalUserId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminActionArchiveCreateInput = {
+    id?: string
+    actionType: string
+    description: string
+    performedAt?: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    adminArchive: AdminAccountArchiveCreateNestedOneWithoutActionsInput
+  }
+
+  export type AdminActionArchiveUncheckedCreateInput = {
+    id?: string
+    archiveId: string
+    actionType: string
+    description: string
+    performedAt?: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    adminArchive?: AdminAccountArchiveUpdateOneRequiredWithoutActionsNestedInput
+  }
+
+  export type AdminActionArchiveUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    archiveId?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveCreateManyInput = {
+    id?: string
+    archiveId: string
+    actionType: string
+    description: string
+    performedAt?: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    archiveId?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type ReturnRequestCreateInput = {
+    id?: string
+    inquiryId: string
+    customerUserId?: string | null
+    status: string
+    reason: string
+    details?: string | null
+    imageUrls?: NullableJsonNullValueInput | InputJsonValue
+    salesNote?: string | null
+    pickupScheduledAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    completedById?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReturnRequestUncheckedCreateInput = {
+    id?: string
+    inquiryId: string
+    customerUserId?: string | null
+    status: string
+    reason: string
+    details?: string | null
+    imageUrls?: NullableJsonNullValueInput | InputJsonValue
+    salesNote?: string | null
+    pickupScheduledAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    completedById?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReturnRequestUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrls?: NullableJsonNullValueInput | InputJsonValue
+    salesNote?: NullableStringFieldUpdateOperationsInput | string | null
+    pickupScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReturnRequestUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrls?: NullableJsonNullValueInput | InputJsonValue
+    salesNote?: NullableStringFieldUpdateOperationsInput | string | null
+    pickupScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReturnRequestCreateManyInput = {
+    id?: string
+    inquiryId: string
+    customerUserId?: string | null
+    status: string
+    reason: string
+    details?: string | null
+    imageUrls?: NullableJsonNullValueInput | InputJsonValue
+    salesNote?: string | null
+    pickupScheduledAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    completedById?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReturnRequestUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrls?: NullableJsonNullValueInput | InputJsonValue
+    salesNote?: NullableStringFieldUpdateOperationsInput | string | null
+    pickupScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReturnRequestUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrls?: NullableJsonNullValueInput | InputJsonValue
+    salesNote?: NullableStringFieldUpdateOperationsInput | string | null
+    pickupScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -39940,6 +44075,29 @@ export namespace Prisma {
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type CompanyNullableScalarRelationFilter = {
     is?: CompanyWhereInput | null
@@ -40029,6 +44187,7 @@ export namespace Prisma {
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    permissions?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -40108,6 +44267,32 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumLeadStatusFilter<$PrismaModel = never> = {
@@ -40920,29 +45105,6 @@ export namespace Prisma {
     gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
@@ -41057,32 +45219,6 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter<$PrismaModel>
     _min?: NestedDecimalNullableFilter<$PrismaModel>
     _max?: NestedDecimalNullableFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -41314,12 +45450,6 @@ export namespace Prisma {
     attachmentType?: SortOrder
     dataUrl?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type ProductMaterialProductIdStockItemIdQuantityDisplayCompoundUniqueInput = {
-    productId: string
-    stockItemId: string
-    quantityDisplay: string
   }
 
   export type ProductMaterialCountOrderByAggregateInput = {
@@ -41922,6 +46052,125 @@ export namespace Prisma {
   export type StorefrontCategoryMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AdminActionArchiveListRelationFilter = {
+    every?: AdminActionArchiveWhereInput
+    some?: AdminActionArchiveWhereInput
+    none?: AdminActionArchiveWhereInput
+  }
+
+  export type AdminActionArchiveOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdminAccountArchiveCountOrderByAggregateInput = {
+    id?: SortOrder
+    originalUserId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    archivedAt?: SortOrder
+  }
+
+  export type AdminAccountArchiveMaxOrderByAggregateInput = {
+    id?: SortOrder
+    originalUserId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    archivedAt?: SortOrder
+  }
+
+  export type AdminAccountArchiveMinOrderByAggregateInput = {
+    id?: SortOrder
+    originalUserId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    archivedAt?: SortOrder
+  }
+
+  export type AdminAccountArchiveScalarRelationFilter = {
+    is?: AdminAccountArchiveWhereInput
+    isNot?: AdminAccountArchiveWhereInput
+  }
+
+  export type AdminActionArchiveCountOrderByAggregateInput = {
+    id?: SortOrder
+    archiveId?: SortOrder
+    actionType?: SortOrder
+    description?: SortOrder
+    performedAt?: SortOrder
+    metadata?: SortOrder
+  }
+
+  export type AdminActionArchiveMaxOrderByAggregateInput = {
+    id?: SortOrder
+    archiveId?: SortOrder
+    actionType?: SortOrder
+    description?: SortOrder
+    performedAt?: SortOrder
+  }
+
+  export type AdminActionArchiveMinOrderByAggregateInput = {
+    id?: SortOrder
+    archiveId?: SortOrder
+    actionType?: SortOrder
+    description?: SortOrder
+    performedAt?: SortOrder
+  }
+
+  export type ReturnRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    customerUserId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrder
+    imageUrls?: SortOrder
+    salesNote?: SortOrder
+    pickupScheduledAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    completedById?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReturnRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    customerUserId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrder
+    salesNote?: SortOrder
+    pickupScheduledAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    completedById?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReturnRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    inquiryId?: SortOrder
+    customerUserId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    details?: SortOrder
+    salesNote?: SortOrder
+    pickupScheduledAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    completedById?: SortOrder
+    completedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -44262,6 +48511,62 @@ export namespace Prisma {
     set?: $Enums.AuditEntityType
   }
 
+  export type AdminActionArchiveCreateNestedManyWithoutAdminArchiveInput = {
+    create?: XOR<AdminActionArchiveCreateWithoutAdminArchiveInput, AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput> | AdminActionArchiveCreateWithoutAdminArchiveInput[] | AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput[]
+    connectOrCreate?: AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput | AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput[]
+    createMany?: AdminActionArchiveCreateManyAdminArchiveInputEnvelope
+    connect?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+  }
+
+  export type AdminActionArchiveUncheckedCreateNestedManyWithoutAdminArchiveInput = {
+    create?: XOR<AdminActionArchiveCreateWithoutAdminArchiveInput, AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput> | AdminActionArchiveCreateWithoutAdminArchiveInput[] | AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput[]
+    connectOrCreate?: AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput | AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput[]
+    createMany?: AdminActionArchiveCreateManyAdminArchiveInputEnvelope
+    connect?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+  }
+
+  export type AdminActionArchiveUpdateManyWithoutAdminArchiveNestedInput = {
+    create?: XOR<AdminActionArchiveCreateWithoutAdminArchiveInput, AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput> | AdminActionArchiveCreateWithoutAdminArchiveInput[] | AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput[]
+    connectOrCreate?: AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput | AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput[]
+    upsert?: AdminActionArchiveUpsertWithWhereUniqueWithoutAdminArchiveInput | AdminActionArchiveUpsertWithWhereUniqueWithoutAdminArchiveInput[]
+    createMany?: AdminActionArchiveCreateManyAdminArchiveInputEnvelope
+    set?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    disconnect?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    delete?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    connect?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    update?: AdminActionArchiveUpdateWithWhereUniqueWithoutAdminArchiveInput | AdminActionArchiveUpdateWithWhereUniqueWithoutAdminArchiveInput[]
+    updateMany?: AdminActionArchiveUpdateManyWithWhereWithoutAdminArchiveInput | AdminActionArchiveUpdateManyWithWhereWithoutAdminArchiveInput[]
+    deleteMany?: AdminActionArchiveScalarWhereInput | AdminActionArchiveScalarWhereInput[]
+  }
+
+  export type AdminActionArchiveUncheckedUpdateManyWithoutAdminArchiveNestedInput = {
+    create?: XOR<AdminActionArchiveCreateWithoutAdminArchiveInput, AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput> | AdminActionArchiveCreateWithoutAdminArchiveInput[] | AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput[]
+    connectOrCreate?: AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput | AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput[]
+    upsert?: AdminActionArchiveUpsertWithWhereUniqueWithoutAdminArchiveInput | AdminActionArchiveUpsertWithWhereUniqueWithoutAdminArchiveInput[]
+    createMany?: AdminActionArchiveCreateManyAdminArchiveInputEnvelope
+    set?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    disconnect?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    delete?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    connect?: AdminActionArchiveWhereUniqueInput | AdminActionArchiveWhereUniqueInput[]
+    update?: AdminActionArchiveUpdateWithWhereUniqueWithoutAdminArchiveInput | AdminActionArchiveUpdateWithWhereUniqueWithoutAdminArchiveInput[]
+    updateMany?: AdminActionArchiveUpdateManyWithWhereWithoutAdminArchiveInput | AdminActionArchiveUpdateManyWithWhereWithoutAdminArchiveInput[]
+    deleteMany?: AdminActionArchiveScalarWhereInput | AdminActionArchiveScalarWhereInput[]
+  }
+
+  export type AdminAccountArchiveCreateNestedOneWithoutActionsInput = {
+    create?: XOR<AdminAccountArchiveCreateWithoutActionsInput, AdminAccountArchiveUncheckedCreateWithoutActionsInput>
+    connectOrCreate?: AdminAccountArchiveCreateOrConnectWithoutActionsInput
+    connect?: AdminAccountArchiveWhereUniqueInput
+  }
+
+  export type AdminAccountArchiveUpdateOneRequiredWithoutActionsNestedInput = {
+    create?: XOR<AdminAccountArchiveCreateWithoutActionsInput, AdminAccountArchiveUncheckedCreateWithoutActionsInput>
+    connectOrCreate?: AdminAccountArchiveCreateOrConnectWithoutActionsInput
+    upsert?: AdminAccountArchiveUpsertWithoutActionsInput
+    connect?: AdminAccountArchiveWhereUniqueInput
+    update?: XOR<XOR<AdminAccountArchiveUpdateToOneWithWhereWithoutActionsInput, AdminAccountArchiveUpdateWithoutActionsInput>, AdminAccountArchiveUncheckedUpdateWithoutActionsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -44470,6 +48775,29 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumLeadStatusFilter<$PrismaModel = never> = {
@@ -44771,29 +49099,6 @@ export namespace Prisma {
     _min?: NestedDecimalNullableFilter<$PrismaModel>
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
@@ -45025,6 +49330,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
@@ -45053,6 +49359,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -45319,6 +49626,7 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    permissions?: JsonNullableFilter<"User">
   }
 
   export type LeadUpsertWithWhereUniqueWithoutCompanyInput = {
@@ -46494,6 +50802,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
@@ -46523,6 +50832,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
@@ -46667,6 +50977,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
@@ -46696,6 +51007,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -46813,6 +51125,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
@@ -46842,6 +51155,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
@@ -47124,6 +51438,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
@@ -47153,6 +51468,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -47455,6 +51771,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -47484,6 +51801,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
@@ -47803,6 +52121,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -47832,6 +52151,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -48768,6 +53088,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -48797,6 +53118,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -48840,6 +53162,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -48869,6 +53192,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -48949,6 +53273,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -48978,6 +53303,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -49108,6 +53434,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -49137,6 +53464,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -49213,6 +53541,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -49242,6 +53571,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -49352,6 +53682,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -49381,6 +53712,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -49854,6 +54186,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -49883,6 +54216,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -49915,6 +54249,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -49944,6 +54279,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -50088,6 +54424,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -50117,6 +54454,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -50155,6 +54493,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -50184,6 +54523,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -50456,6 +54796,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -50485,6 +54826,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -50517,6 +54859,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -50546,6 +54889,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -50696,6 +55040,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -50725,6 +55070,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -50763,6 +55109,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -50792,6 +55139,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -50864,6 +55212,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -50893,6 +55242,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -50971,6 +55321,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -51000,6 +55351,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -51147,6 +55499,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -51176,6 +55529,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -51351,6 +55705,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -51380,6 +55735,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -51515,6 +55871,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -51544,6 +55901,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -51576,6 +55934,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyCreateNestedOneWithoutUsersInput
     leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
@@ -51605,6 +55964,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
     quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
@@ -51768,6 +56128,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -51797,6 +56158,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -51835,6 +56197,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     company?: CompanyUpdateOneWithoutUsersNestedInput
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
@@ -51864,6 +56227,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -51879,6 +56243,112 @@ export namespace Prisma {
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
+  export type AdminActionArchiveCreateWithoutAdminArchiveInput = {
+    id?: string
+    actionType: string
+    description: string
+    performedAt?: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput = {
+    id?: string
+    actionType: string
+    description: string
+    performedAt?: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveCreateOrConnectWithoutAdminArchiveInput = {
+    where: AdminActionArchiveWhereUniqueInput
+    create: XOR<AdminActionArchiveCreateWithoutAdminArchiveInput, AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput>
+  }
+
+  export type AdminActionArchiveCreateManyAdminArchiveInputEnvelope = {
+    data: AdminActionArchiveCreateManyAdminArchiveInput | AdminActionArchiveCreateManyAdminArchiveInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AdminActionArchiveUpsertWithWhereUniqueWithoutAdminArchiveInput = {
+    where: AdminActionArchiveWhereUniqueInput
+    update: XOR<AdminActionArchiveUpdateWithoutAdminArchiveInput, AdminActionArchiveUncheckedUpdateWithoutAdminArchiveInput>
+    create: XOR<AdminActionArchiveCreateWithoutAdminArchiveInput, AdminActionArchiveUncheckedCreateWithoutAdminArchiveInput>
+  }
+
+  export type AdminActionArchiveUpdateWithWhereUniqueWithoutAdminArchiveInput = {
+    where: AdminActionArchiveWhereUniqueInput
+    data: XOR<AdminActionArchiveUpdateWithoutAdminArchiveInput, AdminActionArchiveUncheckedUpdateWithoutAdminArchiveInput>
+  }
+
+  export type AdminActionArchiveUpdateManyWithWhereWithoutAdminArchiveInput = {
+    where: AdminActionArchiveScalarWhereInput
+    data: XOR<AdminActionArchiveUpdateManyMutationInput, AdminActionArchiveUncheckedUpdateManyWithoutAdminArchiveInput>
+  }
+
+  export type AdminActionArchiveScalarWhereInput = {
+    AND?: AdminActionArchiveScalarWhereInput | AdminActionArchiveScalarWhereInput[]
+    OR?: AdminActionArchiveScalarWhereInput[]
+    NOT?: AdminActionArchiveScalarWhereInput | AdminActionArchiveScalarWhereInput[]
+    id?: StringFilter<"AdminActionArchive"> | string
+    archiveId?: StringFilter<"AdminActionArchive"> | string
+    actionType?: StringFilter<"AdminActionArchive"> | string
+    description?: StringFilter<"AdminActionArchive"> | string
+    performedAt?: DateTimeFilter<"AdminActionArchive"> | Date | string
+    metadata?: JsonNullableFilter<"AdminActionArchive">
+  }
+
+  export type AdminAccountArchiveCreateWithoutActionsInput = {
+    id?: string
+    originalUserId: string
+    name: string
+    email: string
+    role: string
+    archivedAt?: Date | string
+  }
+
+  export type AdminAccountArchiveUncheckedCreateWithoutActionsInput = {
+    id?: string
+    originalUserId: string
+    name: string
+    email: string
+    role: string
+    archivedAt?: Date | string
+  }
+
+  export type AdminAccountArchiveCreateOrConnectWithoutActionsInput = {
+    where: AdminAccountArchiveWhereUniqueInput
+    create: XOR<AdminAccountArchiveCreateWithoutActionsInput, AdminAccountArchiveUncheckedCreateWithoutActionsInput>
+  }
+
+  export type AdminAccountArchiveUpsertWithoutActionsInput = {
+    update: XOR<AdminAccountArchiveUpdateWithoutActionsInput, AdminAccountArchiveUncheckedUpdateWithoutActionsInput>
+    create: XOR<AdminAccountArchiveCreateWithoutActionsInput, AdminAccountArchiveUncheckedCreateWithoutActionsInput>
+    where?: AdminAccountArchiveWhereInput
+  }
+
+  export type AdminAccountArchiveUpdateToOneWithWhereWithoutActionsInput = {
+    where?: AdminAccountArchiveWhereInput
+    data: XOR<AdminAccountArchiveUpdateWithoutActionsInput, AdminAccountArchiveUncheckedUpdateWithoutActionsInput>
+  }
+
+  export type AdminAccountArchiveUpdateWithoutActionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalUserId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminAccountArchiveUncheckedUpdateWithoutActionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalUserId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    archivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyCompanyInput = {
     id?: string
     authUserId?: string | null
@@ -51891,6 +56361,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type LeadCreateManyCompanyInput = {
@@ -51980,6 +56451,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
@@ -52008,6 +56480,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
     leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
     quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -52036,6 +56509,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type LeadUpdateWithoutCompanyInput = {
@@ -53963,6 +58437,38 @@ export namespace Prisma {
     assetType?: EnumDesignAssetTypeFieldUpdateOperationsInput | $Enums.DesignAssetType
     isFinal?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminActionArchiveCreateManyAdminArchiveInput = {
+    id?: string
+    actionType: string
+    description: string
+    performedAt?: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveUpdateWithoutAdminArchiveInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveUncheckedUpdateWithoutAdminArchiveInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type AdminActionArchiveUncheckedUpdateManyWithoutAdminArchiveInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actionType?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
   }
 
 

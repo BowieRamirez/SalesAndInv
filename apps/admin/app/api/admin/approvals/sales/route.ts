@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { updateInquiryWorkflowStatus } from "@/lib/inquiries"
+import { logAudit } from "@furnitrack/db"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/sales", request.url)
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
     return buildRedirect(request, "Your session could not be confirmed. Please sign in again.", "error")
   }
 
-  if (!["SALES", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["SALES", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only sales or executive admins can approve this step.", "error")
   }
 
@@ -46,6 +47,18 @@ export async function POST(request: Request) {
     revalidatePath("/sales")
     revalidatePath("/inventory")
     revalidatePath("/account/status")
+
+    if (updatedRows > 0) {
+      await logAudit({
+        actorId: currentUser.authUserId,
+        action: "INVENTORY_REQUESTED",
+        entityType: "INVENTORY",
+        entityId: inquiryId,
+        metadata: {
+          statusNote,
+        },
+      })
+    }
 
     return buildRedirect(
       request,

@@ -12,7 +12,7 @@ export default async function DashboardLayout({
 
     return (
         <div className="flex min-h-screen">
-            <Sidebar currentUser={{ name: currentUser.name, role: currentUser.role }} />
+            <Sidebar currentUser={{ name: currentUser.name, role: currentUser.role, permissions: currentUser.permissions }} />
             <div className="flex-1 min-w-0">
                 {children}
             </div>

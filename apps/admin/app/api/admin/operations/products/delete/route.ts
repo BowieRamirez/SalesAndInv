@@ -14,7 +14,7 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only operations or executive admins can delete finished products.", "error")
   }
 

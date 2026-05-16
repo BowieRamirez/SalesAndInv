@@ -18,6 +18,7 @@ enum UserRole {
   INVENTORY
   ACCOUNTING
   OPERATIONS_DESIGN
+  CUSTOM
   CLIENT
 }
 
@@ -191,6 +192,16 @@ enum AuditAction {
   STOCK_REQUEST_REJECTED
   PAYMENT_UPDATED
   DELIVERY_SCHEDULE_CHANGED
+  PAYMENT_ACCEPTED
+  RETURN_ACCEPTED
+  CHAT_MESSAGE_SENT
+  INVENTORY_REQUESTED
+  STOCK_ADDED
+  STOCK_REMOVED
+  BUILDING_APPROVED
+  DELIVERY_SCHEDULED
+  PRODUCT_CREATED
+  PRODUCT_UPDATED
 }
 
 enum AuditEntityType {
@@ -201,6 +212,12 @@ enum AuditEntityType {
   STOCK_REQUEST
   PAYMENT
   DELIVERY_SCHEDULE
+  RETURN_REQUEST
+  CHAT
+  INVENTORY
+  STOCK
+  BUILDING_PROJECT
+  PRODUCT
 }
 
 enum ApprovalModule {
@@ -254,6 +271,7 @@ model User {
   lastLoginAt      DateTime?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
+  permissions      Json?
 
   company              Company?          @relation(fields: [companyId], references: [id])
   leadsCreated         Lead[]            @relation("LeadCreatedBy")
@@ -556,7 +574,6 @@ model ProductMaterial {
   product    Product   @relation(fields: [productId], references: [id])
   stockItem  StockItem @relation("ProductMaterialStockItem", fields: [stockItemId], references: [id])
 
-  @@unique([productId, stockItemId, quantityDisplay])
   @@index([stockItemId])
   @@map("product_materials")
 }
@@ -732,4 +749,53 @@ model StorefrontCategory {
   updatedAt DateTime @updatedAt
 
   @@map("storefront_categories")
+}
+
+model AdminAccountArchive {
+  id             String   @id @default(cuid())
+  originalUserId String   @unique
+  name           String
+  email          String
+  role           String
+  archivedAt     DateTime @default(now())
+
+  actions        AdminActionArchive[]
+
+  @@map("admin_account_archives")
+}
+
+model AdminActionArchive {
+  id              String   @id @default(cuid())
+  archiveId       String
+  actionType      String
+  description     String
+  performedAt     DateTime @default(now())
+  metadata        Json?
+
+  adminArchive    AdminAccountArchive @relation(fields: [archiveId], references: [id])
+
+  @@index([archiveId, performedAt])
+  @@map("admin_action_archives")
+}
+
+model ReturnRequest {
+  id                String    @id @default(cuid())
+  inquiryId         String
+  customerUserId    String?
+  status            String
+  reason            String
+  details           String?
+  imageUrls         Json?
+  salesNote         String?
+  pickupScheduledAt DateTime?
+  approvedById      String?
+  approvedAt        DateTime?
+  completedById     String?
+  completedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([inquiryId])
+  @@index([customerUserId])
+  @@map("return_requests")
 }

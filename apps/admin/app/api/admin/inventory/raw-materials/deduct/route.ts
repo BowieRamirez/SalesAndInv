@@ -15,7 +15,7 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
 export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
-  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     return buildRedirect(request, "Only operations or executive admins can remove stock.", "error")
   }
 
@@ -97,8 +97,8 @@ export async function POST(request: Request) {
         VALUES (
           ${randomUUID()},
           ${currentUser.id},
-          'USER_UPDATED'::"AuditAction",
-          'USER'::"AuditEntityType",
+          'STOCK_REMOVED'::"AuditAction",
+          'STOCK'::"AuditEntityType",
           ${stockItemId},
           ${JSON.stringify({
             auditLabel: "RAW_MATERIAL_STOCK_REMOVED",

@@ -121,7 +121,7 @@ export const dynamic = "force-dynamic"
 export default async function SalesDashboard({ searchParams }: SalesPageProps) {
   const currentUser = await requireAuthenticatedAppUser()
 
-  if (!["SALES", "ADMIN_MANAGEMENT"].includes(currentUser.role)) {
+  if (!["SALES", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
     redirect(ROLE_REDIRECT[currentUser.role])
   }
 
