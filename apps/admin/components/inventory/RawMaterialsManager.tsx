@@ -122,8 +122,9 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                 <th className="py-3 pr-4 font-medium">Item</th>
                 <th className="py-3 pr-4 font-medium">Warehouse</th>
                 <th className="py-3 pr-4 font-medium">Unit</th>
-                <th className="py-3 pr-4 font-medium">Available</th>
+                <th className="py-3 pr-4 font-medium">Total Stock</th>
                 <th className="py-3 pr-4 font-medium">Reserved</th>
+                <th className="py-3 pr-4 font-medium">Available</th>
                 <th className="py-3 pr-4 font-medium">Threshold</th>
                 <th className="py-3 font-medium">Stock</th>
               </tr>
@@ -143,8 +144,9 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                   <td className="py-3 pr-4 text-[#111827]">{row.itemName}</td>
                   <td className="py-3 pr-4 text-[#6b7280]">{row.warehouseName}</td>
                   <td className="py-3 pr-4 text-[#6b7280]">{row.unitOfMeasure}</td>
-                  <td className="py-3 pr-4 text-[#111827]">{row.availableQty}</td>
+                  <td className="py-3 pr-4 font-semibold text-[#111827]">{row.availableQty + row.reservedQty}</td>
                   <td className="py-3 pr-4 text-[#111827]">{row.reservedQty}</td>
+                  <td className="py-3 pr-4 text-[#111827]">{row.availableQty}</td>
                   <td className="py-3 pr-4 text-[#111827]">{row.reorderThreshold}</td>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
@@ -168,7 +170,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
               ))}
               {pagedRows.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="py-8 text-center text-[#6b7280]">
+                  <td colSpan={10} className="py-8 text-center text-[#6b7280]">
                     No raw materials matched your search.
                   </td>
                 </tr>

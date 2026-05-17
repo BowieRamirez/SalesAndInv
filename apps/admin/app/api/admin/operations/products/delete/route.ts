@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { Prisma, prisma } from "@furnitrack/db"
+import { Prisma, prisma, logAudit } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const currentUser = await getAuthenticatedAppUser()
 
   if (!currentUser || !["OPERATIONS_DESIGN", "ADMIN_MANAGEMENT", "CUSTOM"].includes(currentUser.role)) {
-    return buildRedirect(request, "Only operations or executive admins can delete finished products.", "error")
+    return buildRedirect(request, "Only operations or executive admins can archive finished products.", "error")
   }
 
   const requestOrigin = request.headers.get("origin")
@@ -30,16 +30,33 @@ export async function POST(request: Request) {
   const stockItemId = String(formData.get("stockItemId") ?? "").trim()
 
   if (!productId || !stockItemId) {
-    return buildRedirect(request, "Select a valid product to delete.", "error")
+    return buildRedirect(request, "Select a valid product to archive.", "error")
   }
 
   try {
-    const existingProduct = await prisma.$queryRaw<Array<{ id: string; stockItemId: string }>>(Prisma.sql`
+    const existingProduct = await prisma.$queryRaw<
+      Array<{
+        id: string
+        stockItemId: string
+        name: string
+        category: string
+        isPublished: boolean
+        state: string
+        sku: string
+      }>
+    >(Prisma.sql`
       SELECT
-        id,
-        "stockItemId"
-      FROM public.products
-      WHERE id = ${productId}
+        p.id,
+        p."stockItemId",
+        p.name,
+        p.category,
+        p."isPublished",
+        s.state::text AS state,
+        s.sku
+      FROM public.products p
+      INNER JOIN public.stock_items s
+        ON s.id = p."stockItemId"
+      WHERE p.id = ${productId}
       LIMIT 1
     `)
 
@@ -47,19 +64,24 @@ export async function POST(request: Request) {
       return buildRedirect(request, "That finished product could not be found.", "error")
     }
 
+    if (existingProduct[0].state === "ARCHIVED") {
+      return buildRedirect(request, "This finished product is already archived and can only be viewed.", "error")
+    }
+
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
-        DELETE FROM public.product_materials
-        WHERE "productId" = ${productId}
-      `)
-
-      await tx.$executeRaw(Prisma.sql`
-        DELETE FROM public.products
+        UPDATE public.products
+        SET
+          "isPublished" = false,
+          "updatedAt" = CURRENT_TIMESTAMP
         WHERE id = ${productId}
       `)
 
       await tx.$executeRaw(Prisma.sql`
-        DELETE FROM public.stock_items
+        UPDATE public.stock_items
+        SET
+          state = 'ARCHIVED'::"StockState",
+          "updatedAt" = CURRENT_TIMESTAMP
         WHERE id = ${stockItemId}
       `)
     })
@@ -68,12 +90,27 @@ export async function POST(request: Request) {
     revalidatePath("/shop")
     revalidatePath("/")
 
-    return buildRedirect(request, "Finished product deleted successfully.", "success")
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "PRODUCT_UPDATED",
+      entityType: "PRODUCT",
+      entityId: productId,
+      metadata: {
+        auditLabel: "ARCHIVED_FROM_STOREFRONT",
+        sku: existingProduct[0].sku,
+        itemName: existingProduct[0].name,
+        name: existingProduct[0].name,
+        category: existingProduct[0].category,
+        isPublished: false,
+      },
+    })
+
+    return buildRedirect(request, "Finished product archived and hidden from storefront.", "success")
   } catch (error) {
     const message =
       error instanceof Error && error.message
         ? error.message
-        : "Neon DB could not delete that finished product. It may have existing orders or stock history."
+        : "Neon DB could not archive that finished product."
 
     return buildRedirect(request, message, "error")
   }

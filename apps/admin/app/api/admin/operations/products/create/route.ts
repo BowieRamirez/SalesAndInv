@@ -254,8 +254,10 @@ export async function POST(request: Request) {
       entityId: productId,
       metadata: {
         sku: created.sku,
+        itemName: name,
         name,
         category,
+        quantity: openingQty,
         isPublished,
       },
     })

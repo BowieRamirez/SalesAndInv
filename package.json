@@ -10,7 +10,7 @@
     "build": "turbo run build",
     "build:storefront": "pnpm --filter @furnitrack/db generate && pnpm --filter storefront build",
     "build:admin": "pnpm --filter @furnitrack/db generate && pnpm --filter admin build",
-    "dev": "turbo run dev",
+    "dev": "pnpm --filter @furnitrack/db generate && turbo run dev",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\" --ignore-path .gitignore"

@@ -27,6 +27,7 @@ import {
   SlidersHorizontal,
   Truck,
   Users,
+  Archive,
   X,
 } from "lucide-react";
 import type { AppRole } from "@/lib/rbac";
@@ -101,6 +102,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
         label: "Product",
         links: [
           { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
+          { name: "Archived Products", href: "/operations?tab=archived-products", icon: Archive, tab: "archived-products" },
           { name: "Storefront", href: "/operations?tab=storefront-filters", icon: SlidersHorizontal, tab: "storefront-filters" },
         ],
       },

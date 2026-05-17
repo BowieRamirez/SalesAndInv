@@ -13,6 +13,7 @@ type FinishedProduct = {
   badge: string | null
   description: string
   isPublished: boolean
+  state: string
   imageUrl: string
   warehouseName: string
   sku: string
@@ -44,6 +45,7 @@ type FinishedProductsManagerProps = {
     code: string
   }>
   categories: readonly string[]
+  isArchivedView?: boolean
 }
 
 type FinishedProductDraftMaterial = {
@@ -102,7 +104,7 @@ function formatDraftTime(value: string) {
   }).format(date)
 }
 
-export function FinishedProductsManager({ products, rawMaterials, warehouses, categories }: FinishedProductsManagerProps) {
+export function FinishedProductsManager({ products, rawMaterials, warehouses, categories, isArchivedView }: FinishedProductsManagerProps) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [openProductId, setOpenProductId] = useState<string | null>(null)
@@ -113,6 +115,10 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
   const [draftMessage, setDraftMessage] = useState<string | null>(null)
   const createFormRef = useRef<HTMLFormElement>(null)
   const deferredSearch = useDeferredValue(search)
+  const selectedProduct = useMemo(
+    () => products.find((product) => product.id === openProductId) ?? null,
+    [openProductId, products],
+  )
 
   useEffect(() => {
     let isActive = true
@@ -301,9 +307,13 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
       <section className="rounded-[32px] border border-[#f1f5f9] bg-white p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
-            <h2 className="text-[28px] font-bold tracking-tight text-[#0f172a]">Finished Products</h2>
+            <h2 className="text-[28px] font-bold tracking-tight text-[#0f172a]">
+              {isArchivedView ? "Archived Products" : "Finished Products"}
+            </h2>
             <p className="text-[14px] text-[#64748b]">
-              Manage your catalog of finished products and publish them to your storefront.
+              {isArchivedView
+                ? "View products that have been archived and hidden from your active catalog."
+                : "Manage your catalog of finished products and publish them to your storefront."}
             </p>
           </div>
           <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center lg:w-auto">
@@ -321,15 +331,17 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                 className="w-full rounded-2xl border border-[#cbd5e1] bg-[#f8fafc] py-3 pl-11 pr-4 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
               />
             </div>
-            <button
-              onClick={openBlankCreateModal}
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-[#0f172a] px-6 py-3.5 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0f172a]/50 focus:ring-offset-2 active:scale-95 shrink-0"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Add New Product
-            </button>
+            {!isArchivedView && (
+              <button
+                onClick={openBlankCreateModal}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-[#0f172a] px-6 py-3.5 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0f172a]/50 focus:ring-offset-2 active:scale-95 shrink-0"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Add New Product
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -341,8 +353,14 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
-          <h3 className="mt-4 text-[16px] font-semibold text-[#0f172a]">No finished products found</h3>
-          <p className="mt-2 text-[14px] text-[#64748b]">Try adjusting your search criteria or add a new product.</p>
+          <h3 className="mt-4 text-[16px] font-semibold text-[#0f172a]">
+            {isArchivedView ? "No archived products found" : "No finished products found"}
+          </h3>
+          <p className="mt-2 text-[14px] text-[#64748b]">
+            {isArchivedView
+              ? "There are no archived products matching your search criteria."
+              : "Try adjusting your search criteria or add a new product."}
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
@@ -369,13 +387,15 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                   <div className="absolute left-4 top-4 flex flex-col gap-2">
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide shadow-sm backdrop-blur-md ${
-                        product.isPublished
+                        product.state === "ARCHIVED"
+                          ? "bg-[#b91c1c]/90 text-white"
+                          : product.isPublished
                           ? "bg-white/90 text-[#16a34a]"
                           : "bg-[#0f172a]/80 text-white"
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${product.isPublished ? "bg-[#16a34a]" : "bg-white"}`}></span>
-                      {product.isPublished ? "Published" : "Hidden"}
+                      <span className={`h-1.5 w-1.5 rounded-full ${product.isPublished && product.state !== "ARCHIVED" ? "bg-[#16a34a]" : "bg-white"}`}></span>
+                      {product.state === "ARCHIVED" ? "Archived" : product.isPublished ? "Published" : "Hidden"}
                     </span>
                   </div>
                   {product.badge && (
@@ -433,9 +453,9 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                       className="w-full flex items-center justify-center gap-2 rounded-xl bg-white border border-[#cbd5e1] px-4 py-2.5 text-[13px] font-semibold text-[#0f172a] transition-all hover:bg-[#f8fafc] hover:border-[#94a3b8] active:scale-95"
                     >
                       <svg className="h-4 w-4 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      Quick Edit
+                      Product Info
                     </button>
                   </div>
                 </div>
@@ -882,9 +902,183 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
         </div>
       )}
 
-      {/* Quick Edit Popup */}
+      {selectedProduct ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/40 p-4 backdrop-blur-md sm:p-6 lg:p-8">
+          <div className="flex max-h-full w-full max-w-6xl flex-col overflow-hidden rounded-[32px] border border-[#e5e7eb] bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-8 py-6">
+              <div>
+                <h2 className="text-[24px] font-bold text-[#0f172a]">{selectedProduct.name}</h2>
+                <p className="mt-1 text-[13px] text-[#64748b]">Product information and material recipe.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpenProductId(null)}
+                className="grid h-11 w-11 place-items-center rounded-full bg-white border border-[#e2e8f0] text-[#64748b] transition-all hover:bg-[#f1f5f9] hover:text-[#0f172a] hover:shadow-sm"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto bg-[#fbfdff] p-8">
+              <div className="mx-auto grid max-w-6xl gap-8 xl:grid-cols-[360px_minmax(0,1fr)]">
+                <section className="overflow-hidden rounded-[24px] border border-[#e2e8f0] bg-white shadow-sm">
+                  <div className="aspect-[4/3] bg-[#f1f5f9]">
+                    {selectedProduct.imageUrl ? (
+                      <img src={selectedProduct.imageUrl} alt={selectedProduct.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="grid h-full place-items-center text-[13px] font-semibold text-[#94a3b8]">No product image</div>
+                    )}
+                  </div>
+                  <div className="space-y-4 p-6">
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">SKU</p>
+                      <p className="mt-1 font-mono text-[15px] font-semibold text-[#0f172a]">{selectedProduct.sku}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-2xl bg-[#f8fafc] p-4">
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">Stock</p>
+                        <p className="mt-1 text-[20px] font-bold text-[#0f172a]">{selectedProduct.availableQty}</p>
+                      </div>
+                      <div className="rounded-2xl bg-[#f8fafc] p-4">
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">Min</p>
+                        <p className="mt-1 text-[20px] font-bold text-[#0f172a]">{selectedProduct.reorderThreshold}</p>
+                      </div>
+                    </div>
+                    <span
+                      className={`inline-flex rounded-full px-3 py-1 text-[12px] font-bold ${
+                        selectedProduct.state === "ARCHIVED"
+                          ? "bg-[#fee2e2] text-[#991b1b]"
+                          : selectedProduct.isPublished
+                          ? "bg-[#dcfce7] text-[#166534]"
+                          : "bg-[#f1f5f9] text-[#475569]"
+                      }`}
+                    >
+                      {selectedProduct.state === "ARCHIVED"
+                        ? "Archived and hidden from storefront"
+                        : selectedProduct.isPublished
+                        ? "Published on storefront"
+                        : "Hidden from storefront"}
+                    </span>
+                  </div>
+                </section>
+
+                <div className="space-y-8">
+                  <section className="rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
+                    <div className="mb-6 border-b border-[#f1f5f9] pb-5">
+                      <h3 className="text-[16px] font-bold text-[#0f172a]">Catalog details</h3>
+                    </div>
+                    <dl className="grid gap-5 md:grid-cols-2">
+                      <div>
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Product name</dt>
+                        <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{selectedProduct.name}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Category</dt>
+                        <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{selectedProduct.category}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Selling price</dt>
+                        <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{formatPeso(selectedProduct.price)}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Warehouse</dt>
+                        <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{selectedProduct.warehouseName}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Badge</dt>
+                        <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{selectedProduct.badge ?? "-"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Recipe</dt>
+                        <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{selectedProduct.recipeCount} materials</dd>
+                      </div>
+                      <div className="md:col-span-2">
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Description</dt>
+                        <dd className="mt-2 whitespace-pre-wrap text-[14px] leading-6 text-[#334155]">{selectedProduct.description}</dd>
+                      </div>
+                    </dl>
+                  </section>
+
+                  <section className="rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
+                    <div className="mb-6 border-b border-[#f1f5f9] pb-5">
+                      <h3 className="text-[16px] font-bold text-[#0f172a]">Material recipe</h3>
+                    </div>
+                    {selectedProduct.recipeDetails.length === 0 ? (
+                      <p className="rounded-2xl border border-dashed border-[#cbd5e1] p-6 text-center text-[13px] text-[#64748b]">
+                        No materials are assigned to this finished product.
+                      </p>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-left text-[13px]">
+                          <thead>
+                            <tr className="border-b border-[#e2e8f0] text-[#64748b]">
+                              <th className="py-3 pr-4 font-semibold">SKU</th>
+                              <th className="py-3 pr-4 font-semibold">Material</th>
+                              <th className="py-3 pr-4 font-semibold">Qty</th>
+                              <th className="py-3 font-semibold">Notes</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {selectedProduct.recipeDetails.map((material) => (
+                              <tr key={material.id} className="border-b border-[#f1f5f9] last:border-b-0">
+                                <td className="py-3 pr-4 font-mono text-[#0f172a]">{material.sku}</td>
+                                <td className="py-3 pr-4 font-semibold text-[#0f172a]">{material.itemName}</td>
+                                <td className="py-3 pr-4 text-[#334155]">{material.quantityDisplay || "-"}</td>
+                                <td className="py-3 text-[#64748b]">{material.notes || "-"}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </section>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-shrink-0 border-t border-[#e2e8f0] bg-white px-8 py-5">
+              <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                {selectedProduct.state === "ARCHIVED" ? (
+                  <span className="rounded-xl bg-[#f8fafc] px-4 py-3 text-[14px] font-medium text-[#64748b]">
+                    Archived product
+                  </span>
+                ) : (
+                  <form
+                    method="post"
+                    action="/api/admin/operations/products/delete"
+                    onSubmit={(event) => {
+                      const confirmed = confirm(`Archive ${selectedProduct.name} and hide it from the storefront? This cannot be undone.`)
+                      if (!confirmed) {
+                        event.preventDefault()
+                      }
+                    }}
+                  >
+                    <input type="hidden" name="productId" value={selectedProduct.id} />
+                    <input type="hidden" name="stockItemId" value={selectedProduct.stockItemId} />
+                    <button
+                      type="submit"
+                      className="rounded-xl px-4 py-3 text-[14px] font-medium text-[#b91c1c] transition-colors hover:bg-[#fef2f2]"
+                    >
+                      Archive product
+                    </button>
+                  </form>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setOpenProductId(null)}
+                  className="rounded-xl bg-[#0f172a] px-6 py-3 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md active:scale-95"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Legacy edit popup disabled for operations accounts. */}
       {products.map((product) => {
-        if (openProductId !== product.id) return null;
+        if (openProductId !== "__legacy_edit_disabled__" || openProductId !== product.id) return null;
 
         return (
           <div key={`edit-${product.id}`} className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/40 p-4 backdrop-blur-md sm:p-6 lg:p-8">

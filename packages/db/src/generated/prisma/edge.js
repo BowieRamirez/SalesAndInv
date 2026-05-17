@@ -36,11 +36,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.3
+ * Prisma Client JS version: 6.19.2
  * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
  */
 Prisma.prismaVersion = {
-  client: "6.19.3",
+  client: "6.19.2",
   engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
 }
 
@@ -768,7 +768,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\bowie ramirez\\OneDrive\\Desktop\\Infoman\\SalesInvSystem\\packages\\db\\src\\generated\\prisma",
+      "value": "C:\\Users\\karll\\Documents\\SalesInvSystem\\packages\\db\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -786,15 +786,15 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\bowie ramirez\\OneDrive\\Desktop\\Infoman\\SalesInvSystem\\packages\\db\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\karll\\Documents\\SalesInvSystem\\packages\\db\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
     "rootEnvPath": null,
-    "schemaEnvPath": "../../../../../.env"
+    "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
-  "clientVersion": "6.19.3",
+  "clientVersion": "6.19.2",
   "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
   "datasourceNames": [
     "db"

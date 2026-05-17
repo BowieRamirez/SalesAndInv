@@ -12,6 +12,7 @@ import { MaterialSelector } from "@/components/operations/MaterialSelector"
 import { DamagedMaterialsTable } from "@/components/inventory/DamagedMaterialsTable"
 import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
 import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
+import { ReservedMaterialsAccordion } from "@/components/operations/ReservedMaterialsAccordion"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { OPERATIONS_DEFAULT_TAB, OPERATIONS_PRODUCT_CATEGORIES } from "@/lib/operations-products"
@@ -29,6 +30,7 @@ type ProductCardData = {
   badge: string | null
   description: string
   isPublished: boolean
+  state: string
   imageUrl: string
   warehouseName: string
   sku: string
@@ -94,19 +96,35 @@ type DamagedMaterialRow = {
   createdAt: Date
 }
 
-type ReservedMaterialRow = {
+export type ReservedMaterialRow = {
   stockItemId: string
   sku: string
   itemName: string
   warehouseName: string
   unitOfMeasure: string
+  availableQty: number
   reservedQty: number
   orderCount: number
   orderNumbers: string
 }
 
+export type ReservedMaterialDetailRow = {
+  eventId: string
+  stockItemId: string
+  sku: string
+  itemName: string
+  warehouseName: string
+  unitOfMeasure: string
+  linkedOrderNo: string
+  productName: string | null
+  customerName: string | null
+  reservationStatus: string
+  dateReserved: Date
+  reservedQty: number
+}
+
 const OPERATIONS_TABS = new Set([
-  "design", "new-products", "finished-products", "storefront-filters",
+  "design", "new-products", "finished-products", "archived-products", "storefront-filters",
   "locations", "all-stocks", "reserved", "damaged-materials",
   "inv-approvals", "approvals", "delivery", "audit",
 ])
@@ -466,6 +484,7 @@ async function getOperationsWorkspaceData() {
         badge: string | null
         description: string
         isPublished: boolean
+        state: string
         images: Prisma.JsonValue | null
         warehouseName: string
         sku: string
@@ -484,6 +503,7 @@ async function getOperationsWorkspaceData() {
         p.badge,
         p.description,
         p."isPublished",
+        s.state::text AS state,
         p.images,
         w.name AS "warehouseName",
         s.sku,
@@ -552,6 +572,7 @@ async function getOperationsWorkspaceData() {
     badge: product.badge,
     description: product.description,
     isPublished: product.isPublished,
+    state: product.state,
     imageUrl: asImageUrl(product.images),
     warehouseName: product.warehouseName,
     sku: product.sku,
@@ -623,12 +644,14 @@ async function getAuditLogs() {
       a.id,
       COALESCE(a.metadata->>'auditLabel', a.action::text) AS action,
       a.metadata->>'sku' AS sku,
-      a.metadata->>'itemName' AS "itemName",
+      COALESCE(a.metadata->>'itemName', a.metadata->>'name') AS "itemName",
       CAST(a.metadata->>'quantity' AS INTEGER) AS quantity,
       u.name AS "actorName",
       a."createdAt"
     FROM public.audit_logs a
     LEFT JOIN public.users u ON u.id = a."actorId"
+      OR u."authUserId"::text = a."actorId"
+    WHERE a."entityType" IN ('STOCK'::"AuditEntityType", 'PRODUCT'::"AuditEntityType")
     ORDER BY a."createdAt" DESC
     LIMIT 200
   `)
@@ -729,6 +752,7 @@ async function getReservedMaterialRows() {
       si."itemName",
       w.name AS "warehouseName",
       si."unitOfMeasure",
+      si."availableQty",
       COALESCE(SUM(combined."reservedQty"), 0)::int AS "reservedQty",
       COALESCE(SUM(combined."orderCount"), 0)::int AS "orderCount",
       STRING_AGG(DISTINCT combined."orderNumbers", ', ' ORDER BY combined."orderNumbers") AS "orderNumbers"
@@ -737,8 +761,74 @@ async function getReservedMaterialRows() {
       ON si.id = combined."stockItemId"
     INNER JOIN public.warehouses w
       ON w.id = si."warehouseId"
-    GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure"
+    GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure", si."availableQty"
     ORDER BY "reservedQty" DESC, si."itemName" ASC
+  `)
+}
+
+async function getReservedMaterialDetails() {
+  return prisma.$queryRaw<ReservedMaterialDetailRow[]>(Prisma.sql`
+    WITH active_stock_request_reservations AS (
+      SELECT
+        sr.id AS "eventId",
+        si.id AS "stockItemId",
+        si.sku,
+        si."itemName",
+        w.name AS "warehouseName",
+        si."unitOfMeasure",
+        so."soNumber" AS "linkedOrderNo",
+        order_products."productName",
+        so."clientContactName" AS "customerName",
+        sr.status::text AS "reservationStatus",
+        sr."requestedAt" AS "dateReserved",
+        srl."quantityApproved"::int AS "reservedQty"
+      FROM public.stock_request_line_items srl
+      INNER JOIN public.stock_requests sr ON sr.id = srl."stockRequestId"
+      INNER JOIN public.sales_orders so ON so.id = sr."salesOrderId"
+      INNER JOIN public.stock_items si ON si.id = srl."stockItemId"
+      INNER JOIN public.warehouses w ON w.id = si."warehouseId"
+      LEFT JOIN LATERAL (
+        SELECT STRING_AGG(DISTINCT soli."productName", ', ' ORDER BY soli."productName") AS "productName"
+        FROM public.sales_order_line_items soli
+        WHERE soli."salesOrderId" = so.id
+      ) order_products ON TRUE
+      WHERE srl."quantityApproved" > 0
+        AND sr.status IN ('APPROVED'::"InventoryRequestStatus", 'PARTIALLY_APPROVED'::"InventoryRequestStatus")
+        AND so.status NOT IN ('DELIVERED'::"SalesOrderStatus", 'CANCELLED'::"SalesOrderStatus")
+    ),
+    active_accounting_reservations AS (
+      SELECT
+        sm.id AS "eventId",
+        si.id AS "stockItemId",
+        si.sku,
+        si."itemName",
+        w.name AS "warehouseName",
+        si."unitOfMeasure",
+        sm."referenceNumber" AS "linkedOrderNo",
+        p.name AS "productName",
+        ci."customerName" AS "customerName",
+        'Accounting Reserved' AS "reservationStatus",
+        sm."createdAt" AS "dateReserved",
+        sm.quantity::int AS "reservedQty"
+      FROM public.stock_movements sm
+      INNER JOIN public.stock_items si ON si.id = sm."stockItemId"
+      INNER JOIN public.warehouses w ON w.id = si."warehouseId"
+      LEFT JOIN public.customer_inquiries ci ON ci.id = sm."referenceNumber"
+      LEFT JOIN public.products p ON p.id = ci."productId"
+      WHERE sm.type = 'ADJUSTMENT'::"StockMovementType"
+        AND sm."projectPurpose" = 'Reserved for Build Order'
+        AND NOT EXISTS (
+          SELECT 1 FROM public.stock_movements consumed
+          WHERE consumed."referenceNumber" = sm."referenceNumber"
+            AND consumed."stockItemId" = sm."stockItemId"
+            AND consumed."projectPurpose" = 'Build Order'
+            AND consumed.type = 'OUT'::"StockMovementType"
+        )
+    )
+    SELECT * FROM active_stock_request_reservations
+    UNION ALL
+    SELECT * FROM active_accounting_reservations
+    ORDER BY "dateReserved" DESC
   `)
 }
 
@@ -765,6 +855,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     inventoryInquiries,
     damagedMaterials,
     reservedMaterials,
+    reservedDetails,
   ] = await Promise.all([
     getOperationsWorkspaceData(),
     getInquiryWorkflowRows(["GETTING_READY_FOR_BUILDING", "READY_FOR_SHIPPING"]),
@@ -775,8 +866,12 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
     getDamagedMaterialRows(),
     getReservedMaterialRows(),
+    getReservedMaterialDetails(),
   ])
-  const publishedProducts = finishedProducts.filter((product) => product.isPublished).length
+
+  const activeFinishedProducts = finishedProducts.filter((product) => product.state !== "ARCHIVED")
+  const archivedFinishedProducts = finishedProducts.filter((product) => product.state === "ARCHIVED")
+  const publishedProducts = activeFinishedProducts.filter((product) => product.isPublished).length
   const buildingQueue = operationsInquiries.filter((inquiry) => inquiry.workflowStatus === "GETTING_READY_FOR_BUILDING")
   const shippingQueue = operationsInquiries.filter((inquiry) => inquiry.workflowStatus === "READY_FOR_SHIPPING")
   const rawMaterialsInv = inventoryRows.filter((row) => row.itemType !== "FINISHED_PRODUCT")
@@ -805,7 +900,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           <div className="grid gap-5 md:grid-cols-3">
             <StatCard
               label="Catalog Products"
-              value={finishedProducts.length}
+              value={activeFinishedProducts.length}
             />
             <StatCard
               label="Published"
@@ -819,7 +914,20 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
         )}
 
         {activeTab === "finished-products" && (
-          <FinishedProductsManager products={finishedProducts} rawMaterials={rawMaterials} warehouses={warehouses} categories={OPERATIONS_PRODUCT_CATEGORIES} />
+          <FinishedProductsManager products={activeFinishedProducts} rawMaterials={rawMaterials} warehouses={warehouses} categories={OPERATIONS_PRODUCT_CATEGORIES} />
+        )}
+
+        {activeTab === "archived-products" && (
+          <div className="grid gap-5 md:grid-cols-3">
+            <StatCard
+              label="Archived Products"
+              value={archivedFinishedProducts.length}
+            />
+          </div>
+        )}
+
+        {activeTab === "archived-products" && (
+          <FinishedProductsManager products={archivedFinishedProducts} rawMaterials={rawMaterials} warehouses={warehouses} categories={OPERATIONS_PRODUCT_CATEGORIES} isArchivedView />
         )}
 
         {activeTab === "storefront-filters" && (
@@ -954,19 +1062,43 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
             </div>
             <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
               <h3 className="text-[18px] font-semibold text-[#111827]">Add new raw material</h3>
-              <form method="post" action="/api/admin/inventory/raw-materials/create" className="mt-5 grid gap-3 xl:grid-cols-[1.2fr_1.1fr_1fr_0.9fr]">
-                <input name="itemName" placeholder="Material name" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                <input name="sku" placeholder="SKU (optional auto-generate)" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                <select name="warehouseId" defaultValue="" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]">
-                  <option value="" disabled>Select warehouse</option>
-                  {warehouseSummaries.map(w=>(<option key={w.id} value={w.id}>{w.name}</option>))}
-                </select>
-                <input name="unitOfMeasure" defaultValue="pcs" placeholder="Unit" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                <input name="reorderThreshold" type="number" min="0" defaultValue="10" placeholder="Reorder threshold" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                <input name="openingQty" type="number" min="0" defaultValue="0" placeholder="Opening stock" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                <input name="referenceNumber" placeholder="Reference number (optional)" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] xl:col-span-2" />
-                <textarea name="description" placeholder="Description (optional)" className="min-h-[96px] rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] xl:col-span-3" />
-                <button type="submit" className="rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 xl:self-stretch">Add raw material</button>
+              <form method="post" action="/api/admin/inventory/raw-materials/create" className="mt-5 grid gap-4 xl:grid-cols-[1.2fr_1.1fr_1fr_0.9fr]">
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[12px] font-medium text-[#374151]">Material name</span>
+                  <input name="itemName" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[12px] font-medium text-[#374151]">SKU (optional auto-generate)</span>
+                  <input name="sku" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[12px] font-medium text-[#374151]">Select warehouse</span>
+                  <select name="warehouseId" defaultValue="" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]">
+                    <option value="" disabled>Select warehouse</option>
+                    {warehouseSummaries.map(w=>(<option key={w.id} value={w.id}>{w.name}</option>))}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[12px] font-medium text-[#374151]">Unit</span>
+                  <input name="unitOfMeasure" defaultValue="0" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[12px] font-medium text-[#374151]">Reorder threshold</span>
+                  <input name="reorderThreshold" type="number" min="0" defaultValue="10" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-[12px] font-medium text-[#374151]">Opening stock</span>
+                  <input name="openingQty" type="number" min="0" defaultValue="0" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </label>
+                <label className="flex flex-col gap-1.5 xl:col-span-2">
+                  <span className="text-[12px] font-medium text-[#374151]">Reference number (optional)</span>
+                  <input name="referenceNumber" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </label>
+                <label className="flex flex-col gap-1.5 xl:col-span-3">
+                  <span className="text-[12px] font-medium text-[#374151]">Description (optional)</span>
+                  <textarea name="description" className="min-h-[96px] rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </label>
+                <button type="submit" className="mt-auto rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 xl:self-stretch">Add raw material</button>
               </form>
             </section>
             <RawMaterialsManager rows={rawMaterialsInv} />
@@ -977,7 +1109,11 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           <div className="space-y-6">
             <div className="mb-6"><h2 className="text-[20px] font-semibold text-[#111827]">Reserved Materials From Orders</h2></div>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-              {[{label:"Reserved Material Types",value:reservedMaterials.length},{label:"Reserved Units",value:reservedMaterials.reduce((t,r)=>t+r.reservedQty,0)},{label:"Linked Orders",value:reservedMaterials.reduce((t,r)=>t+r.orderCount,0)}].map(r=>(
+              {[
+                {label:"Reserved Material Types",value:reservedMaterials.length},
+                {label:"Reserved Units",value:reservedMaterials.reduce((t,r)=>t+r.reservedQty,0)},
+                {label:"Linked Orders",value:reservedMaterials.reduce((t,r)=>t+r.orderCount,0)}
+              ].map(r=>(
                 <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
                   <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
                   <p className="mt-2 text-[28px] font-semibold text-[#111827]">{r.value}</p>
@@ -987,27 +1123,10 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
             {reservedMaterials.length === 0 ? (
               <div className="rounded-xl border border-dashed border-[#d1d5db] bg-white p-10 text-center text-[13px] text-[#6b7280]">No materials are currently reserved for active orders.</div>
             ) : (
-              <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-left text-[13px]">
-                    <thead><tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-                      <th className="py-3 pr-4 font-medium">SKU</th><th className="py-3 pr-4 font-medium">Material</th>
-                      <th className="py-3 pr-4 font-medium">Warehouse</th><th className="py-3 pr-4 font-medium">Reserved</th>
-                      <th className="py-3 pr-4 font-medium">Orders</th><th className="py-3 font-medium">Order Numbers</th>
-                    </tr></thead>
-                    <tbody>{reservedMaterials.map(row=>(
-                      <tr key={row.stockItemId} className="border-b border-[#f3f4f6] last:border-b-0">
-                        <td className="py-3 pr-4 text-[#111827]">{row.sku}</td>
-                        <td className="py-3 pr-4 text-[#111827]">{row.itemName}</td>
-                        <td className="py-3 pr-4 text-[#6b7280]">{row.warehouseName}</td>
-                        <td className="py-3 pr-4 text-[#111827]">{row.reservedQty} {row.unitOfMeasure}</td>
-                        <td className="py-3 pr-4 text-[#111827]">{row.orderCount}</td>
-                        <td className="py-3 text-[#6b7280]">{row.orderNumbers}</td>
-                      </tr>
-                    ))}</tbody>
-                  </table>
-                </div>
-              </section>
+              <ReservedMaterialsAccordion
+                materials={reservedMaterials}
+                details={reservedDetails}
+              />
             )}
           </div>
         )}
@@ -1124,3 +1243,4 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     </main>
   )
 }
+

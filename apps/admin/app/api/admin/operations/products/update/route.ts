@@ -58,12 +58,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const existingProduct = await prisma.$queryRaw<Array<{ id: string; stockItemId: string }>>(Prisma.sql`
+    const existingProduct = await prisma.$queryRaw<Array<{ id: string; stockItemId: string; sku: string }>>(Prisma.sql`
       SELECT
-        id,
-        "stockItemId"
-      FROM public.products
-      WHERE id = ${productId}
+        p.id,
+        p."stockItemId",
+        si.sku
+      FROM public.products p
+      INNER JOIN public.stock_items si ON si.id = p."stockItemId"
+      WHERE p.id = ${productId}
       LIMIT 1
     `)
 
@@ -153,6 +155,9 @@ export async function POST(request: Request) {
       entityType: "PRODUCT",
       entityId: productId,
       metadata: {
+        auditLabel: isPublished ? "ADDED_TO_STOREFRONT" : "REMOVED_FROM_STOREFRONT",
+        sku: existingProduct[0].sku,
+        itemName: name,
         name,
         category,
         isPublished,

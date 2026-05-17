@@ -132,6 +132,7 @@ export async function getStorefrontProducts(): Promise<Product[]> {
           ON s.id = p."stockItemId"
         WHERE p."isPublished" = true
           AND s."itemType" = 'FINISHED_PRODUCT'
+          AND s.state <> 'ARCHIVED'::"StockState"
         ORDER BY p."createdAt" DESC, p.name ASC /* bust_v3 */
       `),
       timeoutAfter<CatalogProductRow[]>(3000, []),

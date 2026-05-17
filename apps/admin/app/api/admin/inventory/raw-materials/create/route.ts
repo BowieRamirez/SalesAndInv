@@ -121,13 +121,14 @@ export async function POST(request: Request) {
       VALUES (
         ${randomUUID()},
         ${currentUser.id},
-        'USER_UPDATED'::"AuditAction",
-        'USER'::"AuditEntityType",
+        'STOCK_ADDED'::"AuditAction",
+        'STOCK'::"AuditEntityType",
         ${stockItemId},
         ${JSON.stringify({
           auditLabel: "RAW_MATERIAL_CREATED",
           sku,
           itemName,
+          quantity: openingQty,
           warehouseId,
           openingQty,
           reorderThreshold,
@@ -171,8 +172,8 @@ export async function POST(request: Request) {
         VALUES (
           ${randomUUID()},
           ${currentUser.id},
-          'USER_UPDATED'::"AuditAction",
-          'USER'::"AuditEntityType",
+          'STOCK_ADDED'::"AuditAction",
+          'STOCK'::"AuditEntityType",
           ${stockItemId},
           ${JSON.stringify({
             auditLabel: "RAW_MATERIAL_STOCK_ADDED",
