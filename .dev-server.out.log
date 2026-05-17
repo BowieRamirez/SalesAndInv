@@ -1114,3 +1114,247 @@ admin:dev: Could not open page.tsx in the editor.
 admin:dev: 
 admin:dev: To set up the editor integration, add something like REACT_EDITOR=atom to the .env.local file in your project folder and restart the development server.
 admin:dev: 
+admin:dev: ✓ Compiled in 68ms
+admin:dev: ⨯ Error [PrismaClientKnownRequestError]: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Raw query failed. Code: `42703`. Message: `column so.customerName does not exist`
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at async a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at async OperationsDashboard (app\(dashboard)\operations\page.tsx:839:7)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ... {
+admin:dev:   code: 'P2010',
+admin:dev:   meta: { code: '42703', message: 'column so.customerName does not exist' },
+admin:dev:   clientVersion: '6.19.2',
+admin:dev:   digest: '1049776544'
+admin:dev: }
+admin:dev:  GET /operations?tab=reserved 500 in 1277ms (next.js: 183ms, proxy.ts: 19ms, application-code: 1075ms)
+admin:dev: [browser] Uncaught PrismaClientKnownRequestError: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Raw query failed. Code: `42703`. Message: `column so.customerName does not exist`
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at  a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at  OperationsDashboard (app\(dashboard)\operations\page.tsx:839:7)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ...
+admin:dev: ✓ Compiled in 99ms
+admin:dev: ⨯ Error [PrismaClientKnownRequestError]: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Raw query failed. Code: `42703`. Message: `column sr.createdAt does not exist`
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at async a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at async OperationsDashboard (app\(dashboard)\operations\page.tsx:839:7)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ... {
+admin:dev:   code: 'P2010',
+admin:dev:   meta: { code: '42703', message: 'column sr.createdAt does not exist' },
+admin:dev:   clientVersion: '6.19.2',
+admin:dev:   digest: '2980421568'
+admin:dev: }
+admin:dev:  GET /operations?tab=reserved 500 in 913ms (next.js: 194ms, proxy.ts: 25ms, application-code: 695ms)
+admin:dev: [browser] Uncaught PrismaClientKnownRequestError: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Raw query failed. Code: `42703`. Message: `column sr.createdAt does not exist`
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at  a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at  OperationsDashboard (app\(dashboard)\operations\page.tsx:839:7)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ...
+admin:dev: ⨯ Error [PrismaClientKnownRequestError]: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Raw query failed. Code: `42703`. Message: `column sr.createdAt does not exist`
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at async a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at async OperationsDashboard (app\(dashboard)\operations\page.tsx:839:7)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ... {
+admin:dev:   code: 'P2010',
+admin:dev:   meta: { code: '42703', message: 'column sr.createdAt does not exist' },
+admin:dev:   clientVersion: '6.19.2',
+admin:dev:   digest: '2980421568'
+admin:dev: }
+admin:dev:  GET /operations?tab=reserved 500 in 513ms (next.js: 5ms, proxy.ts: 4ms, application-code: 504ms)
+admin:dev: [browser] Uncaught PrismaClientKnownRequestError: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Raw query failed. Code: `42703`. Message: `column sr.createdAt does not exist`
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at  a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at  OperationsDashboard (app\(dashboard)\operations\page.tsx:839:7)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ...
+admin:dev: ✓ Compiled in 99ms
+admin:dev:  GET /operations?tab=reserved 200 in 860ms (next.js: 214ms, proxy.ts: 15ms, application-code: 631ms)
+admin:dev: ✓ Compiled in 160ms
+admin:dev:  GET /operations?tab=reserved 200 in 1217ms (next.js: 268ms, proxy.ts: 43ms, application-code: 906ms)
+admin:dev:  GET /operations?tab=reserved 200 in 762ms (next.js: 4ms, proxy.ts: 4ms, application-code: 754ms)
+admin:dev: ✓ Compiled in 98ms
+admin:dev:  GET /operations?tab=reserved 200 in 563ms (next.js: 210ms, proxy.ts: 17ms, application-code: 336ms)
+admin:dev:  GET /operations?tab=delivery 200 in 334ms (next.js: 7ms, proxy.ts: 6ms, application-code: 321ms)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev:  GET /operations?tab=storefront-filters 200 in 225ms (next.js: 5ms, proxy.ts: 4ms, application-code: 217ms)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev:  GET /operations?tab=all-stocks 200 in 209ms (next.js: 5ms, proxy.ts: 3ms, application-code: 201ms)
+admin:dev: ✓ Compiled in 56ms
+admin:dev:  GET /operations?tab=all-stocks 200 in 485ms (next.js: 144ms, proxy.ts: 14ms, application-code: 327ms)
+admin:dev:  GET /operations?tab=all-stocks 200 in 469ms (next.js: 3ms, proxy.ts: 2ms, application-code: 464ms)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev:  GET /operations?tab=reserved 200 in 458ms (next.js: 5ms, proxy.ts: 4ms, application-code: 448ms)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev:  GET /operations?tab=all-stocks 200 in 251ms (next.js: 4ms, proxy.ts: 3ms, application-code: 245ms)
+admin:dev: ✓ Compiled in 68ms
+admin:dev:  GET /operations?tab=all-stocks 200 in 548ms (next.js: 157ms, proxy.ts: 14ms, application-code: 377ms)
+admin:dev: ✓ Compiled in 153ms
+admin:dev:  GET /operations?tab=all-stocks 200 in 1053ms (next.js: 223ms, proxy.ts: 23ms, application-code: 806ms)
+admin:dev:  GET /operations?tab=all-stocks 200 in 665ms (next.js: 11ms, proxy.ts: 6ms, application-code: 648ms)
+admin:dev:  GET /operations?tab=all-stocks 200 in 632ms (next.js: 4ms, proxy.ts: 10ms, application-code: 618ms)
+admin:dev:  GET /operations?tab=reserved 200 in 149ms (next.js: 3ms, proxy.ts: 3ms, application-code: 143ms)
+admin:dev: ✓ Compiled in 52ms
+admin:dev:  GET /operations?tab=reserved 200 in 1169ms (next.js: 186ms, proxy.ts: 18ms, application-code: 964ms)
+admin:dev: ✓ Compiled in 86ms
+admin:dev:  GET /operations?tab=reserved 200 in 545ms (next.js: 3ms, proxy.ts: 3ms, application-code: 538ms)
+admin:dev:  GET /operations?tab=reserved 200 in 905ms (next.js: 166ms, proxy.ts: 18ms, application-code: 721ms)
+admin:dev:  GET /operations?tab=all-stocks 200 in 365ms (next.js: 3ms, proxy.ts: 1838µs, application-code: 360ms)
+admin:dev: ✓ Compiled in 73ms
+admin:dev:  GET /operations?tab=all-stocks 200 in 774ms (next.js: 169ms, proxy.ts: 15ms, application-code: 589ms)
+admin:dev: [browser] 'oklab(0 0 0 / 0)' is not an animatable color. Use the equivalent color code instead.. For more information and steps for solving, visit https://motion.dev/troubleshooting/color-not-animatable (<anonymous>)
+admin:dev: ✓ Compiled in 69ms
+admin:dev:  GET /operations?tab=all-stocks 200 in 630ms (next.js: 178ms, proxy.ts: 13ms, application-code: 439ms)
+admin:dev:  GET /operations?tab=reserved 200 in 814ms (next.js: 3ms, proxy.ts: 3ms, application-code: 808ms)
+admin:dev:  GET /operations?tab=reserved 200 in 201ms (next.js: 5ms, proxy.ts: 3ms, application-code: 193ms)
+admin:dev: ⨯ Error [PrismaClientKnownRequestError]: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Can't reach database server at `ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432`
+admin:dev: 
+admin:dev: Please make sure your database server is running at `ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432`.
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at async a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at async getExecutiveOverviewData (lib\dashboard\executive.ts:383:5)
+admin:dev:     at async ExecutiveDashboardPage (app\(dashboard)\page.tsx:8:31)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ... {
+admin:dev:   code: 'P1001',
+admin:dev:   meta: {
+admin:dev:     database_location: 'ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432'
+admin:dev:   },
+admin:dev:   clientVersion: '6.19.2',
+admin:dev:   digest: '118715987'
+admin:dev: }
+admin:dev: ⨯ Error [PrismaClientKnownRequestError]: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Can't reach database server at `ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432`
+admin:dev: 
+admin:dev: Please make sure your database server is running at `ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432`.
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at async a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at async findAppUserForSession (lib\auth\session.ts:211:16)
+admin:dev:     at async getCurrentAdminPortalUser (lib\auth\session.ts:243:19)
+admin:dev:     at async getAuthenticatedAppUser (lib\auth\session.ts:284:19)
+admin:dev:     at async requireAuthenticatedAppUser (lib\auth\session.ts:294:19)
+admin:dev:     at async DashboardLayout (app\(dashboard)\layout.tsx:11:25)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ... {
+admin:dev:   code: 'P1001',
+admin:dev:   meta: {
+admin:dev:     database_location: 'ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432'
+admin:dev:   },
+admin:dev:   clientVersion: '6.19.2',
+admin:dev:   digest: '3621025966'
+admin:dev: }
+admin:dev:  GET / 500 in 5.7s (next.js: 196ms, proxy.ts: 9ms, application-code: 5.5s)
+admin:dev: [browser] Uncaught PrismaClientKnownRequestError: 
+admin:dev: Invalid `prisma.$queryRaw()` invocation:
+admin:dev: 
+admin:dev: 
+admin:dev: Can't reach database server at `ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432`
+admin:dev: 
+admin:dev: Please make sure your database server is running at `ep-small-voice-a14jwu3c-pooler.ap-southeast-1.aws.neon.tech:5432`.
+admin:dev:     at ei.handleRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:7268)
+admin:dev:     at ei.handleAndLogRequestError (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6593)
+admin:dev:     at ei.request (..\..\packages\db\src\generated\prisma\runtime\library.js:125:6300)
+admin:dev:     at a (..\..\packages\db\src\generated\prisma\runtime\library.js:134:9551)
+admin:dev:     at findAppUserForSession (lib\auth\session.ts:211:16)
+admin:dev:     at getCurrentAdminPortalUser (lib\auth\session.ts:243:19)
+admin:dev:     at getAuthenticatedAppUser (lib\auth\session.ts:284:19)
+admin:dev:     at requireAuthenticatedAppUser (lib\auth\session.ts:294:19)
+admin:dev:     at DashboardLayout (app\(dashboard)\layout.tsx:11:25)
+admin:dev:   123 | ...
+admin:dev:   124 | ...
+admin:dev: > 125 | ...t u=s?{modelName:s,...r.meta}:r.meta;throw new z(l,{code:r.code,clientVersion:this.cli...
+admin:dev:       |                                               ^
+admin:dev:   126 | ...
+admin:dev:   127 | ...
+admin:dev:   128 | ...
+storefront:dev: ✓ Compiled in 277ms

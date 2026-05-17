@@ -17,9 +17,15 @@
   --color-white: #ffffff;
 
   /* Typography */
-  --font-family-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter);
+  --font-family-sans: var(--font-inter);
 
   /* Layout spacing */
   --spacing-sidebar: 16rem;
   --spacing-topbar: 4rem;
+}
+
+:root {
+  --font-inter: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+  --font-playfair: Georgia, "Times New Roman", ui-serif, serif;
 }

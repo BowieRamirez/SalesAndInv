@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { formatInquiryWorkflowStatus, getInquiryWorkflowStyle } from "@furnitrack/validators"
 import type { InquiryWorkflowRow } from "@/lib/inquiries"

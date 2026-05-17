@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { Prisma, prisma } from "@furnitrack/db"
+import { prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { randomUUID } from "crypto"
 

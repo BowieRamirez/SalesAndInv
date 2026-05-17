@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import { Prisma, prisma } from "@furnitrack/db"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
-import { APP_ROLES, ROLE_LABELS, ROLE_REDIRECT, type AppRole } from "@/lib/rbac"
+import { ROLE_LABELS, ROLE_REDIRECT, type AppRole } from "@/lib/rbac"
 import { ArchivesTable } from "@/components/users/ArchivesTable"
 import { type ManagedAccount } from "@/components/users/UsersTable"
 

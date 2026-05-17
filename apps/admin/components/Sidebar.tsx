@@ -515,13 +515,17 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
 
     const p = currentUser.permissions;
     const cloned = { ...baseConfig, links: [...baseConfig.links], groups: baseConfig.groups ? [...baseConfig.groups] : undefined };
+    const hasTabAccess = (link: NavLink) => {
+      if (!link.tab) return true;
+      return p[link.tab] === true || (p[link.tab] == null && currentUser.role !== "CUSTOM");
+    };
 
     if (currentUser.role === "SALES" || currentUser.role === "CUSTOM") {
       const salesConfig = navConfigs["SALES"];
       const salesLinks = salesConfig.links?.filter(l => {
         if (!p) return true;
         if (l.tab === "approvals" && p.sales_approvals != null) return p.sales_approvals === true;
-        return p[l.tab] === true || (p[l.tab] == null && currentUser.role !== "CUSTOM");
+        return hasTabAccess(l);
       }) ?? [];
       
       if (currentUser.role === "SALES") {
@@ -545,7 +549,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
           if (!p) return true;
           if (l.tab === "audit") return true; // Audit logs always accessible
           if (l.tab === "approvals" && p.ops_approvals != null) return p.ops_approvals === true;
-          return p[l.tab] === true || (p[l.tab] == null && currentUser.role !== "CUSTOM");
+          return hasTabAccess(l);
         });
         return g.links.length > 0;
       }) ?? [];

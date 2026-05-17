@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { ImageDropField } from "./ImageDropField"
 import { MaterialSelector } from "./MaterialSelector"
 

@@ -4,6 +4,7 @@ import { SharedLoginPage } from "@furnitrack/ui"
 import { UserPlus } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 import { authClient } from "@/lib/auth/client"
 
 type AppRole =
@@ -59,7 +60,7 @@ function getSafeAdminRedirect(returnTo: string | null, role?: string | null) {
   return `${adminUrl}${ROLE_REDIRECT[normalizeAppRole(role)]}`
 }
 
-export default function SignInPage() {
+function SignInContent() {
   const searchParams = useSearchParams()
   const returnTo = searchParams.get("returnTo")
 
@@ -114,5 +115,13 @@ export default function SignInPage() {
         </>
       }
     />
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInContent />
+    </Suspense>
   )
 }

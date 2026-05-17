@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { Search, Crown, Shield, ShieldCheck, User as UserIcon } from "lucide-react"
 import Link from "next/link"
-import { type ManagedAccount, type RoleOption } from "./UsersTable"
+import { type ManagedAccount } from "./UsersTable"
 
 export function ArchivesTable({
   users,
