@@ -10,7 +10,7 @@ import type { InquiryPaymentStatus } from "@/lib/inquiries"
 import { updateInquiryWorkflowStatus } from "@/lib/inquiries"
 
 type ReservationMaterialRow = {
-  stockItemId: string
+  materialStockId: string
   sku: string
   itemName: string
   availableQty: number
@@ -106,14 +106,14 @@ export async function POST(request: Request) {
 
     const reservationMaterials = await prisma.$queryRaw<ReservationMaterialRow[]>(Prisma.sql`
       SELECT
-        pm."stockItemId",
+        pm."materialStockId",
         si.sku,
         si."itemName",
         si."availableQty",
         CEIL(pm."quantityRequired")::int AS "quantityRequired"
       FROM public.product_materials pm
-      INNER JOIN public.stock_items si
-        ON si.id = pm."stockItemId"
+      INNER JOIN public.material_stocks si
+        ON si.id = pm."materialStockId"
       WHERE pm."productId" = ${inquiry.productId}
         AND COALESCE(pm."quantityRequired", 0) > 0
       ORDER BY si."itemName" ASC
@@ -160,11 +160,11 @@ export async function POST(request: Request) {
             if (required <= 0) continue
 
             const affectedRows = await tx.$executeRaw(Prisma.sql`
-              UPDATE public.stock_items
+              UPDATE public.material_stocks
               SET "availableQty" = "availableQty" - ${required},
                   "reservedQty" = "reservedQty" + ${required},
                   "updatedAt" = CURRENT_TIMESTAMP
-              WHERE id = ${material.stockItemId}
+              WHERE id = ${material.materialStockId}
                 AND "availableQty" >= ${required}
             `)
 
@@ -173,10 +173,10 @@ export async function POST(request: Request) {
             }
 
             await tx.$executeRaw(Prisma.sql`
-              INSERT INTO public.stock_movements (id, "stockItemId", type, quantity, "requesterName", "projectPurpose", "referenceNumber", "createdAt")
+              INSERT INTO public.stock_movements (id, "materialStockId", type, quantity, "requesterName", "projectPurpose", "referenceNumber", "createdAt")
               VALUES (
                 gen_random_uuid(),
-                ${material.stockItemId},
+                ${material.materialStockId},
                 'ADJUSTMENT'::"StockMovementType",
                 ${required},
                 ${currentUser.name},
@@ -193,7 +193,7 @@ export async function POST(request: Request) {
                 ${currentUser.id},
                 'USER_UPDATED'::"AuditAction",
                 'USER'::"AuditEntityType",
-                ${material.stockItemId},
+                ${material.materialStockId},
                 ${JSON.stringify({
                   auditLabel: "RAW_MATERIAL_STOCK_RESERVED",
                   sku: material.sku,

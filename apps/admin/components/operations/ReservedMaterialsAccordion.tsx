@@ -11,7 +11,7 @@ type Props = {
 
 export function ReservedMaterialsAccordion({ materials, details }: Props) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
-  const materialTotals = new Map(materials.map((material) => [material.stockItemId, material]))
+  const materialTotals = new Map(materials.map((material) => [material.materialStockId, material]))
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) => {
@@ -119,12 +119,12 @@ export function ReservedMaterialsAccordion({ materials, details }: Props) {
                               </thead>
                               <tbody>
                                 {group.materials.map((detail) => {
-                                  const stock = materialTotals.get(detail.stockItemId)
+                                  const stock = materialTotals.get(detail.materialStockId)
                                   const availableQty = stock?.availableQty ?? 0
                                   const totalStock = availableQty + (stock?.reservedQty ?? detail.reservedQty)
 
                                   return (
-                                    <tr key={`${detail.eventId}:${detail.stockItemId}`} className="border-b border-[#f3f4f6] last:border-b-0">
+                                    <tr key={`${detail.eventId}:${detail.materialStockId}`} className="border-b border-[#f3f4f6] last:border-b-0">
                                       <td className="py-2.5 px-4 font-mono text-[#111827]">{detail.sku}</td>
                                       <td className="py-2.5 pr-4 font-medium text-[#111827]">{detail.itemName}</td>
                                       <td className="py-2.5 pr-4 text-[#4b5563]">{detail.warehouseName}</td>

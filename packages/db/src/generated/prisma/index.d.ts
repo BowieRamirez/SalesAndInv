@@ -54,10 +54,15 @@ export type SalesOrderLineItem = $Result.DefaultSelection<Prisma.$SalesOrderLine
  */
 export type Warehouse = $Result.DefaultSelection<Prisma.$WarehousePayload>
 /**
- * Model StockItem
+ * Model ProductStock
  * 
  */
-export type StockItem = $Result.DefaultSelection<Prisma.$StockItemPayload>
+export type ProductStock = $Result.DefaultSelection<Prisma.$ProductStockPayload>
+/**
+ * Model MaterialStock
+ * 
+ */
+export type MaterialStock = $Result.DefaultSelection<Prisma.$MaterialStockPayload>
 /**
  * Model Product
  * 
@@ -368,14 +373,6 @@ export const StockState: {
 export type StockState = (typeof StockState)[keyof typeof StockState]
 
 
-export const InventoryItemType: {
-  FINISHED_PRODUCT: 'FINISHED_PRODUCT',
-  RAW_MATERIAL: 'RAW_MATERIAL'
-};
-
-export type InventoryItemType = (typeof InventoryItemType)[keyof typeof InventoryItemType]
-
-
 export const StockMovementType: {
   IN: 'IN',
   OUT: 'OUT',
@@ -534,10 +531,6 @@ export const InquiryStatus: typeof $Enums.InquiryStatus
 export type StockState = $Enums.StockState
 
 export const StockState: typeof $Enums.StockState
-
-export type InventoryItemType = $Enums.InventoryItemType
-
-export const InventoryItemType: typeof $Enums.InventoryItemType
 
 export type StockMovementType = $Enums.StockMovementType
 
@@ -758,14 +751,24 @@ export class PrismaClient<
   get warehouse(): Prisma.WarehouseDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.stockItem`: Exposes CRUD operations for the **StockItem** model.
+   * `prisma.productStock`: Exposes CRUD operations for the **ProductStock** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more StockItems
-    * const stockItems = await prisma.stockItem.findMany()
+    * // Fetch zero or more ProductStocks
+    * const productStocks = await prisma.productStock.findMany()
     * ```
     */
-  get stockItem(): Prisma.StockItemDelegate<ExtArgs, ClientOptions>;
+  get productStock(): Prisma.ProductStockDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.materialStock`: Exposes CRUD operations for the **MaterialStock** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MaterialStocks
+    * const materialStocks = await prisma.materialStock.findMany()
+    * ```
+    */
+  get materialStock(): Prisma.MaterialStockDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.product`: Exposes CRUD operations for the **Product** model.
@@ -1405,7 +1408,8 @@ export namespace Prisma {
     SalesOrder: 'SalesOrder',
     SalesOrderLineItem: 'SalesOrderLineItem',
     Warehouse: 'Warehouse',
-    StockItem: 'StockItem',
+    ProductStock: 'ProductStock',
+    MaterialStock: 'MaterialStock',
     Product: 'Product',
     DraftProduct: 'DraftProduct',
     CustomerInquiry: 'CustomerInquiry',
@@ -1443,7 +1447,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "stockItem" | "product" | "draftProduct" | "customerInquiry" | "orderChatMessage" | "orderChatAttachment" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog" | "storefrontCategory" | "adminAccountArchive" | "adminActionArchive" | "returnRequest"
+      modelProps: "company" | "user" | "lead" | "quotation" | "quotationLineItem" | "salesOrder" | "salesOrderLineItem" | "warehouse" | "productStock" | "materialStock" | "product" | "draftProduct" | "customerInquiry" | "orderChatMessage" | "orderChatAttachment" | "productMaterial" | "stockMovement" | "stockRequest" | "stockRequestLine" | "designRequest" | "designAsset" | "paymentRecord" | "deliverySchedule" | "approvalHistory" | "auditLog" | "storefrontCategory" | "adminAccountArchive" | "adminActionArchive" | "returnRequest"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2039,77 +2043,151 @@ export namespace Prisma {
           }
         }
       }
-      StockItem: {
-        payload: Prisma.$StockItemPayload<ExtArgs>
-        fields: Prisma.StockItemFieldRefs
+      ProductStock: {
+        payload: Prisma.$ProductStockPayload<ExtArgs>
+        fields: Prisma.ProductStockFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.StockItemFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload> | null
+            args: Prisma.ProductStockFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.StockItemFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>
+            args: Prisma.ProductStockFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>
           }
           findFirst: {
-            args: Prisma.StockItemFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload> | null
+            args: Prisma.ProductStockFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.StockItemFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>
+            args: Prisma.ProductStockFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>
           }
           findMany: {
-            args: Prisma.StockItemFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>[]
+            args: Prisma.ProductStockFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>[]
           }
           create: {
-            args: Prisma.StockItemCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>
+            args: Prisma.ProductStockCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>
           }
           createMany: {
-            args: Prisma.StockItemCreateManyArgs<ExtArgs>
+            args: Prisma.ProductStockCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.StockItemCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>[]
+            args: Prisma.ProductStockCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>[]
           }
           delete: {
-            args: Prisma.StockItemDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>
+            args: Prisma.ProductStockDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>
           }
           update: {
-            args: Prisma.StockItemUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>
+            args: Prisma.ProductStockUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>
           }
           deleteMany: {
-            args: Prisma.StockItemDeleteManyArgs<ExtArgs>
+            args: Prisma.ProductStockDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.StockItemUpdateManyArgs<ExtArgs>
+            args: Prisma.ProductStockUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.StockItemUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>[]
+            args: Prisma.ProductStockUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>[]
           }
           upsert: {
-            args: Prisma.StockItemUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$StockItemPayload>
+            args: Prisma.ProductStockUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductStockPayload>
           }
           aggregate: {
-            args: Prisma.StockItemAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateStockItem>
+            args: Prisma.ProductStockAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProductStock>
           }
           groupBy: {
-            args: Prisma.StockItemGroupByArgs<ExtArgs>
-            result: $Utils.Optional<StockItemGroupByOutputType>[]
+            args: Prisma.ProductStockGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProductStockGroupByOutputType>[]
           }
           count: {
-            args: Prisma.StockItemCountArgs<ExtArgs>
-            result: $Utils.Optional<StockItemCountAggregateOutputType> | number
+            args: Prisma.ProductStockCountArgs<ExtArgs>
+            result: $Utils.Optional<ProductStockCountAggregateOutputType> | number
+          }
+        }
+      }
+      MaterialStock: {
+        payload: Prisma.$MaterialStockPayload<ExtArgs>
+        fields: Prisma.MaterialStockFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MaterialStockFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MaterialStockFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>
+          }
+          findFirst: {
+            args: Prisma.MaterialStockFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MaterialStockFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>
+          }
+          findMany: {
+            args: Prisma.MaterialStockFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>[]
+          }
+          create: {
+            args: Prisma.MaterialStockCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>
+          }
+          createMany: {
+            args: Prisma.MaterialStockCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MaterialStockCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>[]
+          }
+          delete: {
+            args: Prisma.MaterialStockDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>
+          }
+          update: {
+            args: Prisma.MaterialStockUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>
+          }
+          deleteMany: {
+            args: Prisma.MaterialStockDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MaterialStockUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MaterialStockUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>[]
+          }
+          upsert: {
+            args: Prisma.MaterialStockUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialStockPayload>
+          }
+          aggregate: {
+            args: Prisma.MaterialStockAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMaterialStock>
+          }
+          groupBy: {
+            args: Prisma.MaterialStockGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MaterialStockGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MaterialStockCountArgs<ExtArgs>
+            result: $Utils.Optional<MaterialStockCountAggregateOutputType> | number
           }
         }
       }
@@ -3623,7 +3701,8 @@ export namespace Prisma {
     salesOrder?: SalesOrderOmit
     salesOrderLineItem?: SalesOrderLineItemOmit
     warehouse?: WarehouseOmit
-    stockItem?: StockItemOmit
+    productStock?: ProductStockOmit
+    materialStock?: MaterialStockOmit
     product?: ProductOmit
     draftProduct?: DraftProductOmit
     customerInquiry?: CustomerInquiryOmit
@@ -4076,11 +4155,13 @@ export namespace Prisma {
    */
 
   export type WarehouseCountOutputType = {
-    stockItems: number
+    productStocks: number
+    materialStocks: number
   }
 
   export type WarehouseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItems?: boolean | WarehouseCountOutputTypeCountStockItemsArgs
+    productStocks?: boolean | WarehouseCountOutputTypeCountProductStocksArgs
+    materialStocks?: boolean | WarehouseCountOutputTypeCountMaterialStocksArgs
   }
 
   // Custom InputTypes
@@ -4097,56 +4178,94 @@ export namespace Prisma {
   /**
    * WarehouseCountOutputType without action
    */
-  export type WarehouseCountOutputTypeCountStockItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: StockItemWhereInput
+  export type WarehouseCountOutputTypeCountProductStocksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductStockWhereInput
+  }
+
+  /**
+   * WarehouseCountOutputType without action
+   */
+  export type WarehouseCountOutputTypeCountMaterialStocksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MaterialStockWhereInput
   }
 
 
   /**
-   * Count Type StockItemCountOutputType
+   * Count Type ProductStockCountOutputType
    */
 
-  export type StockItemCountOutputType = {
+  export type ProductStockCountOutputType = {
+    stockMovements: number
+  }
+
+  export type ProductStockCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    stockMovements?: boolean | ProductStockCountOutputTypeCountStockMovementsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProductStockCountOutputType without action
+   */
+  export type ProductStockCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductStockCountOutputType
+     */
+    select?: ProductStockCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProductStockCountOutputType without action
+   */
+  export type ProductStockCountOutputTypeCountStockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockMovementWhereInput
+  }
+
+
+  /**
+   * Count Type MaterialStockCountOutputType
+   */
+
+  export type MaterialStockCountOutputType = {
     materialFor: number
     stockMovements: number
     stockRequestLines: number
   }
 
-  export type StockItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    materialFor?: boolean | StockItemCountOutputTypeCountMaterialForArgs
-    stockMovements?: boolean | StockItemCountOutputTypeCountStockMovementsArgs
-    stockRequestLines?: boolean | StockItemCountOutputTypeCountStockRequestLinesArgs
+  export type MaterialStockCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    materialFor?: boolean | MaterialStockCountOutputTypeCountMaterialForArgs
+    stockMovements?: boolean | MaterialStockCountOutputTypeCountStockMovementsArgs
+    stockRequestLines?: boolean | MaterialStockCountOutputTypeCountStockRequestLinesArgs
   }
 
   // Custom InputTypes
   /**
-   * StockItemCountOutputType without action
+   * MaterialStockCountOutputType without action
    */
-  export type StockItemCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MaterialStockCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItemCountOutputType
+     * Select specific fields to fetch from the MaterialStockCountOutputType
      */
-    select?: StockItemCountOutputTypeSelect<ExtArgs> | null
+    select?: MaterialStockCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * StockItemCountOutputType without action
+   * MaterialStockCountOutputType without action
    */
-  export type StockItemCountOutputTypeCountMaterialForArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MaterialStockCountOutputTypeCountMaterialForArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProductMaterialWhereInput
   }
 
   /**
-   * StockItemCountOutputType without action
+   * MaterialStockCountOutputType without action
    */
-  export type StockItemCountOutputTypeCountStockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MaterialStockCountOutputTypeCountStockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockMovementWhereInput
   }
 
   /**
-   * StockItemCountOutputType without action
+   * MaterialStockCountOutputType without action
    */
-  export type StockItemCountOutputTypeCountStockRequestLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MaterialStockCountOutputTypeCountStockRequestLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockRequestLineWhereInput
   }
 
@@ -13870,7 +13989,8 @@ export namespace Prisma {
     address?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    stockItems?: boolean | Warehouse$stockItemsArgs<ExtArgs>
+    productStocks?: boolean | Warehouse$productStocksArgs<ExtArgs>
+    materialStocks?: boolean | Warehouse$materialStocksArgs<ExtArgs>
     _count?: boolean | WarehouseCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["warehouse"]>
 
@@ -13903,7 +14023,8 @@ export namespace Prisma {
 
   export type WarehouseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "address" | "createdAt" | "updatedAt", ExtArgs["result"]["warehouse"]>
   export type WarehouseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItems?: boolean | Warehouse$stockItemsArgs<ExtArgs>
+    productStocks?: boolean | Warehouse$productStocksArgs<ExtArgs>
+    materialStocks?: boolean | Warehouse$materialStocksArgs<ExtArgs>
     _count?: boolean | WarehouseCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type WarehouseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -13912,7 +14033,8 @@ export namespace Prisma {
   export type $WarehousePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Warehouse"
     objects: {
-      stockItems: Prisma.$StockItemPayload<ExtArgs>[]
+      productStocks: Prisma.$ProductStockPayload<ExtArgs>[]
+      materialStocks: Prisma.$MaterialStockPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14315,7 +14437,8 @@ export namespace Prisma {
    */
   export interface Prisma__WarehouseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    stockItems<T extends Warehouse$stockItemsArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$stockItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    productStocks<T extends Warehouse$productStocksArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$productStocksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    materialStocks<T extends Warehouse$materialStocksArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$materialStocksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14739,27 +14862,51 @@ export namespace Prisma {
   }
 
   /**
-   * Warehouse.stockItems
+   * Warehouse.productStocks
    */
-  export type Warehouse$stockItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Warehouse$productStocksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
-    where?: StockItemWhereInput
-    orderBy?: StockItemOrderByWithRelationInput | StockItemOrderByWithRelationInput[]
-    cursor?: StockItemWhereUniqueInput
+    include?: ProductStockInclude<ExtArgs> | null
+    where?: ProductStockWhereInput
+    orderBy?: ProductStockOrderByWithRelationInput | ProductStockOrderByWithRelationInput[]
+    cursor?: ProductStockWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: StockItemScalarFieldEnum | StockItemScalarFieldEnum[]
+    distinct?: ProductStockScalarFieldEnum | ProductStockScalarFieldEnum[]
+  }
+
+  /**
+   * Warehouse.materialStocks
+   */
+  export type Warehouse$materialStocksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    where?: MaterialStockWhereInput
+    orderBy?: MaterialStockOrderByWithRelationInput | MaterialStockOrderByWithRelationInput[]
+    cursor?: MaterialStockWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MaterialStockScalarFieldEnum | MaterialStockScalarFieldEnum[]
   }
 
   /**
@@ -14782,35 +14929,34 @@ export namespace Prisma {
 
 
   /**
-   * Model StockItem
+   * Model ProductStock
    */
 
-  export type AggregateStockItem = {
-    _count: StockItemCountAggregateOutputType | null
-    _avg: StockItemAvgAggregateOutputType | null
-    _sum: StockItemSumAggregateOutputType | null
-    _min: StockItemMinAggregateOutputType | null
-    _max: StockItemMaxAggregateOutputType | null
+  export type AggregateProductStock = {
+    _count: ProductStockCountAggregateOutputType | null
+    _avg: ProductStockAvgAggregateOutputType | null
+    _sum: ProductStockSumAggregateOutputType | null
+    _min: ProductStockMinAggregateOutputType | null
+    _max: ProductStockMaxAggregateOutputType | null
   }
 
-  export type StockItemAvgAggregateOutputType = {
+  export type ProductStockAvgAggregateOutputType = {
     availableQty: number | null
     reservedQty: number | null
     reorderThreshold: number | null
   }
 
-  export type StockItemSumAggregateOutputType = {
+  export type ProductStockSumAggregateOutputType = {
     availableQty: number | null
     reservedQty: number | null
     reorderThreshold: number | null
   }
 
-  export type StockItemMinAggregateOutputType = {
+  export type ProductStockMinAggregateOutputType = {
     id: string | null
     warehouseId: string | null
     sku: string | null
     itemName: string | null
-    itemType: $Enums.InventoryItemType | null
     description: string | null
     unitOfMeasure: string | null
     availableQty: number | null
@@ -14821,12 +14967,11 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type StockItemMaxAggregateOutputType = {
+  export type ProductStockMaxAggregateOutputType = {
     id: string | null
     warehouseId: string | null
     sku: string | null
     itemName: string | null
-    itemType: $Enums.InventoryItemType | null
     description: string | null
     unitOfMeasure: string | null
     availableQty: number | null
@@ -14837,12 +14982,11 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type StockItemCountAggregateOutputType = {
+  export type ProductStockCountAggregateOutputType = {
     id: number
     warehouseId: number
     sku: number
     itemName: number
-    itemType: number
     description: number
     unitOfMeasure: number
     availableQty: number
@@ -14855,24 +14999,23 @@ export namespace Prisma {
   }
 
 
-  export type StockItemAvgAggregateInputType = {
+  export type ProductStockAvgAggregateInputType = {
     availableQty?: true
     reservedQty?: true
     reorderThreshold?: true
   }
 
-  export type StockItemSumAggregateInputType = {
+  export type ProductStockSumAggregateInputType = {
     availableQty?: true
     reservedQty?: true
     reorderThreshold?: true
   }
 
-  export type StockItemMinAggregateInputType = {
+  export type ProductStockMinAggregateInputType = {
     id?: true
     warehouseId?: true
     sku?: true
     itemName?: true
-    itemType?: true
     description?: true
     unitOfMeasure?: true
     availableQty?: true
@@ -14883,12 +15026,11 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type StockItemMaxAggregateInputType = {
+  export type ProductStockMaxAggregateInputType = {
     id?: true
     warehouseId?: true
     sku?: true
     itemName?: true
-    itemType?: true
     description?: true
     unitOfMeasure?: true
     availableQty?: true
@@ -14899,12 +15041,11 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type StockItemCountAggregateInputType = {
+  export type ProductStockCountAggregateInputType = {
     id?: true
     warehouseId?: true
     sku?: true
     itemName?: true
-    itemType?: true
     description?: true
     unitOfMeasure?: true
     availableQty?: true
@@ -14916,98 +15057,97 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type StockItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which StockItem to aggregate.
+     * Filter which ProductStock to aggregate.
      */
-    where?: StockItemWhereInput
+    where?: ProductStockWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of StockItems to fetch.
+     * Determine the order of ProductStocks to fetch.
      */
-    orderBy?: StockItemOrderByWithRelationInput | StockItemOrderByWithRelationInput[]
+    orderBy?: ProductStockOrderByWithRelationInput | ProductStockOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: StockItemWhereUniqueInput
+    cursor?: ProductStockWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` StockItems from the position of the cursor.
+     * Take `±n` ProductStocks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` StockItems.
+     * Skip the first `n` ProductStocks.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned StockItems
+     * Count returned ProductStocks
     **/
-    _count?: true | StockItemCountAggregateInputType
+    _count?: true | ProductStockCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: StockItemAvgAggregateInputType
+    _avg?: ProductStockAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: StockItemSumAggregateInputType
+    _sum?: ProductStockSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: StockItemMinAggregateInputType
+    _min?: ProductStockMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: StockItemMaxAggregateInputType
+    _max?: ProductStockMaxAggregateInputType
   }
 
-  export type GetStockItemAggregateType<T extends StockItemAggregateArgs> = {
-        [P in keyof T & keyof AggregateStockItem]: P extends '_count' | 'count'
+  export type GetProductStockAggregateType<T extends ProductStockAggregateArgs> = {
+        [P in keyof T & keyof AggregateProductStock]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateStockItem[P]>
-      : GetScalarType<T[P], AggregateStockItem[P]>
+        : GetScalarType<T[P], AggregateProductStock[P]>
+      : GetScalarType<T[P], AggregateProductStock[P]>
   }
 
 
 
 
-  export type StockItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: StockItemWhereInput
-    orderBy?: StockItemOrderByWithAggregationInput | StockItemOrderByWithAggregationInput[]
-    by: StockItemScalarFieldEnum[] | StockItemScalarFieldEnum
-    having?: StockItemScalarWhereWithAggregatesInput
+  export type ProductStockGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductStockWhereInput
+    orderBy?: ProductStockOrderByWithAggregationInput | ProductStockOrderByWithAggregationInput[]
+    by: ProductStockScalarFieldEnum[] | ProductStockScalarFieldEnum
+    having?: ProductStockScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: StockItemCountAggregateInputType | true
-    _avg?: StockItemAvgAggregateInputType
-    _sum?: StockItemSumAggregateInputType
-    _min?: StockItemMinAggregateInputType
-    _max?: StockItemMaxAggregateInputType
+    _count?: ProductStockCountAggregateInputType | true
+    _avg?: ProductStockAvgAggregateInputType
+    _sum?: ProductStockSumAggregateInputType
+    _min?: ProductStockMinAggregateInputType
+    _max?: ProductStockMaxAggregateInputType
   }
 
-  export type StockItemGroupByOutputType = {
+  export type ProductStockGroupByOutputType = {
     id: string
     warehouseId: string
     sku: string
     itemName: string
-    itemType: $Enums.InventoryItemType
     description: string | null
     unitOfMeasure: string
     availableQty: number
@@ -15016,33 +15156,32 @@ export namespace Prisma {
     state: $Enums.StockState
     createdAt: Date
     updatedAt: Date
-    _count: StockItemCountAggregateOutputType | null
-    _avg: StockItemAvgAggregateOutputType | null
-    _sum: StockItemSumAggregateOutputType | null
-    _min: StockItemMinAggregateOutputType | null
-    _max: StockItemMaxAggregateOutputType | null
+    _count: ProductStockCountAggregateOutputType | null
+    _avg: ProductStockAvgAggregateOutputType | null
+    _sum: ProductStockSumAggregateOutputType | null
+    _min: ProductStockMinAggregateOutputType | null
+    _max: ProductStockMaxAggregateOutputType | null
   }
 
-  type GetStockItemGroupByPayload<T extends StockItemGroupByArgs> = Prisma.PrismaPromise<
+  type GetProductStockGroupByPayload<T extends ProductStockGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<StockItemGroupByOutputType, T['by']> &
+      PickEnumerable<ProductStockGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof StockItemGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof ProductStockGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], StockItemGroupByOutputType[P]>
-            : GetScalarType<T[P], StockItemGroupByOutputType[P]>
+              : GetScalarType<T[P], ProductStockGroupByOutputType[P]>
+            : GetScalarType<T[P], ProductStockGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type StockItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ProductStockSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     warehouseId?: boolean
     sku?: boolean
     itemName?: boolean
-    itemType?: boolean
     description?: boolean
     unitOfMeasure?: boolean
     availableQty?: boolean
@@ -15052,19 +15191,16 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    product?: boolean | StockItem$productArgs<ExtArgs>
-    materialFor?: boolean | StockItem$materialForArgs<ExtArgs>
-    stockMovements?: boolean | StockItem$stockMovementsArgs<ExtArgs>
-    stockRequestLines?: boolean | StockItem$stockRequestLinesArgs<ExtArgs>
-    _count?: boolean | StockItemCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["stockItem"]>
+    product?: boolean | ProductStock$productArgs<ExtArgs>
+    stockMovements?: boolean | ProductStock$stockMovementsArgs<ExtArgs>
+    _count?: boolean | ProductStockCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productStock"]>
 
-  export type StockItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ProductStockSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     warehouseId?: boolean
     sku?: boolean
     itemName?: boolean
-    itemType?: boolean
     description?: boolean
     unitOfMeasure?: boolean
     availableQty?: boolean
@@ -15074,14 +15210,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["stockItem"]>
+  }, ExtArgs["result"]["productStock"]>
 
-  export type StockItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ProductStockSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     warehouseId?: boolean
     sku?: boolean
     itemName?: boolean
-    itemType?: boolean
     description?: boolean
     unitOfMeasure?: boolean
     availableQty?: boolean
@@ -15091,14 +15226,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["stockItem"]>
+  }, ExtArgs["result"]["productStock"]>
 
-  export type StockItemSelectScalar = {
+  export type ProductStockSelectScalar = {
     id?: boolean
     warehouseId?: boolean
     sku?: boolean
     itemName?: boolean
-    itemType?: boolean
     description?: boolean
     unitOfMeasure?: boolean
     availableQty?: boolean
@@ -15109,37 +15243,32 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StockItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "warehouseId" | "sku" | "itemName" | "itemType" | "description" | "unitOfMeasure" | "availableQty" | "reservedQty" | "reorderThreshold" | "state" | "createdAt" | "updatedAt", ExtArgs["result"]["stockItem"]>
-  export type StockItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "warehouseId" | "sku" | "itemName" | "description" | "unitOfMeasure" | "availableQty" | "reservedQty" | "reorderThreshold" | "state" | "createdAt" | "updatedAt", ExtArgs["result"]["productStock"]>
+  export type ProductStockInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    product?: boolean | StockItem$productArgs<ExtArgs>
-    materialFor?: boolean | StockItem$materialForArgs<ExtArgs>
-    stockMovements?: boolean | StockItem$stockMovementsArgs<ExtArgs>
-    stockRequestLines?: boolean | StockItem$stockRequestLinesArgs<ExtArgs>
-    _count?: boolean | StockItemCountOutputTypeDefaultArgs<ExtArgs>
+    product?: boolean | ProductStock$productArgs<ExtArgs>
+    stockMovements?: boolean | ProductStock$stockMovementsArgs<ExtArgs>
+    _count?: boolean | ProductStockCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type StockItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
   }
-  export type StockItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
   }
 
-  export type $StockItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "StockItem"
+  export type $ProductStockPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProductStock"
     objects: {
       warehouse: Prisma.$WarehousePayload<ExtArgs>
       product: Prisma.$ProductPayload<ExtArgs> | null
-      materialFor: Prisma.$ProductMaterialPayload<ExtArgs>[]
       stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
-      stockRequestLines: Prisma.$StockRequestLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       warehouseId: string
       sku: string
       itemName: string
-      itemType: $Enums.InventoryItemType
       description: string | null
       unitOfMeasure: string
       availableQty: number
@@ -15148,136 +15277,136 @@ export namespace Prisma {
       state: $Enums.StockState
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["stockItem"]>
+    }, ExtArgs["result"]["productStock"]>
     composites: {}
   }
 
-  type StockItemGetPayload<S extends boolean | null | undefined | StockItemDefaultArgs> = $Result.GetResult<Prisma.$StockItemPayload, S>
+  type ProductStockGetPayload<S extends boolean | null | undefined | ProductStockDefaultArgs> = $Result.GetResult<Prisma.$ProductStockPayload, S>
 
-  type StockItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<StockItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: StockItemCountAggregateInputType | true
+  type ProductStockCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProductStockFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProductStockCountAggregateInputType | true
     }
 
-  export interface StockItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockItem'], meta: { name: 'StockItem' } }
+  export interface ProductStockDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProductStock'], meta: { name: 'ProductStock' } }
     /**
-     * Find zero or one StockItem that matches the filter.
-     * @param {StockItemFindUniqueArgs} args - Arguments to find a StockItem
+     * Find zero or one ProductStock that matches the filter.
+     * @param {ProductStockFindUniqueArgs} args - Arguments to find a ProductStock
      * @example
-     * // Get one StockItem
-     * const stockItem = await prisma.stockItem.findUnique({
+     * // Get one ProductStock
+     * const productStock = await prisma.productStock.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends StockItemFindUniqueArgs>(args: SelectSubset<T, StockItemFindUniqueArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends ProductStockFindUniqueArgs>(args: SelectSubset<T, ProductStockFindUniqueArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one StockItem that matches the filter or throw an error with `error.code='P2025'`
+     * Find one ProductStock that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {StockItemFindUniqueOrThrowArgs} args - Arguments to find a StockItem
+     * @param {ProductStockFindUniqueOrThrowArgs} args - Arguments to find a ProductStock
      * @example
-     * // Get one StockItem
-     * const stockItem = await prisma.stockItem.findUniqueOrThrow({
+     * // Get one ProductStock
+     * const productStock = await prisma.productStock.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends StockItemFindUniqueOrThrowArgs>(args: SelectSubset<T, StockItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends ProductStockFindUniqueOrThrowArgs>(args: SelectSubset<T, ProductStockFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first StockItem that matches the filter.
+     * Find the first ProductStock that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StockItemFindFirstArgs} args - Arguments to find a StockItem
+     * @param {ProductStockFindFirstArgs} args - Arguments to find a ProductStock
      * @example
-     * // Get one StockItem
-     * const stockItem = await prisma.stockItem.findFirst({
+     * // Get one ProductStock
+     * const productStock = await prisma.productStock.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends StockItemFindFirstArgs>(args?: SelectSubset<T, StockItemFindFirstArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends ProductStockFindFirstArgs>(args?: SelectSubset<T, ProductStockFindFirstArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first StockItem that matches the filter or
+     * Find the first ProductStock that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StockItemFindFirstOrThrowArgs} args - Arguments to find a StockItem
+     * @param {ProductStockFindFirstOrThrowArgs} args - Arguments to find a ProductStock
      * @example
-     * // Get one StockItem
-     * const stockItem = await prisma.stockItem.findFirstOrThrow({
+     * // Get one ProductStock
+     * const productStock = await prisma.productStock.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends StockItemFindFirstOrThrowArgs>(args?: SelectSubset<T, StockItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends ProductStockFindFirstOrThrowArgs>(args?: SelectSubset<T, ProductStockFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more StockItems that matches the filter.
+     * Find zero or more ProductStocks that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StockItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {ProductStockFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all StockItems
-     * const stockItems = await prisma.stockItem.findMany()
+     * // Get all ProductStocks
+     * const productStocks = await prisma.productStock.findMany()
      * 
-     * // Get first 10 StockItems
-     * const stockItems = await prisma.stockItem.findMany({ take: 10 })
+     * // Get first 10 ProductStocks
+     * const productStocks = await prisma.productStock.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const stockItemWithIdOnly = await prisma.stockItem.findMany({ select: { id: true } })
+     * const productStockWithIdOnly = await prisma.productStock.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends StockItemFindManyArgs>(args?: SelectSubset<T, StockItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends ProductStockFindManyArgs>(args?: SelectSubset<T, ProductStockFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a StockItem.
-     * @param {StockItemCreateArgs} args - Arguments to create a StockItem.
+     * Create a ProductStock.
+     * @param {ProductStockCreateArgs} args - Arguments to create a ProductStock.
      * @example
-     * // Create one StockItem
-     * const StockItem = await prisma.stockItem.create({
+     * // Create one ProductStock
+     * const ProductStock = await prisma.productStock.create({
      *   data: {
-     *     // ... data to create a StockItem
+     *     // ... data to create a ProductStock
      *   }
      * })
      * 
      */
-    create<T extends StockItemCreateArgs>(args: SelectSubset<T, StockItemCreateArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends ProductStockCreateArgs>(args: SelectSubset<T, ProductStockCreateArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many StockItems.
-     * @param {StockItemCreateManyArgs} args - Arguments to create many StockItems.
+     * Create many ProductStocks.
+     * @param {ProductStockCreateManyArgs} args - Arguments to create many ProductStocks.
      * @example
-     * // Create many StockItems
-     * const stockItem = await prisma.stockItem.createMany({
+     * // Create many ProductStocks
+     * const productStock = await prisma.productStock.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends StockItemCreateManyArgs>(args?: SelectSubset<T, StockItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends ProductStockCreateManyArgs>(args?: SelectSubset<T, ProductStockCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many StockItems and returns the data saved in the database.
-     * @param {StockItemCreateManyAndReturnArgs} args - Arguments to create many StockItems.
+     * Create many ProductStocks and returns the data saved in the database.
+     * @param {ProductStockCreateManyAndReturnArgs} args - Arguments to create many ProductStocks.
      * @example
-     * // Create many StockItems
-     * const stockItem = await prisma.stockItem.createManyAndReturn({
+     * // Create many ProductStocks
+     * const productStock = await prisma.productStock.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many StockItems and only return the `id`
-     * const stockItemWithIdOnly = await prisma.stockItem.createManyAndReturn({
+     * // Create many ProductStocks and only return the `id`
+     * const productStockWithIdOnly = await prisma.productStock.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -15287,28 +15416,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends StockItemCreateManyAndReturnArgs>(args?: SelectSubset<T, StockItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends ProductStockCreateManyAndReturnArgs>(args?: SelectSubset<T, ProductStockCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a StockItem.
-     * @param {StockItemDeleteArgs} args - Arguments to delete one StockItem.
+     * Delete a ProductStock.
+     * @param {ProductStockDeleteArgs} args - Arguments to delete one ProductStock.
      * @example
-     * // Delete one StockItem
-     * const StockItem = await prisma.stockItem.delete({
+     * // Delete one ProductStock
+     * const ProductStock = await prisma.productStock.delete({
      *   where: {
-     *     // ... filter to delete one StockItem
+     *     // ... filter to delete one ProductStock
      *   }
      * })
      * 
      */
-    delete<T extends StockItemDeleteArgs>(args: SelectSubset<T, StockItemDeleteArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends ProductStockDeleteArgs>(args: SelectSubset<T, ProductStockDeleteArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one StockItem.
-     * @param {StockItemUpdateArgs} args - Arguments to update one StockItem.
+     * Update one ProductStock.
+     * @param {ProductStockUpdateArgs} args - Arguments to update one ProductStock.
      * @example
-     * // Update one StockItem
-     * const stockItem = await prisma.stockItem.update({
+     * // Update one ProductStock
+     * const productStock = await prisma.productStock.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -15318,30 +15447,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends StockItemUpdateArgs>(args: SelectSubset<T, StockItemUpdateArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends ProductStockUpdateArgs>(args: SelectSubset<T, ProductStockUpdateArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more StockItems.
-     * @param {StockItemDeleteManyArgs} args - Arguments to filter StockItems to delete.
+     * Delete zero or more ProductStocks.
+     * @param {ProductStockDeleteManyArgs} args - Arguments to filter ProductStocks to delete.
      * @example
-     * // Delete a few StockItems
-     * const { count } = await prisma.stockItem.deleteMany({
+     * // Delete a few ProductStocks
+     * const { count } = await prisma.productStock.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends StockItemDeleteManyArgs>(args?: SelectSubset<T, StockItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends ProductStockDeleteManyArgs>(args?: SelectSubset<T, ProductStockDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more StockItems.
+     * Update zero or more ProductStocks.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StockItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {ProductStockUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many StockItems
-     * const stockItem = await prisma.stockItem.updateMany({
+     * // Update many ProductStocks
+     * const productStock = await prisma.productStock.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -15351,14 +15480,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends StockItemUpdateManyArgs>(args: SelectSubset<T, StockItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends ProductStockUpdateManyArgs>(args: SelectSubset<T, ProductStockUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more StockItems and returns the data updated in the database.
-     * @param {StockItemUpdateManyAndReturnArgs} args - Arguments to update many StockItems.
+     * Update zero or more ProductStocks and returns the data updated in the database.
+     * @param {ProductStockUpdateManyAndReturnArgs} args - Arguments to update many ProductStocks.
      * @example
-     * // Update many StockItems
-     * const stockItem = await prisma.stockItem.updateManyAndReturn({
+     * // Update many ProductStocks
+     * const productStock = await prisma.productStock.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -15367,8 +15496,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more StockItems and only return the `id`
-     * const stockItemWithIdOnly = await prisma.stockItem.updateManyAndReturn({
+     * // Update zero or more ProductStocks and only return the `id`
+     * const productStockWithIdOnly = await prisma.productStock.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -15381,56 +15510,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends StockItemUpdateManyAndReturnArgs>(args: SelectSubset<T, StockItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends ProductStockUpdateManyAndReturnArgs>(args: SelectSubset<T, ProductStockUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one StockItem.
-     * @param {StockItemUpsertArgs} args - Arguments to update or create a StockItem.
+     * Create or update one ProductStock.
+     * @param {ProductStockUpsertArgs} args - Arguments to update or create a ProductStock.
      * @example
-     * // Update or create a StockItem
-     * const stockItem = await prisma.stockItem.upsert({
+     * // Update or create a ProductStock
+     * const productStock = await prisma.productStock.upsert({
      *   create: {
-     *     // ... data to create a StockItem
+     *     // ... data to create a ProductStock
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the StockItem we want to update
+     *     // ... the filter for the ProductStock we want to update
      *   }
      * })
      */
-    upsert<T extends StockItemUpsertArgs>(args: SelectSubset<T, StockItemUpsertArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends ProductStockUpsertArgs>(args: SelectSubset<T, ProductStockUpsertArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of StockItems.
+     * Count the number of ProductStocks.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StockItemCountArgs} args - Arguments to filter StockItems to count.
+     * @param {ProductStockCountArgs} args - Arguments to filter ProductStocks to count.
      * @example
-     * // Count the number of StockItems
-     * const count = await prisma.stockItem.count({
+     * // Count the number of ProductStocks
+     * const count = await prisma.productStock.count({
      *   where: {
-     *     // ... the filter for the StockItems we want to count
+     *     // ... the filter for the ProductStocks we want to count
      *   }
      * })
     **/
-    count<T extends StockItemCountArgs>(
-      args?: Subset<T, StockItemCountArgs>,
+    count<T extends ProductStockCountArgs>(
+      args?: Subset<T, ProductStockCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], StockItemCountAggregateOutputType>
+          : GetScalarType<T['select'], ProductStockCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a StockItem.
+     * Allows you to perform aggregations operations on a ProductStock.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StockItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {ProductStockAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -15450,13 +15579,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends StockItemAggregateArgs>(args: Subset<T, StockItemAggregateArgs>): Prisma.PrismaPromise<GetStockItemAggregateType<T>>
+    aggregate<T extends ProductStockAggregateArgs>(args: Subset<T, ProductStockAggregateArgs>): Prisma.PrismaPromise<GetProductStockAggregateType<T>>
 
     /**
-     * Group by StockItem.
+     * Group by ProductStock.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StockItemGroupByArgs} args - Group by arguments.
+     * @param {ProductStockGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -15471,14 +15600,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends StockItemGroupByArgs,
+      T extends ProductStockGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: StockItemGroupByArgs['orderBy'] }
-        : { orderBy?: StockItemGroupByArgs['orderBy'] },
+        ? { orderBy: ProductStockGroupByArgs['orderBy'] }
+        : { orderBy?: ProductStockGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -15527,26 +15656,24 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, StockItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, ProductStockGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProductStockGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the StockItem model
+   * Fields of the ProductStock model
    */
-  readonly fields: StockItemFieldRefs;
+  readonly fields: ProductStockFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for StockItem.
+   * The delegate class that acts as a "Promise-like" for ProductStock.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__StockItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__ProductStockClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     warehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    product<T extends StockItem$productArgs<ExtArgs> = {}>(args?: Subset<T, StockItem$productArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    materialFor<T extends StockItem$materialForArgs<ExtArgs> = {}>(args?: Subset<T, StockItem$materialForArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    stockMovements<T extends StockItem$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, StockItem$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    stockRequestLines<T extends StockItem$stockRequestLinesArgs<ExtArgs> = {}>(args?: Subset<T, StockItem$stockRequestLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockRequestLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    product<T extends ProductStock$productArgs<ExtArgs> = {}>(args?: Subset<T, ProductStock$productArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    stockMovements<T extends ProductStock$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, ProductStock$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15573,421 +15700,420 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the StockItem model
+   * Fields of the ProductStock model
    */
-  interface StockItemFieldRefs {
-    readonly id: FieldRef<"StockItem", 'String'>
-    readonly warehouseId: FieldRef<"StockItem", 'String'>
-    readonly sku: FieldRef<"StockItem", 'String'>
-    readonly itemName: FieldRef<"StockItem", 'String'>
-    readonly itemType: FieldRef<"StockItem", 'InventoryItemType'>
-    readonly description: FieldRef<"StockItem", 'String'>
-    readonly unitOfMeasure: FieldRef<"StockItem", 'String'>
-    readonly availableQty: FieldRef<"StockItem", 'Int'>
-    readonly reservedQty: FieldRef<"StockItem", 'Int'>
-    readonly reorderThreshold: FieldRef<"StockItem", 'Int'>
-    readonly state: FieldRef<"StockItem", 'StockState'>
-    readonly createdAt: FieldRef<"StockItem", 'DateTime'>
-    readonly updatedAt: FieldRef<"StockItem", 'DateTime'>
+  interface ProductStockFieldRefs {
+    readonly id: FieldRef<"ProductStock", 'String'>
+    readonly warehouseId: FieldRef<"ProductStock", 'String'>
+    readonly sku: FieldRef<"ProductStock", 'String'>
+    readonly itemName: FieldRef<"ProductStock", 'String'>
+    readonly description: FieldRef<"ProductStock", 'String'>
+    readonly unitOfMeasure: FieldRef<"ProductStock", 'String'>
+    readonly availableQty: FieldRef<"ProductStock", 'Int'>
+    readonly reservedQty: FieldRef<"ProductStock", 'Int'>
+    readonly reorderThreshold: FieldRef<"ProductStock", 'Int'>
+    readonly state: FieldRef<"ProductStock", 'StockState'>
+    readonly createdAt: FieldRef<"ProductStock", 'DateTime'>
+    readonly updatedAt: FieldRef<"ProductStock", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * StockItem findUnique
+   * ProductStock findUnique
    */
-  export type StockItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * Filter, which StockItem to fetch.
+     * Filter, which ProductStock to fetch.
      */
-    where: StockItemWhereUniqueInput
+    where: ProductStockWhereUniqueInput
   }
 
   /**
-   * StockItem findUniqueOrThrow
+   * ProductStock findUniqueOrThrow
    */
-  export type StockItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * Filter, which StockItem to fetch.
+     * Filter, which ProductStock to fetch.
      */
-    where: StockItemWhereUniqueInput
+    where: ProductStockWhereUniqueInput
   }
 
   /**
-   * StockItem findFirst
+   * ProductStock findFirst
    */
-  export type StockItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * Filter, which StockItem to fetch.
+     * Filter, which ProductStock to fetch.
      */
-    where?: StockItemWhereInput
+    where?: ProductStockWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of StockItems to fetch.
+     * Determine the order of ProductStocks to fetch.
      */
-    orderBy?: StockItemOrderByWithRelationInput | StockItemOrderByWithRelationInput[]
+    orderBy?: ProductStockOrderByWithRelationInput | ProductStockOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for StockItems.
+     * Sets the position for searching for ProductStocks.
      */
-    cursor?: StockItemWhereUniqueInput
+    cursor?: ProductStockWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` StockItems from the position of the cursor.
+     * Take `±n` ProductStocks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` StockItems.
+     * Skip the first `n` ProductStocks.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of StockItems.
+     * Filter by unique combinations of ProductStocks.
      */
-    distinct?: StockItemScalarFieldEnum | StockItemScalarFieldEnum[]
+    distinct?: ProductStockScalarFieldEnum | ProductStockScalarFieldEnum[]
   }
 
   /**
-   * StockItem findFirstOrThrow
+   * ProductStock findFirstOrThrow
    */
-  export type StockItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * Filter, which StockItem to fetch.
+     * Filter, which ProductStock to fetch.
      */
-    where?: StockItemWhereInput
+    where?: ProductStockWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of StockItems to fetch.
+     * Determine the order of ProductStocks to fetch.
      */
-    orderBy?: StockItemOrderByWithRelationInput | StockItemOrderByWithRelationInput[]
+    orderBy?: ProductStockOrderByWithRelationInput | ProductStockOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for StockItems.
+     * Sets the position for searching for ProductStocks.
      */
-    cursor?: StockItemWhereUniqueInput
+    cursor?: ProductStockWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` StockItems from the position of the cursor.
+     * Take `±n` ProductStocks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` StockItems.
+     * Skip the first `n` ProductStocks.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of StockItems.
+     * Filter by unique combinations of ProductStocks.
      */
-    distinct?: StockItemScalarFieldEnum | StockItemScalarFieldEnum[]
+    distinct?: ProductStockScalarFieldEnum | ProductStockScalarFieldEnum[]
   }
 
   /**
-   * StockItem findMany
+   * ProductStock findMany
    */
-  export type StockItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * Filter, which StockItems to fetch.
+     * Filter, which ProductStocks to fetch.
      */
-    where?: StockItemWhereInput
+    where?: ProductStockWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of StockItems to fetch.
+     * Determine the order of ProductStocks to fetch.
      */
-    orderBy?: StockItemOrderByWithRelationInput | StockItemOrderByWithRelationInput[]
+    orderBy?: ProductStockOrderByWithRelationInput | ProductStockOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing StockItems.
+     * Sets the position for listing ProductStocks.
      */
-    cursor?: StockItemWhereUniqueInput
+    cursor?: ProductStockWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` StockItems from the position of the cursor.
+     * Take `±n` ProductStocks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` StockItems.
+     * Skip the first `n` ProductStocks.
      */
     skip?: number
-    distinct?: StockItemScalarFieldEnum | StockItemScalarFieldEnum[]
+    distinct?: ProductStockScalarFieldEnum | ProductStockScalarFieldEnum[]
   }
 
   /**
-   * StockItem create
+   * ProductStock create
    */
-  export type StockItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * The data needed to create a StockItem.
+     * The data needed to create a ProductStock.
      */
-    data: XOR<StockItemCreateInput, StockItemUncheckedCreateInput>
+    data: XOR<ProductStockCreateInput, ProductStockUncheckedCreateInput>
   }
 
   /**
-   * StockItem createMany
+   * ProductStock createMany
    */
-  export type StockItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many StockItems.
+     * The data used to create many ProductStocks.
      */
-    data: StockItemCreateManyInput | StockItemCreateManyInput[]
+    data: ProductStockCreateManyInput | ProductStockCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * StockItem createManyAndReturn
+   * ProductStock createManyAndReturn
    */
-  export type StockItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelectCreateManyAndReturn<ExtArgs> | null
+    select?: ProductStockSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
-     * The data used to create many StockItems.
+     * The data used to create many ProductStocks.
      */
-    data: StockItemCreateManyInput | StockItemCreateManyInput[]
+    data: ProductStockCreateManyInput | ProductStockCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: ProductStockIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * StockItem update
+   * ProductStock update
    */
-  export type StockItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * The data needed to update a StockItem.
+     * The data needed to update a ProductStock.
      */
-    data: XOR<StockItemUpdateInput, StockItemUncheckedUpdateInput>
+    data: XOR<ProductStockUpdateInput, ProductStockUncheckedUpdateInput>
     /**
-     * Choose, which StockItem to update.
+     * Choose, which ProductStock to update.
      */
-    where: StockItemWhereUniqueInput
+    where: ProductStockWhereUniqueInput
   }
 
   /**
-   * StockItem updateMany
+   * ProductStock updateMany
    */
-  export type StockItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update StockItems.
+     * The data used to update ProductStocks.
      */
-    data: XOR<StockItemUpdateManyMutationInput, StockItemUncheckedUpdateManyInput>
+    data: XOR<ProductStockUpdateManyMutationInput, ProductStockUncheckedUpdateManyInput>
     /**
-     * Filter which StockItems to update
+     * Filter which ProductStocks to update
      */
-    where?: StockItemWhereInput
+    where?: ProductStockWhereInput
     /**
-     * Limit how many StockItems to update.
+     * Limit how many ProductStocks to update.
      */
     limit?: number
   }
 
   /**
-   * StockItem updateManyAndReturn
+   * ProductStock updateManyAndReturn
    */
-  export type StockItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: ProductStockSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
-     * The data used to update StockItems.
+     * The data used to update ProductStocks.
      */
-    data: XOR<StockItemUpdateManyMutationInput, StockItemUncheckedUpdateManyInput>
+    data: XOR<ProductStockUpdateManyMutationInput, ProductStockUncheckedUpdateManyInput>
     /**
-     * Filter which StockItems to update
+     * Filter which ProductStocks to update
      */
-    where?: StockItemWhereInput
+    where?: ProductStockWhereInput
     /**
-     * Limit how many StockItems to update.
+     * Limit how many ProductStocks to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: ProductStockIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * StockItem upsert
+   * ProductStock upsert
    */
-  export type StockItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * The filter to search for the StockItem to update in case it exists.
+     * The filter to search for the ProductStock to update in case it exists.
      */
-    where: StockItemWhereUniqueInput
+    where: ProductStockWhereUniqueInput
     /**
-     * In case the StockItem found by the `where` argument doesn't exist, create a new StockItem with this data.
+     * In case the ProductStock found by the `where` argument doesn't exist, create a new ProductStock with this data.
      */
-    create: XOR<StockItemCreateInput, StockItemUncheckedCreateInput>
+    create: XOR<ProductStockCreateInput, ProductStockUncheckedCreateInput>
     /**
-     * In case the StockItem was found with the provided `where` argument, update it with this data.
+     * In case the ProductStock was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<StockItemUpdateInput, StockItemUncheckedUpdateInput>
+    update: XOR<ProductStockUpdateInput, ProductStockUncheckedUpdateInput>
   }
 
   /**
-   * StockItem delete
+   * ProductStock delete
    */
-  export type StockItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the ProductStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: ProductStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the ProductStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: ProductStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: ProductStockInclude<ExtArgs> | null
     /**
-     * Filter which StockItem to delete.
+     * Filter which ProductStock to delete.
      */
-    where: StockItemWhereUniqueInput
+    where: ProductStockWhereUniqueInput
   }
 
   /**
-   * StockItem deleteMany
+   * ProductStock deleteMany
    */
-  export type StockItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which StockItems to delete
+     * Filter which ProductStocks to delete
      */
-    where?: StockItemWhereInput
+    where?: ProductStockWhereInput
     /**
-     * Limit how many StockItems to delete.
+     * Limit how many ProductStocks to delete.
      */
     limit?: number
   }
 
   /**
-   * StockItem.product
+   * ProductStock.product
    */
-  export type StockItem$productArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStock$productArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Product
      */
@@ -16004,33 +16130,9 @@ export namespace Prisma {
   }
 
   /**
-   * StockItem.materialFor
+   * ProductStock.stockMovements
    */
-  export type StockItem$materialForArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ProductMaterial
-     */
-    select?: ProductMaterialSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ProductMaterial
-     */
-    omit?: ProductMaterialOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProductMaterialInclude<ExtArgs> | null
-    where?: ProductMaterialWhereInput
-    orderBy?: ProductMaterialOrderByWithRelationInput | ProductMaterialOrderByWithRelationInput[]
-    cursor?: ProductMaterialWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProductMaterialScalarFieldEnum | ProductMaterialScalarFieldEnum[]
-  }
-
-  /**
-   * StockItem.stockMovements
-   */
-  export type StockItem$stockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStock$stockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the StockMovement
      */
@@ -16052,9 +16154,1262 @@ export namespace Prisma {
   }
 
   /**
-   * StockItem.stockRequestLines
+   * ProductStock without action
    */
-  export type StockItem$stockRequestLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProductStockDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductStock
+     */
+    select?: ProductStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductStock
+     */
+    omit?: ProductStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductStockInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MaterialStock
+   */
+
+  export type AggregateMaterialStock = {
+    _count: MaterialStockCountAggregateOutputType | null
+    _avg: MaterialStockAvgAggregateOutputType | null
+    _sum: MaterialStockSumAggregateOutputType | null
+    _min: MaterialStockMinAggregateOutputType | null
+    _max: MaterialStockMaxAggregateOutputType | null
+  }
+
+  export type MaterialStockAvgAggregateOutputType = {
+    availableQty: number | null
+    reservedQty: number | null
+    reorderThreshold: number | null
+  }
+
+  export type MaterialStockSumAggregateOutputType = {
+    availableQty: number | null
+    reservedQty: number | null
+    reorderThreshold: number | null
+  }
+
+  export type MaterialStockMinAggregateOutputType = {
+    id: string | null
+    warehouseId: string | null
+    sku: string | null
+    itemName: string | null
+    description: string | null
+    unitOfMeasure: string | null
+    availableQty: number | null
+    reservedQty: number | null
+    reorderThreshold: number | null
+    state: $Enums.StockState | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MaterialStockMaxAggregateOutputType = {
+    id: string | null
+    warehouseId: string | null
+    sku: string | null
+    itemName: string | null
+    description: string | null
+    unitOfMeasure: string | null
+    availableQty: number | null
+    reservedQty: number | null
+    reorderThreshold: number | null
+    state: $Enums.StockState | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MaterialStockCountAggregateOutputType = {
+    id: number
+    warehouseId: number
+    sku: number
+    itemName: number
+    description: number
+    unitOfMeasure: number
+    availableQty: number
+    reservedQty: number
+    reorderThreshold: number
+    state: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MaterialStockAvgAggregateInputType = {
+    availableQty?: true
+    reservedQty?: true
+    reorderThreshold?: true
+  }
+
+  export type MaterialStockSumAggregateInputType = {
+    availableQty?: true
+    reservedQty?: true
+    reorderThreshold?: true
+  }
+
+  export type MaterialStockMinAggregateInputType = {
+    id?: true
+    warehouseId?: true
+    sku?: true
+    itemName?: true
+    description?: true
+    unitOfMeasure?: true
+    availableQty?: true
+    reservedQty?: true
+    reorderThreshold?: true
+    state?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MaterialStockMaxAggregateInputType = {
+    id?: true
+    warehouseId?: true
+    sku?: true
+    itemName?: true
+    description?: true
+    unitOfMeasure?: true
+    availableQty?: true
+    reservedQty?: true
+    reorderThreshold?: true
+    state?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MaterialStockCountAggregateInputType = {
+    id?: true
+    warehouseId?: true
+    sku?: true
+    itemName?: true
+    description?: true
+    unitOfMeasure?: true
+    availableQty?: true
+    reservedQty?: true
+    reorderThreshold?: true
+    state?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MaterialStockAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MaterialStock to aggregate.
+     */
+    where?: MaterialStockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialStocks to fetch.
+     */
+    orderBy?: MaterialStockOrderByWithRelationInput | MaterialStockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MaterialStockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialStocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialStocks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MaterialStocks
+    **/
+    _count?: true | MaterialStockCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MaterialStockAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MaterialStockSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MaterialStockMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MaterialStockMaxAggregateInputType
+  }
+
+  export type GetMaterialStockAggregateType<T extends MaterialStockAggregateArgs> = {
+        [P in keyof T & keyof AggregateMaterialStock]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMaterialStock[P]>
+      : GetScalarType<T[P], AggregateMaterialStock[P]>
+  }
+
+
+
+
+  export type MaterialStockGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MaterialStockWhereInput
+    orderBy?: MaterialStockOrderByWithAggregationInput | MaterialStockOrderByWithAggregationInput[]
+    by: MaterialStockScalarFieldEnum[] | MaterialStockScalarFieldEnum
+    having?: MaterialStockScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MaterialStockCountAggregateInputType | true
+    _avg?: MaterialStockAvgAggregateInputType
+    _sum?: MaterialStockSumAggregateInputType
+    _min?: MaterialStockMinAggregateInputType
+    _max?: MaterialStockMaxAggregateInputType
+  }
+
+  export type MaterialStockGroupByOutputType = {
+    id: string
+    warehouseId: string
+    sku: string
+    itemName: string
+    description: string | null
+    unitOfMeasure: string
+    availableQty: number
+    reservedQty: number
+    reorderThreshold: number
+    state: $Enums.StockState
+    createdAt: Date
+    updatedAt: Date
+    _count: MaterialStockCountAggregateOutputType | null
+    _avg: MaterialStockAvgAggregateOutputType | null
+    _sum: MaterialStockSumAggregateOutputType | null
+    _min: MaterialStockMinAggregateOutputType | null
+    _max: MaterialStockMaxAggregateOutputType | null
+  }
+
+  type GetMaterialStockGroupByPayload<T extends MaterialStockGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MaterialStockGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MaterialStockGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MaterialStockGroupByOutputType[P]>
+            : GetScalarType<T[P], MaterialStockGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MaterialStockSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    warehouseId?: boolean
+    sku?: boolean
+    itemName?: boolean
+    description?: boolean
+    unitOfMeasure?: boolean
+    availableQty?: boolean
+    reservedQty?: boolean
+    reorderThreshold?: boolean
+    state?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    materialFor?: boolean | MaterialStock$materialForArgs<ExtArgs>
+    stockMovements?: boolean | MaterialStock$stockMovementsArgs<ExtArgs>
+    stockRequestLines?: boolean | MaterialStock$stockRequestLinesArgs<ExtArgs>
+    _count?: boolean | MaterialStockCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["materialStock"]>
+
+  export type MaterialStockSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    warehouseId?: boolean
+    sku?: boolean
+    itemName?: boolean
+    description?: boolean
+    unitOfMeasure?: boolean
+    availableQty?: boolean
+    reservedQty?: boolean
+    reorderThreshold?: boolean
+    state?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["materialStock"]>
+
+  export type MaterialStockSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    warehouseId?: boolean
+    sku?: boolean
+    itemName?: boolean
+    description?: boolean
+    unitOfMeasure?: boolean
+    availableQty?: boolean
+    reservedQty?: boolean
+    reorderThreshold?: boolean
+    state?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["materialStock"]>
+
+  export type MaterialStockSelectScalar = {
+    id?: boolean
+    warehouseId?: boolean
+    sku?: boolean
+    itemName?: boolean
+    description?: boolean
+    unitOfMeasure?: boolean
+    availableQty?: boolean
+    reservedQty?: boolean
+    reorderThreshold?: boolean
+    state?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MaterialStockOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "warehouseId" | "sku" | "itemName" | "description" | "unitOfMeasure" | "availableQty" | "reservedQty" | "reorderThreshold" | "state" | "createdAt" | "updatedAt", ExtArgs["result"]["materialStock"]>
+  export type MaterialStockInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    materialFor?: boolean | MaterialStock$materialForArgs<ExtArgs>
+    stockMovements?: boolean | MaterialStock$stockMovementsArgs<ExtArgs>
+    stockRequestLines?: boolean | MaterialStock$stockRequestLinesArgs<ExtArgs>
+    _count?: boolean | MaterialStockCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type MaterialStockIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+  }
+  export type MaterialStockIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    warehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+  }
+
+  export type $MaterialStockPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MaterialStock"
+    objects: {
+      warehouse: Prisma.$WarehousePayload<ExtArgs>
+      materialFor: Prisma.$ProductMaterialPayload<ExtArgs>[]
+      stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
+      stockRequestLines: Prisma.$StockRequestLinePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      warehouseId: string
+      sku: string
+      itemName: string
+      description: string | null
+      unitOfMeasure: string
+      availableQty: number
+      reservedQty: number
+      reorderThreshold: number
+      state: $Enums.StockState
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["materialStock"]>
+    composites: {}
+  }
+
+  type MaterialStockGetPayload<S extends boolean | null | undefined | MaterialStockDefaultArgs> = $Result.GetResult<Prisma.$MaterialStockPayload, S>
+
+  type MaterialStockCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MaterialStockFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MaterialStockCountAggregateInputType | true
+    }
+
+  export interface MaterialStockDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MaterialStock'], meta: { name: 'MaterialStock' } }
+    /**
+     * Find zero or one MaterialStock that matches the filter.
+     * @param {MaterialStockFindUniqueArgs} args - Arguments to find a MaterialStock
+     * @example
+     * // Get one MaterialStock
+     * const materialStock = await prisma.materialStock.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MaterialStockFindUniqueArgs>(args: SelectSubset<T, MaterialStockFindUniqueArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MaterialStock that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MaterialStockFindUniqueOrThrowArgs} args - Arguments to find a MaterialStock
+     * @example
+     * // Get one MaterialStock
+     * const materialStock = await prisma.materialStock.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MaterialStockFindUniqueOrThrowArgs>(args: SelectSubset<T, MaterialStockFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MaterialStock that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialStockFindFirstArgs} args - Arguments to find a MaterialStock
+     * @example
+     * // Get one MaterialStock
+     * const materialStock = await prisma.materialStock.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MaterialStockFindFirstArgs>(args?: SelectSubset<T, MaterialStockFindFirstArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MaterialStock that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialStockFindFirstOrThrowArgs} args - Arguments to find a MaterialStock
+     * @example
+     * // Get one MaterialStock
+     * const materialStock = await prisma.materialStock.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MaterialStockFindFirstOrThrowArgs>(args?: SelectSubset<T, MaterialStockFindFirstOrThrowArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MaterialStocks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialStockFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MaterialStocks
+     * const materialStocks = await prisma.materialStock.findMany()
+     * 
+     * // Get first 10 MaterialStocks
+     * const materialStocks = await prisma.materialStock.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const materialStockWithIdOnly = await prisma.materialStock.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MaterialStockFindManyArgs>(args?: SelectSubset<T, MaterialStockFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MaterialStock.
+     * @param {MaterialStockCreateArgs} args - Arguments to create a MaterialStock.
+     * @example
+     * // Create one MaterialStock
+     * const MaterialStock = await prisma.materialStock.create({
+     *   data: {
+     *     // ... data to create a MaterialStock
+     *   }
+     * })
+     * 
+     */
+    create<T extends MaterialStockCreateArgs>(args: SelectSubset<T, MaterialStockCreateArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MaterialStocks.
+     * @param {MaterialStockCreateManyArgs} args - Arguments to create many MaterialStocks.
+     * @example
+     * // Create many MaterialStocks
+     * const materialStock = await prisma.materialStock.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MaterialStockCreateManyArgs>(args?: SelectSubset<T, MaterialStockCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MaterialStocks and returns the data saved in the database.
+     * @param {MaterialStockCreateManyAndReturnArgs} args - Arguments to create many MaterialStocks.
+     * @example
+     * // Create many MaterialStocks
+     * const materialStock = await prisma.materialStock.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MaterialStocks and only return the `id`
+     * const materialStockWithIdOnly = await prisma.materialStock.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MaterialStockCreateManyAndReturnArgs>(args?: SelectSubset<T, MaterialStockCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MaterialStock.
+     * @param {MaterialStockDeleteArgs} args - Arguments to delete one MaterialStock.
+     * @example
+     * // Delete one MaterialStock
+     * const MaterialStock = await prisma.materialStock.delete({
+     *   where: {
+     *     // ... filter to delete one MaterialStock
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MaterialStockDeleteArgs>(args: SelectSubset<T, MaterialStockDeleteArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MaterialStock.
+     * @param {MaterialStockUpdateArgs} args - Arguments to update one MaterialStock.
+     * @example
+     * // Update one MaterialStock
+     * const materialStock = await prisma.materialStock.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MaterialStockUpdateArgs>(args: SelectSubset<T, MaterialStockUpdateArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MaterialStocks.
+     * @param {MaterialStockDeleteManyArgs} args - Arguments to filter MaterialStocks to delete.
+     * @example
+     * // Delete a few MaterialStocks
+     * const { count } = await prisma.materialStock.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MaterialStockDeleteManyArgs>(args?: SelectSubset<T, MaterialStockDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MaterialStocks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialStockUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MaterialStocks
+     * const materialStock = await prisma.materialStock.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MaterialStockUpdateManyArgs>(args: SelectSubset<T, MaterialStockUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MaterialStocks and returns the data updated in the database.
+     * @param {MaterialStockUpdateManyAndReturnArgs} args - Arguments to update many MaterialStocks.
+     * @example
+     * // Update many MaterialStocks
+     * const materialStock = await prisma.materialStock.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MaterialStocks and only return the `id`
+     * const materialStockWithIdOnly = await prisma.materialStock.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MaterialStockUpdateManyAndReturnArgs>(args: SelectSubset<T, MaterialStockUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MaterialStock.
+     * @param {MaterialStockUpsertArgs} args - Arguments to update or create a MaterialStock.
+     * @example
+     * // Update or create a MaterialStock
+     * const materialStock = await prisma.materialStock.upsert({
+     *   create: {
+     *     // ... data to create a MaterialStock
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MaterialStock we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MaterialStockUpsertArgs>(args: SelectSubset<T, MaterialStockUpsertArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MaterialStocks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialStockCountArgs} args - Arguments to filter MaterialStocks to count.
+     * @example
+     * // Count the number of MaterialStocks
+     * const count = await prisma.materialStock.count({
+     *   where: {
+     *     // ... the filter for the MaterialStocks we want to count
+     *   }
+     * })
+    **/
+    count<T extends MaterialStockCountArgs>(
+      args?: Subset<T, MaterialStockCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MaterialStockCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MaterialStock.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialStockAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MaterialStockAggregateArgs>(args: Subset<T, MaterialStockAggregateArgs>): Prisma.PrismaPromise<GetMaterialStockAggregateType<T>>
+
+    /**
+     * Group by MaterialStock.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialStockGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MaterialStockGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MaterialStockGroupByArgs['orderBy'] }
+        : { orderBy?: MaterialStockGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MaterialStockGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMaterialStockGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MaterialStock model
+   */
+  readonly fields: MaterialStockFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MaterialStock.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MaterialStockClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    warehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    materialFor<T extends MaterialStock$materialForArgs<ExtArgs> = {}>(args?: Subset<T, MaterialStock$materialForArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    stockMovements<T extends MaterialStock$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, MaterialStock$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    stockRequestLines<T extends MaterialStock$stockRequestLinesArgs<ExtArgs> = {}>(args?: Subset<T, MaterialStock$stockRequestLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockRequestLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MaterialStock model
+   */
+  interface MaterialStockFieldRefs {
+    readonly id: FieldRef<"MaterialStock", 'String'>
+    readonly warehouseId: FieldRef<"MaterialStock", 'String'>
+    readonly sku: FieldRef<"MaterialStock", 'String'>
+    readonly itemName: FieldRef<"MaterialStock", 'String'>
+    readonly description: FieldRef<"MaterialStock", 'String'>
+    readonly unitOfMeasure: FieldRef<"MaterialStock", 'String'>
+    readonly availableQty: FieldRef<"MaterialStock", 'Int'>
+    readonly reservedQty: FieldRef<"MaterialStock", 'Int'>
+    readonly reorderThreshold: FieldRef<"MaterialStock", 'Int'>
+    readonly state: FieldRef<"MaterialStock", 'StockState'>
+    readonly createdAt: FieldRef<"MaterialStock", 'DateTime'>
+    readonly updatedAt: FieldRef<"MaterialStock", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MaterialStock findUnique
+   */
+  export type MaterialStockFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialStock to fetch.
+     */
+    where: MaterialStockWhereUniqueInput
+  }
+
+  /**
+   * MaterialStock findUniqueOrThrow
+   */
+  export type MaterialStockFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialStock to fetch.
+     */
+    where: MaterialStockWhereUniqueInput
+  }
+
+  /**
+   * MaterialStock findFirst
+   */
+  export type MaterialStockFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialStock to fetch.
+     */
+    where?: MaterialStockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialStocks to fetch.
+     */
+    orderBy?: MaterialStockOrderByWithRelationInput | MaterialStockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MaterialStocks.
+     */
+    cursor?: MaterialStockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialStocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialStocks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MaterialStocks.
+     */
+    distinct?: MaterialStockScalarFieldEnum | MaterialStockScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialStock findFirstOrThrow
+   */
+  export type MaterialStockFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialStock to fetch.
+     */
+    where?: MaterialStockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialStocks to fetch.
+     */
+    orderBy?: MaterialStockOrderByWithRelationInput | MaterialStockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MaterialStocks.
+     */
+    cursor?: MaterialStockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialStocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialStocks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MaterialStocks.
+     */
+    distinct?: MaterialStockScalarFieldEnum | MaterialStockScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialStock findMany
+   */
+  export type MaterialStockFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialStocks to fetch.
+     */
+    where?: MaterialStockWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialStocks to fetch.
+     */
+    orderBy?: MaterialStockOrderByWithRelationInput | MaterialStockOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MaterialStocks.
+     */
+    cursor?: MaterialStockWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialStocks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialStocks.
+     */
+    skip?: number
+    distinct?: MaterialStockScalarFieldEnum | MaterialStockScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialStock create
+   */
+  export type MaterialStockCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MaterialStock.
+     */
+    data: XOR<MaterialStockCreateInput, MaterialStockUncheckedCreateInput>
+  }
+
+  /**
+   * MaterialStock createMany
+   */
+  export type MaterialStockCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MaterialStocks.
+     */
+    data: MaterialStockCreateManyInput | MaterialStockCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MaterialStock createManyAndReturn
+   */
+  export type MaterialStockCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * The data used to create many MaterialStocks.
+     */
+    data: MaterialStockCreateManyInput | MaterialStockCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MaterialStock update
+   */
+  export type MaterialStockUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MaterialStock.
+     */
+    data: XOR<MaterialStockUpdateInput, MaterialStockUncheckedUpdateInput>
+    /**
+     * Choose, which MaterialStock to update.
+     */
+    where: MaterialStockWhereUniqueInput
+  }
+
+  /**
+   * MaterialStock updateMany
+   */
+  export type MaterialStockUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MaterialStocks.
+     */
+    data: XOR<MaterialStockUpdateManyMutationInput, MaterialStockUncheckedUpdateManyInput>
+    /**
+     * Filter which MaterialStocks to update
+     */
+    where?: MaterialStockWhereInput
+    /**
+     * Limit how many MaterialStocks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MaterialStock updateManyAndReturn
+   */
+  export type MaterialStockUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * The data used to update MaterialStocks.
+     */
+    data: XOR<MaterialStockUpdateManyMutationInput, MaterialStockUncheckedUpdateManyInput>
+    /**
+     * Filter which MaterialStocks to update
+     */
+    where?: MaterialStockWhereInput
+    /**
+     * Limit how many MaterialStocks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MaterialStock upsert
+   */
+  export type MaterialStockUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MaterialStock to update in case it exists.
+     */
+    where: MaterialStockWhereUniqueInput
+    /**
+     * In case the MaterialStock found by the `where` argument doesn't exist, create a new MaterialStock with this data.
+     */
+    create: XOR<MaterialStockCreateInput, MaterialStockUncheckedCreateInput>
+    /**
+     * In case the MaterialStock was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MaterialStockUpdateInput, MaterialStockUncheckedUpdateInput>
+  }
+
+  /**
+   * MaterialStock delete
+   */
+  export type MaterialStockDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    /**
+     * Filter which MaterialStock to delete.
+     */
+    where: MaterialStockWhereUniqueInput
+  }
+
+  /**
+   * MaterialStock deleteMany
+   */
+  export type MaterialStockDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MaterialStocks to delete
+     */
+    where?: MaterialStockWhereInput
+    /**
+     * Limit how many MaterialStocks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MaterialStock.materialFor
+   */
+  export type MaterialStock$materialForArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductMaterial
+     */
+    select?: ProductMaterialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductMaterial
+     */
+    omit?: ProductMaterialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductMaterialInclude<ExtArgs> | null
+    where?: ProductMaterialWhereInput
+    orderBy?: ProductMaterialOrderByWithRelationInput | ProductMaterialOrderByWithRelationInput[]
+    cursor?: ProductMaterialWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductMaterialScalarFieldEnum | ProductMaterialScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialStock.stockMovements
+   */
+  export type MaterialStock$stockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    where?: StockMovementWhereInput
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    cursor?: StockMovementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialStock.stockRequestLines
+   */
+  export type MaterialStock$stockRequestLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the StockRequestLine
      */
@@ -16076,21 +17431,21 @@ export namespace Prisma {
   }
 
   /**
-   * StockItem without action
+   * MaterialStock without action
    */
-  export type StockItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MaterialStockDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the StockItem
+     * Select specific fields to fetch from the MaterialStock
      */
-    select?: StockItemSelect<ExtArgs> | null
+    select?: MaterialStockSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the StockItem
+     * Omit specific fields from the MaterialStock
      */
-    omit?: StockItemOmit<ExtArgs> | null
+    omit?: MaterialStockOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: StockItemInclude<ExtArgs> | null
+    include?: MaterialStockInclude<ExtArgs> | null
   }
 
 
@@ -16130,7 +17485,7 @@ export namespace Prisma {
 
   export type ProductMinAggregateOutputType = {
     id: string | null
-    stockItemId: string | null
+    productStockId: string | null
     slug: string | null
     name: string | null
     category: string | null
@@ -16152,7 +17507,7 @@ export namespace Prisma {
 
   export type ProductMaxAggregateOutputType = {
     id: string | null
-    stockItemId: string | null
+    productStockId: string | null
     slug: string | null
     name: string | null
     category: string | null
@@ -16174,7 +17529,7 @@ export namespace Prisma {
 
   export type ProductCountAggregateOutputType = {
     id: number
-    stockItemId: number
+    productStockId: number
     slug: number
     name: number
     category: number
@@ -16221,7 +17576,7 @@ export namespace Prisma {
 
   export type ProductMinAggregateInputType = {
     id?: true
-    stockItemId?: true
+    productStockId?: true
     slug?: true
     name?: true
     category?: true
@@ -16243,7 +17598,7 @@ export namespace Prisma {
 
   export type ProductMaxAggregateInputType = {
     id?: true
-    stockItemId?: true
+    productStockId?: true
     slug?: true
     name?: true
     category?: true
@@ -16265,7 +17620,7 @@ export namespace Prisma {
 
   export type ProductCountAggregateInputType = {
     id?: true
-    stockItemId?: true
+    productStockId?: true
     slug?: true
     name?: true
     category?: true
@@ -16375,7 +17730,7 @@ export namespace Prisma {
 
   export type ProductGroupByOutputType = {
     id: string
-    stockItemId: string
+    productStockId: string
     slug: string
     name: string
     category: string
@@ -16417,7 +17772,7 @@ export namespace Prisma {
 
   export type ProductSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    stockItemId?: boolean
+    productStockId?: boolean
     slug?: boolean
     name?: boolean
     category?: boolean
@@ -16436,7 +17791,7 @@ export namespace Prisma {
     isPublished?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    productStock?: boolean | ProductStockDefaultArgs<ExtArgs>
     materials?: boolean | Product$materialsArgs<ExtArgs>
     inquiries?: boolean | Product$inquiriesArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -16444,7 +17799,7 @@ export namespace Prisma {
 
   export type ProductSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    stockItemId?: boolean
+    productStockId?: boolean
     slug?: boolean
     name?: boolean
     category?: boolean
@@ -16463,12 +17818,12 @@ export namespace Prisma {
     isPublished?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    productStock?: boolean | ProductStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    stockItemId?: boolean
+    productStockId?: boolean
     slug?: boolean
     name?: boolean
     category?: boolean
@@ -16487,12 +17842,12 @@ export namespace Prisma {
     isPublished?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    productStock?: boolean | ProductStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectScalar = {
     id?: boolean
-    stockItemId?: boolean
+    productStockId?: boolean
     slug?: boolean
     name?: boolean
     category?: boolean
@@ -16513,30 +17868,30 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "stockItemId" | "slug" | "name" | "category" | "material" | "price" | "originalPrice" | "badge" | "images" | "rating" | "reviewCount" | "widthCm" | "depthCm" | "heightCm" | "weightKg" | "description" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productStockId" | "slug" | "name" | "category" | "material" | "price" | "originalPrice" | "badge" | "images" | "rating" | "reviewCount" | "widthCm" | "depthCm" | "heightCm" | "weightKg" | "description" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    productStock?: boolean | ProductStockDefaultArgs<ExtArgs>
     materials?: boolean | Product$materialsArgs<ExtArgs>
     inquiries?: boolean | Product$inquiriesArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    productStock?: boolean | ProductStockDefaultArgs<ExtArgs>
   }
   export type ProductIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    productStock?: boolean | ProductStockDefaultArgs<ExtArgs>
   }
 
   export type $ProductPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Product"
     objects: {
-      stockItem: Prisma.$StockItemPayload<ExtArgs>
+      productStock: Prisma.$ProductStockPayload<ExtArgs>
       materials: Prisma.$ProductMaterialPayload<ExtArgs>[]
       inquiries: Prisma.$CustomerInquiryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      stockItemId: string
+      productStockId: string
       slug: string
       name: string
       category: string
@@ -16949,7 +18304,7 @@ export namespace Prisma {
    */
   export interface Prisma__ProductClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    stockItem<T extends StockItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockItemDefaultArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    productStock<T extends ProductStockDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductStockDefaultArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     materials<T extends Product$materialsArgs<ExtArgs> = {}>(args?: Subset<T, Product$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inquiries<T extends Product$inquiriesArgs<ExtArgs> = {}>(args?: Subset<T, Product$inquiriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -16982,7 +18337,7 @@ export namespace Prisma {
    */
   interface ProductFieldRefs {
     readonly id: FieldRef<"Product", 'String'>
-    readonly stockItemId: FieldRef<"Product", 'String'>
+    readonly productStockId: FieldRef<"Product", 'String'>
     readonly slug: FieldRef<"Product", 'String'>
     readonly name: FieldRef<"Product", 'String'>
     readonly category: FieldRef<"Product", 'String'>
@@ -21971,7 +23326,7 @@ export namespace Prisma {
   export type ProductMaterialMinAggregateOutputType = {
     id: string | null
     productId: string | null
-    stockItemId: string | null
+    materialStockId: string | null
     quantityRequired: Decimal | null
     quantityDisplay: string | null
     dimension: string | null
@@ -21982,7 +23337,7 @@ export namespace Prisma {
   export type ProductMaterialMaxAggregateOutputType = {
     id: string | null
     productId: string | null
-    stockItemId: string | null
+    materialStockId: string | null
     quantityRequired: Decimal | null
     quantityDisplay: string | null
     dimension: string | null
@@ -21993,7 +23348,7 @@ export namespace Prisma {
   export type ProductMaterialCountAggregateOutputType = {
     id: number
     productId: number
-    stockItemId: number
+    materialStockId: number
     quantityRequired: number
     quantityDisplay: number
     dimension: number
@@ -22014,7 +23369,7 @@ export namespace Prisma {
   export type ProductMaterialMinAggregateInputType = {
     id?: true
     productId?: true
-    stockItemId?: true
+    materialStockId?: true
     quantityRequired?: true
     quantityDisplay?: true
     dimension?: true
@@ -22025,7 +23380,7 @@ export namespace Prisma {
   export type ProductMaterialMaxAggregateInputType = {
     id?: true
     productId?: true
-    stockItemId?: true
+    materialStockId?: true
     quantityRequired?: true
     quantityDisplay?: true
     dimension?: true
@@ -22036,7 +23391,7 @@ export namespace Prisma {
   export type ProductMaterialCountAggregateInputType = {
     id?: true
     productId?: true
-    stockItemId?: true
+    materialStockId?: true
     quantityRequired?: true
     quantityDisplay?: true
     dimension?: true
@@ -22134,7 +23489,7 @@ export namespace Prisma {
   export type ProductMaterialGroupByOutputType = {
     id: string
     productId: string
-    stockItemId: string
+    materialStockId: string
     quantityRequired: Decimal | null
     quantityDisplay: string | null
     dimension: string | null
@@ -22164,46 +23519,46 @@ export namespace Prisma {
   export type ProductMaterialSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequired?: boolean
     quantityDisplay?: boolean
     dimension?: boolean
     notes?: boolean
     createdAt?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productMaterial"]>
 
   export type ProductMaterialSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequired?: boolean
     quantityDisplay?: boolean
     dimension?: boolean
     notes?: boolean
     createdAt?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productMaterial"]>
 
   export type ProductMaterialSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     productId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequired?: boolean
     quantityDisplay?: boolean
     dimension?: boolean
     notes?: boolean
     createdAt?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productMaterial"]>
 
   export type ProductMaterialSelectScalar = {
     id?: boolean
     productId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequired?: boolean
     quantityDisplay?: boolean
     dimension?: boolean
@@ -22211,30 +23566,30 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type ProductMaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "stockItemId" | "quantityRequired" | "quantityDisplay" | "dimension" | "notes" | "createdAt", ExtArgs["result"]["productMaterial"]>
+  export type ProductMaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "materialStockId" | "quantityRequired" | "quantityDisplay" | "dimension" | "notes" | "createdAt", ExtArgs["result"]["productMaterial"]>
   export type ProductMaterialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }
   export type ProductMaterialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }
   export type ProductMaterialIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }
 
   export type $ProductMaterialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ProductMaterial"
     objects: {
       product: Prisma.$ProductPayload<ExtArgs>
-      stockItem: Prisma.$StockItemPayload<ExtArgs>
+      materialStock: Prisma.$MaterialStockPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       productId: string
-      stockItemId: string
+      materialStockId: string
       quantityRequired: Prisma.Decimal | null
       quantityDisplay: string | null
       dimension: string | null
@@ -22635,7 +23990,7 @@ export namespace Prisma {
   export interface Prisma__ProductMaterialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    stockItem<T extends StockItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockItemDefaultArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    materialStock<T extends MaterialStockDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MaterialStockDefaultArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -22667,7 +24022,7 @@ export namespace Prisma {
   interface ProductMaterialFieldRefs {
     readonly id: FieldRef<"ProductMaterial", 'String'>
     readonly productId: FieldRef<"ProductMaterial", 'String'>
-    readonly stockItemId: FieldRef<"ProductMaterial", 'String'>
+    readonly materialStockId: FieldRef<"ProductMaterial", 'String'>
     readonly quantityRequired: FieldRef<"ProductMaterial", 'Decimal'>
     readonly quantityDisplay: FieldRef<"ProductMaterial", 'String'>
     readonly dimension: FieldRef<"ProductMaterial", 'String'>
@@ -23109,7 +24464,8 @@ export namespace Prisma {
 
   export type StockMovementMinAggregateOutputType = {
     id: string | null
-    stockItemId: string | null
+    materialStockId: string | null
+    productStockId: string | null
     type: $Enums.StockMovementType | null
     quantity: number | null
     requesterName: string | null
@@ -23120,7 +24476,8 @@ export namespace Prisma {
 
   export type StockMovementMaxAggregateOutputType = {
     id: string | null
-    stockItemId: string | null
+    materialStockId: string | null
+    productStockId: string | null
     type: $Enums.StockMovementType | null
     quantity: number | null
     requesterName: string | null
@@ -23131,7 +24488,8 @@ export namespace Prisma {
 
   export type StockMovementCountAggregateOutputType = {
     id: number
-    stockItemId: number
+    materialStockId: number
+    productStockId: number
     type: number
     quantity: number
     requesterName: number
@@ -23152,7 +24510,8 @@ export namespace Prisma {
 
   export type StockMovementMinAggregateInputType = {
     id?: true
-    stockItemId?: true
+    materialStockId?: true
+    productStockId?: true
     type?: true
     quantity?: true
     requesterName?: true
@@ -23163,7 +24522,8 @@ export namespace Prisma {
 
   export type StockMovementMaxAggregateInputType = {
     id?: true
-    stockItemId?: true
+    materialStockId?: true
+    productStockId?: true
     type?: true
     quantity?: true
     requesterName?: true
@@ -23174,7 +24534,8 @@ export namespace Prisma {
 
   export type StockMovementCountAggregateInputType = {
     id?: true
-    stockItemId?: true
+    materialStockId?: true
+    productStockId?: true
     type?: true
     quantity?: true
     requesterName?: true
@@ -23272,7 +24633,8 @@ export namespace Prisma {
 
   export type StockMovementGroupByOutputType = {
     id: string
-    stockItemId: string
+    materialStockId: string | null
+    productStockId: string | null
     type: $Enums.StockMovementType
     quantity: number
     requesterName: string | null
@@ -23302,43 +24664,50 @@ export namespace Prisma {
 
   export type StockMovementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
+    productStockId?: boolean
     type?: boolean
     quantity?: boolean
     requesterName?: boolean
     projectPurpose?: boolean
     referenceNumber?: boolean
     createdAt?: boolean
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | StockMovement$materialStockArgs<ExtArgs>
+    productStock?: boolean | StockMovement$productStockArgs<ExtArgs>
   }, ExtArgs["result"]["stockMovement"]>
 
   export type StockMovementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
+    productStockId?: boolean
     type?: boolean
     quantity?: boolean
     requesterName?: boolean
     projectPurpose?: boolean
     referenceNumber?: boolean
     createdAt?: boolean
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | StockMovement$materialStockArgs<ExtArgs>
+    productStock?: boolean | StockMovement$productStockArgs<ExtArgs>
   }, ExtArgs["result"]["stockMovement"]>
 
   export type StockMovementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
+    productStockId?: boolean
     type?: boolean
     quantity?: boolean
     requesterName?: boolean
     projectPurpose?: boolean
     referenceNumber?: boolean
     createdAt?: boolean
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | StockMovement$materialStockArgs<ExtArgs>
+    productStock?: boolean | StockMovement$productStockArgs<ExtArgs>
   }, ExtArgs["result"]["stockMovement"]>
 
   export type StockMovementSelectScalar = {
     id?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
+    productStockId?: boolean
     type?: boolean
     quantity?: boolean
     requesterName?: boolean
@@ -23347,25 +24716,30 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type StockMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "stockItemId" | "type" | "quantity" | "requesterName" | "projectPurpose" | "referenceNumber" | "createdAt", ExtArgs["result"]["stockMovement"]>
+  export type StockMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "materialStockId" | "productStockId" | "type" | "quantity" | "requesterName" | "projectPurpose" | "referenceNumber" | "createdAt", ExtArgs["result"]["stockMovement"]>
   export type StockMovementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | StockMovement$materialStockArgs<ExtArgs>
+    productStock?: boolean | StockMovement$productStockArgs<ExtArgs>
   }
   export type StockMovementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | StockMovement$materialStockArgs<ExtArgs>
+    productStock?: boolean | StockMovement$productStockArgs<ExtArgs>
   }
   export type StockMovementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | StockMovement$materialStockArgs<ExtArgs>
+    productStock?: boolean | StockMovement$productStockArgs<ExtArgs>
   }
 
   export type $StockMovementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "StockMovement"
     objects: {
-      stockItem: Prisma.$StockItemPayload<ExtArgs>
+      materialStock: Prisma.$MaterialStockPayload<ExtArgs> | null
+      productStock: Prisma.$ProductStockPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      stockItemId: string
+      materialStockId: string | null
+      productStockId: string | null
       type: $Enums.StockMovementType
       quantity: number
       requesterName: string | null
@@ -23766,7 +25140,8 @@ export namespace Prisma {
    */
   export interface Prisma__StockMovementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    stockItem<T extends StockItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockItemDefaultArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    materialStock<T extends StockMovement$materialStockArgs<ExtArgs> = {}>(args?: Subset<T, StockMovement$materialStockArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    productStock<T extends StockMovement$productStockArgs<ExtArgs> = {}>(args?: Subset<T, StockMovement$productStockArgs<ExtArgs>>): Prisma__ProductStockClient<$Result.GetResult<Prisma.$ProductStockPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23797,7 +25172,8 @@ export namespace Prisma {
    */
   interface StockMovementFieldRefs {
     readonly id: FieldRef<"StockMovement", 'String'>
-    readonly stockItemId: FieldRef<"StockMovement", 'String'>
+    readonly materialStockId: FieldRef<"StockMovement", 'String'>
+    readonly productStockId: FieldRef<"StockMovement", 'String'>
     readonly type: FieldRef<"StockMovement", 'StockMovementType'>
     readonly quantity: FieldRef<"StockMovement", 'Int'>
     readonly requesterName: FieldRef<"StockMovement", 'String'>
@@ -24197,6 +25573,44 @@ export namespace Prisma {
      * Limit how many StockMovements to delete.
      */
     limit?: number
+  }
+
+  /**
+   * StockMovement.materialStock
+   */
+  export type StockMovement$materialStockArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialStock
+     */
+    select?: MaterialStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialStock
+     */
+    omit?: MaterialStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialStockInclude<ExtArgs> | null
+    where?: MaterialStockWhereInput
+  }
+
+  /**
+   * StockMovement.productStock
+   */
+  export type StockMovement$productStockArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductStock
+     */
+    select?: ProductStockSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductStock
+     */
+    omit?: ProductStockOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductStockInclude<ExtArgs> | null
+    where?: ProductStockWhereInput
   }
 
   /**
@@ -25431,7 +26845,7 @@ export namespace Prisma {
   export type StockRequestLineMinAggregateOutputType = {
     id: string | null
     stockRequestId: string | null
-    stockItemId: string | null
+    materialStockId: string | null
     quantityRequested: number | null
     quantityApproved: number | null
     availability: $Enums.StockAvailabilityStatus | null
@@ -25440,7 +26854,7 @@ export namespace Prisma {
   export type StockRequestLineMaxAggregateOutputType = {
     id: string | null
     stockRequestId: string | null
-    stockItemId: string | null
+    materialStockId: string | null
     quantityRequested: number | null
     quantityApproved: number | null
     availability: $Enums.StockAvailabilityStatus | null
@@ -25449,7 +26863,7 @@ export namespace Prisma {
   export type StockRequestLineCountAggregateOutputType = {
     id: number
     stockRequestId: number
-    stockItemId: number
+    materialStockId: number
     quantityRequested: number
     quantityApproved: number
     availability: number
@@ -25470,7 +26884,7 @@ export namespace Prisma {
   export type StockRequestLineMinAggregateInputType = {
     id?: true
     stockRequestId?: true
-    stockItemId?: true
+    materialStockId?: true
     quantityRequested?: true
     quantityApproved?: true
     availability?: true
@@ -25479,7 +26893,7 @@ export namespace Prisma {
   export type StockRequestLineMaxAggregateInputType = {
     id?: true
     stockRequestId?: true
-    stockItemId?: true
+    materialStockId?: true
     quantityRequested?: true
     quantityApproved?: true
     availability?: true
@@ -25488,7 +26902,7 @@ export namespace Prisma {
   export type StockRequestLineCountAggregateInputType = {
     id?: true
     stockRequestId?: true
-    stockItemId?: true
+    materialStockId?: true
     quantityRequested?: true
     quantityApproved?: true
     availability?: true
@@ -25584,7 +26998,7 @@ export namespace Prisma {
   export type StockRequestLineGroupByOutputType = {
     id: string
     stockRequestId: string
-    stockItemId: string
+    materialStockId: string
     quantityRequested: number
     quantityApproved: number
     availability: $Enums.StockAvailabilityStatus
@@ -25612,69 +27026,69 @@ export namespace Prisma {
   export type StockRequestLineSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     stockRequestId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequested?: boolean
     quantityApproved?: boolean
     availability?: boolean
     stockRequest?: boolean | StockRequestDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockRequestLine"]>
 
   export type StockRequestLineSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     stockRequestId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequested?: boolean
     quantityApproved?: boolean
     availability?: boolean
     stockRequest?: boolean | StockRequestDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockRequestLine"]>
 
   export type StockRequestLineSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     stockRequestId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequested?: boolean
     quantityApproved?: boolean
     availability?: boolean
     stockRequest?: boolean | StockRequestDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockRequestLine"]>
 
   export type StockRequestLineSelectScalar = {
     id?: boolean
     stockRequestId?: boolean
-    stockItemId?: boolean
+    materialStockId?: boolean
     quantityRequested?: boolean
     quantityApproved?: boolean
     availability?: boolean
   }
 
-  export type StockRequestLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "stockRequestId" | "stockItemId" | "quantityRequested" | "quantityApproved" | "availability", ExtArgs["result"]["stockRequestLine"]>
+  export type StockRequestLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "stockRequestId" | "materialStockId" | "quantityRequested" | "quantityApproved" | "availability", ExtArgs["result"]["stockRequestLine"]>
   export type StockRequestLineInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockRequest?: boolean | StockRequestDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }
   export type StockRequestLineIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockRequest?: boolean | StockRequestDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }
   export type StockRequestLineIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockRequest?: boolean | StockRequestDefaultArgs<ExtArgs>
-    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+    materialStock?: boolean | MaterialStockDefaultArgs<ExtArgs>
   }
 
   export type $StockRequestLinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "StockRequestLine"
     objects: {
       stockRequest: Prisma.$StockRequestPayload<ExtArgs>
-      stockItem: Prisma.$StockItemPayload<ExtArgs>
+      materialStock: Prisma.$MaterialStockPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       stockRequestId: string
-      stockItemId: string
+      materialStockId: string
       quantityRequested: number
       quantityApproved: number
       availability: $Enums.StockAvailabilityStatus
@@ -26073,7 +27487,7 @@ export namespace Prisma {
   export interface Prisma__StockRequestLineClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     stockRequest<T extends StockRequestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockRequestDefaultArgs<ExtArgs>>): Prisma__StockRequestClient<$Result.GetResult<Prisma.$StockRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    stockItem<T extends StockItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockItemDefaultArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    materialStock<T extends MaterialStockDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MaterialStockDefaultArgs<ExtArgs>>): Prisma__MaterialStockClient<$Result.GetResult<Prisma.$MaterialStockPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -26105,7 +27519,7 @@ export namespace Prisma {
   interface StockRequestLineFieldRefs {
     readonly id: FieldRef<"StockRequestLine", 'String'>
     readonly stockRequestId: FieldRef<"StockRequestLine", 'String'>
-    readonly stockItemId: FieldRef<"StockRequestLine", 'String'>
+    readonly materialStockId: FieldRef<"StockRequestLine", 'String'>
     readonly quantityRequested: FieldRef<"StockRequestLine", 'Int'>
     readonly quantityApproved: FieldRef<"StockRequestLine", 'Int'>
     readonly availability: FieldRef<"StockRequestLine", 'StockAvailabilityStatus'>
@@ -37756,12 +39170,11 @@ export namespace Prisma {
   export type WarehouseScalarFieldEnum = (typeof WarehouseScalarFieldEnum)[keyof typeof WarehouseScalarFieldEnum]
 
 
-  export const StockItemScalarFieldEnum: {
+  export const ProductStockScalarFieldEnum: {
     id: 'id',
     warehouseId: 'warehouseId',
     sku: 'sku',
     itemName: 'itemName',
-    itemType: 'itemType',
     description: 'description',
     unitOfMeasure: 'unitOfMeasure',
     availableQty: 'availableQty',
@@ -37772,12 +39185,30 @@ export namespace Prisma {
     updatedAt: 'updatedAt'
   };
 
-  export type StockItemScalarFieldEnum = (typeof StockItemScalarFieldEnum)[keyof typeof StockItemScalarFieldEnum]
+  export type ProductStockScalarFieldEnum = (typeof ProductStockScalarFieldEnum)[keyof typeof ProductStockScalarFieldEnum]
+
+
+  export const MaterialStockScalarFieldEnum: {
+    id: 'id',
+    warehouseId: 'warehouseId',
+    sku: 'sku',
+    itemName: 'itemName',
+    description: 'description',
+    unitOfMeasure: 'unitOfMeasure',
+    availableQty: 'availableQty',
+    reservedQty: 'reservedQty',
+    reorderThreshold: 'reorderThreshold',
+    state: 'state',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MaterialStockScalarFieldEnum = (typeof MaterialStockScalarFieldEnum)[keyof typeof MaterialStockScalarFieldEnum]
 
 
   export const ProductScalarFieldEnum: {
     id: 'id',
-    stockItemId: 'stockItemId',
+    productStockId: 'productStockId',
     slug: 'slug',
     name: 'name',
     category: 'category',
@@ -37859,7 +39290,7 @@ export namespace Prisma {
   export const ProductMaterialScalarFieldEnum: {
     id: 'id',
     productId: 'productId',
-    stockItemId: 'stockItemId',
+    materialStockId: 'materialStockId',
     quantityRequired: 'quantityRequired',
     quantityDisplay: 'quantityDisplay',
     dimension: 'dimension',
@@ -37872,7 +39303,8 @@ export namespace Prisma {
 
   export const StockMovementScalarFieldEnum: {
     id: 'id',
-    stockItemId: 'stockItemId',
+    materialStockId: 'materialStockId',
+    productStockId: 'productStockId',
     type: 'type',
     quantity: 'quantity',
     requesterName: 'requesterName',
@@ -37903,7 +39335,7 @@ export namespace Prisma {
   export const StockRequestLineScalarFieldEnum: {
     id: 'id',
     stockRequestId: 'stockRequestId',
-    stockItemId: 'stockItemId',
+    materialStockId: 'materialStockId',
     quantityRequested: 'quantityRequested',
     quantityApproved: 'quantityApproved',
     availability: 'availability'
@@ -38352,20 +39784,6 @@ export namespace Prisma {
    * Reference to a field of type 'DeliveryStatus[]'
    */
   export type ListEnumDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DeliveryStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'InventoryItemType'
-   */
-  export type EnumInventoryItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InventoryItemType'>
-    
-
-
-  /**
-   * Reference to a field of type 'InventoryItemType[]'
-   */
-  export type ListEnumInventoryItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InventoryItemType[]'>
     
 
 
@@ -39395,7 +40813,8 @@ export namespace Prisma {
     address?: StringFilter<"Warehouse"> | string
     createdAt?: DateTimeFilter<"Warehouse"> | Date | string
     updatedAt?: DateTimeFilter<"Warehouse"> | Date | string
-    stockItems?: StockItemListRelationFilter
+    productStocks?: ProductStockListRelationFilter
+    materialStocks?: MaterialStockListRelationFilter
   }
 
   export type WarehouseOrderByWithRelationInput = {
@@ -39405,7 +40824,8 @@ export namespace Prisma {
     address?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    stockItems?: StockItemOrderByRelationAggregateInput
+    productStocks?: ProductStockOrderByRelationAggregateInput
+    materialStocks?: MaterialStockOrderByRelationAggregateInput
   }
 
   export type WarehouseWhereUniqueInput = Prisma.AtLeast<{
@@ -39418,7 +40838,8 @@ export namespace Prisma {
     address?: StringFilter<"Warehouse"> | string
     createdAt?: DateTimeFilter<"Warehouse"> | Date | string
     updatedAt?: DateTimeFilter<"Warehouse"> | Date | string
-    stockItems?: StockItemListRelationFilter
+    productStocks?: ProductStockListRelationFilter
+    materialStocks?: MaterialStockListRelationFilter
   }, "id" | "code">
 
   export type WarehouseOrderByWithAggregationInput = {
@@ -39445,36 +40866,32 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Warehouse"> | Date | string
   }
 
-  export type StockItemWhereInput = {
-    AND?: StockItemWhereInput | StockItemWhereInput[]
-    OR?: StockItemWhereInput[]
-    NOT?: StockItemWhereInput | StockItemWhereInput[]
-    id?: StringFilter<"StockItem"> | string
-    warehouseId?: StringFilter<"StockItem"> | string
-    sku?: StringFilter<"StockItem"> | string
-    itemName?: StringFilter<"StockItem"> | string
-    itemType?: EnumInventoryItemTypeFilter<"StockItem"> | $Enums.InventoryItemType
-    description?: StringNullableFilter<"StockItem"> | string | null
-    unitOfMeasure?: StringFilter<"StockItem"> | string
-    availableQty?: IntFilter<"StockItem"> | number
-    reservedQty?: IntFilter<"StockItem"> | number
-    reorderThreshold?: IntFilter<"StockItem"> | number
-    state?: EnumStockStateFilter<"StockItem"> | $Enums.StockState
-    createdAt?: DateTimeFilter<"StockItem"> | Date | string
-    updatedAt?: DateTimeFilter<"StockItem"> | Date | string
+  export type ProductStockWhereInput = {
+    AND?: ProductStockWhereInput | ProductStockWhereInput[]
+    OR?: ProductStockWhereInput[]
+    NOT?: ProductStockWhereInput | ProductStockWhereInput[]
+    id?: StringFilter<"ProductStock"> | string
+    warehouseId?: StringFilter<"ProductStock"> | string
+    sku?: StringFilter<"ProductStock"> | string
+    itemName?: StringFilter<"ProductStock"> | string
+    description?: StringNullableFilter<"ProductStock"> | string | null
+    unitOfMeasure?: StringFilter<"ProductStock"> | string
+    availableQty?: IntFilter<"ProductStock"> | number
+    reservedQty?: IntFilter<"ProductStock"> | number
+    reorderThreshold?: IntFilter<"ProductStock"> | number
+    state?: EnumStockStateFilter<"ProductStock"> | $Enums.StockState
+    createdAt?: DateTimeFilter<"ProductStock"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductStock"> | Date | string
     warehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
-    materialFor?: ProductMaterialListRelationFilter
     stockMovements?: StockMovementListRelationFilter
-    stockRequestLines?: StockRequestLineListRelationFilter
   }
 
-  export type StockItemOrderByWithRelationInput = {
+  export type ProductStockOrderByWithRelationInput = {
     id?: SortOrder
     warehouseId?: SortOrder
     sku?: SortOrder
     itemName?: SortOrder
-    itemType?: SortOrder
     description?: SortOrderInput | SortOrder
     unitOfMeasure?: SortOrder
     availableQty?: SortOrder
@@ -39485,41 +40902,35 @@ export namespace Prisma {
     updatedAt?: SortOrder
     warehouse?: WarehouseOrderByWithRelationInput
     product?: ProductOrderByWithRelationInput
-    materialFor?: ProductMaterialOrderByRelationAggregateInput
     stockMovements?: StockMovementOrderByRelationAggregateInput
-    stockRequestLines?: StockRequestLineOrderByRelationAggregateInput
   }
 
-  export type StockItemWhereUniqueInput = Prisma.AtLeast<{
+  export type ProductStockWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     sku?: string
-    AND?: StockItemWhereInput | StockItemWhereInput[]
-    OR?: StockItemWhereInput[]
-    NOT?: StockItemWhereInput | StockItemWhereInput[]
-    warehouseId?: StringFilter<"StockItem"> | string
-    itemName?: StringFilter<"StockItem"> | string
-    itemType?: EnumInventoryItemTypeFilter<"StockItem"> | $Enums.InventoryItemType
-    description?: StringNullableFilter<"StockItem"> | string | null
-    unitOfMeasure?: StringFilter<"StockItem"> | string
-    availableQty?: IntFilter<"StockItem"> | number
-    reservedQty?: IntFilter<"StockItem"> | number
-    reorderThreshold?: IntFilter<"StockItem"> | number
-    state?: EnumStockStateFilter<"StockItem"> | $Enums.StockState
-    createdAt?: DateTimeFilter<"StockItem"> | Date | string
-    updatedAt?: DateTimeFilter<"StockItem"> | Date | string
+    AND?: ProductStockWhereInput | ProductStockWhereInput[]
+    OR?: ProductStockWhereInput[]
+    NOT?: ProductStockWhereInput | ProductStockWhereInput[]
+    warehouseId?: StringFilter<"ProductStock"> | string
+    itemName?: StringFilter<"ProductStock"> | string
+    description?: StringNullableFilter<"ProductStock"> | string | null
+    unitOfMeasure?: StringFilter<"ProductStock"> | string
+    availableQty?: IntFilter<"ProductStock"> | number
+    reservedQty?: IntFilter<"ProductStock"> | number
+    reorderThreshold?: IntFilter<"ProductStock"> | number
+    state?: EnumStockStateFilter<"ProductStock"> | $Enums.StockState
+    createdAt?: DateTimeFilter<"ProductStock"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductStock"> | Date | string
     warehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
-    materialFor?: ProductMaterialListRelationFilter
     stockMovements?: StockMovementListRelationFilter
-    stockRequestLines?: StockRequestLineListRelationFilter
   }, "id" | "sku">
 
-  export type StockItemOrderByWithAggregationInput = {
+  export type ProductStockOrderByWithAggregationInput = {
     id?: SortOrder
     warehouseId?: SortOrder
     sku?: SortOrder
     itemName?: SortOrder
-    itemType?: SortOrder
     description?: SortOrderInput | SortOrder
     unitOfMeasure?: SortOrder
     availableQty?: SortOrder
@@ -39528,30 +40939,130 @@ export namespace Prisma {
     state?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: StockItemCountOrderByAggregateInput
-    _avg?: StockItemAvgOrderByAggregateInput
-    _max?: StockItemMaxOrderByAggregateInput
-    _min?: StockItemMinOrderByAggregateInput
-    _sum?: StockItemSumOrderByAggregateInput
+    _count?: ProductStockCountOrderByAggregateInput
+    _avg?: ProductStockAvgOrderByAggregateInput
+    _max?: ProductStockMaxOrderByAggregateInput
+    _min?: ProductStockMinOrderByAggregateInput
+    _sum?: ProductStockSumOrderByAggregateInput
   }
 
-  export type StockItemScalarWhereWithAggregatesInput = {
-    AND?: StockItemScalarWhereWithAggregatesInput | StockItemScalarWhereWithAggregatesInput[]
-    OR?: StockItemScalarWhereWithAggregatesInput[]
-    NOT?: StockItemScalarWhereWithAggregatesInput | StockItemScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"StockItem"> | string
-    warehouseId?: StringWithAggregatesFilter<"StockItem"> | string
-    sku?: StringWithAggregatesFilter<"StockItem"> | string
-    itemName?: StringWithAggregatesFilter<"StockItem"> | string
-    itemType?: EnumInventoryItemTypeWithAggregatesFilter<"StockItem"> | $Enums.InventoryItemType
-    description?: StringNullableWithAggregatesFilter<"StockItem"> | string | null
-    unitOfMeasure?: StringWithAggregatesFilter<"StockItem"> | string
-    availableQty?: IntWithAggregatesFilter<"StockItem"> | number
-    reservedQty?: IntWithAggregatesFilter<"StockItem"> | number
-    reorderThreshold?: IntWithAggregatesFilter<"StockItem"> | number
-    state?: EnumStockStateWithAggregatesFilter<"StockItem"> | $Enums.StockState
-    createdAt?: DateTimeWithAggregatesFilter<"StockItem"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"StockItem"> | Date | string
+  export type ProductStockScalarWhereWithAggregatesInput = {
+    AND?: ProductStockScalarWhereWithAggregatesInput | ProductStockScalarWhereWithAggregatesInput[]
+    OR?: ProductStockScalarWhereWithAggregatesInput[]
+    NOT?: ProductStockScalarWhereWithAggregatesInput | ProductStockScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProductStock"> | string
+    warehouseId?: StringWithAggregatesFilter<"ProductStock"> | string
+    sku?: StringWithAggregatesFilter<"ProductStock"> | string
+    itemName?: StringWithAggregatesFilter<"ProductStock"> | string
+    description?: StringNullableWithAggregatesFilter<"ProductStock"> | string | null
+    unitOfMeasure?: StringWithAggregatesFilter<"ProductStock"> | string
+    availableQty?: IntWithAggregatesFilter<"ProductStock"> | number
+    reservedQty?: IntWithAggregatesFilter<"ProductStock"> | number
+    reorderThreshold?: IntWithAggregatesFilter<"ProductStock"> | number
+    state?: EnumStockStateWithAggregatesFilter<"ProductStock"> | $Enums.StockState
+    createdAt?: DateTimeWithAggregatesFilter<"ProductStock"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ProductStock"> | Date | string
+  }
+
+  export type MaterialStockWhereInput = {
+    AND?: MaterialStockWhereInput | MaterialStockWhereInput[]
+    OR?: MaterialStockWhereInput[]
+    NOT?: MaterialStockWhereInput | MaterialStockWhereInput[]
+    id?: StringFilter<"MaterialStock"> | string
+    warehouseId?: StringFilter<"MaterialStock"> | string
+    sku?: StringFilter<"MaterialStock"> | string
+    itemName?: StringFilter<"MaterialStock"> | string
+    description?: StringNullableFilter<"MaterialStock"> | string | null
+    unitOfMeasure?: StringFilter<"MaterialStock"> | string
+    availableQty?: IntFilter<"MaterialStock"> | number
+    reservedQty?: IntFilter<"MaterialStock"> | number
+    reorderThreshold?: IntFilter<"MaterialStock"> | number
+    state?: EnumStockStateFilter<"MaterialStock"> | $Enums.StockState
+    createdAt?: DateTimeFilter<"MaterialStock"> | Date | string
+    updatedAt?: DateTimeFilter<"MaterialStock"> | Date | string
+    warehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
+    materialFor?: ProductMaterialListRelationFilter
+    stockMovements?: StockMovementListRelationFilter
+    stockRequestLines?: StockRequestLineListRelationFilter
+  }
+
+  export type MaterialStockOrderByWithRelationInput = {
+    id?: SortOrder
+    warehouseId?: SortOrder
+    sku?: SortOrder
+    itemName?: SortOrder
+    description?: SortOrderInput | SortOrder
+    unitOfMeasure?: SortOrder
+    availableQty?: SortOrder
+    reservedQty?: SortOrder
+    reorderThreshold?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    warehouse?: WarehouseOrderByWithRelationInput
+    materialFor?: ProductMaterialOrderByRelationAggregateInput
+    stockMovements?: StockMovementOrderByRelationAggregateInput
+    stockRequestLines?: StockRequestLineOrderByRelationAggregateInput
+  }
+
+  export type MaterialStockWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    sku?: string
+    AND?: MaterialStockWhereInput | MaterialStockWhereInput[]
+    OR?: MaterialStockWhereInput[]
+    NOT?: MaterialStockWhereInput | MaterialStockWhereInput[]
+    warehouseId?: StringFilter<"MaterialStock"> | string
+    itemName?: StringFilter<"MaterialStock"> | string
+    description?: StringNullableFilter<"MaterialStock"> | string | null
+    unitOfMeasure?: StringFilter<"MaterialStock"> | string
+    availableQty?: IntFilter<"MaterialStock"> | number
+    reservedQty?: IntFilter<"MaterialStock"> | number
+    reorderThreshold?: IntFilter<"MaterialStock"> | number
+    state?: EnumStockStateFilter<"MaterialStock"> | $Enums.StockState
+    createdAt?: DateTimeFilter<"MaterialStock"> | Date | string
+    updatedAt?: DateTimeFilter<"MaterialStock"> | Date | string
+    warehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
+    materialFor?: ProductMaterialListRelationFilter
+    stockMovements?: StockMovementListRelationFilter
+    stockRequestLines?: StockRequestLineListRelationFilter
+  }, "id" | "sku">
+
+  export type MaterialStockOrderByWithAggregationInput = {
+    id?: SortOrder
+    warehouseId?: SortOrder
+    sku?: SortOrder
+    itemName?: SortOrder
+    description?: SortOrderInput | SortOrder
+    unitOfMeasure?: SortOrder
+    availableQty?: SortOrder
+    reservedQty?: SortOrder
+    reorderThreshold?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MaterialStockCountOrderByAggregateInput
+    _avg?: MaterialStockAvgOrderByAggregateInput
+    _max?: MaterialStockMaxOrderByAggregateInput
+    _min?: MaterialStockMinOrderByAggregateInput
+    _sum?: MaterialStockSumOrderByAggregateInput
+  }
+
+  export type MaterialStockScalarWhereWithAggregatesInput = {
+    AND?: MaterialStockScalarWhereWithAggregatesInput | MaterialStockScalarWhereWithAggregatesInput[]
+    OR?: MaterialStockScalarWhereWithAggregatesInput[]
+    NOT?: MaterialStockScalarWhereWithAggregatesInput | MaterialStockScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MaterialStock"> | string
+    warehouseId?: StringWithAggregatesFilter<"MaterialStock"> | string
+    sku?: StringWithAggregatesFilter<"MaterialStock"> | string
+    itemName?: StringWithAggregatesFilter<"MaterialStock"> | string
+    description?: StringNullableWithAggregatesFilter<"MaterialStock"> | string | null
+    unitOfMeasure?: StringWithAggregatesFilter<"MaterialStock"> | string
+    availableQty?: IntWithAggregatesFilter<"MaterialStock"> | number
+    reservedQty?: IntWithAggregatesFilter<"MaterialStock"> | number
+    reorderThreshold?: IntWithAggregatesFilter<"MaterialStock"> | number
+    state?: EnumStockStateWithAggregatesFilter<"MaterialStock"> | $Enums.StockState
+    createdAt?: DateTimeWithAggregatesFilter<"MaterialStock"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MaterialStock"> | Date | string
   }
 
   export type ProductWhereInput = {
@@ -39559,7 +41070,7 @@ export namespace Prisma {
     OR?: ProductWhereInput[]
     NOT?: ProductWhereInput | ProductWhereInput[]
     id?: StringFilter<"Product"> | string
-    stockItemId?: StringFilter<"Product"> | string
+    productStockId?: StringFilter<"Product"> | string
     slug?: StringFilter<"Product"> | string
     name?: StringFilter<"Product"> | string
     category?: StringFilter<"Product"> | string
@@ -39578,14 +41089,14 @@ export namespace Prisma {
     isPublished?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    productStock?: XOR<ProductStockScalarRelationFilter, ProductStockWhereInput>
     materials?: ProductMaterialListRelationFilter
     inquiries?: CustomerInquiryListRelationFilter
   }
 
   export type ProductOrderByWithRelationInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    productStockId?: SortOrder
     slug?: SortOrder
     name?: SortOrder
     category?: SortOrder
@@ -39604,14 +41115,14 @@ export namespace Prisma {
     isPublished?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    stockItem?: StockItemOrderByWithRelationInput
+    productStock?: ProductStockOrderByWithRelationInput
     materials?: ProductMaterialOrderByRelationAggregateInput
     inquiries?: CustomerInquiryOrderByRelationAggregateInput
   }
 
   export type ProductWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    stockItemId?: string
+    productStockId?: string
     slug?: string
     AND?: ProductWhereInput | ProductWhereInput[]
     OR?: ProductWhereInput[]
@@ -39633,14 +41144,14 @@ export namespace Prisma {
     isPublished?: BoolFilter<"Product"> | boolean
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    productStock?: XOR<ProductStockScalarRelationFilter, ProductStockWhereInput>
     materials?: ProductMaterialListRelationFilter
     inquiries?: CustomerInquiryListRelationFilter
-  }, "id" | "stockItemId" | "slug">
+  }, "id" | "productStockId" | "slug">
 
   export type ProductOrderByWithAggregationInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    productStockId?: SortOrder
     slug?: SortOrder
     name?: SortOrder
     category?: SortOrder
@@ -39671,7 +41182,7 @@ export namespace Prisma {
     OR?: ProductScalarWhereWithAggregatesInput[]
     NOT?: ProductScalarWhereWithAggregatesInput | ProductScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Product"> | string
-    stockItemId?: StringWithAggregatesFilter<"Product"> | string
+    productStockId?: StringWithAggregatesFilter<"Product"> | string
     slug?: StringWithAggregatesFilter<"Product"> | string
     name?: StringWithAggregatesFilter<"Product"> | string
     category?: StringWithAggregatesFilter<"Product"> | string
@@ -39985,27 +41496,27 @@ export namespace Prisma {
     NOT?: ProductMaterialWhereInput | ProductMaterialWhereInput[]
     id?: StringFilter<"ProductMaterial"> | string
     productId?: StringFilter<"ProductMaterial"> | string
-    stockItemId?: StringFilter<"ProductMaterial"> | string
+    materialStockId?: StringFilter<"ProductMaterial"> | string
     quantityRequired?: DecimalNullableFilter<"ProductMaterial"> | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: StringNullableFilter<"ProductMaterial"> | string | null
     dimension?: StringNullableFilter<"ProductMaterial"> | string | null
     notes?: StringNullableFilter<"ProductMaterial"> | string | null
     createdAt?: DateTimeFilter<"ProductMaterial"> | Date | string
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    materialStock?: XOR<MaterialStockScalarRelationFilter, MaterialStockWhereInput>
   }
 
   export type ProductMaterialOrderByWithRelationInput = {
     id?: SortOrder
     productId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequired?: SortOrderInput | SortOrder
     quantityDisplay?: SortOrderInput | SortOrder
     dimension?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     product?: ProductOrderByWithRelationInput
-    stockItem?: StockItemOrderByWithRelationInput
+    materialStock?: MaterialStockOrderByWithRelationInput
   }
 
   export type ProductMaterialWhereUniqueInput = Prisma.AtLeast<{
@@ -40014,20 +41525,20 @@ export namespace Prisma {
     OR?: ProductMaterialWhereInput[]
     NOT?: ProductMaterialWhereInput | ProductMaterialWhereInput[]
     productId?: StringFilter<"ProductMaterial"> | string
-    stockItemId?: StringFilter<"ProductMaterial"> | string
+    materialStockId?: StringFilter<"ProductMaterial"> | string
     quantityRequired?: DecimalNullableFilter<"ProductMaterial"> | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: StringNullableFilter<"ProductMaterial"> | string | null
     dimension?: StringNullableFilter<"ProductMaterial"> | string | null
     notes?: StringNullableFilter<"ProductMaterial"> | string | null
     createdAt?: DateTimeFilter<"ProductMaterial"> | Date | string
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    materialStock?: XOR<MaterialStockScalarRelationFilter, MaterialStockWhereInput>
   }, "id">
 
   export type ProductMaterialOrderByWithAggregationInput = {
     id?: SortOrder
     productId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequired?: SortOrderInput | SortOrder
     quantityDisplay?: SortOrderInput | SortOrder
     dimension?: SortOrderInput | SortOrder
@@ -40046,7 +41557,7 @@ export namespace Prisma {
     NOT?: ProductMaterialScalarWhereWithAggregatesInput | ProductMaterialScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ProductMaterial"> | string
     productId?: StringWithAggregatesFilter<"ProductMaterial"> | string
-    stockItemId?: StringWithAggregatesFilter<"ProductMaterial"> | string
+    materialStockId?: StringWithAggregatesFilter<"ProductMaterial"> | string
     quantityRequired?: DecimalNullableWithAggregatesFilter<"ProductMaterial"> | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: StringNullableWithAggregatesFilter<"ProductMaterial"> | string | null
     dimension?: StringNullableWithAggregatesFilter<"ProductMaterial"> | string | null
@@ -40059,26 +41570,30 @@ export namespace Prisma {
     OR?: StockMovementWhereInput[]
     NOT?: StockMovementWhereInput | StockMovementWhereInput[]
     id?: StringFilter<"StockMovement"> | string
-    stockItemId?: StringFilter<"StockMovement"> | string
+    materialStockId?: StringNullableFilter<"StockMovement"> | string | null
+    productStockId?: StringNullableFilter<"StockMovement"> | string | null
     type?: EnumStockMovementTypeFilter<"StockMovement"> | $Enums.StockMovementType
     quantity?: IntFilter<"StockMovement"> | number
     requesterName?: StringNullableFilter<"StockMovement"> | string | null
     projectPurpose?: StringNullableFilter<"StockMovement"> | string | null
     referenceNumber?: StringNullableFilter<"StockMovement"> | string | null
     createdAt?: DateTimeFilter<"StockMovement"> | Date | string
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    materialStock?: XOR<MaterialStockNullableScalarRelationFilter, MaterialStockWhereInput> | null
+    productStock?: XOR<ProductStockNullableScalarRelationFilter, ProductStockWhereInput> | null
   }
 
   export type StockMovementOrderByWithRelationInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrderInput | SortOrder
+    productStockId?: SortOrderInput | SortOrder
     type?: SortOrder
     quantity?: SortOrder
     requesterName?: SortOrderInput | SortOrder
     projectPurpose?: SortOrderInput | SortOrder
     referenceNumber?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    stockItem?: StockItemOrderByWithRelationInput
+    materialStock?: MaterialStockOrderByWithRelationInput
+    productStock?: ProductStockOrderByWithRelationInput
   }
 
   export type StockMovementWhereUniqueInput = Prisma.AtLeast<{
@@ -40086,19 +41601,22 @@ export namespace Prisma {
     AND?: StockMovementWhereInput | StockMovementWhereInput[]
     OR?: StockMovementWhereInput[]
     NOT?: StockMovementWhereInput | StockMovementWhereInput[]
-    stockItemId?: StringFilter<"StockMovement"> | string
+    materialStockId?: StringNullableFilter<"StockMovement"> | string | null
+    productStockId?: StringNullableFilter<"StockMovement"> | string | null
     type?: EnumStockMovementTypeFilter<"StockMovement"> | $Enums.StockMovementType
     quantity?: IntFilter<"StockMovement"> | number
     requesterName?: StringNullableFilter<"StockMovement"> | string | null
     projectPurpose?: StringNullableFilter<"StockMovement"> | string | null
     referenceNumber?: StringNullableFilter<"StockMovement"> | string | null
     createdAt?: DateTimeFilter<"StockMovement"> | Date | string
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    materialStock?: XOR<MaterialStockNullableScalarRelationFilter, MaterialStockWhereInput> | null
+    productStock?: XOR<ProductStockNullableScalarRelationFilter, ProductStockWhereInput> | null
   }, "id">
 
   export type StockMovementOrderByWithAggregationInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrderInput | SortOrder
+    productStockId?: SortOrderInput | SortOrder
     type?: SortOrder
     quantity?: SortOrder
     requesterName?: SortOrderInput | SortOrder
@@ -40117,7 +41635,8 @@ export namespace Prisma {
     OR?: StockMovementScalarWhereWithAggregatesInput[]
     NOT?: StockMovementScalarWhereWithAggregatesInput | StockMovementScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"StockMovement"> | string
-    stockItemId?: StringWithAggregatesFilter<"StockMovement"> | string
+    materialStockId?: StringNullableWithAggregatesFilter<"StockMovement"> | string | null
+    productStockId?: StringNullableWithAggregatesFilter<"StockMovement"> | string | null
     type?: EnumStockMovementTypeWithAggregatesFilter<"StockMovement"> | $Enums.StockMovementType
     quantity?: IntWithAggregatesFilter<"StockMovement"> | number
     requesterName?: StringNullableWithAggregatesFilter<"StockMovement"> | string | null
@@ -40221,23 +41740,23 @@ export namespace Prisma {
     NOT?: StockRequestLineWhereInput | StockRequestLineWhereInput[]
     id?: StringFilter<"StockRequestLine"> | string
     stockRequestId?: StringFilter<"StockRequestLine"> | string
-    stockItemId?: StringFilter<"StockRequestLine"> | string
+    materialStockId?: StringFilter<"StockRequestLine"> | string
     quantityRequested?: IntFilter<"StockRequestLine"> | number
     quantityApproved?: IntFilter<"StockRequestLine"> | number
     availability?: EnumStockAvailabilityStatusFilter<"StockRequestLine"> | $Enums.StockAvailabilityStatus
     stockRequest?: XOR<StockRequestScalarRelationFilter, StockRequestWhereInput>
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    materialStock?: XOR<MaterialStockScalarRelationFilter, MaterialStockWhereInput>
   }
 
   export type StockRequestLineOrderByWithRelationInput = {
     id?: SortOrder
     stockRequestId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequested?: SortOrder
     quantityApproved?: SortOrder
     availability?: SortOrder
     stockRequest?: StockRequestOrderByWithRelationInput
-    stockItem?: StockItemOrderByWithRelationInput
+    materialStock?: MaterialStockOrderByWithRelationInput
   }
 
   export type StockRequestLineWhereUniqueInput = Prisma.AtLeast<{
@@ -40246,18 +41765,18 @@ export namespace Prisma {
     OR?: StockRequestLineWhereInput[]
     NOT?: StockRequestLineWhereInput | StockRequestLineWhereInput[]
     stockRequestId?: StringFilter<"StockRequestLine"> | string
-    stockItemId?: StringFilter<"StockRequestLine"> | string
+    materialStockId?: StringFilter<"StockRequestLine"> | string
     quantityRequested?: IntFilter<"StockRequestLine"> | number
     quantityApproved?: IntFilter<"StockRequestLine"> | number
     availability?: EnumStockAvailabilityStatusFilter<"StockRequestLine"> | $Enums.StockAvailabilityStatus
     stockRequest?: XOR<StockRequestScalarRelationFilter, StockRequestWhereInput>
-    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+    materialStock?: XOR<MaterialStockScalarRelationFilter, MaterialStockWhereInput>
   }, "id">
 
   export type StockRequestLineOrderByWithAggregationInput = {
     id?: SortOrder
     stockRequestId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequested?: SortOrder
     quantityApproved?: SortOrder
     availability?: SortOrder
@@ -40274,7 +41793,7 @@ export namespace Prisma {
     NOT?: StockRequestLineScalarWhereWithAggregatesInput | StockRequestLineScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"StockRequestLine"> | string
     stockRequestId?: StringWithAggregatesFilter<"StockRequestLine"> | string
-    stockItemId?: StringWithAggregatesFilter<"StockRequestLine"> | string
+    materialStockId?: StringWithAggregatesFilter<"StockRequestLine"> | string
     quantityRequested?: IntWithAggregatesFilter<"StockRequestLine"> | number
     quantityApproved?: IntWithAggregatesFilter<"StockRequestLine"> | number
     availability?: EnumStockAvailabilityStatusWithAggregatesFilter<"StockRequestLine"> | $Enums.StockAvailabilityStatus
@@ -42026,7 +43545,8 @@ export namespace Prisma {
     address: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    stockItems?: StockItemCreateNestedManyWithoutWarehouseInput
+    productStocks?: ProductStockCreateNestedManyWithoutWarehouseInput
+    materialStocks?: MaterialStockCreateNestedManyWithoutWarehouseInput
   }
 
   export type WarehouseUncheckedCreateInput = {
@@ -42036,7 +43556,8 @@ export namespace Prisma {
     address: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    stockItems?: StockItemUncheckedCreateNestedManyWithoutWarehouseInput
+    productStocks?: ProductStockUncheckedCreateNestedManyWithoutWarehouseInput
+    materialStocks?: MaterialStockUncheckedCreateNestedManyWithoutWarehouseInput
   }
 
   export type WarehouseUpdateInput = {
@@ -42046,7 +43567,8 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stockItems?: StockItemUpdateManyWithoutWarehouseNestedInput
+    productStocks?: ProductStockUpdateManyWithoutWarehouseNestedInput
+    materialStocks?: MaterialStockUpdateManyWithoutWarehouseNestedInput
   }
 
   export type WarehouseUncheckedUpdateInput = {
@@ -42056,7 +43578,8 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stockItems?: StockItemUncheckedUpdateManyWithoutWarehouseNestedInput
+    productStocks?: ProductStockUncheckedUpdateManyWithoutWarehouseNestedInput
+    materialStocks?: MaterialStockUncheckedUpdateManyWithoutWarehouseNestedInput
   }
 
   export type WarehouseCreateManyInput = {
@@ -42086,11 +43609,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockItemCreateInput = {
+  export type ProductStockCreateInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -42099,19 +43621,16 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    warehouse: WarehouseCreateNestedOneWithoutStockItemsInput
-    product?: ProductCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineCreateNestedManyWithoutStockItemInput
+    warehouse: WarehouseCreateNestedOneWithoutProductStocksInput
+    product?: ProductCreateNestedOneWithoutProductStockInput
+    stockMovements?: StockMovementCreateNestedManyWithoutProductStockInput
   }
 
-  export type StockItemUncheckedCreateInput = {
+  export type ProductStockUncheckedCreateInput = {
     id?: string
     warehouseId: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -42120,17 +43639,14 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    product?: ProductUncheckedCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutStockItemInput
+    product?: ProductUncheckedCreateNestedOneWithoutProductStockInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutProductStockInput
   }
 
-  export type StockItemUpdateInput = {
+  export type ProductStockUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -42139,19 +43655,16 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    warehouse?: WarehouseUpdateOneRequiredWithoutStockItemsNestedInput
-    product?: ProductUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUpdateManyWithoutStockItemNestedInput
+    warehouse?: WarehouseUpdateOneRequiredWithoutProductStocksNestedInput
+    product?: ProductUpdateOneWithoutProductStockNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutProductStockNestedInput
   }
 
-  export type StockItemUncheckedUpdateInput = {
+  export type ProductStockUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     warehouseId?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -42160,18 +43673,15 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    product?: ProductUncheckedUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUncheckedUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutStockItemNestedInput
+    product?: ProductUncheckedUpdateOneWithoutProductStockNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutProductStockNestedInput
   }
 
-  export type StockItemCreateManyInput = {
+  export type ProductStockCreateManyInput = {
     id?: string
     warehouseId: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -42182,11 +43692,10 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type StockItemUpdateManyMutationInput = {
+  export type ProductStockUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -42197,12 +43706,127 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockItemUncheckedUpdateManyInput = {
+  export type ProductStockUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     warehouseId?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MaterialStockCreateInput = {
+    id?: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    warehouse: WarehouseCreateNestedOneWithoutMaterialStocksInput
+    materialFor?: ProductMaterialCreateNestedManyWithoutMaterialStockInput
+    stockMovements?: StockMovementCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineCreateNestedManyWithoutMaterialStockInput
+  }
+
+  export type MaterialStockUncheckedCreateInput = {
+    id?: string
+    warehouseId: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutMaterialStockInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutMaterialStockInput
+  }
+
+  export type MaterialStockUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    warehouse?: WarehouseUpdateOneRequiredWithoutMaterialStocksNestedInput
+    materialFor?: ProductMaterialUpdateManyWithoutMaterialStockNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUpdateManyWithoutMaterialStockNestedInput
+  }
+
+  export type MaterialStockUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    warehouseId?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materialFor?: ProductMaterialUncheckedUpdateManyWithoutMaterialStockNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutMaterialStockNestedInput
+  }
+
+  export type MaterialStockCreateManyInput = {
+    id?: string
+    warehouseId: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MaterialStockUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MaterialStockUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    warehouseId?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -42233,14 +43857,14 @@ export namespace Prisma {
     isPublished?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    stockItem: StockItemCreateNestedOneWithoutProductInput
+    productStock: ProductStockCreateNestedOneWithoutProductInput
     materials?: ProductMaterialCreateNestedManyWithoutProductInput
     inquiries?: CustomerInquiryCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateInput = {
     id?: string
-    stockItemId: string
+    productStockId: string
     slug: string
     name: string
     category: string
@@ -42283,14 +43907,14 @@ export namespace Prisma {
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stockItem?: StockItemUpdateOneRequiredWithoutProductNestedInput
+    productStock?: ProductStockUpdateOneRequiredWithoutProductNestedInput
     materials?: ProductMaterialUpdateManyWithoutProductNestedInput
     inquiries?: CustomerInquiryUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    productStockId?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
@@ -42315,7 +43939,7 @@ export namespace Prisma {
 
   export type ProductCreateManyInput = {
     id?: string
-    stockItemId: string
+    productStockId: string
     slug: string
     name: string
     category: string
@@ -42360,7 +43984,7 @@ export namespace Prisma {
 
   export type ProductUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    productStockId?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
@@ -42692,13 +44316,13 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     product: ProductCreateNestedOneWithoutMaterialsInput
-    stockItem: StockItemCreateNestedOneWithoutMaterialForInput
+    materialStock: MaterialStockCreateNestedOneWithoutMaterialForInput
   }
 
   export type ProductMaterialUncheckedCreateInput = {
     id?: string
     productId: string
-    stockItemId: string
+    materialStockId: string
     quantityRequired?: Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: string | null
     dimension?: string | null
@@ -42714,13 +44338,13 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutMaterialsNestedInput
-    stockItem?: StockItemUpdateOneRequiredWithoutMaterialForNestedInput
+    materialStock?: MaterialStockUpdateOneRequiredWithoutMaterialForNestedInput
   }
 
   export type ProductMaterialUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequired?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: NullableStringFieldUpdateOperationsInput | string | null
     dimension?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42731,7 +44355,7 @@ export namespace Prisma {
   export type ProductMaterialCreateManyInput = {
     id?: string
     productId: string
-    stockItemId: string
+    materialStockId: string
     quantityRequired?: Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: string | null
     dimension?: string | null
@@ -42751,7 +44375,7 @@ export namespace Prisma {
   export type ProductMaterialUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequired?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: NullableStringFieldUpdateOperationsInput | string | null
     dimension?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42767,12 +44391,14 @@ export namespace Prisma {
     projectPurpose?: string | null
     referenceNumber?: string | null
     createdAt?: Date | string
-    stockItem: StockItemCreateNestedOneWithoutStockMovementsInput
+    materialStock?: MaterialStockCreateNestedOneWithoutStockMovementsInput
+    productStock?: ProductStockCreateNestedOneWithoutStockMovementsInput
   }
 
   export type StockMovementUncheckedCreateInput = {
     id?: string
-    stockItemId: string
+    materialStockId?: string | null
+    productStockId?: string | null
     type: $Enums.StockMovementType
     quantity: number
     requesterName?: string | null
@@ -42789,12 +44415,14 @@ export namespace Prisma {
     projectPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stockItem?: StockItemUpdateOneRequiredWithoutStockMovementsNestedInput
+    materialStock?: MaterialStockUpdateOneWithoutStockMovementsNestedInput
+    productStock?: ProductStockUpdateOneWithoutStockMovementsNestedInput
   }
 
   export type StockMovementUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: NullableStringFieldUpdateOperationsInput | string | null
+    productStockId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
     quantity?: IntFieldUpdateOperationsInput | number
     requesterName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42805,7 +44433,8 @@ export namespace Prisma {
 
   export type StockMovementCreateManyInput = {
     id?: string
-    stockItemId: string
+    materialStockId?: string | null
+    productStockId?: string | null
     type: $Enums.StockMovementType
     quantity: number
     requesterName?: string | null
@@ -42826,7 +44455,8 @@ export namespace Prisma {
 
   export type StockMovementUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: NullableStringFieldUpdateOperationsInput | string | null
+    productStockId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
     quantity?: IntFieldUpdateOperationsInput | number
     requesterName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42933,13 +44563,13 @@ export namespace Prisma {
     quantityApproved?: number
     availability?: $Enums.StockAvailabilityStatus
     stockRequest: StockRequestCreateNestedOneWithoutLineItemsInput
-    stockItem: StockItemCreateNestedOneWithoutStockRequestLinesInput
+    materialStock: MaterialStockCreateNestedOneWithoutStockRequestLinesInput
   }
 
   export type StockRequestLineUncheckedCreateInput = {
     id?: string
     stockRequestId: string
-    stockItemId: string
+    materialStockId: string
     quantityRequested: number
     quantityApproved?: number
     availability?: $Enums.StockAvailabilityStatus
@@ -42951,13 +44581,13 @@ export namespace Prisma {
     quantityApproved?: IntFieldUpdateOperationsInput | number
     availability?: EnumStockAvailabilityStatusFieldUpdateOperationsInput | $Enums.StockAvailabilityStatus
     stockRequest?: StockRequestUpdateOneRequiredWithoutLineItemsNestedInput
-    stockItem?: StockItemUpdateOneRequiredWithoutStockRequestLinesNestedInput
+    materialStock?: MaterialStockUpdateOneRequiredWithoutStockRequestLinesNestedInput
   }
 
   export type StockRequestLineUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     stockRequestId?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequested?: IntFieldUpdateOperationsInput | number
     quantityApproved?: IntFieldUpdateOperationsInput | number
     availability?: EnumStockAvailabilityStatusFieldUpdateOperationsInput | $Enums.StockAvailabilityStatus
@@ -42966,7 +44596,7 @@ export namespace Prisma {
   export type StockRequestLineCreateManyInput = {
     id?: string
     stockRequestId: string
-    stockItemId: string
+    materialStockId: string
     quantityRequested: number
     quantityApproved?: number
     availability?: $Enums.StockAvailabilityStatus
@@ -42982,7 +44612,7 @@ export namespace Prisma {
   export type StockRequestLineUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     stockRequestId?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequested?: IntFieldUpdateOperationsInput | number
     quantityApproved?: IntFieldUpdateOperationsInput | number
     availability?: EnumStockAvailabilityStatusFieldUpdateOperationsInput | $Enums.StockAvailabilityStatus
@@ -44924,13 +46554,23 @@ export namespace Prisma {
     lineTotal?: SortOrder
   }
 
-  export type StockItemListRelationFilter = {
-    every?: StockItemWhereInput
-    some?: StockItemWhereInput
-    none?: StockItemWhereInput
+  export type ProductStockListRelationFilter = {
+    every?: ProductStockWhereInput
+    some?: ProductStockWhereInput
+    none?: ProductStockWhereInput
   }
 
-  export type StockItemOrderByRelationAggregateInput = {
+  export type MaterialStockListRelationFilter = {
+    every?: MaterialStockWhereInput
+    some?: MaterialStockWhereInput
+    none?: MaterialStockWhereInput
+  }
+
+  export type ProductStockOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MaterialStockOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -44961,13 +46601,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type EnumInventoryItemTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.InventoryItemType | EnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumInventoryItemTypeFilter<$PrismaModel> | $Enums.InventoryItemType
-  }
-
   export type EnumStockStateFilter<$PrismaModel = never> = {
     equals?: $Enums.StockState | EnumStockStateFieldRefInput<$PrismaModel>
     in?: $Enums.StockState[] | ListEnumStockStateFieldRefInput<$PrismaModel>
@@ -44985,16 +46618,87 @@ export namespace Prisma {
     isNot?: ProductWhereInput | null
   }
 
-  export type ProductMaterialListRelationFilter = {
-    every?: ProductMaterialWhereInput
-    some?: ProductMaterialWhereInput
-    none?: ProductMaterialWhereInput
-  }
-
   export type StockMovementListRelationFilter = {
     every?: StockMovementWhereInput
     some?: StockMovementWhereInput
     none?: StockMovementWhereInput
+  }
+
+  export type StockMovementOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProductStockCountOrderByAggregateInput = {
+    id?: SortOrder
+    warehouseId?: SortOrder
+    sku?: SortOrder
+    itemName?: SortOrder
+    description?: SortOrder
+    unitOfMeasure?: SortOrder
+    availableQty?: SortOrder
+    reservedQty?: SortOrder
+    reorderThreshold?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductStockAvgOrderByAggregateInput = {
+    availableQty?: SortOrder
+    reservedQty?: SortOrder
+    reorderThreshold?: SortOrder
+  }
+
+  export type ProductStockMaxOrderByAggregateInput = {
+    id?: SortOrder
+    warehouseId?: SortOrder
+    sku?: SortOrder
+    itemName?: SortOrder
+    description?: SortOrder
+    unitOfMeasure?: SortOrder
+    availableQty?: SortOrder
+    reservedQty?: SortOrder
+    reorderThreshold?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductStockMinOrderByAggregateInput = {
+    id?: SortOrder
+    warehouseId?: SortOrder
+    sku?: SortOrder
+    itemName?: SortOrder
+    description?: SortOrder
+    unitOfMeasure?: SortOrder
+    availableQty?: SortOrder
+    reservedQty?: SortOrder
+    reorderThreshold?: SortOrder
+    state?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductStockSumOrderByAggregateInput = {
+    availableQty?: SortOrder
+    reservedQty?: SortOrder
+    reorderThreshold?: SortOrder
+  }
+
+  export type EnumStockStateWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StockState | EnumStockStateFieldRefInput<$PrismaModel>
+    in?: $Enums.StockState[] | ListEnumStockStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StockState[] | ListEnumStockStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumStockStateWithAggregatesFilter<$PrismaModel> | $Enums.StockState
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStockStateFilter<$PrismaModel>
+    _max?: NestedEnumStockStateFilter<$PrismaModel>
+  }
+
+  export type ProductMaterialListRelationFilter = {
+    every?: ProductMaterialWhereInput
+    some?: ProductMaterialWhereInput
+    none?: ProductMaterialWhereInput
   }
 
   export type StockRequestLineListRelationFilter = {
@@ -45007,20 +46711,15 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type StockMovementOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type StockRequestLineOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type StockItemCountOrderByAggregateInput = {
+  export type MaterialStockCountOrderByAggregateInput = {
     id?: SortOrder
     warehouseId?: SortOrder
     sku?: SortOrder
     itemName?: SortOrder
-    itemType?: SortOrder
     description?: SortOrder
     unitOfMeasure?: SortOrder
     availableQty?: SortOrder
@@ -45031,18 +46730,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type StockItemAvgOrderByAggregateInput = {
+  export type MaterialStockAvgOrderByAggregateInput = {
     availableQty?: SortOrder
     reservedQty?: SortOrder
     reorderThreshold?: SortOrder
   }
 
-  export type StockItemMaxOrderByAggregateInput = {
+  export type MaterialStockMaxOrderByAggregateInput = {
     id?: SortOrder
     warehouseId?: SortOrder
     sku?: SortOrder
     itemName?: SortOrder
-    itemType?: SortOrder
     description?: SortOrder
     unitOfMeasure?: SortOrder
     availableQty?: SortOrder
@@ -45053,12 +46751,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type StockItemMinOrderByAggregateInput = {
+  export type MaterialStockMinOrderByAggregateInput = {
     id?: SortOrder
     warehouseId?: SortOrder
     sku?: SortOrder
     itemName?: SortOrder
-    itemType?: SortOrder
     description?: SortOrder
     unitOfMeasure?: SortOrder
     availableQty?: SortOrder
@@ -45069,30 +46766,10 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type StockItemSumOrderByAggregateInput = {
+  export type MaterialStockSumOrderByAggregateInput = {
     availableQty?: SortOrder
     reservedQty?: SortOrder
     reorderThreshold?: SortOrder
-  }
-
-  export type EnumInventoryItemTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.InventoryItemType | EnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumInventoryItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.InventoryItemType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumInventoryItemTypeFilter<$PrismaModel>
-    _max?: NestedEnumInventoryItemTypeFilter<$PrismaModel>
-  }
-
-  export type EnumStockStateWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.StockState | EnumStockStateFieldRefInput<$PrismaModel>
-    in?: $Enums.StockState[] | ListEnumStockStateFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StockState[] | ListEnumStockStateFieldRefInput<$PrismaModel>
-    not?: NestedEnumStockStateWithAggregatesFilter<$PrismaModel> | $Enums.StockState
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumStockStateFilter<$PrismaModel>
-    _max?: NestedEnumStockStateFilter<$PrismaModel>
   }
 
   export type DecimalNullableFilter<$PrismaModel = never> = {
@@ -45111,14 +46788,14 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type StockItemScalarRelationFilter = {
-    is?: StockItemWhereInput
-    isNot?: StockItemWhereInput
+  export type ProductStockScalarRelationFilter = {
+    is?: ProductStockWhereInput
+    isNot?: ProductStockWhereInput
   }
 
   export type ProductCountOrderByAggregateInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    productStockId?: SortOrder
     slug?: SortOrder
     name?: SortOrder
     category?: SortOrder
@@ -45152,7 +46829,7 @@ export namespace Prisma {
 
   export type ProductMaxOrderByAggregateInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    productStockId?: SortOrder
     slug?: SortOrder
     name?: SortOrder
     category?: SortOrder
@@ -45174,7 +46851,7 @@ export namespace Prisma {
 
   export type ProductMinOrderByAggregateInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    productStockId?: SortOrder
     slug?: SortOrder
     name?: SortOrder
     category?: SortOrder
@@ -45452,10 +47129,15 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type MaterialStockScalarRelationFilter = {
+    is?: MaterialStockWhereInput
+    isNot?: MaterialStockWhereInput
+  }
+
   export type ProductMaterialCountOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequired?: SortOrder
     quantityDisplay?: SortOrder
     dimension?: SortOrder
@@ -45470,7 +47152,7 @@ export namespace Prisma {
   export type ProductMaterialMaxOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequired?: SortOrder
     quantityDisplay?: SortOrder
     dimension?: SortOrder
@@ -45481,7 +47163,7 @@ export namespace Prisma {
   export type ProductMaterialMinOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequired?: SortOrder
     quantityDisplay?: SortOrder
     dimension?: SortOrder
@@ -45500,9 +47182,20 @@ export namespace Prisma {
     not?: NestedEnumStockMovementTypeFilter<$PrismaModel> | $Enums.StockMovementType
   }
 
+  export type MaterialStockNullableScalarRelationFilter = {
+    is?: MaterialStockWhereInput | null
+    isNot?: MaterialStockWhereInput | null
+  }
+
+  export type ProductStockNullableScalarRelationFilter = {
+    is?: ProductStockWhereInput | null
+    isNot?: ProductStockWhereInput | null
+  }
+
   export type StockMovementCountOrderByAggregateInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
+    productStockId?: SortOrder
     type?: SortOrder
     quantity?: SortOrder
     requesterName?: SortOrder
@@ -45517,7 +47210,8 @@ export namespace Prisma {
 
   export type StockMovementMaxOrderByAggregateInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
+    productStockId?: SortOrder
     type?: SortOrder
     quantity?: SortOrder
     requesterName?: SortOrder
@@ -45528,7 +47222,8 @@ export namespace Prisma {
 
   export type StockMovementMinOrderByAggregateInput = {
     id?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
+    productStockId?: SortOrder
     type?: SortOrder
     quantity?: SortOrder
     requesterName?: SortOrder
@@ -45605,7 +47300,7 @@ export namespace Prisma {
   export type StockRequestLineCountOrderByAggregateInput = {
     id?: SortOrder
     stockRequestId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequested?: SortOrder
     quantityApproved?: SortOrder
     availability?: SortOrder
@@ -45619,7 +47314,7 @@ export namespace Prisma {
   export type StockRequestLineMaxOrderByAggregateInput = {
     id?: SortOrder
     stockRequestId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequested?: SortOrder
     quantityApproved?: SortOrder
     availability?: SortOrder
@@ -45628,7 +47323,7 @@ export namespace Prisma {
   export type StockRequestLineMinOrderByAggregateInput = {
     id?: SortOrder
     stockRequestId?: SortOrder
-    stockItemId?: SortOrder
+    materialStockId?: SortOrder
     quantityRequested?: SortOrder
     quantityApproved?: SortOrder
     availability?: SortOrder
@@ -47591,232 +49286,326 @@ export namespace Prisma {
     update?: XOR<XOR<SalesOrderUpdateToOneWithWhereWithoutLineItemsInput, SalesOrderUpdateWithoutLineItemsInput>, SalesOrderUncheckedUpdateWithoutLineItemsInput>
   }
 
-  export type StockItemCreateNestedManyWithoutWarehouseInput = {
-    create?: XOR<StockItemCreateWithoutWarehouseInput, StockItemUncheckedCreateWithoutWarehouseInput> | StockItemCreateWithoutWarehouseInput[] | StockItemUncheckedCreateWithoutWarehouseInput[]
-    connectOrCreate?: StockItemCreateOrConnectWithoutWarehouseInput | StockItemCreateOrConnectWithoutWarehouseInput[]
-    createMany?: StockItemCreateManyWarehouseInputEnvelope
-    connect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
+  export type ProductStockCreateNestedManyWithoutWarehouseInput = {
+    create?: XOR<ProductStockCreateWithoutWarehouseInput, ProductStockUncheckedCreateWithoutWarehouseInput> | ProductStockCreateWithoutWarehouseInput[] | ProductStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: ProductStockCreateOrConnectWithoutWarehouseInput | ProductStockCreateOrConnectWithoutWarehouseInput[]
+    createMany?: ProductStockCreateManyWarehouseInputEnvelope
+    connect?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
   }
 
-  export type StockItemUncheckedCreateNestedManyWithoutWarehouseInput = {
-    create?: XOR<StockItemCreateWithoutWarehouseInput, StockItemUncheckedCreateWithoutWarehouseInput> | StockItemCreateWithoutWarehouseInput[] | StockItemUncheckedCreateWithoutWarehouseInput[]
-    connectOrCreate?: StockItemCreateOrConnectWithoutWarehouseInput | StockItemCreateOrConnectWithoutWarehouseInput[]
-    createMany?: StockItemCreateManyWarehouseInputEnvelope
-    connect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
+  export type MaterialStockCreateNestedManyWithoutWarehouseInput = {
+    create?: XOR<MaterialStockCreateWithoutWarehouseInput, MaterialStockUncheckedCreateWithoutWarehouseInput> | MaterialStockCreateWithoutWarehouseInput[] | MaterialStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutWarehouseInput | MaterialStockCreateOrConnectWithoutWarehouseInput[]
+    createMany?: MaterialStockCreateManyWarehouseInputEnvelope
+    connect?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
   }
 
-  export type StockItemUpdateManyWithoutWarehouseNestedInput = {
-    create?: XOR<StockItemCreateWithoutWarehouseInput, StockItemUncheckedCreateWithoutWarehouseInput> | StockItemCreateWithoutWarehouseInput[] | StockItemUncheckedCreateWithoutWarehouseInput[]
-    connectOrCreate?: StockItemCreateOrConnectWithoutWarehouseInput | StockItemCreateOrConnectWithoutWarehouseInput[]
-    upsert?: StockItemUpsertWithWhereUniqueWithoutWarehouseInput | StockItemUpsertWithWhereUniqueWithoutWarehouseInput[]
-    createMany?: StockItemCreateManyWarehouseInputEnvelope
-    set?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    disconnect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    delete?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    connect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    update?: StockItemUpdateWithWhereUniqueWithoutWarehouseInput | StockItemUpdateWithWhereUniqueWithoutWarehouseInput[]
-    updateMany?: StockItemUpdateManyWithWhereWithoutWarehouseInput | StockItemUpdateManyWithWhereWithoutWarehouseInput[]
-    deleteMany?: StockItemScalarWhereInput | StockItemScalarWhereInput[]
+  export type ProductStockUncheckedCreateNestedManyWithoutWarehouseInput = {
+    create?: XOR<ProductStockCreateWithoutWarehouseInput, ProductStockUncheckedCreateWithoutWarehouseInput> | ProductStockCreateWithoutWarehouseInput[] | ProductStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: ProductStockCreateOrConnectWithoutWarehouseInput | ProductStockCreateOrConnectWithoutWarehouseInput[]
+    createMany?: ProductStockCreateManyWarehouseInputEnvelope
+    connect?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
   }
 
-  export type StockItemUncheckedUpdateManyWithoutWarehouseNestedInput = {
-    create?: XOR<StockItemCreateWithoutWarehouseInput, StockItemUncheckedCreateWithoutWarehouseInput> | StockItemCreateWithoutWarehouseInput[] | StockItemUncheckedCreateWithoutWarehouseInput[]
-    connectOrCreate?: StockItemCreateOrConnectWithoutWarehouseInput | StockItemCreateOrConnectWithoutWarehouseInput[]
-    upsert?: StockItemUpsertWithWhereUniqueWithoutWarehouseInput | StockItemUpsertWithWhereUniqueWithoutWarehouseInput[]
-    createMany?: StockItemCreateManyWarehouseInputEnvelope
-    set?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    disconnect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    delete?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    connect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
-    update?: StockItemUpdateWithWhereUniqueWithoutWarehouseInput | StockItemUpdateWithWhereUniqueWithoutWarehouseInput[]
-    updateMany?: StockItemUpdateManyWithWhereWithoutWarehouseInput | StockItemUpdateManyWithWhereWithoutWarehouseInput[]
-    deleteMany?: StockItemScalarWhereInput | StockItemScalarWhereInput[]
+  export type MaterialStockUncheckedCreateNestedManyWithoutWarehouseInput = {
+    create?: XOR<MaterialStockCreateWithoutWarehouseInput, MaterialStockUncheckedCreateWithoutWarehouseInput> | MaterialStockCreateWithoutWarehouseInput[] | MaterialStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutWarehouseInput | MaterialStockCreateOrConnectWithoutWarehouseInput[]
+    createMany?: MaterialStockCreateManyWarehouseInputEnvelope
+    connect?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
   }
 
-  export type WarehouseCreateNestedOneWithoutStockItemsInput = {
-    create?: XOR<WarehouseCreateWithoutStockItemsInput, WarehouseUncheckedCreateWithoutStockItemsInput>
-    connectOrCreate?: WarehouseCreateOrConnectWithoutStockItemsInput
+  export type ProductStockUpdateManyWithoutWarehouseNestedInput = {
+    create?: XOR<ProductStockCreateWithoutWarehouseInput, ProductStockUncheckedCreateWithoutWarehouseInput> | ProductStockCreateWithoutWarehouseInput[] | ProductStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: ProductStockCreateOrConnectWithoutWarehouseInput | ProductStockCreateOrConnectWithoutWarehouseInput[]
+    upsert?: ProductStockUpsertWithWhereUniqueWithoutWarehouseInput | ProductStockUpsertWithWhereUniqueWithoutWarehouseInput[]
+    createMany?: ProductStockCreateManyWarehouseInputEnvelope
+    set?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    disconnect?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    delete?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    connect?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    update?: ProductStockUpdateWithWhereUniqueWithoutWarehouseInput | ProductStockUpdateWithWhereUniqueWithoutWarehouseInput[]
+    updateMany?: ProductStockUpdateManyWithWhereWithoutWarehouseInput | ProductStockUpdateManyWithWhereWithoutWarehouseInput[]
+    deleteMany?: ProductStockScalarWhereInput | ProductStockScalarWhereInput[]
+  }
+
+  export type MaterialStockUpdateManyWithoutWarehouseNestedInput = {
+    create?: XOR<MaterialStockCreateWithoutWarehouseInput, MaterialStockUncheckedCreateWithoutWarehouseInput> | MaterialStockCreateWithoutWarehouseInput[] | MaterialStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutWarehouseInput | MaterialStockCreateOrConnectWithoutWarehouseInput[]
+    upsert?: MaterialStockUpsertWithWhereUniqueWithoutWarehouseInput | MaterialStockUpsertWithWhereUniqueWithoutWarehouseInput[]
+    createMany?: MaterialStockCreateManyWarehouseInputEnvelope
+    set?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    disconnect?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    delete?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    connect?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    update?: MaterialStockUpdateWithWhereUniqueWithoutWarehouseInput | MaterialStockUpdateWithWhereUniqueWithoutWarehouseInput[]
+    updateMany?: MaterialStockUpdateManyWithWhereWithoutWarehouseInput | MaterialStockUpdateManyWithWhereWithoutWarehouseInput[]
+    deleteMany?: MaterialStockScalarWhereInput | MaterialStockScalarWhereInput[]
+  }
+
+  export type ProductStockUncheckedUpdateManyWithoutWarehouseNestedInput = {
+    create?: XOR<ProductStockCreateWithoutWarehouseInput, ProductStockUncheckedCreateWithoutWarehouseInput> | ProductStockCreateWithoutWarehouseInput[] | ProductStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: ProductStockCreateOrConnectWithoutWarehouseInput | ProductStockCreateOrConnectWithoutWarehouseInput[]
+    upsert?: ProductStockUpsertWithWhereUniqueWithoutWarehouseInput | ProductStockUpsertWithWhereUniqueWithoutWarehouseInput[]
+    createMany?: ProductStockCreateManyWarehouseInputEnvelope
+    set?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    disconnect?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    delete?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    connect?: ProductStockWhereUniqueInput | ProductStockWhereUniqueInput[]
+    update?: ProductStockUpdateWithWhereUniqueWithoutWarehouseInput | ProductStockUpdateWithWhereUniqueWithoutWarehouseInput[]
+    updateMany?: ProductStockUpdateManyWithWhereWithoutWarehouseInput | ProductStockUpdateManyWithWhereWithoutWarehouseInput[]
+    deleteMany?: ProductStockScalarWhereInput | ProductStockScalarWhereInput[]
+  }
+
+  export type MaterialStockUncheckedUpdateManyWithoutWarehouseNestedInput = {
+    create?: XOR<MaterialStockCreateWithoutWarehouseInput, MaterialStockUncheckedCreateWithoutWarehouseInput> | MaterialStockCreateWithoutWarehouseInput[] | MaterialStockUncheckedCreateWithoutWarehouseInput[]
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutWarehouseInput | MaterialStockCreateOrConnectWithoutWarehouseInput[]
+    upsert?: MaterialStockUpsertWithWhereUniqueWithoutWarehouseInput | MaterialStockUpsertWithWhereUniqueWithoutWarehouseInput[]
+    createMany?: MaterialStockCreateManyWarehouseInputEnvelope
+    set?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    disconnect?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    delete?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    connect?: MaterialStockWhereUniqueInput | MaterialStockWhereUniqueInput[]
+    update?: MaterialStockUpdateWithWhereUniqueWithoutWarehouseInput | MaterialStockUpdateWithWhereUniqueWithoutWarehouseInput[]
+    updateMany?: MaterialStockUpdateManyWithWhereWithoutWarehouseInput | MaterialStockUpdateManyWithWhereWithoutWarehouseInput[]
+    deleteMany?: MaterialStockScalarWhereInput | MaterialStockScalarWhereInput[]
+  }
+
+  export type WarehouseCreateNestedOneWithoutProductStocksInput = {
+    create?: XOR<WarehouseCreateWithoutProductStocksInput, WarehouseUncheckedCreateWithoutProductStocksInput>
+    connectOrCreate?: WarehouseCreateOrConnectWithoutProductStocksInput
     connect?: WarehouseWhereUniqueInput
   }
 
-  export type ProductCreateNestedOneWithoutStockItemInput = {
-    create?: XOR<ProductCreateWithoutStockItemInput, ProductUncheckedCreateWithoutStockItemInput>
-    connectOrCreate?: ProductCreateOrConnectWithoutStockItemInput
+  export type ProductCreateNestedOneWithoutProductStockInput = {
+    create?: XOR<ProductCreateWithoutProductStockInput, ProductUncheckedCreateWithoutProductStockInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutProductStockInput
     connect?: ProductWhereUniqueInput
   }
 
-  export type ProductMaterialCreateNestedManyWithoutStockItemInput = {
-    create?: XOR<ProductMaterialCreateWithoutStockItemInput, ProductMaterialUncheckedCreateWithoutStockItemInput> | ProductMaterialCreateWithoutStockItemInput[] | ProductMaterialUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: ProductMaterialCreateOrConnectWithoutStockItemInput | ProductMaterialCreateOrConnectWithoutStockItemInput[]
-    createMany?: ProductMaterialCreateManyStockItemInputEnvelope
-    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-  }
-
-  export type StockMovementCreateNestedManyWithoutStockItemInput = {
-    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
-    createMany?: StockMovementCreateManyStockItemInputEnvelope
+  export type StockMovementCreateNestedManyWithoutProductStockInput = {
+    create?: XOR<StockMovementCreateWithoutProductStockInput, StockMovementUncheckedCreateWithoutProductStockInput> | StockMovementCreateWithoutProductStockInput[] | StockMovementUncheckedCreateWithoutProductStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutProductStockInput | StockMovementCreateOrConnectWithoutProductStockInput[]
+    createMany?: StockMovementCreateManyProductStockInputEnvelope
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
   }
 
-  export type StockRequestLineCreateNestedManyWithoutStockItemInput = {
-    create?: XOR<StockRequestLineCreateWithoutStockItemInput, StockRequestLineUncheckedCreateWithoutStockItemInput> | StockRequestLineCreateWithoutStockItemInput[] | StockRequestLineUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockRequestLineCreateOrConnectWithoutStockItemInput | StockRequestLineCreateOrConnectWithoutStockItemInput[]
-    createMany?: StockRequestLineCreateManyStockItemInputEnvelope
-    connect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
-  }
-
-  export type ProductUncheckedCreateNestedOneWithoutStockItemInput = {
-    create?: XOR<ProductCreateWithoutStockItemInput, ProductUncheckedCreateWithoutStockItemInput>
-    connectOrCreate?: ProductCreateOrConnectWithoutStockItemInput
+  export type ProductUncheckedCreateNestedOneWithoutProductStockInput = {
+    create?: XOR<ProductCreateWithoutProductStockInput, ProductUncheckedCreateWithoutProductStockInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutProductStockInput
     connect?: ProductWhereUniqueInput
   }
 
-  export type ProductMaterialUncheckedCreateNestedManyWithoutStockItemInput = {
-    create?: XOR<ProductMaterialCreateWithoutStockItemInput, ProductMaterialUncheckedCreateWithoutStockItemInput> | ProductMaterialCreateWithoutStockItemInput[] | ProductMaterialUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: ProductMaterialCreateOrConnectWithoutStockItemInput | ProductMaterialCreateOrConnectWithoutStockItemInput[]
-    createMany?: ProductMaterialCreateManyStockItemInputEnvelope
-    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-  }
-
-  export type StockMovementUncheckedCreateNestedManyWithoutStockItemInput = {
-    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
-    createMany?: StockMovementCreateManyStockItemInputEnvelope
+  export type StockMovementUncheckedCreateNestedManyWithoutProductStockInput = {
+    create?: XOR<StockMovementCreateWithoutProductStockInput, StockMovementUncheckedCreateWithoutProductStockInput> | StockMovementCreateWithoutProductStockInput[] | StockMovementUncheckedCreateWithoutProductStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutProductStockInput | StockMovementCreateOrConnectWithoutProductStockInput[]
+    createMany?: StockMovementCreateManyProductStockInputEnvelope
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
-  }
-
-  export type StockRequestLineUncheckedCreateNestedManyWithoutStockItemInput = {
-    create?: XOR<StockRequestLineCreateWithoutStockItemInput, StockRequestLineUncheckedCreateWithoutStockItemInput> | StockRequestLineCreateWithoutStockItemInput[] | StockRequestLineUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockRequestLineCreateOrConnectWithoutStockItemInput | StockRequestLineCreateOrConnectWithoutStockItemInput[]
-    createMany?: StockRequestLineCreateManyStockItemInputEnvelope
-    connect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
-  }
-
-  export type EnumInventoryItemTypeFieldUpdateOperationsInput = {
-    set?: $Enums.InventoryItemType
   }
 
   export type EnumStockStateFieldUpdateOperationsInput = {
     set?: $Enums.StockState
   }
 
-  export type WarehouseUpdateOneRequiredWithoutStockItemsNestedInput = {
-    create?: XOR<WarehouseCreateWithoutStockItemsInput, WarehouseUncheckedCreateWithoutStockItemsInput>
-    connectOrCreate?: WarehouseCreateOrConnectWithoutStockItemsInput
-    upsert?: WarehouseUpsertWithoutStockItemsInput
+  export type WarehouseUpdateOneRequiredWithoutProductStocksNestedInput = {
+    create?: XOR<WarehouseCreateWithoutProductStocksInput, WarehouseUncheckedCreateWithoutProductStocksInput>
+    connectOrCreate?: WarehouseCreateOrConnectWithoutProductStocksInput
+    upsert?: WarehouseUpsertWithoutProductStocksInput
     connect?: WarehouseWhereUniqueInput
-    update?: XOR<XOR<WarehouseUpdateToOneWithWhereWithoutStockItemsInput, WarehouseUpdateWithoutStockItemsInput>, WarehouseUncheckedUpdateWithoutStockItemsInput>
+    update?: XOR<XOR<WarehouseUpdateToOneWithWhereWithoutProductStocksInput, WarehouseUpdateWithoutProductStocksInput>, WarehouseUncheckedUpdateWithoutProductStocksInput>
   }
 
-  export type ProductUpdateOneWithoutStockItemNestedInput = {
-    create?: XOR<ProductCreateWithoutStockItemInput, ProductUncheckedCreateWithoutStockItemInput>
-    connectOrCreate?: ProductCreateOrConnectWithoutStockItemInput
-    upsert?: ProductUpsertWithoutStockItemInput
+  export type ProductUpdateOneWithoutProductStockNestedInput = {
+    create?: XOR<ProductCreateWithoutProductStockInput, ProductUncheckedCreateWithoutProductStockInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutProductStockInput
+    upsert?: ProductUpsertWithoutProductStockInput
     disconnect?: ProductWhereInput | boolean
     delete?: ProductWhereInput | boolean
     connect?: ProductWhereUniqueInput
-    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutStockItemInput, ProductUpdateWithoutStockItemInput>, ProductUncheckedUpdateWithoutStockItemInput>
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutProductStockInput, ProductUpdateWithoutProductStockInput>, ProductUncheckedUpdateWithoutProductStockInput>
   }
 
-  export type ProductMaterialUpdateManyWithoutStockItemNestedInput = {
-    create?: XOR<ProductMaterialCreateWithoutStockItemInput, ProductMaterialUncheckedCreateWithoutStockItemInput> | ProductMaterialCreateWithoutStockItemInput[] | ProductMaterialUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: ProductMaterialCreateOrConnectWithoutStockItemInput | ProductMaterialCreateOrConnectWithoutStockItemInput[]
-    upsert?: ProductMaterialUpsertWithWhereUniqueWithoutStockItemInput | ProductMaterialUpsertWithWhereUniqueWithoutStockItemInput[]
-    createMany?: ProductMaterialCreateManyStockItemInputEnvelope
-    set?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    disconnect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    delete?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    update?: ProductMaterialUpdateWithWhereUniqueWithoutStockItemInput | ProductMaterialUpdateWithWhereUniqueWithoutStockItemInput[]
-    updateMany?: ProductMaterialUpdateManyWithWhereWithoutStockItemInput | ProductMaterialUpdateManyWithWhereWithoutStockItemInput[]
-    deleteMany?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
-  }
-
-  export type StockMovementUpdateManyWithoutStockItemNestedInput = {
-    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
-    upsert?: StockMovementUpsertWithWhereUniqueWithoutStockItemInput | StockMovementUpsertWithWhereUniqueWithoutStockItemInput[]
-    createMany?: StockMovementCreateManyStockItemInputEnvelope
+  export type StockMovementUpdateManyWithoutProductStockNestedInput = {
+    create?: XOR<StockMovementCreateWithoutProductStockInput, StockMovementUncheckedCreateWithoutProductStockInput> | StockMovementCreateWithoutProductStockInput[] | StockMovementUncheckedCreateWithoutProductStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutProductStockInput | StockMovementCreateOrConnectWithoutProductStockInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutProductStockInput | StockMovementUpsertWithWhereUniqueWithoutProductStockInput[]
+    createMany?: StockMovementCreateManyProductStockInputEnvelope
     set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
     disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
     delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
-    update?: StockMovementUpdateWithWhereUniqueWithoutStockItemInput | StockMovementUpdateWithWhereUniqueWithoutStockItemInput[]
-    updateMany?: StockMovementUpdateManyWithWhereWithoutStockItemInput | StockMovementUpdateManyWithWhereWithoutStockItemInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutProductStockInput | StockMovementUpdateWithWhereUniqueWithoutProductStockInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutProductStockInput | StockMovementUpdateManyWithWhereWithoutProductStockInput[]
     deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
-  export type StockRequestLineUpdateManyWithoutStockItemNestedInput = {
-    create?: XOR<StockRequestLineCreateWithoutStockItemInput, StockRequestLineUncheckedCreateWithoutStockItemInput> | StockRequestLineCreateWithoutStockItemInput[] | StockRequestLineUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockRequestLineCreateOrConnectWithoutStockItemInput | StockRequestLineCreateOrConnectWithoutStockItemInput[]
-    upsert?: StockRequestLineUpsertWithWhereUniqueWithoutStockItemInput | StockRequestLineUpsertWithWhereUniqueWithoutStockItemInput[]
-    createMany?: StockRequestLineCreateManyStockItemInputEnvelope
-    set?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
-    disconnect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
-    delete?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
-    connect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
-    update?: StockRequestLineUpdateWithWhereUniqueWithoutStockItemInput | StockRequestLineUpdateWithWhereUniqueWithoutStockItemInput[]
-    updateMany?: StockRequestLineUpdateManyWithWhereWithoutStockItemInput | StockRequestLineUpdateManyWithWhereWithoutStockItemInput[]
-    deleteMany?: StockRequestLineScalarWhereInput | StockRequestLineScalarWhereInput[]
-  }
-
-  export type ProductUncheckedUpdateOneWithoutStockItemNestedInput = {
-    create?: XOR<ProductCreateWithoutStockItemInput, ProductUncheckedCreateWithoutStockItemInput>
-    connectOrCreate?: ProductCreateOrConnectWithoutStockItemInput
-    upsert?: ProductUpsertWithoutStockItemInput
+  export type ProductUncheckedUpdateOneWithoutProductStockNestedInput = {
+    create?: XOR<ProductCreateWithoutProductStockInput, ProductUncheckedCreateWithoutProductStockInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutProductStockInput
+    upsert?: ProductUpsertWithoutProductStockInput
     disconnect?: ProductWhereInput | boolean
     delete?: ProductWhereInput | boolean
     connect?: ProductWhereUniqueInput
-    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutStockItemInput, ProductUpdateWithoutStockItemInput>, ProductUncheckedUpdateWithoutStockItemInput>
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutProductStockInput, ProductUpdateWithoutProductStockInput>, ProductUncheckedUpdateWithoutProductStockInput>
   }
 
-  export type ProductMaterialUncheckedUpdateManyWithoutStockItemNestedInput = {
-    create?: XOR<ProductMaterialCreateWithoutStockItemInput, ProductMaterialUncheckedCreateWithoutStockItemInput> | ProductMaterialCreateWithoutStockItemInput[] | ProductMaterialUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: ProductMaterialCreateOrConnectWithoutStockItemInput | ProductMaterialCreateOrConnectWithoutStockItemInput[]
-    upsert?: ProductMaterialUpsertWithWhereUniqueWithoutStockItemInput | ProductMaterialUpsertWithWhereUniqueWithoutStockItemInput[]
-    createMany?: ProductMaterialCreateManyStockItemInputEnvelope
-    set?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    disconnect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    delete?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
-    update?: ProductMaterialUpdateWithWhereUniqueWithoutStockItemInput | ProductMaterialUpdateWithWhereUniqueWithoutStockItemInput[]
-    updateMany?: ProductMaterialUpdateManyWithWhereWithoutStockItemInput | ProductMaterialUpdateManyWithWhereWithoutStockItemInput[]
-    deleteMany?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
-  }
-
-  export type StockMovementUncheckedUpdateManyWithoutStockItemNestedInput = {
-    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
-    upsert?: StockMovementUpsertWithWhereUniqueWithoutStockItemInput | StockMovementUpsertWithWhereUniqueWithoutStockItemInput[]
-    createMany?: StockMovementCreateManyStockItemInputEnvelope
+  export type StockMovementUncheckedUpdateManyWithoutProductStockNestedInput = {
+    create?: XOR<StockMovementCreateWithoutProductStockInput, StockMovementUncheckedCreateWithoutProductStockInput> | StockMovementCreateWithoutProductStockInput[] | StockMovementUncheckedCreateWithoutProductStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutProductStockInput | StockMovementCreateOrConnectWithoutProductStockInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutProductStockInput | StockMovementUpsertWithWhereUniqueWithoutProductStockInput[]
+    createMany?: StockMovementCreateManyProductStockInputEnvelope
     set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
     disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
     delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
-    update?: StockMovementUpdateWithWhereUniqueWithoutStockItemInput | StockMovementUpdateWithWhereUniqueWithoutStockItemInput[]
-    updateMany?: StockMovementUpdateManyWithWhereWithoutStockItemInput | StockMovementUpdateManyWithWhereWithoutStockItemInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutProductStockInput | StockMovementUpdateWithWhereUniqueWithoutProductStockInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutProductStockInput | StockMovementUpdateManyWithWhereWithoutProductStockInput[]
     deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
-  export type StockRequestLineUncheckedUpdateManyWithoutStockItemNestedInput = {
-    create?: XOR<StockRequestLineCreateWithoutStockItemInput, StockRequestLineUncheckedCreateWithoutStockItemInput> | StockRequestLineCreateWithoutStockItemInput[] | StockRequestLineUncheckedCreateWithoutStockItemInput[]
-    connectOrCreate?: StockRequestLineCreateOrConnectWithoutStockItemInput | StockRequestLineCreateOrConnectWithoutStockItemInput[]
-    upsert?: StockRequestLineUpsertWithWhereUniqueWithoutStockItemInput | StockRequestLineUpsertWithWhereUniqueWithoutStockItemInput[]
-    createMany?: StockRequestLineCreateManyStockItemInputEnvelope
+  export type WarehouseCreateNestedOneWithoutMaterialStocksInput = {
+    create?: XOR<WarehouseCreateWithoutMaterialStocksInput, WarehouseUncheckedCreateWithoutMaterialStocksInput>
+    connectOrCreate?: WarehouseCreateOrConnectWithoutMaterialStocksInput
+    connect?: WarehouseWhereUniqueInput
+  }
+
+  export type ProductMaterialCreateNestedManyWithoutMaterialStockInput = {
+    create?: XOR<ProductMaterialCreateWithoutMaterialStockInput, ProductMaterialUncheckedCreateWithoutMaterialStockInput> | ProductMaterialCreateWithoutMaterialStockInput[] | ProductMaterialUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: ProductMaterialCreateOrConnectWithoutMaterialStockInput | ProductMaterialCreateOrConnectWithoutMaterialStockInput[]
+    createMany?: ProductMaterialCreateManyMaterialStockInputEnvelope
+    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+  }
+
+  export type StockMovementCreateNestedManyWithoutMaterialStockInput = {
+    create?: XOR<StockMovementCreateWithoutMaterialStockInput, StockMovementUncheckedCreateWithoutMaterialStockInput> | StockMovementCreateWithoutMaterialStockInput[] | StockMovementUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutMaterialStockInput | StockMovementCreateOrConnectWithoutMaterialStockInput[]
+    createMany?: StockMovementCreateManyMaterialStockInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+  }
+
+  export type StockRequestLineCreateNestedManyWithoutMaterialStockInput = {
+    create?: XOR<StockRequestLineCreateWithoutMaterialStockInput, StockRequestLineUncheckedCreateWithoutMaterialStockInput> | StockRequestLineCreateWithoutMaterialStockInput[] | StockRequestLineUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockRequestLineCreateOrConnectWithoutMaterialStockInput | StockRequestLineCreateOrConnectWithoutMaterialStockInput[]
+    createMany?: StockRequestLineCreateManyMaterialStockInputEnvelope
+    connect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
+  }
+
+  export type ProductMaterialUncheckedCreateNestedManyWithoutMaterialStockInput = {
+    create?: XOR<ProductMaterialCreateWithoutMaterialStockInput, ProductMaterialUncheckedCreateWithoutMaterialStockInput> | ProductMaterialCreateWithoutMaterialStockInput[] | ProductMaterialUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: ProductMaterialCreateOrConnectWithoutMaterialStockInput | ProductMaterialCreateOrConnectWithoutMaterialStockInput[]
+    createMany?: ProductMaterialCreateManyMaterialStockInputEnvelope
+    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+  }
+
+  export type StockMovementUncheckedCreateNestedManyWithoutMaterialStockInput = {
+    create?: XOR<StockMovementCreateWithoutMaterialStockInput, StockMovementUncheckedCreateWithoutMaterialStockInput> | StockMovementCreateWithoutMaterialStockInput[] | StockMovementUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutMaterialStockInput | StockMovementCreateOrConnectWithoutMaterialStockInput[]
+    createMany?: StockMovementCreateManyMaterialStockInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+  }
+
+  export type StockRequestLineUncheckedCreateNestedManyWithoutMaterialStockInput = {
+    create?: XOR<StockRequestLineCreateWithoutMaterialStockInput, StockRequestLineUncheckedCreateWithoutMaterialStockInput> | StockRequestLineCreateWithoutMaterialStockInput[] | StockRequestLineUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockRequestLineCreateOrConnectWithoutMaterialStockInput | StockRequestLineCreateOrConnectWithoutMaterialStockInput[]
+    createMany?: StockRequestLineCreateManyMaterialStockInputEnvelope
+    connect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
+  }
+
+  export type WarehouseUpdateOneRequiredWithoutMaterialStocksNestedInput = {
+    create?: XOR<WarehouseCreateWithoutMaterialStocksInput, WarehouseUncheckedCreateWithoutMaterialStocksInput>
+    connectOrCreate?: WarehouseCreateOrConnectWithoutMaterialStocksInput
+    upsert?: WarehouseUpsertWithoutMaterialStocksInput
+    connect?: WarehouseWhereUniqueInput
+    update?: XOR<XOR<WarehouseUpdateToOneWithWhereWithoutMaterialStocksInput, WarehouseUpdateWithoutMaterialStocksInput>, WarehouseUncheckedUpdateWithoutMaterialStocksInput>
+  }
+
+  export type ProductMaterialUpdateManyWithoutMaterialStockNestedInput = {
+    create?: XOR<ProductMaterialCreateWithoutMaterialStockInput, ProductMaterialUncheckedCreateWithoutMaterialStockInput> | ProductMaterialCreateWithoutMaterialStockInput[] | ProductMaterialUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: ProductMaterialCreateOrConnectWithoutMaterialStockInput | ProductMaterialCreateOrConnectWithoutMaterialStockInput[]
+    upsert?: ProductMaterialUpsertWithWhereUniqueWithoutMaterialStockInput | ProductMaterialUpsertWithWhereUniqueWithoutMaterialStockInput[]
+    createMany?: ProductMaterialCreateManyMaterialStockInputEnvelope
+    set?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    disconnect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    delete?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    update?: ProductMaterialUpdateWithWhereUniqueWithoutMaterialStockInput | ProductMaterialUpdateWithWhereUniqueWithoutMaterialStockInput[]
+    updateMany?: ProductMaterialUpdateManyWithWhereWithoutMaterialStockInput | ProductMaterialUpdateManyWithWhereWithoutMaterialStockInput[]
+    deleteMany?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
+  }
+
+  export type StockMovementUpdateManyWithoutMaterialStockNestedInput = {
+    create?: XOR<StockMovementCreateWithoutMaterialStockInput, StockMovementUncheckedCreateWithoutMaterialStockInput> | StockMovementCreateWithoutMaterialStockInput[] | StockMovementUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutMaterialStockInput | StockMovementCreateOrConnectWithoutMaterialStockInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutMaterialStockInput | StockMovementUpsertWithWhereUniqueWithoutMaterialStockInput[]
+    createMany?: StockMovementCreateManyMaterialStockInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutMaterialStockInput | StockMovementUpdateWithWhereUniqueWithoutMaterialStockInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutMaterialStockInput | StockMovementUpdateManyWithWhereWithoutMaterialStockInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+  }
+
+  export type StockRequestLineUpdateManyWithoutMaterialStockNestedInput = {
+    create?: XOR<StockRequestLineCreateWithoutMaterialStockInput, StockRequestLineUncheckedCreateWithoutMaterialStockInput> | StockRequestLineCreateWithoutMaterialStockInput[] | StockRequestLineUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockRequestLineCreateOrConnectWithoutMaterialStockInput | StockRequestLineCreateOrConnectWithoutMaterialStockInput[]
+    upsert?: StockRequestLineUpsertWithWhereUniqueWithoutMaterialStockInput | StockRequestLineUpsertWithWhereUniqueWithoutMaterialStockInput[]
+    createMany?: StockRequestLineCreateManyMaterialStockInputEnvelope
     set?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
     disconnect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
     delete?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
     connect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
-    update?: StockRequestLineUpdateWithWhereUniqueWithoutStockItemInput | StockRequestLineUpdateWithWhereUniqueWithoutStockItemInput[]
-    updateMany?: StockRequestLineUpdateManyWithWhereWithoutStockItemInput | StockRequestLineUpdateManyWithWhereWithoutStockItemInput[]
+    update?: StockRequestLineUpdateWithWhereUniqueWithoutMaterialStockInput | StockRequestLineUpdateWithWhereUniqueWithoutMaterialStockInput[]
+    updateMany?: StockRequestLineUpdateManyWithWhereWithoutMaterialStockInput | StockRequestLineUpdateManyWithWhereWithoutMaterialStockInput[]
     deleteMany?: StockRequestLineScalarWhereInput | StockRequestLineScalarWhereInput[]
   }
 
-  export type StockItemCreateNestedOneWithoutProductInput = {
-    create?: XOR<StockItemCreateWithoutProductInput, StockItemUncheckedCreateWithoutProductInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutProductInput
-    connect?: StockItemWhereUniqueInput
+  export type ProductMaterialUncheckedUpdateManyWithoutMaterialStockNestedInput = {
+    create?: XOR<ProductMaterialCreateWithoutMaterialStockInput, ProductMaterialUncheckedCreateWithoutMaterialStockInput> | ProductMaterialCreateWithoutMaterialStockInput[] | ProductMaterialUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: ProductMaterialCreateOrConnectWithoutMaterialStockInput | ProductMaterialCreateOrConnectWithoutMaterialStockInput[]
+    upsert?: ProductMaterialUpsertWithWhereUniqueWithoutMaterialStockInput | ProductMaterialUpsertWithWhereUniqueWithoutMaterialStockInput[]
+    createMany?: ProductMaterialCreateManyMaterialStockInputEnvelope
+    set?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    disconnect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    delete?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    connect?: ProductMaterialWhereUniqueInput | ProductMaterialWhereUniqueInput[]
+    update?: ProductMaterialUpdateWithWhereUniqueWithoutMaterialStockInput | ProductMaterialUpdateWithWhereUniqueWithoutMaterialStockInput[]
+    updateMany?: ProductMaterialUpdateManyWithWhereWithoutMaterialStockInput | ProductMaterialUpdateManyWithWhereWithoutMaterialStockInput[]
+    deleteMany?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutMaterialStockNestedInput = {
+    create?: XOR<StockMovementCreateWithoutMaterialStockInput, StockMovementUncheckedCreateWithoutMaterialStockInput> | StockMovementCreateWithoutMaterialStockInput[] | StockMovementUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutMaterialStockInput | StockMovementCreateOrConnectWithoutMaterialStockInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutMaterialStockInput | StockMovementUpsertWithWhereUniqueWithoutMaterialStockInput[]
+    createMany?: StockMovementCreateManyMaterialStockInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutMaterialStockInput | StockMovementUpdateWithWhereUniqueWithoutMaterialStockInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutMaterialStockInput | StockMovementUpdateManyWithWhereWithoutMaterialStockInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+  }
+
+  export type StockRequestLineUncheckedUpdateManyWithoutMaterialStockNestedInput = {
+    create?: XOR<StockRequestLineCreateWithoutMaterialStockInput, StockRequestLineUncheckedCreateWithoutMaterialStockInput> | StockRequestLineCreateWithoutMaterialStockInput[] | StockRequestLineUncheckedCreateWithoutMaterialStockInput[]
+    connectOrCreate?: StockRequestLineCreateOrConnectWithoutMaterialStockInput | StockRequestLineCreateOrConnectWithoutMaterialStockInput[]
+    upsert?: StockRequestLineUpsertWithWhereUniqueWithoutMaterialStockInput | StockRequestLineUpsertWithWhereUniqueWithoutMaterialStockInput[]
+    createMany?: StockRequestLineCreateManyMaterialStockInputEnvelope
+    set?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
+    disconnect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
+    delete?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
+    connect?: StockRequestLineWhereUniqueInput | StockRequestLineWhereUniqueInput[]
+    update?: StockRequestLineUpdateWithWhereUniqueWithoutMaterialStockInput | StockRequestLineUpdateWithWhereUniqueWithoutMaterialStockInput[]
+    updateMany?: StockRequestLineUpdateManyWithWhereWithoutMaterialStockInput | StockRequestLineUpdateManyWithWhereWithoutMaterialStockInput[]
+    deleteMany?: StockRequestLineScalarWhereInput | StockRequestLineScalarWhereInput[]
+  }
+
+  export type ProductStockCreateNestedOneWithoutProductInput = {
+    create?: XOR<ProductStockCreateWithoutProductInput, ProductStockUncheckedCreateWithoutProductInput>
+    connectOrCreate?: ProductStockCreateOrConnectWithoutProductInput
+    connect?: ProductStockWhereUniqueInput
   }
 
   export type ProductMaterialCreateNestedManyWithoutProductInput = {
@@ -47859,12 +49648,12 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type StockItemUpdateOneRequiredWithoutProductNestedInput = {
-    create?: XOR<StockItemCreateWithoutProductInput, StockItemUncheckedCreateWithoutProductInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutProductInput
-    upsert?: StockItemUpsertWithoutProductInput
-    connect?: StockItemWhereUniqueInput
-    update?: XOR<XOR<StockItemUpdateToOneWithWhereWithoutProductInput, StockItemUpdateWithoutProductInput>, StockItemUncheckedUpdateWithoutProductInput>
+  export type ProductStockUpdateOneRequiredWithoutProductNestedInput = {
+    create?: XOR<ProductStockCreateWithoutProductInput, ProductStockUncheckedCreateWithoutProductInput>
+    connectOrCreate?: ProductStockCreateOrConnectWithoutProductInput
+    upsert?: ProductStockUpsertWithoutProductInput
+    connect?: ProductStockWhereUniqueInput
+    update?: XOR<XOR<ProductStockUpdateToOneWithWhereWithoutProductInput, ProductStockUpdateWithoutProductInput>, ProductStockUncheckedUpdateWithoutProductInput>
   }
 
   export type ProductMaterialUpdateManyWithoutProductNestedInput = {
@@ -48105,10 +49894,10 @@ export namespace Prisma {
     connect?: ProductWhereUniqueInput
   }
 
-  export type StockItemCreateNestedOneWithoutMaterialForInput = {
-    create?: XOR<StockItemCreateWithoutMaterialForInput, StockItemUncheckedCreateWithoutMaterialForInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutMaterialForInput
-    connect?: StockItemWhereUniqueInput
+  export type MaterialStockCreateNestedOneWithoutMaterialForInput = {
+    create?: XOR<MaterialStockCreateWithoutMaterialForInput, MaterialStockUncheckedCreateWithoutMaterialForInput>
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutMaterialForInput
+    connect?: MaterialStockWhereUniqueInput
   }
 
   export type ProductUpdateOneRequiredWithoutMaterialsNestedInput = {
@@ -48119,30 +49908,48 @@ export namespace Prisma {
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutMaterialsInput, ProductUpdateWithoutMaterialsInput>, ProductUncheckedUpdateWithoutMaterialsInput>
   }
 
-  export type StockItemUpdateOneRequiredWithoutMaterialForNestedInput = {
-    create?: XOR<StockItemCreateWithoutMaterialForInput, StockItemUncheckedCreateWithoutMaterialForInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutMaterialForInput
-    upsert?: StockItemUpsertWithoutMaterialForInput
-    connect?: StockItemWhereUniqueInput
-    update?: XOR<XOR<StockItemUpdateToOneWithWhereWithoutMaterialForInput, StockItemUpdateWithoutMaterialForInput>, StockItemUncheckedUpdateWithoutMaterialForInput>
+  export type MaterialStockUpdateOneRequiredWithoutMaterialForNestedInput = {
+    create?: XOR<MaterialStockCreateWithoutMaterialForInput, MaterialStockUncheckedCreateWithoutMaterialForInput>
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutMaterialForInput
+    upsert?: MaterialStockUpsertWithoutMaterialForInput
+    connect?: MaterialStockWhereUniqueInput
+    update?: XOR<XOR<MaterialStockUpdateToOneWithWhereWithoutMaterialForInput, MaterialStockUpdateWithoutMaterialForInput>, MaterialStockUncheckedUpdateWithoutMaterialForInput>
   }
 
-  export type StockItemCreateNestedOneWithoutStockMovementsInput = {
-    create?: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutStockMovementsInput
-    connect?: StockItemWhereUniqueInput
+  export type MaterialStockCreateNestedOneWithoutStockMovementsInput = {
+    create?: XOR<MaterialStockCreateWithoutStockMovementsInput, MaterialStockUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutStockMovementsInput
+    connect?: MaterialStockWhereUniqueInput
+  }
+
+  export type ProductStockCreateNestedOneWithoutStockMovementsInput = {
+    create?: XOR<ProductStockCreateWithoutStockMovementsInput, ProductStockUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: ProductStockCreateOrConnectWithoutStockMovementsInput
+    connect?: ProductStockWhereUniqueInput
   }
 
   export type EnumStockMovementTypeFieldUpdateOperationsInput = {
     set?: $Enums.StockMovementType
   }
 
-  export type StockItemUpdateOneRequiredWithoutStockMovementsNestedInput = {
-    create?: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutStockMovementsInput
-    upsert?: StockItemUpsertWithoutStockMovementsInput
-    connect?: StockItemWhereUniqueInput
-    update?: XOR<XOR<StockItemUpdateToOneWithWhereWithoutStockMovementsInput, StockItemUpdateWithoutStockMovementsInput>, StockItemUncheckedUpdateWithoutStockMovementsInput>
+  export type MaterialStockUpdateOneWithoutStockMovementsNestedInput = {
+    create?: XOR<MaterialStockCreateWithoutStockMovementsInput, MaterialStockUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutStockMovementsInput
+    upsert?: MaterialStockUpsertWithoutStockMovementsInput
+    disconnect?: MaterialStockWhereInput | boolean
+    delete?: MaterialStockWhereInput | boolean
+    connect?: MaterialStockWhereUniqueInput
+    update?: XOR<XOR<MaterialStockUpdateToOneWithWhereWithoutStockMovementsInput, MaterialStockUpdateWithoutStockMovementsInput>, MaterialStockUncheckedUpdateWithoutStockMovementsInput>
+  }
+
+  export type ProductStockUpdateOneWithoutStockMovementsNestedInput = {
+    create?: XOR<ProductStockCreateWithoutStockMovementsInput, ProductStockUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: ProductStockCreateOrConnectWithoutStockMovementsInput
+    upsert?: ProductStockUpsertWithoutStockMovementsInput
+    disconnect?: ProductStockWhereInput | boolean
+    delete?: ProductStockWhereInput | boolean
+    connect?: ProductStockWhereUniqueInput
+    update?: XOR<XOR<ProductStockUpdateToOneWithWhereWithoutStockMovementsInput, ProductStockUpdateWithoutStockMovementsInput>, ProductStockUncheckedUpdateWithoutStockMovementsInput>
   }
 
   export type SalesOrderCreateNestedOneWithoutStockRequestsInput = {
@@ -48237,10 +50044,10 @@ export namespace Prisma {
     connect?: StockRequestWhereUniqueInput
   }
 
-  export type StockItemCreateNestedOneWithoutStockRequestLinesInput = {
-    create?: XOR<StockItemCreateWithoutStockRequestLinesInput, StockItemUncheckedCreateWithoutStockRequestLinesInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutStockRequestLinesInput
-    connect?: StockItemWhereUniqueInput
+  export type MaterialStockCreateNestedOneWithoutStockRequestLinesInput = {
+    create?: XOR<MaterialStockCreateWithoutStockRequestLinesInput, MaterialStockUncheckedCreateWithoutStockRequestLinesInput>
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutStockRequestLinesInput
+    connect?: MaterialStockWhereUniqueInput
   }
 
   export type EnumStockAvailabilityStatusFieldUpdateOperationsInput = {
@@ -48255,12 +50062,12 @@ export namespace Prisma {
     update?: XOR<XOR<StockRequestUpdateToOneWithWhereWithoutLineItemsInput, StockRequestUpdateWithoutLineItemsInput>, StockRequestUncheckedUpdateWithoutLineItemsInput>
   }
 
-  export type StockItemUpdateOneRequiredWithoutStockRequestLinesNestedInput = {
-    create?: XOR<StockItemCreateWithoutStockRequestLinesInput, StockItemUncheckedCreateWithoutStockRequestLinesInput>
-    connectOrCreate?: StockItemCreateOrConnectWithoutStockRequestLinesInput
-    upsert?: StockItemUpsertWithoutStockRequestLinesInput
-    connect?: StockItemWhereUniqueInput
-    update?: XOR<XOR<StockItemUpdateToOneWithWhereWithoutStockRequestLinesInput, StockItemUpdateWithoutStockRequestLinesInput>, StockItemUncheckedUpdateWithoutStockRequestLinesInput>
+  export type MaterialStockUpdateOneRequiredWithoutStockRequestLinesNestedInput = {
+    create?: XOR<MaterialStockCreateWithoutStockRequestLinesInput, MaterialStockUncheckedCreateWithoutStockRequestLinesInput>
+    connectOrCreate?: MaterialStockCreateOrConnectWithoutStockRequestLinesInput
+    upsert?: MaterialStockUpsertWithoutStockRequestLinesInput
+    connect?: MaterialStockWhereUniqueInput
+    update?: XOR<XOR<MaterialStockUpdateToOneWithWhereWithoutStockRequestLinesInput, MaterialStockUpdateWithoutStockRequestLinesInput>, MaterialStockUncheckedUpdateWithoutStockRequestLinesInput>
   }
 
   export type SalesOrderCreateNestedOneWithoutDesignRequestsInput = {
@@ -49034,28 +50841,11 @@ export namespace Prisma {
     _max?: NestedEnumDeliveryStatusFilter<$PrismaModel>
   }
 
-  export type NestedEnumInventoryItemTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.InventoryItemType | EnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumInventoryItemTypeFilter<$PrismaModel> | $Enums.InventoryItemType
-  }
-
   export type NestedEnumStockStateFilter<$PrismaModel = never> = {
     equals?: $Enums.StockState | EnumStockStateFieldRefInput<$PrismaModel>
     in?: $Enums.StockState[] | ListEnumStockStateFieldRefInput<$PrismaModel>
     notIn?: $Enums.StockState[] | ListEnumStockStateFieldRefInput<$PrismaModel>
     not?: NestedEnumStockStateFilter<$PrismaModel> | $Enums.StockState
-  }
-
-  export type NestedEnumInventoryItemTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.InventoryItemType | EnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.InventoryItemType[] | ListEnumInventoryItemTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumInventoryItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.InventoryItemType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumInventoryItemTypeFilter<$PrismaModel>
-    _max?: NestedEnumInventoryItemTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumStockStateWithAggregatesFilter<$PrismaModel = never> = {
@@ -52463,11 +54253,10 @@ export namespace Prisma {
     deliverySchedules?: DeliveryScheduleUncheckedUpdateManyWithoutSalesOrderNestedInput
   }
 
-  export type StockItemCreateWithoutWarehouseInput = {
+  export type ProductStockCreateWithoutWarehouseInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -52476,17 +54265,14 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    product?: ProductCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineCreateNestedManyWithoutStockItemInput
+    product?: ProductCreateNestedOneWithoutProductStockInput
+    stockMovements?: StockMovementCreateNestedManyWithoutProductStockInput
   }
 
-  export type StockItemUncheckedCreateWithoutWarehouseInput = {
+  export type ProductStockUncheckedCreateWithoutWarehouseInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -52495,81 +54281,158 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    product?: ProductUncheckedCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutStockItemInput
+    product?: ProductUncheckedCreateNestedOneWithoutProductStockInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutProductStockInput
   }
 
-  export type StockItemCreateOrConnectWithoutWarehouseInput = {
-    where: StockItemWhereUniqueInput
-    create: XOR<StockItemCreateWithoutWarehouseInput, StockItemUncheckedCreateWithoutWarehouseInput>
+  export type ProductStockCreateOrConnectWithoutWarehouseInput = {
+    where: ProductStockWhereUniqueInput
+    create: XOR<ProductStockCreateWithoutWarehouseInput, ProductStockUncheckedCreateWithoutWarehouseInput>
   }
 
-  export type StockItemCreateManyWarehouseInputEnvelope = {
-    data: StockItemCreateManyWarehouseInput | StockItemCreateManyWarehouseInput[]
+  export type ProductStockCreateManyWarehouseInputEnvelope = {
+    data: ProductStockCreateManyWarehouseInput | ProductStockCreateManyWarehouseInput[]
     skipDuplicates?: boolean
   }
 
-  export type StockItemUpsertWithWhereUniqueWithoutWarehouseInput = {
-    where: StockItemWhereUniqueInput
-    update: XOR<StockItemUpdateWithoutWarehouseInput, StockItemUncheckedUpdateWithoutWarehouseInput>
-    create: XOR<StockItemCreateWithoutWarehouseInput, StockItemUncheckedCreateWithoutWarehouseInput>
+  export type MaterialStockCreateWithoutWarehouseInput = {
+    id?: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    materialFor?: ProductMaterialCreateNestedManyWithoutMaterialStockInput
+    stockMovements?: StockMovementCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemUpdateWithWhereUniqueWithoutWarehouseInput = {
-    where: StockItemWhereUniqueInput
-    data: XOR<StockItemUpdateWithoutWarehouseInput, StockItemUncheckedUpdateWithoutWarehouseInput>
+  export type MaterialStockUncheckedCreateWithoutWarehouseInput = {
+    id?: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutMaterialStockInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemUpdateManyWithWhereWithoutWarehouseInput = {
-    where: StockItemScalarWhereInput
-    data: XOR<StockItemUpdateManyMutationInput, StockItemUncheckedUpdateManyWithoutWarehouseInput>
+  export type MaterialStockCreateOrConnectWithoutWarehouseInput = {
+    where: MaterialStockWhereUniqueInput
+    create: XOR<MaterialStockCreateWithoutWarehouseInput, MaterialStockUncheckedCreateWithoutWarehouseInput>
   }
 
-  export type StockItemScalarWhereInput = {
-    AND?: StockItemScalarWhereInput | StockItemScalarWhereInput[]
-    OR?: StockItemScalarWhereInput[]
-    NOT?: StockItemScalarWhereInput | StockItemScalarWhereInput[]
-    id?: StringFilter<"StockItem"> | string
-    warehouseId?: StringFilter<"StockItem"> | string
-    sku?: StringFilter<"StockItem"> | string
-    itemName?: StringFilter<"StockItem"> | string
-    itemType?: EnumInventoryItemTypeFilter<"StockItem"> | $Enums.InventoryItemType
-    description?: StringNullableFilter<"StockItem"> | string | null
-    unitOfMeasure?: StringFilter<"StockItem"> | string
-    availableQty?: IntFilter<"StockItem"> | number
-    reservedQty?: IntFilter<"StockItem"> | number
-    reorderThreshold?: IntFilter<"StockItem"> | number
-    state?: EnumStockStateFilter<"StockItem"> | $Enums.StockState
-    createdAt?: DateTimeFilter<"StockItem"> | Date | string
-    updatedAt?: DateTimeFilter<"StockItem"> | Date | string
+  export type MaterialStockCreateManyWarehouseInputEnvelope = {
+    data: MaterialStockCreateManyWarehouseInput | MaterialStockCreateManyWarehouseInput[]
+    skipDuplicates?: boolean
   }
 
-  export type WarehouseCreateWithoutStockItemsInput = {
+  export type ProductStockUpsertWithWhereUniqueWithoutWarehouseInput = {
+    where: ProductStockWhereUniqueInput
+    update: XOR<ProductStockUpdateWithoutWarehouseInput, ProductStockUncheckedUpdateWithoutWarehouseInput>
+    create: XOR<ProductStockCreateWithoutWarehouseInput, ProductStockUncheckedCreateWithoutWarehouseInput>
+  }
+
+  export type ProductStockUpdateWithWhereUniqueWithoutWarehouseInput = {
+    where: ProductStockWhereUniqueInput
+    data: XOR<ProductStockUpdateWithoutWarehouseInput, ProductStockUncheckedUpdateWithoutWarehouseInput>
+  }
+
+  export type ProductStockUpdateManyWithWhereWithoutWarehouseInput = {
+    where: ProductStockScalarWhereInput
+    data: XOR<ProductStockUpdateManyMutationInput, ProductStockUncheckedUpdateManyWithoutWarehouseInput>
+  }
+
+  export type ProductStockScalarWhereInput = {
+    AND?: ProductStockScalarWhereInput | ProductStockScalarWhereInput[]
+    OR?: ProductStockScalarWhereInput[]
+    NOT?: ProductStockScalarWhereInput | ProductStockScalarWhereInput[]
+    id?: StringFilter<"ProductStock"> | string
+    warehouseId?: StringFilter<"ProductStock"> | string
+    sku?: StringFilter<"ProductStock"> | string
+    itemName?: StringFilter<"ProductStock"> | string
+    description?: StringNullableFilter<"ProductStock"> | string | null
+    unitOfMeasure?: StringFilter<"ProductStock"> | string
+    availableQty?: IntFilter<"ProductStock"> | number
+    reservedQty?: IntFilter<"ProductStock"> | number
+    reorderThreshold?: IntFilter<"ProductStock"> | number
+    state?: EnumStockStateFilter<"ProductStock"> | $Enums.StockState
+    createdAt?: DateTimeFilter<"ProductStock"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductStock"> | Date | string
+  }
+
+  export type MaterialStockUpsertWithWhereUniqueWithoutWarehouseInput = {
+    where: MaterialStockWhereUniqueInput
+    update: XOR<MaterialStockUpdateWithoutWarehouseInput, MaterialStockUncheckedUpdateWithoutWarehouseInput>
+    create: XOR<MaterialStockCreateWithoutWarehouseInput, MaterialStockUncheckedCreateWithoutWarehouseInput>
+  }
+
+  export type MaterialStockUpdateWithWhereUniqueWithoutWarehouseInput = {
+    where: MaterialStockWhereUniqueInput
+    data: XOR<MaterialStockUpdateWithoutWarehouseInput, MaterialStockUncheckedUpdateWithoutWarehouseInput>
+  }
+
+  export type MaterialStockUpdateManyWithWhereWithoutWarehouseInput = {
+    where: MaterialStockScalarWhereInput
+    data: XOR<MaterialStockUpdateManyMutationInput, MaterialStockUncheckedUpdateManyWithoutWarehouseInput>
+  }
+
+  export type MaterialStockScalarWhereInput = {
+    AND?: MaterialStockScalarWhereInput | MaterialStockScalarWhereInput[]
+    OR?: MaterialStockScalarWhereInput[]
+    NOT?: MaterialStockScalarWhereInput | MaterialStockScalarWhereInput[]
+    id?: StringFilter<"MaterialStock"> | string
+    warehouseId?: StringFilter<"MaterialStock"> | string
+    sku?: StringFilter<"MaterialStock"> | string
+    itemName?: StringFilter<"MaterialStock"> | string
+    description?: StringNullableFilter<"MaterialStock"> | string | null
+    unitOfMeasure?: StringFilter<"MaterialStock"> | string
+    availableQty?: IntFilter<"MaterialStock"> | number
+    reservedQty?: IntFilter<"MaterialStock"> | number
+    reorderThreshold?: IntFilter<"MaterialStock"> | number
+    state?: EnumStockStateFilter<"MaterialStock"> | $Enums.StockState
+    createdAt?: DateTimeFilter<"MaterialStock"> | Date | string
+    updatedAt?: DateTimeFilter<"MaterialStock"> | Date | string
+  }
+
+  export type WarehouseCreateWithoutProductStocksInput = {
     id?: string
     code: string
     name: string
     address: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    materialStocks?: MaterialStockCreateNestedManyWithoutWarehouseInput
   }
 
-  export type WarehouseUncheckedCreateWithoutStockItemsInput = {
+  export type WarehouseUncheckedCreateWithoutProductStocksInput = {
     id?: string
     code: string
     name: string
     address: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    materialStocks?: MaterialStockUncheckedCreateNestedManyWithoutWarehouseInput
   }
 
-  export type WarehouseCreateOrConnectWithoutStockItemsInput = {
+  export type WarehouseCreateOrConnectWithoutProductStocksInput = {
     where: WarehouseWhereUniqueInput
-    create: XOR<WarehouseCreateWithoutStockItemsInput, WarehouseUncheckedCreateWithoutStockItemsInput>
+    create: XOR<WarehouseCreateWithoutProductStocksInput, WarehouseUncheckedCreateWithoutProductStocksInput>
   }
 
-  export type ProductCreateWithoutStockItemInput = {
+  export type ProductCreateWithoutProductStockInput = {
     id?: string
     slug: string
     name: string
@@ -52593,7 +54456,7 @@ export namespace Prisma {
     inquiries?: CustomerInquiryCreateNestedManyWithoutProductInput
   }
 
-  export type ProductUncheckedCreateWithoutStockItemInput = {
+  export type ProductUncheckedCreateWithoutProductStockInput = {
     id?: string
     slug: string
     name: string
@@ -52617,43 +54480,25 @@ export namespace Prisma {
     inquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutProductInput
   }
 
-  export type ProductCreateOrConnectWithoutStockItemInput = {
+  export type ProductCreateOrConnectWithoutProductStockInput = {
     where: ProductWhereUniqueInput
-    create: XOR<ProductCreateWithoutStockItemInput, ProductUncheckedCreateWithoutStockItemInput>
+    create: XOR<ProductCreateWithoutProductStockInput, ProductUncheckedCreateWithoutProductStockInput>
   }
 
-  export type ProductMaterialCreateWithoutStockItemInput = {
+  export type StockMovementCreateWithoutProductStockInput = {
     id?: string
-    quantityRequired?: Decimal | DecimalJsLike | number | string | null
-    quantityDisplay?: string | null
-    dimension?: string | null
-    notes?: string | null
+    type: $Enums.StockMovementType
+    quantity: number
+    requesterName?: string | null
+    projectPurpose?: string | null
+    referenceNumber?: string | null
     createdAt?: Date | string
-    product: ProductCreateNestedOneWithoutMaterialsInput
+    materialStock?: MaterialStockCreateNestedOneWithoutStockMovementsInput
   }
 
-  export type ProductMaterialUncheckedCreateWithoutStockItemInput = {
+  export type StockMovementUncheckedCreateWithoutProductStockInput = {
     id?: string
-    productId: string
-    quantityRequired?: Decimal | DecimalJsLike | number | string | null
-    quantityDisplay?: string | null
-    dimension?: string | null
-    notes?: string | null
-    createdAt?: Date | string
-  }
-
-  export type ProductMaterialCreateOrConnectWithoutStockItemInput = {
-    where: ProductMaterialWhereUniqueInput
-    create: XOR<ProductMaterialCreateWithoutStockItemInput, ProductMaterialUncheckedCreateWithoutStockItemInput>
-  }
-
-  export type ProductMaterialCreateManyStockItemInputEnvelope = {
-    data: ProductMaterialCreateManyStockItemInput | ProductMaterialCreateManyStockItemInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type StockMovementCreateWithoutStockItemInput = {
-    id?: string
+    materialStockId?: string | null
     type: $Enums.StockMovementType
     quantity: number
     requesterName?: string | null
@@ -52662,93 +54507,59 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type StockMovementUncheckedCreateWithoutStockItemInput = {
-    id?: string
-    type: $Enums.StockMovementType
-    quantity: number
-    requesterName?: string | null
-    projectPurpose?: string | null
-    referenceNumber?: string | null
-    createdAt?: Date | string
-  }
-
-  export type StockMovementCreateOrConnectWithoutStockItemInput = {
+  export type StockMovementCreateOrConnectWithoutProductStockInput = {
     where: StockMovementWhereUniqueInput
-    create: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput>
+    create: XOR<StockMovementCreateWithoutProductStockInput, StockMovementUncheckedCreateWithoutProductStockInput>
   }
 
-  export type StockMovementCreateManyStockItemInputEnvelope = {
-    data: StockMovementCreateManyStockItemInput | StockMovementCreateManyStockItemInput[]
+  export type StockMovementCreateManyProductStockInputEnvelope = {
+    data: StockMovementCreateManyProductStockInput | StockMovementCreateManyProductStockInput[]
     skipDuplicates?: boolean
   }
 
-  export type StockRequestLineCreateWithoutStockItemInput = {
-    id?: string
-    quantityRequested: number
-    quantityApproved?: number
-    availability?: $Enums.StockAvailabilityStatus
-    stockRequest: StockRequestCreateNestedOneWithoutLineItemsInput
-  }
-
-  export type StockRequestLineUncheckedCreateWithoutStockItemInput = {
-    id?: string
-    stockRequestId: string
-    quantityRequested: number
-    quantityApproved?: number
-    availability?: $Enums.StockAvailabilityStatus
-  }
-
-  export type StockRequestLineCreateOrConnectWithoutStockItemInput = {
-    where: StockRequestLineWhereUniqueInput
-    create: XOR<StockRequestLineCreateWithoutStockItemInput, StockRequestLineUncheckedCreateWithoutStockItemInput>
-  }
-
-  export type StockRequestLineCreateManyStockItemInputEnvelope = {
-    data: StockRequestLineCreateManyStockItemInput | StockRequestLineCreateManyStockItemInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type WarehouseUpsertWithoutStockItemsInput = {
-    update: XOR<WarehouseUpdateWithoutStockItemsInput, WarehouseUncheckedUpdateWithoutStockItemsInput>
-    create: XOR<WarehouseCreateWithoutStockItemsInput, WarehouseUncheckedCreateWithoutStockItemsInput>
+  export type WarehouseUpsertWithoutProductStocksInput = {
+    update: XOR<WarehouseUpdateWithoutProductStocksInput, WarehouseUncheckedUpdateWithoutProductStocksInput>
+    create: XOR<WarehouseCreateWithoutProductStocksInput, WarehouseUncheckedCreateWithoutProductStocksInput>
     where?: WarehouseWhereInput
   }
 
-  export type WarehouseUpdateToOneWithWhereWithoutStockItemsInput = {
+  export type WarehouseUpdateToOneWithWhereWithoutProductStocksInput = {
     where?: WarehouseWhereInput
-    data: XOR<WarehouseUpdateWithoutStockItemsInput, WarehouseUncheckedUpdateWithoutStockItemsInput>
+    data: XOR<WarehouseUpdateWithoutProductStocksInput, WarehouseUncheckedUpdateWithoutProductStocksInput>
   }
 
-  export type WarehouseUpdateWithoutStockItemsInput = {
+  export type WarehouseUpdateWithoutProductStocksInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materialStocks?: MaterialStockUpdateManyWithoutWarehouseNestedInput
   }
 
-  export type WarehouseUncheckedUpdateWithoutStockItemsInput = {
+  export type WarehouseUncheckedUpdateWithoutProductStocksInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materialStocks?: MaterialStockUncheckedUpdateManyWithoutWarehouseNestedInput
   }
 
-  export type ProductUpsertWithoutStockItemInput = {
-    update: XOR<ProductUpdateWithoutStockItemInput, ProductUncheckedUpdateWithoutStockItemInput>
-    create: XOR<ProductCreateWithoutStockItemInput, ProductUncheckedCreateWithoutStockItemInput>
+  export type ProductUpsertWithoutProductStockInput = {
+    update: XOR<ProductUpdateWithoutProductStockInput, ProductUncheckedUpdateWithoutProductStockInput>
+    create: XOR<ProductCreateWithoutProductStockInput, ProductUncheckedCreateWithoutProductStockInput>
     where?: ProductWhereInput
   }
 
-  export type ProductUpdateToOneWithWhereWithoutStockItemInput = {
+  export type ProductUpdateToOneWithWhereWithoutProductStockInput = {
     where?: ProductWhereInput
-    data: XOR<ProductUpdateWithoutStockItemInput, ProductUncheckedUpdateWithoutStockItemInput>
+    data: XOR<ProductUpdateWithoutProductStockInput, ProductUncheckedUpdateWithoutProductStockInput>
   }
 
-  export type ProductUpdateWithoutStockItemInput = {
+  export type ProductUpdateWithoutProductStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -52772,7 +54583,7 @@ export namespace Prisma {
     inquiries?: CustomerInquiryUpdateManyWithoutProductNestedInput
   }
 
-  export type ProductUncheckedUpdateWithoutStockItemInput = {
+  export type ProductUncheckedUpdateWithoutProductStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -52796,50 +54607,20 @@ export namespace Prisma {
     inquiries?: CustomerInquiryUncheckedUpdateManyWithoutProductNestedInput
   }
 
-  export type ProductMaterialUpsertWithWhereUniqueWithoutStockItemInput = {
-    where: ProductMaterialWhereUniqueInput
-    update: XOR<ProductMaterialUpdateWithoutStockItemInput, ProductMaterialUncheckedUpdateWithoutStockItemInput>
-    create: XOR<ProductMaterialCreateWithoutStockItemInput, ProductMaterialUncheckedCreateWithoutStockItemInput>
-  }
-
-  export type ProductMaterialUpdateWithWhereUniqueWithoutStockItemInput = {
-    where: ProductMaterialWhereUniqueInput
-    data: XOR<ProductMaterialUpdateWithoutStockItemInput, ProductMaterialUncheckedUpdateWithoutStockItemInput>
-  }
-
-  export type ProductMaterialUpdateManyWithWhereWithoutStockItemInput = {
-    where: ProductMaterialScalarWhereInput
-    data: XOR<ProductMaterialUpdateManyMutationInput, ProductMaterialUncheckedUpdateManyWithoutStockItemInput>
-  }
-
-  export type ProductMaterialScalarWhereInput = {
-    AND?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
-    OR?: ProductMaterialScalarWhereInput[]
-    NOT?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
-    id?: StringFilter<"ProductMaterial"> | string
-    productId?: StringFilter<"ProductMaterial"> | string
-    stockItemId?: StringFilter<"ProductMaterial"> | string
-    quantityRequired?: DecimalNullableFilter<"ProductMaterial"> | Decimal | DecimalJsLike | number | string | null
-    quantityDisplay?: StringNullableFilter<"ProductMaterial"> | string | null
-    dimension?: StringNullableFilter<"ProductMaterial"> | string | null
-    notes?: StringNullableFilter<"ProductMaterial"> | string | null
-    createdAt?: DateTimeFilter<"ProductMaterial"> | Date | string
-  }
-
-  export type StockMovementUpsertWithWhereUniqueWithoutStockItemInput = {
+  export type StockMovementUpsertWithWhereUniqueWithoutProductStockInput = {
     where: StockMovementWhereUniqueInput
-    update: XOR<StockMovementUpdateWithoutStockItemInput, StockMovementUncheckedUpdateWithoutStockItemInput>
-    create: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput>
+    update: XOR<StockMovementUpdateWithoutProductStockInput, StockMovementUncheckedUpdateWithoutProductStockInput>
+    create: XOR<StockMovementCreateWithoutProductStockInput, StockMovementUncheckedCreateWithoutProductStockInput>
   }
 
-  export type StockMovementUpdateWithWhereUniqueWithoutStockItemInput = {
+  export type StockMovementUpdateWithWhereUniqueWithoutProductStockInput = {
     where: StockMovementWhereUniqueInput
-    data: XOR<StockMovementUpdateWithoutStockItemInput, StockMovementUncheckedUpdateWithoutStockItemInput>
+    data: XOR<StockMovementUpdateWithoutProductStockInput, StockMovementUncheckedUpdateWithoutProductStockInput>
   }
 
-  export type StockMovementUpdateManyWithWhereWithoutStockItemInput = {
+  export type StockMovementUpdateManyWithWhereWithoutProductStockInput = {
     where: StockMovementScalarWhereInput
-    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutStockItemInput>
+    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutProductStockInput>
   }
 
   export type StockMovementScalarWhereInput = {
@@ -52847,7 +54628,8 @@ export namespace Prisma {
     OR?: StockMovementScalarWhereInput[]
     NOT?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
     id?: StringFilter<"StockMovement"> | string
-    stockItemId?: StringFilter<"StockMovement"> | string
+    materialStockId?: StringNullableFilter<"StockMovement"> | string | null
+    productStockId?: StringNullableFilter<"StockMovement"> | string | null
     type?: EnumStockMovementTypeFilter<"StockMovement"> | $Enums.StockMovementType
     quantity?: IntFilter<"StockMovement"> | number
     requesterName?: StringNullableFilter<"StockMovement"> | string | null
@@ -52856,20 +54638,210 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StockMovement"> | Date | string
   }
 
-  export type StockRequestLineUpsertWithWhereUniqueWithoutStockItemInput = {
-    where: StockRequestLineWhereUniqueInput
-    update: XOR<StockRequestLineUpdateWithoutStockItemInput, StockRequestLineUncheckedUpdateWithoutStockItemInput>
-    create: XOR<StockRequestLineCreateWithoutStockItemInput, StockRequestLineUncheckedCreateWithoutStockItemInput>
+  export type WarehouseCreateWithoutMaterialStocksInput = {
+    id?: string
+    code: string
+    name: string
+    address: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    productStocks?: ProductStockCreateNestedManyWithoutWarehouseInput
   }
 
-  export type StockRequestLineUpdateWithWhereUniqueWithoutStockItemInput = {
-    where: StockRequestLineWhereUniqueInput
-    data: XOR<StockRequestLineUpdateWithoutStockItemInput, StockRequestLineUncheckedUpdateWithoutStockItemInput>
+  export type WarehouseUncheckedCreateWithoutMaterialStocksInput = {
+    id?: string
+    code: string
+    name: string
+    address: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    productStocks?: ProductStockUncheckedCreateNestedManyWithoutWarehouseInput
   }
 
-  export type StockRequestLineUpdateManyWithWhereWithoutStockItemInput = {
+  export type WarehouseCreateOrConnectWithoutMaterialStocksInput = {
+    where: WarehouseWhereUniqueInput
+    create: XOR<WarehouseCreateWithoutMaterialStocksInput, WarehouseUncheckedCreateWithoutMaterialStocksInput>
+  }
+
+  export type ProductMaterialCreateWithoutMaterialStockInput = {
+    id?: string
+    quantityRequired?: Decimal | DecimalJsLike | number | string | null
+    quantityDisplay?: string | null
+    dimension?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    product: ProductCreateNestedOneWithoutMaterialsInput
+  }
+
+  export type ProductMaterialUncheckedCreateWithoutMaterialStockInput = {
+    id?: string
+    productId: string
+    quantityRequired?: Decimal | DecimalJsLike | number | string | null
+    quantityDisplay?: string | null
+    dimension?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProductMaterialCreateOrConnectWithoutMaterialStockInput = {
+    where: ProductMaterialWhereUniqueInput
+    create: XOR<ProductMaterialCreateWithoutMaterialStockInput, ProductMaterialUncheckedCreateWithoutMaterialStockInput>
+  }
+
+  export type ProductMaterialCreateManyMaterialStockInputEnvelope = {
+    data: ProductMaterialCreateManyMaterialStockInput | ProductMaterialCreateManyMaterialStockInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockMovementCreateWithoutMaterialStockInput = {
+    id?: string
+    type: $Enums.StockMovementType
+    quantity: number
+    requesterName?: string | null
+    projectPurpose?: string | null
+    referenceNumber?: string | null
+    createdAt?: Date | string
+    productStock?: ProductStockCreateNestedOneWithoutStockMovementsInput
+  }
+
+  export type StockMovementUncheckedCreateWithoutMaterialStockInput = {
+    id?: string
+    productStockId?: string | null
+    type: $Enums.StockMovementType
+    quantity: number
+    requesterName?: string | null
+    projectPurpose?: string | null
+    referenceNumber?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StockMovementCreateOrConnectWithoutMaterialStockInput = {
+    where: StockMovementWhereUniqueInput
+    create: XOR<StockMovementCreateWithoutMaterialStockInput, StockMovementUncheckedCreateWithoutMaterialStockInput>
+  }
+
+  export type StockMovementCreateManyMaterialStockInputEnvelope = {
+    data: StockMovementCreateManyMaterialStockInput | StockMovementCreateManyMaterialStockInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockRequestLineCreateWithoutMaterialStockInput = {
+    id?: string
+    quantityRequested: number
+    quantityApproved?: number
+    availability?: $Enums.StockAvailabilityStatus
+    stockRequest: StockRequestCreateNestedOneWithoutLineItemsInput
+  }
+
+  export type StockRequestLineUncheckedCreateWithoutMaterialStockInput = {
+    id?: string
+    stockRequestId: string
+    quantityRequested: number
+    quantityApproved?: number
+    availability?: $Enums.StockAvailabilityStatus
+  }
+
+  export type StockRequestLineCreateOrConnectWithoutMaterialStockInput = {
+    where: StockRequestLineWhereUniqueInput
+    create: XOR<StockRequestLineCreateWithoutMaterialStockInput, StockRequestLineUncheckedCreateWithoutMaterialStockInput>
+  }
+
+  export type StockRequestLineCreateManyMaterialStockInputEnvelope = {
+    data: StockRequestLineCreateManyMaterialStockInput | StockRequestLineCreateManyMaterialStockInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WarehouseUpsertWithoutMaterialStocksInput = {
+    update: XOR<WarehouseUpdateWithoutMaterialStocksInput, WarehouseUncheckedUpdateWithoutMaterialStocksInput>
+    create: XOR<WarehouseCreateWithoutMaterialStocksInput, WarehouseUncheckedCreateWithoutMaterialStocksInput>
+    where?: WarehouseWhereInput
+  }
+
+  export type WarehouseUpdateToOneWithWhereWithoutMaterialStocksInput = {
+    where?: WarehouseWhereInput
+    data: XOR<WarehouseUpdateWithoutMaterialStocksInput, WarehouseUncheckedUpdateWithoutMaterialStocksInput>
+  }
+
+  export type WarehouseUpdateWithoutMaterialStocksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    productStocks?: ProductStockUpdateManyWithoutWarehouseNestedInput
+  }
+
+  export type WarehouseUncheckedUpdateWithoutMaterialStocksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    productStocks?: ProductStockUncheckedUpdateManyWithoutWarehouseNestedInput
+  }
+
+  export type ProductMaterialUpsertWithWhereUniqueWithoutMaterialStockInput = {
+    where: ProductMaterialWhereUniqueInput
+    update: XOR<ProductMaterialUpdateWithoutMaterialStockInput, ProductMaterialUncheckedUpdateWithoutMaterialStockInput>
+    create: XOR<ProductMaterialCreateWithoutMaterialStockInput, ProductMaterialUncheckedCreateWithoutMaterialStockInput>
+  }
+
+  export type ProductMaterialUpdateWithWhereUniqueWithoutMaterialStockInput = {
+    where: ProductMaterialWhereUniqueInput
+    data: XOR<ProductMaterialUpdateWithoutMaterialStockInput, ProductMaterialUncheckedUpdateWithoutMaterialStockInput>
+  }
+
+  export type ProductMaterialUpdateManyWithWhereWithoutMaterialStockInput = {
+    where: ProductMaterialScalarWhereInput
+    data: XOR<ProductMaterialUpdateManyMutationInput, ProductMaterialUncheckedUpdateManyWithoutMaterialStockInput>
+  }
+
+  export type ProductMaterialScalarWhereInput = {
+    AND?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
+    OR?: ProductMaterialScalarWhereInput[]
+    NOT?: ProductMaterialScalarWhereInput | ProductMaterialScalarWhereInput[]
+    id?: StringFilter<"ProductMaterial"> | string
+    productId?: StringFilter<"ProductMaterial"> | string
+    materialStockId?: StringFilter<"ProductMaterial"> | string
+    quantityRequired?: DecimalNullableFilter<"ProductMaterial"> | Decimal | DecimalJsLike | number | string | null
+    quantityDisplay?: StringNullableFilter<"ProductMaterial"> | string | null
+    dimension?: StringNullableFilter<"ProductMaterial"> | string | null
+    notes?: StringNullableFilter<"ProductMaterial"> | string | null
+    createdAt?: DateTimeFilter<"ProductMaterial"> | Date | string
+  }
+
+  export type StockMovementUpsertWithWhereUniqueWithoutMaterialStockInput = {
+    where: StockMovementWhereUniqueInput
+    update: XOR<StockMovementUpdateWithoutMaterialStockInput, StockMovementUncheckedUpdateWithoutMaterialStockInput>
+    create: XOR<StockMovementCreateWithoutMaterialStockInput, StockMovementUncheckedCreateWithoutMaterialStockInput>
+  }
+
+  export type StockMovementUpdateWithWhereUniqueWithoutMaterialStockInput = {
+    where: StockMovementWhereUniqueInput
+    data: XOR<StockMovementUpdateWithoutMaterialStockInput, StockMovementUncheckedUpdateWithoutMaterialStockInput>
+  }
+
+  export type StockMovementUpdateManyWithWhereWithoutMaterialStockInput = {
+    where: StockMovementScalarWhereInput
+    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutMaterialStockInput>
+  }
+
+  export type StockRequestLineUpsertWithWhereUniqueWithoutMaterialStockInput = {
+    where: StockRequestLineWhereUniqueInput
+    update: XOR<StockRequestLineUpdateWithoutMaterialStockInput, StockRequestLineUncheckedUpdateWithoutMaterialStockInput>
+    create: XOR<StockRequestLineCreateWithoutMaterialStockInput, StockRequestLineUncheckedCreateWithoutMaterialStockInput>
+  }
+
+  export type StockRequestLineUpdateWithWhereUniqueWithoutMaterialStockInput = {
+    where: StockRequestLineWhereUniqueInput
+    data: XOR<StockRequestLineUpdateWithoutMaterialStockInput, StockRequestLineUncheckedUpdateWithoutMaterialStockInput>
+  }
+
+  export type StockRequestLineUpdateManyWithWhereWithoutMaterialStockInput = {
     where: StockRequestLineScalarWhereInput
-    data: XOR<StockRequestLineUpdateManyMutationInput, StockRequestLineUncheckedUpdateManyWithoutStockItemInput>
+    data: XOR<StockRequestLineUpdateManyMutationInput, StockRequestLineUncheckedUpdateManyWithoutMaterialStockInput>
   }
 
   export type StockRequestLineScalarWhereInput = {
@@ -52878,17 +54850,16 @@ export namespace Prisma {
     NOT?: StockRequestLineScalarWhereInput | StockRequestLineScalarWhereInput[]
     id?: StringFilter<"StockRequestLine"> | string
     stockRequestId?: StringFilter<"StockRequestLine"> | string
-    stockItemId?: StringFilter<"StockRequestLine"> | string
+    materialStockId?: StringFilter<"StockRequestLine"> | string
     quantityRequested?: IntFilter<"StockRequestLine"> | number
     quantityApproved?: IntFilter<"StockRequestLine"> | number
     availability?: EnumStockAvailabilityStatusFilter<"StockRequestLine"> | $Enums.StockAvailabilityStatus
   }
 
-  export type StockItemCreateWithoutProductInput = {
+  export type ProductStockCreateWithoutProductInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -52897,18 +54868,15 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    warehouse: WarehouseCreateNestedOneWithoutStockItemsInput
-    materialFor?: ProductMaterialCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineCreateNestedManyWithoutStockItemInput
+    warehouse: WarehouseCreateNestedOneWithoutProductStocksInput
+    stockMovements?: StockMovementCreateNestedManyWithoutProductStockInput
   }
 
-  export type StockItemUncheckedCreateWithoutProductInput = {
+  export type ProductStockUncheckedCreateWithoutProductInput = {
     id?: string
     warehouseId: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -52917,14 +54885,12 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutStockItemInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutProductStockInput
   }
 
-  export type StockItemCreateOrConnectWithoutProductInput = {
-    where: StockItemWhereUniqueInput
-    create: XOR<StockItemCreateWithoutProductInput, StockItemUncheckedCreateWithoutProductInput>
+  export type ProductStockCreateOrConnectWithoutProductInput = {
+    where: ProductStockWhereUniqueInput
+    create: XOR<ProductStockCreateWithoutProductInput, ProductStockUncheckedCreateWithoutProductInput>
   }
 
   export type ProductMaterialCreateWithoutProductInput = {
@@ -52934,12 +54900,12 @@ export namespace Prisma {
     dimension?: string | null
     notes?: string | null
     createdAt?: Date | string
-    stockItem: StockItemCreateNestedOneWithoutMaterialForInput
+    materialStock: MaterialStockCreateNestedOneWithoutMaterialForInput
   }
 
   export type ProductMaterialUncheckedCreateWithoutProductInput = {
     id?: string
-    stockItemId: string
+    materialStockId: string
     quantityRequired?: Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: string | null
     dimension?: string | null
@@ -52995,22 +54961,21 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type StockItemUpsertWithoutProductInput = {
-    update: XOR<StockItemUpdateWithoutProductInput, StockItemUncheckedUpdateWithoutProductInput>
-    create: XOR<StockItemCreateWithoutProductInput, StockItemUncheckedCreateWithoutProductInput>
-    where?: StockItemWhereInput
+  export type ProductStockUpsertWithoutProductInput = {
+    update: XOR<ProductStockUpdateWithoutProductInput, ProductStockUncheckedUpdateWithoutProductInput>
+    create: XOR<ProductStockCreateWithoutProductInput, ProductStockUncheckedCreateWithoutProductInput>
+    where?: ProductStockWhereInput
   }
 
-  export type StockItemUpdateToOneWithWhereWithoutProductInput = {
-    where?: StockItemWhereInput
-    data: XOR<StockItemUpdateWithoutProductInput, StockItemUncheckedUpdateWithoutProductInput>
+  export type ProductStockUpdateToOneWithWhereWithoutProductInput = {
+    where?: ProductStockWhereInput
+    data: XOR<ProductStockUpdateWithoutProductInput, ProductStockUncheckedUpdateWithoutProductInput>
   }
 
-  export type StockItemUpdateWithoutProductInput = {
+  export type ProductStockUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -53019,18 +54984,15 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    warehouse?: WarehouseUpdateOneRequiredWithoutStockItemsNestedInput
-    materialFor?: ProductMaterialUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUpdateManyWithoutStockItemNestedInput
+    warehouse?: WarehouseUpdateOneRequiredWithoutProductStocksNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutProductStockNestedInput
   }
 
-  export type StockItemUncheckedUpdateWithoutProductInput = {
+  export type ProductStockUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     warehouseId?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -53039,9 +55001,7 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    materialFor?: ProductMaterialUncheckedUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutStockItemNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutProductStockNestedInput
   }
 
   export type ProductMaterialUpsertWithWhereUniqueWithoutProductInput = {
@@ -53228,13 +55188,13 @@ export namespace Prisma {
     isPublished?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    stockItem: StockItemCreateNestedOneWithoutProductInput
+    productStock: ProductStockCreateNestedOneWithoutProductInput
     materials?: ProductMaterialCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutInquiriesInput = {
     id?: string
-    stockItemId: string
+    productStockId: string
     slug: string
     name: string
     category: string
@@ -53383,13 +55343,13 @@ export namespace Prisma {
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stockItem?: StockItemUpdateOneRequiredWithoutProductNestedInput
+    productStock?: ProductStockUpdateOneRequiredWithoutProductNestedInput
     materials?: ProductMaterialUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutInquiriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    productStockId?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
@@ -53829,13 +55789,13 @@ export namespace Prisma {
     isPublished?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    stockItem: StockItemCreateNestedOneWithoutProductInput
+    productStock: ProductStockCreateNestedOneWithoutProductInput
     inquiries?: CustomerInquiryCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutMaterialsInput = {
     id?: string
-    stockItemId: string
+    productStockId: string
     slug: string
     name: string
     category: string
@@ -53862,11 +55822,10 @@ export namespace Prisma {
     create: XOR<ProductCreateWithoutMaterialsInput, ProductUncheckedCreateWithoutMaterialsInput>
   }
 
-  export type StockItemCreateWithoutMaterialForInput = {
+  export type MaterialStockCreateWithoutMaterialForInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -53875,18 +55834,16 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    warehouse: WarehouseCreateNestedOneWithoutStockItemsInput
-    product?: ProductCreateNestedOneWithoutStockItemInput
-    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineCreateNestedManyWithoutStockItemInput
+    warehouse: WarehouseCreateNestedOneWithoutMaterialStocksInput
+    stockMovements?: StockMovementCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemUncheckedCreateWithoutMaterialForInput = {
+  export type MaterialStockUncheckedCreateWithoutMaterialForInput = {
     id?: string
     warehouseId: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -53895,14 +55852,13 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    product?: ProductUncheckedCreateNestedOneWithoutStockItemInput
-    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutStockItemInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemCreateOrConnectWithoutMaterialForInput = {
-    where: StockItemWhereUniqueInput
-    create: XOR<StockItemCreateWithoutMaterialForInput, StockItemUncheckedCreateWithoutMaterialForInput>
+  export type MaterialStockCreateOrConnectWithoutMaterialForInput = {
+    where: MaterialStockWhereUniqueInput
+    create: XOR<MaterialStockCreateWithoutMaterialForInput, MaterialStockUncheckedCreateWithoutMaterialForInput>
   }
 
   export type ProductUpsertWithoutMaterialsInput = {
@@ -53936,13 +55892,13 @@ export namespace Prisma {
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stockItem?: StockItemUpdateOneRequiredWithoutProductNestedInput
+    productStock?: ProductStockUpdateOneRequiredWithoutProductNestedInput
     inquiries?: CustomerInquiryUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutMaterialsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    productStockId?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
@@ -53964,22 +55920,21 @@ export namespace Prisma {
     inquiries?: CustomerInquiryUncheckedUpdateManyWithoutProductNestedInput
   }
 
-  export type StockItemUpsertWithoutMaterialForInput = {
-    update: XOR<StockItemUpdateWithoutMaterialForInput, StockItemUncheckedUpdateWithoutMaterialForInput>
-    create: XOR<StockItemCreateWithoutMaterialForInput, StockItemUncheckedCreateWithoutMaterialForInput>
-    where?: StockItemWhereInput
+  export type MaterialStockUpsertWithoutMaterialForInput = {
+    update: XOR<MaterialStockUpdateWithoutMaterialForInput, MaterialStockUncheckedUpdateWithoutMaterialForInput>
+    create: XOR<MaterialStockCreateWithoutMaterialForInput, MaterialStockUncheckedCreateWithoutMaterialForInput>
+    where?: MaterialStockWhereInput
   }
 
-  export type StockItemUpdateToOneWithWhereWithoutMaterialForInput = {
-    where?: StockItemWhereInput
-    data: XOR<StockItemUpdateWithoutMaterialForInput, StockItemUncheckedUpdateWithoutMaterialForInput>
+  export type MaterialStockUpdateToOneWithWhereWithoutMaterialForInput = {
+    where?: MaterialStockWhereInput
+    data: XOR<MaterialStockUpdateWithoutMaterialForInput, MaterialStockUncheckedUpdateWithoutMaterialForInput>
   }
 
-  export type StockItemUpdateWithoutMaterialForInput = {
+  export type MaterialStockUpdateWithoutMaterialForInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -53988,18 +55943,16 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    warehouse?: WarehouseUpdateOneRequiredWithoutStockItemsNestedInput
-    product?: ProductUpdateOneWithoutStockItemNestedInput
-    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUpdateManyWithoutStockItemNestedInput
+    warehouse?: WarehouseUpdateOneRequiredWithoutMaterialStocksNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUpdateManyWithoutMaterialStockNestedInput
   }
 
-  export type StockItemUncheckedUpdateWithoutMaterialForInput = {
+  export type MaterialStockUncheckedUpdateWithoutMaterialForInput = {
     id?: StringFieldUpdateOperationsInput | string
     warehouseId?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -54008,16 +55961,14 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    product?: ProductUncheckedUpdateOneWithoutStockItemNestedInput
-    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutStockItemNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutMaterialStockNestedInput
   }
 
-  export type StockItemCreateWithoutStockMovementsInput = {
+  export type MaterialStockCreateWithoutStockMovementsInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -54026,18 +55977,16 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    warehouse: WarehouseCreateNestedOneWithoutStockItemsInput
-    product?: ProductCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineCreateNestedManyWithoutStockItemInput
+    warehouse: WarehouseCreateNestedOneWithoutMaterialStocksInput
+    materialFor?: ProductMaterialCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemUncheckedCreateWithoutStockMovementsInput = {
+  export type MaterialStockUncheckedCreateWithoutStockMovementsInput = {
     id?: string
     warehouseId: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -54046,32 +55995,67 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    product?: ProductUncheckedCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutStockItemInput
-    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutStockItemInput
+    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutMaterialStockInput
+    stockRequestLines?: StockRequestLineUncheckedCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemCreateOrConnectWithoutStockMovementsInput = {
-    where: StockItemWhereUniqueInput
-    create: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
+  export type MaterialStockCreateOrConnectWithoutStockMovementsInput = {
+    where: MaterialStockWhereUniqueInput
+    create: XOR<MaterialStockCreateWithoutStockMovementsInput, MaterialStockUncheckedCreateWithoutStockMovementsInput>
   }
 
-  export type StockItemUpsertWithoutStockMovementsInput = {
-    update: XOR<StockItemUpdateWithoutStockMovementsInput, StockItemUncheckedUpdateWithoutStockMovementsInput>
-    create: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
-    where?: StockItemWhereInput
+  export type ProductStockCreateWithoutStockMovementsInput = {
+    id?: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    warehouse: WarehouseCreateNestedOneWithoutProductStocksInput
+    product?: ProductCreateNestedOneWithoutProductStockInput
   }
 
-  export type StockItemUpdateToOneWithWhereWithoutStockMovementsInput = {
-    where?: StockItemWhereInput
-    data: XOR<StockItemUpdateWithoutStockMovementsInput, StockItemUncheckedUpdateWithoutStockMovementsInput>
+  export type ProductStockUncheckedCreateWithoutStockMovementsInput = {
+    id?: string
+    warehouseId: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    product?: ProductUncheckedCreateNestedOneWithoutProductStockInput
   }
 
-  export type StockItemUpdateWithoutStockMovementsInput = {
+  export type ProductStockCreateOrConnectWithoutStockMovementsInput = {
+    where: ProductStockWhereUniqueInput
+    create: XOR<ProductStockCreateWithoutStockMovementsInput, ProductStockUncheckedCreateWithoutStockMovementsInput>
+  }
+
+  export type MaterialStockUpsertWithoutStockMovementsInput = {
+    update: XOR<MaterialStockUpdateWithoutStockMovementsInput, MaterialStockUncheckedUpdateWithoutStockMovementsInput>
+    create: XOR<MaterialStockCreateWithoutStockMovementsInput, MaterialStockUncheckedCreateWithoutStockMovementsInput>
+    where?: MaterialStockWhereInput
+  }
+
+  export type MaterialStockUpdateToOneWithWhereWithoutStockMovementsInput = {
+    where?: MaterialStockWhereInput
+    data: XOR<MaterialStockUpdateWithoutStockMovementsInput, MaterialStockUncheckedUpdateWithoutStockMovementsInput>
+  }
+
+  export type MaterialStockUpdateWithoutStockMovementsInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -54080,18 +56064,16 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    warehouse?: WarehouseUpdateOneRequiredWithoutStockItemsNestedInput
-    product?: ProductUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUpdateManyWithoutStockItemNestedInput
+    warehouse?: WarehouseUpdateOneRequiredWithoutMaterialStocksNestedInput
+    materialFor?: ProductMaterialUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUpdateManyWithoutMaterialStockNestedInput
   }
 
-  export type StockItemUncheckedUpdateWithoutStockMovementsInput = {
+  export type MaterialStockUncheckedUpdateWithoutStockMovementsInput = {
     id?: StringFieldUpdateOperationsInput | string
     warehouseId?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -54100,9 +56082,51 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    product?: ProductUncheckedUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUncheckedUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutStockItemNestedInput
+    materialFor?: ProductMaterialUncheckedUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutMaterialStockNestedInput
+  }
+
+  export type ProductStockUpsertWithoutStockMovementsInput = {
+    update: XOR<ProductStockUpdateWithoutStockMovementsInput, ProductStockUncheckedUpdateWithoutStockMovementsInput>
+    create: XOR<ProductStockCreateWithoutStockMovementsInput, ProductStockUncheckedCreateWithoutStockMovementsInput>
+    where?: ProductStockWhereInput
+  }
+
+  export type ProductStockUpdateToOneWithWhereWithoutStockMovementsInput = {
+    where?: ProductStockWhereInput
+    data: XOR<ProductStockUpdateWithoutStockMovementsInput, ProductStockUncheckedUpdateWithoutStockMovementsInput>
+  }
+
+  export type ProductStockUpdateWithoutStockMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    warehouse?: WarehouseUpdateOneRequiredWithoutProductStocksNestedInput
+    product?: ProductUpdateOneWithoutProductStockNestedInput
+  }
+
+  export type ProductStockUncheckedUpdateWithoutStockMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    warehouseId?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUncheckedUpdateOneWithoutProductStockNestedInput
   }
 
   export type SalesOrderCreateWithoutStockRequestsInput = {
@@ -54305,12 +56329,12 @@ export namespace Prisma {
     quantityRequested: number
     quantityApproved?: number
     availability?: $Enums.StockAvailabilityStatus
-    stockItem: StockItemCreateNestedOneWithoutStockRequestLinesInput
+    materialStock: MaterialStockCreateNestedOneWithoutStockRequestLinesInput
   }
 
   export type StockRequestLineUncheckedCreateWithoutStockRequestInput = {
     id?: string
-    stockItemId: string
+    materialStockId: string
     quantityRequested: number
     quantityApproved?: number
     availability?: $Enums.StockAvailabilityStatus
@@ -54586,11 +56610,10 @@ export namespace Prisma {
     create: XOR<StockRequestCreateWithoutLineItemsInput, StockRequestUncheckedCreateWithoutLineItemsInput>
   }
 
-  export type StockItemCreateWithoutStockRequestLinesInput = {
+  export type MaterialStockCreateWithoutStockRequestLinesInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -54599,18 +56622,16 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    warehouse: WarehouseCreateNestedOneWithoutStockItemsInput
-    product?: ProductCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
+    warehouse: WarehouseCreateNestedOneWithoutMaterialStocksInput
+    materialFor?: ProductMaterialCreateNestedManyWithoutMaterialStockInput
+    stockMovements?: StockMovementCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemUncheckedCreateWithoutStockRequestLinesInput = {
+  export type MaterialStockUncheckedCreateWithoutStockRequestLinesInput = {
     id?: string
     warehouseId: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -54619,14 +56640,13 @@ export namespace Prisma {
     state?: $Enums.StockState
     createdAt?: Date | string
     updatedAt?: Date | string
-    product?: ProductUncheckedCreateNestedOneWithoutStockItemInput
-    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutStockItemInput
-    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
+    materialFor?: ProductMaterialUncheckedCreateNestedManyWithoutMaterialStockInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutMaterialStockInput
   }
 
-  export type StockItemCreateOrConnectWithoutStockRequestLinesInput = {
-    where: StockItemWhereUniqueInput
-    create: XOR<StockItemCreateWithoutStockRequestLinesInput, StockItemUncheckedCreateWithoutStockRequestLinesInput>
+  export type MaterialStockCreateOrConnectWithoutStockRequestLinesInput = {
+    where: MaterialStockWhereUniqueInput
+    create: XOR<MaterialStockCreateWithoutStockRequestLinesInput, MaterialStockUncheckedCreateWithoutStockRequestLinesInput>
   }
 
   export type StockRequestUpsertWithoutLineItemsInput = {
@@ -54666,22 +56686,21 @@ export namespace Prisma {
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type StockItemUpsertWithoutStockRequestLinesInput = {
-    update: XOR<StockItemUpdateWithoutStockRequestLinesInput, StockItemUncheckedUpdateWithoutStockRequestLinesInput>
-    create: XOR<StockItemCreateWithoutStockRequestLinesInput, StockItemUncheckedCreateWithoutStockRequestLinesInput>
-    where?: StockItemWhereInput
+  export type MaterialStockUpsertWithoutStockRequestLinesInput = {
+    update: XOR<MaterialStockUpdateWithoutStockRequestLinesInput, MaterialStockUncheckedUpdateWithoutStockRequestLinesInput>
+    create: XOR<MaterialStockCreateWithoutStockRequestLinesInput, MaterialStockUncheckedCreateWithoutStockRequestLinesInput>
+    where?: MaterialStockWhereInput
   }
 
-  export type StockItemUpdateToOneWithWhereWithoutStockRequestLinesInput = {
-    where?: StockItemWhereInput
-    data: XOR<StockItemUpdateWithoutStockRequestLinesInput, StockItemUncheckedUpdateWithoutStockRequestLinesInput>
+  export type MaterialStockUpdateToOneWithWhereWithoutStockRequestLinesInput = {
+    where?: MaterialStockWhereInput
+    data: XOR<MaterialStockUpdateWithoutStockRequestLinesInput, MaterialStockUncheckedUpdateWithoutStockRequestLinesInput>
   }
 
-  export type StockItemUpdateWithoutStockRequestLinesInput = {
+  export type MaterialStockUpdateWithoutStockRequestLinesInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -54690,18 +56709,16 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    warehouse?: WarehouseUpdateOneRequiredWithoutStockItemsNestedInput
-    product?: ProductUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
+    warehouse?: WarehouseUpdateOneRequiredWithoutMaterialStocksNestedInput
+    materialFor?: ProductMaterialUpdateManyWithoutMaterialStockNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutMaterialStockNestedInput
   }
 
-  export type StockItemUncheckedUpdateWithoutStockRequestLinesInput = {
+  export type MaterialStockUncheckedUpdateWithoutStockRequestLinesInput = {
     id?: StringFieldUpdateOperationsInput | string
     warehouseId?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -54710,9 +56727,8 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    product?: ProductUncheckedUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUncheckedUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
+    materialFor?: ProductMaterialUncheckedUpdateManyWithoutMaterialStockNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutMaterialStockNestedInput
   }
 
   export type SalesOrderCreateWithoutDesignRequestsInput = {
@@ -58019,11 +60035,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockItemCreateManyWarehouseInput = {
+  export type ProductStockCreateManyWarehouseInput = {
     id?: string
     sku: string
     itemName: string
-    itemType?: $Enums.InventoryItemType
     description?: string | null
     unitOfMeasure?: string
     availableQty?: number
@@ -58034,11 +60049,24 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type StockItemUpdateWithoutWarehouseInput = {
+  export type MaterialStockCreateManyWarehouseInput = {
+    id?: string
+    sku: string
+    itemName: string
+    description?: string | null
+    unitOfMeasure?: string
+    availableQty?: number
+    reservedQty?: number
+    reorderThreshold?: number
+    state?: $Enums.StockState
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductStockUpdateWithoutWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -58047,17 +60075,14 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    product?: ProductUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUpdateManyWithoutStockItemNestedInput
+    product?: ProductUpdateOneWithoutProductStockNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutProductStockNestedInput
   }
 
-  export type StockItemUncheckedUpdateWithoutWarehouseInput = {
+  export type ProductStockUncheckedUpdateWithoutWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -58066,17 +60091,14 @@ export namespace Prisma {
     state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    product?: ProductUncheckedUpdateOneWithoutStockItemNestedInput
-    materialFor?: ProductMaterialUncheckedUpdateManyWithoutStockItemNestedInput
-    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
-    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutStockItemNestedInput
+    product?: ProductUncheckedUpdateOneWithoutProductStockNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutProductStockNestedInput
   }
 
-  export type StockItemUncheckedUpdateManyWithoutWarehouseInput = {
+  export type ProductStockUncheckedUpdateManyWithoutWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     itemName?: StringFieldUpdateOperationsInput | string
-    itemType?: EnumInventoryItemTypeFieldUpdateOperationsInput | $Enums.InventoryItemType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     unitOfMeasure?: StringFieldUpdateOperationsInput | string
     availableQty?: IntFieldUpdateOperationsInput | number
@@ -58087,7 +60109,99 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProductMaterialCreateManyStockItemInput = {
+  export type MaterialStockUpdateWithoutWarehouseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materialFor?: ProductMaterialUpdateManyWithoutMaterialStockNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUpdateManyWithoutMaterialStockNestedInput
+  }
+
+  export type MaterialStockUncheckedUpdateWithoutWarehouseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materialFor?: ProductMaterialUncheckedUpdateManyWithoutMaterialStockNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutMaterialStockNestedInput
+    stockRequestLines?: StockRequestLineUncheckedUpdateManyWithoutMaterialStockNestedInput
+  }
+
+  export type MaterialStockUncheckedUpdateManyWithoutWarehouseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    itemName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    unitOfMeasure?: StringFieldUpdateOperationsInput | string
+    availableQty?: IntFieldUpdateOperationsInput | number
+    reservedQty?: IntFieldUpdateOperationsInput | number
+    reorderThreshold?: IntFieldUpdateOperationsInput | number
+    state?: EnumStockStateFieldUpdateOperationsInput | $Enums.StockState
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementCreateManyProductStockInput = {
+    id?: string
+    materialStockId?: string | null
+    type: $Enums.StockMovementType
+    quantity: number
+    requesterName?: string | null
+    projectPurpose?: string | null
+    referenceNumber?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StockMovementUpdateWithoutProductStockInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: IntFieldUpdateOperationsInput | number
+    requesterName?: NullableStringFieldUpdateOperationsInput | string | null
+    projectPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materialStock?: MaterialStockUpdateOneWithoutStockMovementsNestedInput
+  }
+
+  export type StockMovementUncheckedUpdateWithoutProductStockInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    materialStockId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: IntFieldUpdateOperationsInput | number
+    requesterName?: NullableStringFieldUpdateOperationsInput | string | null
+    projectPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutProductStockInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    materialStockId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: IntFieldUpdateOperationsInput | number
+    requesterName?: NullableStringFieldUpdateOperationsInput | string | null
+    projectPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductMaterialCreateManyMaterialStockInput = {
     id?: string
     productId: string
     quantityRequired?: Decimal | DecimalJsLike | number | string | null
@@ -58097,8 +60211,9 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type StockMovementCreateManyStockItemInput = {
+  export type StockMovementCreateManyMaterialStockInput = {
     id?: string
+    productStockId?: string | null
     type: $Enums.StockMovementType
     quantity: number
     requesterName?: string | null
@@ -58107,7 +60222,7 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type StockRequestLineCreateManyStockItemInput = {
+  export type StockRequestLineCreateManyMaterialStockInput = {
     id?: string
     stockRequestId: string
     quantityRequested: number
@@ -58115,7 +60230,7 @@ export namespace Prisma {
     availability?: $Enums.StockAvailabilityStatus
   }
 
-  export type ProductMaterialUpdateWithoutStockItemInput = {
+  export type ProductMaterialUpdateWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantityRequired?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58125,7 +60240,7 @@ export namespace Prisma {
     product?: ProductUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
-  export type ProductMaterialUncheckedUpdateWithoutStockItemInput = {
+  export type ProductMaterialUncheckedUpdateWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     quantityRequired?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -58135,7 +60250,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProductMaterialUncheckedUpdateManyWithoutStockItemInput = {
+  export type ProductMaterialUncheckedUpdateManyWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     quantityRequired?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -58145,8 +60260,20 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockMovementUpdateWithoutStockItemInput = {
+  export type StockMovementUpdateWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: IntFieldUpdateOperationsInput | number
+    requesterName?: NullableStringFieldUpdateOperationsInput | string | null
+    projectPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    productStock?: ProductStockUpdateOneWithoutStockMovementsNestedInput
+  }
+
+  export type StockMovementUncheckedUpdateWithoutMaterialStockInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productStockId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
     quantity?: IntFieldUpdateOperationsInput | number
     requesterName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58155,8 +60282,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockMovementUncheckedUpdateWithoutStockItemInput = {
+  export type StockMovementUncheckedUpdateManyWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
+    productStockId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
     quantity?: IntFieldUpdateOperationsInput | number
     requesterName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58165,17 +60293,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockMovementUncheckedUpdateManyWithoutStockItemInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
-    quantity?: IntFieldUpdateOperationsInput | number
-    requesterName?: NullableStringFieldUpdateOperationsInput | string | null
-    projectPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type StockRequestLineUpdateWithoutStockItemInput = {
+  export type StockRequestLineUpdateWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantityRequested?: IntFieldUpdateOperationsInput | number
     quantityApproved?: IntFieldUpdateOperationsInput | number
@@ -58183,7 +60301,7 @@ export namespace Prisma {
     stockRequest?: StockRequestUpdateOneRequiredWithoutLineItemsNestedInput
   }
 
-  export type StockRequestLineUncheckedUpdateWithoutStockItemInput = {
+  export type StockRequestLineUncheckedUpdateWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     stockRequestId?: StringFieldUpdateOperationsInput | string
     quantityRequested?: IntFieldUpdateOperationsInput | number
@@ -58191,7 +60309,7 @@ export namespace Prisma {
     availability?: EnumStockAvailabilityStatusFieldUpdateOperationsInput | $Enums.StockAvailabilityStatus
   }
 
-  export type StockRequestLineUncheckedUpdateManyWithoutStockItemInput = {
+  export type StockRequestLineUncheckedUpdateManyWithoutMaterialStockInput = {
     id?: StringFieldUpdateOperationsInput | string
     stockRequestId?: StringFieldUpdateOperationsInput | string
     quantityRequested?: IntFieldUpdateOperationsInput | number
@@ -58201,7 +60319,7 @@ export namespace Prisma {
 
   export type ProductMaterialCreateManyProductInput = {
     id?: string
-    stockItemId: string
+    materialStockId: string
     quantityRequired?: Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: string | null
     dimension?: string | null
@@ -58229,12 +60347,12 @@ export namespace Prisma {
     dimension?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stockItem?: StockItemUpdateOneRequiredWithoutMaterialForNestedInput
+    materialStock?: MaterialStockUpdateOneRequiredWithoutMaterialForNestedInput
   }
 
   export type ProductMaterialUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequired?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: NullableStringFieldUpdateOperationsInput | string | null
     dimension?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58244,7 +60362,7 @@ export namespace Prisma {
 
   export type ProductMaterialUncheckedUpdateManyWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequired?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     quantityDisplay?: NullableStringFieldUpdateOperationsInput | string | null
     dimension?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58365,7 +60483,7 @@ export namespace Prisma {
 
   export type StockRequestLineCreateManyStockRequestInput = {
     id?: string
-    stockItemId: string
+    materialStockId: string
     quantityRequested: number
     quantityApproved?: number
     availability?: $Enums.StockAvailabilityStatus
@@ -58376,12 +60494,12 @@ export namespace Prisma {
     quantityRequested?: IntFieldUpdateOperationsInput | number
     quantityApproved?: IntFieldUpdateOperationsInput | number
     availability?: EnumStockAvailabilityStatusFieldUpdateOperationsInput | $Enums.StockAvailabilityStatus
-    stockItem?: StockItemUpdateOneRequiredWithoutStockRequestLinesNestedInput
+    materialStock?: MaterialStockUpdateOneRequiredWithoutStockRequestLinesNestedInput
   }
 
   export type StockRequestLineUncheckedUpdateWithoutStockRequestInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequested?: IntFieldUpdateOperationsInput | number
     quantityApproved?: IntFieldUpdateOperationsInput | number
     availability?: EnumStockAvailabilityStatusFieldUpdateOperationsInput | $Enums.StockAvailabilityStatus
@@ -58389,7 +60507,7 @@ export namespace Prisma {
 
   export type StockRequestLineUncheckedUpdateManyWithoutStockRequestInput = {
     id?: StringFieldUpdateOperationsInput | string
-    stockItemId?: StringFieldUpdateOperationsInput | string
+    materialStockId?: StringFieldUpdateOperationsInput | string
     quantityRequested?: IntFieldUpdateOperationsInput | number
     quantityApproved?: IntFieldUpdateOperationsInput | number
     availability?: EnumStockAvailabilityStatusFieldUpdateOperationsInput | $Enums.StockAvailabilityStatus

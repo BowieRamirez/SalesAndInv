@@ -92,33 +92,41 @@ export async function POST(request: Request) {
   }
 
   const inquiryId = randomUUID()
+  const messageId = randomUUID()
 
-  await prisma.$executeRaw(Prisma.sql`
-    INSERT INTO public.customer_inquiries (
-      id,
-      "productId",
-      "customerUserId",
-      "customerName",
-      "customerEmail",
-      "customerPhone",
-      message,
-      status,
-      "createdAt",
-      "updatedAt"
-    )
-    VALUES (
-      ${inquiryId},
-      ${product.id},
-      ${sessionUser.id},
-      ${payload.customerName},
-      ${payload.customerEmail.toLowerCase()},
-      ${payload.customerPhone},
-      ${payload.message},
-      'RECEIVED'::"InquiryStatus",
-      CURRENT_TIMESTAMP,
-      CURRENT_TIMESTAMP
-    )
-  `)
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRaw(Prisma.sql`
+      INSERT INTO public.customer_inquiries (
+        id,
+        "productId",
+        "customerUserId",
+        "customerName",
+        "customerEmail",
+        "customerPhone",
+        message,
+        status,
+        "createdAt",
+        "updatedAt"
+      )
+      VALUES (
+        ${inquiryId},
+        ${product.id},
+        ${sessionUser.id},
+        ${payload.customerName},
+        ${payload.customerEmail.toLowerCase()},
+        ${payload.customerPhone},
+        ${payload.message},
+        'RECEIVED'::"InquiryStatus",
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+      )
+    `)
+
+    await tx.$executeRaw(Prisma.sql`
+      INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
+      VALUES (${messageId}, ${inquiryId}, ${sessionUser.id}, 'CLIENT', ${payload.message})
+    `)
+  })
 
   return NextResponse.json({
     ok: true,

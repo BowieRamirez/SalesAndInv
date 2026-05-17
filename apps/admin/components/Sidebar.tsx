@@ -78,6 +78,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
       { name: "Returns", href: "/sales?tab=returns", icon: History, tab: "returns" },
       { name: "Sales Orders", href: "/sales?tab=orders", icon: CheckSquare, tab: "orders" },
       { name: "Order Chats", href: "/sales?tab=chats", icon: Calculator, tab: "chats" },
+      { name: "Audit Logs", href: "/sales?tab=audit", icon: History, tab: "audit" },
     ],
     roleLabel: "Sales",
     color: "bg-emerald-500",
@@ -102,7 +103,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
       {
         label: "Product",
         links: [
-          { name: "Finished Products", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
+          { name: "Product List", href: "/operations?tab=finished-products", icon: Boxes, tab: "finished-products" },
           { name: "Archived Products", href: "/operations?tab=archived-products", icon: Archive, tab: "archived-products" },
           { name: "Storefront", href: "/operations?tab=storefront-filters", icon: SlidersHorizontal, tab: "storefront-filters" },
         ],
@@ -249,6 +250,7 @@ type NavBodyProps = {
   currentTab: string | null;
   onLinkClick?: () => void;
   showCloseHint?: boolean;
+  unreadChatsCount?: number;
 };
 
 function NavItem({
@@ -257,14 +259,18 @@ function NavItem({
   pathname,
   currentTab,
   onLinkClick,
+  unreadChatsCount,
 }: {
   item: NavLink
   index: number
   pathname: string
   currentTab: string | null
   onLinkClick?: () => void
+  unreadChatsCount?: number
 }) {
   const isActive = pathname === item.href || (item.tab ? item.tab === currentTab : pathname === item.href)
+  const isChatTab = item.tab === "chats"
+  const showBadge = isChatTab && (unreadChatsCount ?? 0) > 0
 
   return (
     <motion.div
@@ -305,7 +311,12 @@ function NavItem({
         >
           <item.icon className="w-[16px] h-[16px]" strokeWidth={2} />
         </motion.span>
-        <span className="text-[13px] font-medium tracking-wide">{item.name}</span>
+        <span className="text-[13px] font-medium tracking-wide flex-1">{item.name}</span>
+        {showBadge ? (
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-sm">
+            {unreadChatsCount! > 99 ? "99+" : unreadChatsCount}
+          </span>
+        ) : null}
       </Link>
     </motion.div>
   )
@@ -320,6 +331,7 @@ function NavSection({
   isOpen,
   onToggle,
   onLinkClick,
+  unreadChatsCount,
 }: {
   group: NavGroup
   groupIndex: number
@@ -329,6 +341,7 @@ function NavSection({
   isOpen: boolean
   onToggle: () => void
   onLinkClick?: () => void
+  unreadChatsCount?: number
 }) {
   return (
     <motion.div
@@ -381,6 +394,7 @@ function NavSection({
                   pathname={pathname}
                   currentTab={currentTab}
                   onLinkClick={onLinkClick}
+                  unreadChatsCount={unreadChatsCount}
                 />
               ))}
             </motion.div>
@@ -391,17 +405,20 @@ function NavSection({
   )
 }
 
-function NavBody({ config, links, groups, currentUser, pathname, currentTab, onLinkClick, showCloseHint }: NavBodyProps) {
+function NavBody({ config, links, groups, currentUser, pathname, currentTab, onLinkClick, showCloseHint, unreadChatsCount }: NavBodyProps) {
   const navGroups = groups?.length ? groups : [{ label: "", links }]
   const activeGroupLabel = groups?.find((group) => group.links.some((link) => link.tab === currentTab))?.label
-  const [openGroup, setOpenGroup] = useState(() => activeGroupLabel ?? navGroups[0]?.label ?? "")
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    const defaultLabel = activeGroupLabel ?? navGroups[0]?.label ?? ""
+    return defaultLabel ? { [defaultLabel]: true } : {}
+  })
 
   useEffect(() => {
     if (!activeGroupLabel) {
       return
     }
 
-    setOpenGroup(activeGroupLabel)
+    setOpenGroups((prev) => ({ ...prev, [activeGroupLabel]: true }))
   }, [activeGroupLabel])
 
   return (
@@ -432,9 +449,10 @@ function NavBody({ config, links, groups, currentUser, pathname, currentTab, onL
                   indexOffset={navGroups.slice(0, groupIndex).reduce((total, current) => total + current.links.length, 0)}
                   pathname={pathname}
                   currentTab={currentTab}
-                  isOpen={openGroup === group.label}
-                  onToggle={() => setOpenGroup((current) => (current === group.label ? "" : group.label))}
+                  isOpen={!!openGroups[group.label]}
+                  onToggle={() => setOpenGroups((prev) => ({ ...prev, [group.label]: !prev[group.label] }))}
                   onLinkClick={onLinkClick}
+                  unreadChatsCount={unreadChatsCount}
                 />
               ) : (
                 group.links.map((item, index) => (
@@ -445,6 +463,7 @@ function NavBody({ config, links, groups, currentUser, pathname, currentTab, onL
                     pathname={pathname}
                     currentTab={currentTab}
                     onLinkClick={onLinkClick}
+                    unreadChatsCount={unreadChatsCount}
                   />
                 ))
               )
@@ -499,7 +518,7 @@ function NavBody({ config, links, groups, currentUser, pathname, currentTab, onL
   );
 }
 
-function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
+function SidebarContent({ currentUser, unreadChatsCount }: { currentUser: SidebarUser, unreadChatsCount?: number }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -653,6 +672,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
             currentUser={currentUser}
             pathname={pathname}
             currentTab={currentTab}
+            unreadChatsCount={unreadChatsCount}
           />
         </motion.div>
       </motion.aside>
@@ -728,6 +748,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
               currentTab={currentTab}
               onLinkClick={() => setIsMobileOpen(false)}
               showCloseHint
+              unreadChatsCount={unreadChatsCount}
             />
           </motion.nav>
         )}
@@ -752,10 +773,10 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
   );
 }
 
-export function Sidebar({ currentUser }: { currentUser: SidebarUser }) {
+export function Sidebar({ currentUser, unreadChatsCount }: { currentUser: SidebarUser, unreadChatsCount?: number }) {
   return (
     <Suspense fallback={<div className="w-[280px] bg-[#1a1c29] hidden md:block border-r border-[#2a2c3d]" />}>
-      <SidebarContent currentUser={currentUser} />
+      <SidebarContent currentUser={currentUser} unreadChatsCount={unreadChatsCount} />
     </Suspense>
   );
 }

@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { canSalesAccessInquiry, createOrderChatMessage, getOrderChatMessages, type OrderChatAttachmentInput } from "@/lib/order-chat"
-import { logAudit } from "@furnitrack/db"
+import { logAudit, prisma } from "@furnitrack/db"
 
 const MAX_BODY_LENGTH = 3000
 const MAX_ATTACHMENTS = 3
@@ -101,6 +101,15 @@ export async function POST(request: Request) {
 
   if (!(await canSalesAccessInquiry(inquiryId))) {
     return buildResponse(request, inquiryId, "That order chat could not be found.", "error", 404)
+  }
+
+  const inquiryRecord = await prisma.customerInquiry.findUnique({
+    where: { id: inquiryId },
+    select: { statusNote: true },
+  })
+
+  if (inquiryRecord?.statusNote?.includes("[[completed]]")) {
+    return buildResponse(request, inquiryId, "This order is completed and the chat is closed.", "error", 403)
   }
 
   const messageId = await createOrderChatMessage({

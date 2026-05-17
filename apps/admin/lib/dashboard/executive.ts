@@ -111,13 +111,10 @@ async function getOverviewSnapshot() {
     ),
     inventory_totals AS (
       SELECT
-        COALESCE(SUM(COALESCE(p.price, 0) * s."availableQty"), 0)::double precision AS "inventoryValue",
-        COUNT(s.id)::int AS "totalStockItems",
-        COUNT(*) FILTER (WHERE s."availableQty" <= s."reorderThreshold")::int AS "lowStockItems",
-        COUNT(p.id) FILTER (WHERE p."isPublished" = true)::int AS "publishedProducts"
-      FROM public.stock_items s
-      LEFT JOIN public.products p
-        ON p."stockItemId" = s.id
+        (SELECT COALESCE(SUM(p.price * s."availableQty"), 0) FROM public.product_stocks s INNER JOIN public.products p ON p."productStockId" = s.id)::double precision AS "inventoryValue",
+        ((SELECT COUNT(*) FROM public.product_stocks) + (SELECT COUNT(*) FROM public.material_stocks))::int AS "totalStockItems",
+        ((SELECT COUNT(*) FROM public.product_stocks WHERE "availableQty" <= "reorderThreshold") + (SELECT COUNT(*) FROM public.material_stocks WHERE "availableQty" <= "reorderThreshold"))::int AS "lowStockItems",
+        (SELECT COUNT(*) FROM public.products WHERE "isPublished" = true)::int AS "publishedProducts"
     ),
     delivery_totals AS (
       SELECT
@@ -194,8 +191,8 @@ async function getCategoryMix() {
       COUNT(*)::int AS "productCount",
       COALESCE(SUM(p.price * s."availableQty"), 0)::double precision AS "inventoryValue"
     FROM public.products p
-    INNER JOIN public.stock_items s
-      ON s.id = p."stockItemId"
+    INNER JOIN public.product_stocks s
+      ON s.id = p."productStockId"
     WHERE p."isPublished" = true
     GROUP BY p.category
     ORDER BY "productCount" DESC, p.category ASC
@@ -220,7 +217,7 @@ async function getLowStockItems() {
       w.name AS "warehouseName",
       s."availableQty",
       s."reorderThreshold"
-    FROM public.stock_items s
+    FROM public.material_stocks s
     INNER JOIN public.warehouses w
       ON w.id = s."warehouseId"
     WHERE s.state = 'AVAILABLE'
@@ -295,13 +292,8 @@ async function getReportsSnapshot() {
         ),
         inventory_totals AS (
           SELECT
-            COALESCE(SUM(COALESCE(p.price, 0) * s."availableQty"), 0)::double precision AS "inventoryValue",
-            COUNT(s.id)::int AS "totalStockItems",
-            COUNT(*) FILTER (WHERE s."availableQty" <= s."reorderThreshold")::int AS "lowStockItems",
-            COUNT(p.id) FILTER (WHERE p."isPublished" = true)::int AS "publishedProducts"
-          FROM public.stock_items s
-          LEFT JOIN public.products p
-            ON p."stockItemId" = s.id
+            (SELECT COUNT(*) FROM public.product_stocks WHERE "availableQty" <= "reorderThreshold") + (SELECT COUNT(*) FROM public.material_stocks WHERE "availableQty" <= "reorderThreshold")::int AS "lowStockItems",
+            (SELECT COUNT(*) FROM public.products WHERE "isPublished" = true)::int AS "publishedProducts"
         ),
         delivery_totals AS (
           SELECT

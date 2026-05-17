@@ -22,7 +22,15 @@ export default async function ArchiveDetailsPage({
   const { id } = await params
 
   // Try to find the user in app users, then auth users, then archives
-  const appUser = await prisma.user.findFirst({ where: { OR: [{ id }, { authUserId: id }] } })
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+  const appUser = await prisma.user.findFirst({ 
+    where: { 
+      OR: [
+        { id }, 
+        ...(isUuid ? [{ authUserId: id }] : [])
+      ] 
+    } 
+  })
   const archivedUser = await prisma.adminAccountArchive.findFirst({ where: { originalUserId: id } })
 
   const name = appUser?.name || archivedUser?.name || "Unknown User"

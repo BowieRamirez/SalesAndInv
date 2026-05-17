@@ -35,10 +35,9 @@ export async function GET() {
         prisma.$queryRaw<CountRow[]>`
           SELECT COUNT(*) AS count
           FROM public.products p
-          INNER JOIN public.stock_items s
-            ON s.id = p."stockItemId"
+          INNER JOIN public.product_stocks s
+            ON s.id = p."productStockId"
           WHERE p."isPublished" = true
-            AND s."itemType" = 'FINISHED_PRODUCT'
         `,
         prisma.$queryRaw<CountRow[]>`SELECT COUNT(*) AS count FROM public.users`,
         prisma.$queryRaw<CountRow[]>`

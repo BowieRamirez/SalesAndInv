@@ -26,16 +26,16 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData()
-  const stockItemIds = formData.getAll("stockItemIds").map(String)
+  const materialStockIds = formData.getAll("materialStockIds").map(String)
   const referenceNumber = String(formData.get("referenceNumber") ?? "").trim()
 
-  if (stockItemIds.length === 0) {
+  if (materialStockIds.length === 0) {
     return buildRedirect(request, "No items selected for bulk restock.", "error")
   }
 
   const updates: Array<{ id: string; quantity: number }> = []
 
-  for (const id of stockItemIds) {
+  for (const id of materialStockIds) {
     const qtyRaw = formData.get(`quantity_${id}`)
     const quantity = Number.parseInt(String(qtyRaw ?? "0"), 10)
     if (Number.isFinite(quantity) && quantity > 0) {
@@ -50,32 +50,31 @@ export async function POST(request: Request) {
   try {
     await prisma.$transaction(async (tx) => {
       for (const update of updates) {
-        const { id: stockItemId, quantity } = update
+        const { id: materialStockId, quantity } = update
 
         const existingItem = await tx.$queryRaw<Array<{ id: string; sku: string; itemName: string }>>(Prisma.sql`
           SELECT id, sku, "itemName"
-          FROM public.stock_items
-          WHERE id = ${stockItemId}
-            AND "itemType" = 'RAW_MATERIAL'::"InventoryItemType"
+          FROM public.material_stocks
+          WHERE id = ${materialStockId}
           LIMIT 1
         `)
 
         if (!existingItem[0]) {
-          throw new Error(`Raw material with ID ${stockItemId} could not be found.`)
+          throw new Error(`Raw material with ID ${materialStockId} could not be found.`)
         }
 
         await tx.$executeRaw(Prisma.sql`
-          UPDATE public.stock_items
+          UPDATE public.material_stocks
           SET
             "availableQty" = "availableQty" + ${quantity},
             "updatedAt" = CURRENT_TIMESTAMP
-          WHERE id = ${stockItemId}
+          WHERE id = ${materialStockId}
         `)
 
         await tx.$executeRaw(Prisma.sql`
           INSERT INTO public.stock_movements (
             id,
-            "stockItemId",
+            "materialStockId",
             type,
             quantity,
             "referenceNumber",
@@ -83,7 +82,7 @@ export async function POST(request: Request) {
           )
           VALUES (
             gen_random_uuid(),
-            ${stockItemId},
+            ${materialStockId},
             'IN'::"StockMovementType",
             ${quantity},
             ${referenceNumber || null},
@@ -106,7 +105,7 @@ export async function POST(request: Request) {
             ${currentUser.id},
             'STOCK_ADDED'::"AuditAction",
             'STOCK'::"AuditEntityType",
-            ${stockItemId},
+            ${materialStockId},
             ${JSON.stringify({
               auditLabel: "RAW_MATERIAL_STOCK_ADDED",
               sku: existingItem[0].sku,

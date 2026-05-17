@@ -27,9 +27,9 @@ export async function POST(request: Request) {
 
   const formData = await request.formData()
   const productId = String(formData.get("productId") ?? "").trim()
-  const stockItemId = String(formData.get("stockItemId") ?? "").trim()
+  const productStockId = String(formData.get("productStockId") ?? "").trim()
 
-  if (!productId || !stockItemId) {
+  if (!productId || !productStockId) {
     return buildRedirect(request, "Select a valid product to archive.", "error")
   }
 
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     const existingProduct = await prisma.$queryRaw<
       Array<{
         id: string
-        stockItemId: string
+        productStockId: string
         name: string
         category: string
         isPublished: boolean
@@ -47,20 +47,20 @@ export async function POST(request: Request) {
     >(Prisma.sql`
       SELECT
         p.id,
-        p."stockItemId",
+        p."productStockId",
         p.name,
         p.category,
         p."isPublished",
         s.state::text AS state,
         s.sku
       FROM public.products p
-      INNER JOIN public.stock_items s
-        ON s.id = p."stockItemId"
+      INNER JOIN public.product_stocks s
+        ON s.id = p."productStockId"
       WHERE p.id = ${productId}
       LIMIT 1
     `)
 
-    if (!existingProduct[0] || existingProduct[0].stockItemId !== stockItemId) {
+    if (!existingProduct[0] || existingProduct[0].productStockId !== productStockId) {
       return buildRedirect(request, "That finished product could not be found.", "error")
     }
 
@@ -78,11 +78,11 @@ export async function POST(request: Request) {
       `)
 
       await tx.$executeRaw(Prisma.sql`
-        UPDATE public.stock_items
+        UPDATE public.product_stocks
         SET
           state = 'ARCHIVED'::"StockState",
           "updatedAt" = CURRENT_TIMESTAMP
-        WHERE id = ${stockItemId}
+        WHERE id = ${productStockId}
       `)
     })
 

@@ -27,11 +27,11 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData()
-  const stockItemId = String(formData.get("stockItemId") ?? "").trim()
+  const materialStockId = String(formData.get("materialStockId") ?? "").trim()
   const quantity = Number.parseInt(String(formData.get("quantity") ?? "0"), 10)
   const referenceNumber = String(formData.get("referenceNumber") ?? "").trim()
 
-  if (!stockItemId) {
+  if (!materialStockId) {
     return buildRedirect(request, "Select a raw material to restock.", "error")
   }
 
@@ -43,9 +43,8 @@ export async function POST(request: Request) {
     await prisma.$transaction(async (tx) => {
       const existingItem = await tx.$queryRaw<Array<{ id: string; sku: string; itemName: string }>>(Prisma.sql`
         SELECT id, sku, "itemName"
-        FROM public.stock_items
-        WHERE id = ${stockItemId}
-          AND "itemType" = 'RAW_MATERIAL'::"InventoryItemType"
+        FROM public.material_stocks
+        WHERE id = ${materialStockId}
         LIMIT 1
       `)
 
@@ -54,17 +53,17 @@ export async function POST(request: Request) {
       }
 
       await tx.$executeRaw(Prisma.sql`
-        UPDATE public.stock_items
+        UPDATE public.material_stocks
         SET
           "availableQty" = "availableQty" + ${quantity},
           "updatedAt" = CURRENT_TIMESTAMP
-        WHERE id = ${stockItemId}
+        WHERE id = ${materialStockId}
       `)
 
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.stock_movements (
           id,
-          "stockItemId",
+          "materialStockId",
           type,
           quantity,
           "referenceNumber",
@@ -72,7 +71,7 @@ export async function POST(request: Request) {
         )
         VALUES (
           ${randomUUID()},
-          ${stockItemId},
+          ${materialStockId},
           'IN'::"StockMovementType",
           ${quantity},
           ${referenceNumber || null},
@@ -95,7 +94,7 @@ export async function POST(request: Request) {
           ${currentUser.id},
           'STOCK_ADDED'::"AuditAction",
           'STOCK'::"AuditEntityType",
-          ${stockItemId},
+          ${materialStockId},
           ${JSON.stringify({
             auditLabel: "RAW_MATERIAL_STOCK_ADDED",
             sku: existingItem[0].sku,

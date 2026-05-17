@@ -253,12 +253,26 @@ exports.Prisma.WarehouseScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.StockItemScalarFieldEnum = {
+exports.Prisma.ProductStockScalarFieldEnum = {
   id: 'id',
   warehouseId: 'warehouseId',
   sku: 'sku',
   itemName: 'itemName',
-  itemType: 'itemType',
+  description: 'description',
+  unitOfMeasure: 'unitOfMeasure',
+  availableQty: 'availableQty',
+  reservedQty: 'reservedQty',
+  reorderThreshold: 'reorderThreshold',
+  state: 'state',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MaterialStockScalarFieldEnum = {
+  id: 'id',
+  warehouseId: 'warehouseId',
+  sku: 'sku',
+  itemName: 'itemName',
   description: 'description',
   unitOfMeasure: 'unitOfMeasure',
   availableQty: 'availableQty',
@@ -271,7 +285,7 @@ exports.Prisma.StockItemScalarFieldEnum = {
 
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
-  stockItemId: 'stockItemId',
+  productStockId: 'productStockId',
   slug: 'slug',
   name: 'name',
   category: 'category',
@@ -338,7 +352,7 @@ exports.Prisma.OrderChatAttachmentScalarFieldEnum = {
 exports.Prisma.ProductMaterialScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
-  stockItemId: 'stockItemId',
+  materialStockId: 'materialStockId',
   quantityRequired: 'quantityRequired',
   quantityDisplay: 'quantityDisplay',
   dimension: 'dimension',
@@ -348,7 +362,8 @@ exports.Prisma.ProductMaterialScalarFieldEnum = {
 
 exports.Prisma.StockMovementScalarFieldEnum = {
   id: 'id',
-  stockItemId: 'stockItemId',
+  materialStockId: 'materialStockId',
+  productStockId: 'productStockId',
   type: 'type',
   quantity: 'quantity',
   requesterName: 'requesterName',
@@ -373,7 +388,7 @@ exports.Prisma.StockRequestScalarFieldEnum = {
 exports.Prisma.StockRequestLineScalarFieldEnum = {
   id: 'id',
   stockRequestId: 'stockRequestId',
-  stockItemId: 'stockItemId',
+  materialStockId: 'materialStockId',
   quantityRequested: 'quantityRequested',
   quantityApproved: 'quantityApproved',
   availability: 'availability'
@@ -631,11 +646,6 @@ exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
   CANCELLED: 'CANCELLED'
 };
 
-exports.InventoryItemType = exports.$Enums.InventoryItemType = {
-  FINISHED_PRODUCT: 'FINISHED_PRODUCT',
-  RAW_MATERIAL: 'RAW_MATERIAL'
-};
-
 exports.StockState = exports.$Enums.StockState = {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
@@ -764,7 +774,8 @@ exports.Prisma.ModelName = {
   SalesOrder: 'SalesOrder',
   SalesOrderLineItem: 'SalesOrderLineItem',
   Warehouse: 'Warehouse',
-  StockItem: 'StockItem',
+  ProductStock: 'ProductStock',
+  MaterialStock: 'MaterialStock',
   Product: 'Product',
   DraftProduct: 'DraftProduct',
   CustomerInquiry: 'CustomerInquiry',

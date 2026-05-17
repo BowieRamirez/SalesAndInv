@@ -165,11 +165,6 @@ enum StockState {
   ARCHIVED
 }
 
-enum InventoryItemType {
-  FINISHED_PRODUCT
-  RAW_MATERIAL
-}
-
 enum StockMovementType {
   IN
   OUT
@@ -432,62 +427,82 @@ model Warehouse {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  stockItems StockItem[]
+  productStocks  ProductStock[]
+  materialStocks MaterialStock[]
 
   @@map("warehouses")
 }
 
-model StockItem {
-  id               String            @id @default(cuid())
+model ProductStock {
+  id               String     @id @default(cuid())
   warehouseId      String
-  sku              String            @unique
+  sku              String     @unique
   itemName         String
-  itemType         InventoryItemType @default(RAW_MATERIAL)
   description      String?
-  unitOfMeasure    String            @default("pcs")
-  availableQty     Int               @default(0)
-  reservedQty      Int               @default(0)
-  reorderThreshold Int               @default(10)
-  state            StockState        @default(AVAILABLE)
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  unitOfMeasure    String     @default("pcs")
+  availableQty     Int        @default(0)
+  reservedQty      Int        @default(0)
+  reorderThreshold Int        @default(10)
+  state            StockState @default(AVAILABLE)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  warehouse      Warehouse       @relation(fields: [warehouseId], references: [id])
+  product        Product?
+  stockMovements StockMovement[]
+
+  @@index([warehouseId, state])
+  @@map("product_stocks")
+}
+
+model MaterialStock {
+  id               String     @id @default(cuid())
+  warehouseId      String
+  sku              String     @unique
+  itemName         String
+  description      String?
+  unitOfMeasure    String     @default("pcs")
+  availableQty     Int        @default(0)
+  reservedQty      Int        @default(0)
+  reorderThreshold Int        @default(10)
+  state            StockState @default(AVAILABLE)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 
   warehouse         Warehouse          @relation(fields: [warehouseId], references: [id])
-  product           Product?
   materialFor       ProductMaterial[]  @relation("ProductMaterialStockItem")
   stockMovements    StockMovement[]
   stockRequestLines StockRequestLine[]
 
   @@index([warehouseId, state])
-  @@index([itemType, state])
-  @@map("stock_items")
+  @@map("material_stocks")
 }
 
 model Product {
-  id            String   @id @default(cuid())
-  stockItemId   String   @unique
-  slug          String   @unique
-  name          String
-  category      String
-  material      String
-  price         Decimal
-  originalPrice Decimal?
-  badge         String?
-  images        Json?
-  rating        Decimal  @default(0)
-  reviewCount   Int      @default(0)
-  widthCm       Decimal
-  depthCm       Decimal
-  heightCm      Decimal
-  weightKg      Decimal
-  description   String
-  isPublished   Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String   @id @default(cuid())
+  productStockId String   @unique
+  slug           String   @unique
+  name           String
+  category       String
+  material       String
+  price          Decimal
+  originalPrice  Decimal?
+  badge          String?
+  images         Json?
+  rating         Decimal  @default(0)
+  reviewCount    Int      @default(0)
+  widthCm        Decimal
+  depthCm        Decimal
+  heightCm       Decimal
+  weightKg       Decimal
+  description    String
+  isPublished    Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  stockItem StockItem         @relation(fields: [stockItemId], references: [id])
-  materials ProductMaterial[]
-  inquiries CustomerInquiry[]
+  productStock ProductStock      @relation(fields: [productStockId], references: [id])
+  materials    ProductMaterial[]
+  inquiries    CustomerInquiry[]
 
   @@index([category, isPublished])
   @@map("products")
@@ -564,23 +579,24 @@ model OrderChatAttachment {
 model ProductMaterial {
   id               String   @id @default(cuid())
   productId        String
-  stockItemId      String
+  materialStockId  String
   quantityRequired Decimal?
   quantityDisplay  String?
   dimension        String?
   notes            String?
   createdAt        DateTime @default(now())
 
-  product   Product   @relation(fields: [productId], references: [id])
-  stockItem StockItem @relation("ProductMaterialStockItem", fields: [stockItemId], references: [id])
+  product       Product       @relation(fields: [productId], references: [id])
+  materialStock MaterialStock @relation("ProductMaterialStockItem", fields: [materialStockId], references: [id])
 
-  @@index([stockItemId])
+  @@index([materialStockId])
   @@map("product_materials")
 }
 
 model StockMovement {
   id              String            @id @default(cuid())
-  stockItemId     String
+  materialStockId String?
+  productStockId  String?
   type            StockMovementType
   quantity        Int
   requesterName   String?
@@ -588,7 +604,8 @@ model StockMovement {
   referenceNumber String?
   createdAt       DateTime          @default(now())
 
-  stockItem StockItem @relation(fields: [stockItemId], references: [id])
+  materialStock MaterialStock? @relation(fields: [materialStockId], references: [id])
+  productStock  ProductStock?  @relation(fields: [productStockId], references: [id])
 
   @@map("stock_movements")
 }
@@ -617,13 +634,13 @@ model StockRequest {
 model StockRequestLine {
   id                String                  @id @default(cuid())
   stockRequestId    String
-  stockItemId       String
+  materialStockId   String
   quantityRequested Int
   quantityApproved  Int                     @default(0)
   availability      StockAvailabilityStatus @default(AVAILABLE)
 
-  stockRequest StockRequest @relation(fields: [stockRequestId], references: [id])
-  stockItem    StockItem    @relation(fields: [stockItemId], references: [id])
+  stockRequest  StockRequest  @relation(fields: [stockRequestId], references: [id])
+  materialStock MaterialStock @relation(fields: [materialStockId], references: [id])
 
   @@map("stock_request_line_items")
 }

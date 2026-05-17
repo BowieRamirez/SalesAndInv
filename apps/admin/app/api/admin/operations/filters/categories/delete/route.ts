@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { prisma } from "@furnitrack/db"
+import { prisma, logAudit } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
@@ -43,6 +43,18 @@ export async function POST(request: Request) {
 
     revalidatePath("/operations")
     
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "PRODUCT_UPDATED",
+      entityType: "PRODUCT",
+      entityId: currentUser.id,
+      metadata: {
+        auditLabel: "STOREFRONT_CATEGORY_DELETED",
+        categoryName,
+        categoryId,
+      },
+    })
+
     return buildRedirect(request, `Category deleted. Products were marked as Uncategorized.`, "success")
   } catch (error) {
     return buildRedirect(request, "Could not delete category.", "error")

@@ -108,7 +108,7 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
               <InfoCard label="Remaining balance" value={formatPeso(inquiry.remainingBalance)} />
             </div>
           </section>
-          <OrderChatPanel inquiryId={inquiry.id} messages={messages} />
+          <OrderChatPanel inquiryId={inquiry.id} messages={messages} isClosed={inquiry.workflowStatus === "COMPLETED"} />
         </div>
       ) : (
         <div className="space-y-6">

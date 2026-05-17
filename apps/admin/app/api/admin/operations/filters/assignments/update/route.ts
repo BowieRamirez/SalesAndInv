@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { Prisma, prisma } from "@furnitrack/db"
+import { Prisma, prisma, logAudit } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
@@ -50,6 +50,18 @@ export async function POST(request: Request) {
 
     revalidatePath("/operations")
     
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "PRODUCT_UPDATED",
+      entityType: "PRODUCT",
+      entityId: currentUser.id, // Using user ID as a fallback entity since it's a bulk action
+      metadata: {
+        auditLabel: "CATEGORY_ASSIGNMENT_UPDATED",
+        categoryName,
+        assignedCount: productIds.length,
+      },
+    })
+
     return buildRedirect(request, `Products assigned to "${categoryName}".`, "success")
   } catch (error) {
     return buildRedirect(request, "Could not save category assignments.", "error")

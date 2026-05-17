@@ -6,7 +6,7 @@ const PAGE_SIZE = 10
 
 type DamagedMaterialRow = {
   id: string
-  stockItemId: string
+  materialStockId: string
   sku: string
   itemName: string
   warehouseName: string

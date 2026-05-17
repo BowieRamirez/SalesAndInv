@@ -13,7 +13,7 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
 }
 
 async function generateRawMaterialSku() {
-  const rows = await prisma.stockItem.findMany({
+  const rows = await prisma.materialStock.findMany({
     where: {
       sku: {
         startsWith: "RM-",
@@ -73,10 +73,10 @@ export async function POST(request: Request) {
 
   try {
     const sku = rawSku || (await generateRawMaterialSku())
-    const stockItemId = randomUUID()
+    const materialStockId = randomUUID()
 
     await prisma.$executeRaw(Prisma.sql`
-      INSERT INTO public.stock_items (
+      INSERT INTO public.material_stocks (
         id,
         "warehouseId",
         sku,
@@ -87,12 +87,11 @@ export async function POST(request: Request) {
         "reservedQty",
         "reorderThreshold",
         state,
-        "itemType",
         "createdAt",
         "updatedAt"
       )
       VALUES (
-        ${stockItemId},
+        ${materialStockId},
         ${warehouseId},
         ${sku},
         ${itemName},
@@ -102,7 +101,6 @@ export async function POST(request: Request) {
         0,
         ${reorderThreshold},
         'AVAILABLE'::"StockState",
-        'RAW_MATERIAL'::"InventoryItemType",
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
       )
@@ -123,7 +121,7 @@ export async function POST(request: Request) {
         ${currentUser.id},
         'STOCK_ADDED'::"AuditAction",
         'STOCK'::"AuditEntityType",
-        ${stockItemId},
+        ${materialStockId},
         ${JSON.stringify({
           auditLabel: "RAW_MATERIAL_CREATED",
           sku,
@@ -143,7 +141,7 @@ export async function POST(request: Request) {
       await prisma.$executeRaw(Prisma.sql`
         INSERT INTO public.stock_movements (
           id,
-          "stockItemId",
+          "materialStockId",
           type,
           quantity,
           "referenceNumber",
@@ -151,7 +149,7 @@ export async function POST(request: Request) {
         )
         VALUES (
           ${randomUUID()},
-          ${stockItemId},
+          ${materialStockId},
           'IN'::"StockMovementType",
           ${openingQty},
           ${referenceNumber || null},
@@ -174,7 +172,7 @@ export async function POST(request: Request) {
           ${currentUser.id},
           'STOCK_ADDED'::"AuditAction",
           'STOCK'::"AuditEntityType",
-          ${stockItemId},
+          ${materialStockId},
           ${JSON.stringify({
             auditLabel: "RAW_MATERIAL_STOCK_ADDED",
             sku,

@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { prisma } from "@furnitrack/db"
+import { prisma, logAudit } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import { randomUUID } from "crypto"
 
@@ -35,6 +35,17 @@ export async function POST(request: Request) {
 
     revalidatePath("/operations")
     
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "PRODUCT_UPDATED",
+      entityType: "PRODUCT",
+      entityId: currentUser.id,
+      metadata: {
+        auditLabel: "STOREFRONT_CATEGORY_CREATED",
+        categoryName: name,
+      },
+    })
+
     return buildRedirect(request, `Category "${name}" added.`, "success")
   } catch (error) {
     return buildRedirect(request, "Could not add category. It may already exist.", "error")

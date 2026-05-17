@@ -128,10 +128,9 @@ export async function getStorefrontProducts(): Promise<Product[]> {
           s."availableQty",
           s."reorderThreshold"
         FROM public.products p
-        INNER JOIN public.stock_items s
-          ON s.id = p."stockItemId"
+        INNER JOIN public.product_stocks s
+          ON s.id = p."productStockId"
         WHERE p."isPublished" = true
-          AND s."itemType" = 'FINISHED_PRODUCT'
           AND s.state <> 'ARCHIVED'::"StockState"
         ORDER BY p."createdAt" DESC, p.name ASC /* bust_v3 */
       `),

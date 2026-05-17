@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
   const formData = await request.formData()
   const productId = String(formData.get("productId") ?? "").trim()
-  const stockItemId = String(formData.get("stockItemId") ?? "").trim()
+  const productStockId = String(formData.get("productStockId") ?? "").trim()
   const name = String(formData.get("name") ?? "").trim()
   const category = String(formData.get("category") ?? "").trim()
   const description = String(formData.get("description") ?? "").trim()
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   const isPublished = String(formData.get("isPublished") ?? "").trim() === "on"
   const selectedMaterialIds = collectSelectedMaterialIds(formData)
 
-  if (!productId || !stockItemId || !name || !category || !description) {
+  if (!productId || !productStockId || !name || !category || !description) {
     return buildRedirect(request, "Select a valid product and provide its name, category, and description.", "error")
   }
 
@@ -58,18 +58,18 @@ export async function POST(request: Request) {
   }
 
   try {
-    const existingProduct = await prisma.$queryRaw<Array<{ id: string; stockItemId: string; sku: string }>>(Prisma.sql`
+    const existingProduct = await prisma.$queryRaw<Array<{ id: string; productStockId: string; sku: string }>>(Prisma.sql`
       SELECT
         p.id,
-        p."stockItemId",
+        p."productStockId",
         si.sku
       FROM public.products p
-      INNER JOIN public.stock_items si ON si.id = p."stockItemId"
+      INNER JOIN public.product_stocks si ON si.id = p."productStockId"
       WHERE p.id = ${productId}
       LIMIT 1
     `)
 
-    if (!existingProduct[0] || existingProduct[0].stockItemId !== stockItemId) {
+    if (!existingProduct[0] || existingProduct[0].productStockId !== productStockId) {
       return buildRedirect(request, "That finished product could not be found.", "error")
     }
 
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     }
 
     const materialEntries = rawMaterials.map((material) => ({
-      stockItemId: material.id,
+      materialStockId: material.id,
       quantityDisplay: String(formData.get(`quantityDisplay:${material.id}`) ?? "").trim() || null,
       notes: String(formData.get(`notes:${material.id}`) ?? "").trim() || null,
     }))
@@ -92,12 +92,12 @@ export async function POST(request: Request) {
 
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
-        UPDATE public.stock_items
+        UPDATE public.product_stocks
         SET
           "itemName" = ${name},
           description = ${description},
           "updatedAt" = CURRENT_TIMESTAMP
-        WHERE id = ${stockItemId}
+        WHERE id = ${productStockId}
       `)
 
       await tx.$executeRaw(Prisma.sql`
@@ -127,7 +127,7 @@ export async function POST(request: Request) {
             INSERT INTO public.product_materials (
               id,
               "productId",
-              "stockItemId",
+              "materialStockId",
               "quantityDisplay",
               notes,
               "createdAt"
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
             VALUES (
               gen_random_uuid(),
               ${productId},
-              ${entry.stockItemId},
+              ${entry.materialStockId},
               ${entry.quantityDisplay},
               ${entry.notes},
               CURRENT_TIMESTAMP

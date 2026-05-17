@@ -118,3 +118,16 @@ export async function canSalesAccessInquiry(inquiryId: string) {
 
   return rows.length > 0
 }
+
+export async function getUnreadChatInquiryIds() {
+  const rows = await prisma.$queryRaw<Array<{ inquiry_id: string }>>(Prisma.sql`
+    SELECT DISTINCT inquiry_id
+    FROM (
+      SELECT inquiry_id, sender_role,
+        ROW_NUMBER() OVER(PARTITION BY inquiry_id ORDER BY created_at DESC) as rn
+      FROM public.order_chat_messages
+    ) AS latest
+    WHERE rn = 1 AND sender_role = 'CLIENT'
+  `)
+  return new Set(rows.map((row) => row.inquiry_id))
+}

@@ -104,7 +104,7 @@ export async function POST(request: Request) {
     }
 
     const materialEntries = rawMaterials.map((material) => ({
-      stockItemId: material.id,
+      materialStockId: material.id,
       quantityDisplay: String(formData.get(`quantityDisplay:${material.id}`) ?? "").trim() || null,
       notes: String(formData.get(`notes:${material.id}`) ?? "").trim() || null,
       quantityRequired: (() => {
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
       })(),
     }))
 
-    const stockItemId = randomUUID()
+    const productStockId = randomUUID()
     const productId = randomUUID()
     const sku = await generateFinishedProductSku()
     const slug = await generateUniqueProductSlug(name)
@@ -127,7 +127,7 @@ export async function POST(request: Request) {
 
     const created = await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
-        INSERT INTO public.stock_items (
+        INSERT INTO public.product_stocks (
           id,
           "warehouseId",
           sku,
@@ -139,11 +139,10 @@ export async function POST(request: Request) {
           "reorderThreshold",
           state,
           "createdAt",
-          "updatedAt",
-          "itemType"
+          "updatedAt"
         )
         VALUES (
-          ${stockItemId},
+          ${productStockId},
           ${warehouseId},
           ${sku},
           ${name},
@@ -154,15 +153,14 @@ export async function POST(request: Request) {
           ${reorderThreshold},
           'AVAILABLE'::"StockState",
           CURRENT_TIMESTAMP,
-          CURRENT_TIMESTAMP,
-          'FINISHED_PRODUCT'::"InventoryItemType"
+          CURRENT_TIMESTAMP
         )
       `)
 
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.products (
           id,
-          "stockItemId",
+          "productStockId",
           slug,
           name,
           category,
@@ -183,7 +181,7 @@ export async function POST(request: Request) {
         )
         VALUES (
           ${productId},
-          ${stockItemId},
+          ${productStockId},
           ${slug},
           ${name},
           ${category},
@@ -210,7 +208,7 @@ export async function POST(request: Request) {
             INSERT INTO public.product_materials (
               id,
               "productId",
-              "stockItemId",
+              "materialStockId",
               "quantityRequired",
               "quantityDisplay",
               notes,
@@ -219,7 +217,7 @@ export async function POST(request: Request) {
             VALUES (
               ${randomUUID()},
               ${productId},
-              ${entry.stockItemId},
+              ${entry.materialStockId},
               ${entry.quantityRequired},
               ${entry.quantityDisplay},
               ${entry.notes},

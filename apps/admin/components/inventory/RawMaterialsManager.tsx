@@ -17,7 +17,14 @@ type InventoryRow = {
 
 const PAGE_SIZE = 10
 
-export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
+type ProductFilterData = {
+  id: string
+  name: string
+  recipeDetails: Array<{ id: string }>
+}
+
+export function RawMaterialsManager({ rows, products }: { rows: InventoryRow[], products?: ProductFilterData[] }) {
+  const [selectedProductId, setSelectedProductId] = useState("")
   const [query, setQuery] = useState("")
   const [page, setPage] = useState(1)
   const [selectedMaterial, setSelectedMaterial] = useState<InventoryRow | null>(null)
@@ -27,18 +34,28 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
   const [bulkSearch, setBulkSearch] = useState("")
 
   const filteredRows = useMemo(() => {
+    let result = rows
+
+    if (selectedProductId) {
+      const selectedProduct = products?.find((p) => p.id === selectedProductId)
+      if (selectedProduct) {
+        const productMaterialIds = new Set(selectedProduct.recipeDetails.map((r) => r.id))
+        result = result.filter((row) => productMaterialIds.has(row.id))
+      }
+    }
+
     const normalizedQuery = query.trim().toLowerCase()
 
     if (!normalizedQuery) {
-      return rows
+      return result
     }
 
-    return rows.filter((row) =>
+    return result.filter((row) =>
       [row.sku, row.itemName, row.warehouseName, row.unitOfMeasure].some((value) =>
         value.toLowerCase().includes(normalizedQuery),
       ),
     )
-  }, [query, rows])
+  }, [query, rows, selectedProductId, products])
 
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -93,7 +110,24 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
               </button>
             )}
           </div>
-          <div className="w-full md:w-[320px]">
+          <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+            {products && products.length > 0 && (
+              <select
+                value={selectedProductId}
+                onChange={(e) => {
+                  setSelectedProductId(e.target.value)
+                  setPage(1)
+                }}
+                className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] md:w-[240px]"
+              >
+                <option value="">All materials</option>
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            )}
             <input
               value={query}
               onChange={(event) => {
@@ -101,7 +135,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                 setPage(1)
               }}
               placeholder="Search SKU, item, warehouse, or unit"
-              className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+              className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827] md:w-[320px]"
             />
           </div>
         </div>
@@ -235,7 +269,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
             </div>
 
             <form method="post" action={stockAction === "ADD" ? "/api/admin/inventory/raw-materials/restock" : "/api/admin/inventory/raw-materials/deduct"} className="space-y-3">
-              <input type="hidden" name="stockItemId" value={selectedMaterial.id} />
+              <input type="hidden" name="materialStockId" value={selectedMaterial.id} />
               <label className="block">
                 <span className="mb-2 block text-[12px] font-medium uppercase tracking-[0.12em] text-[#6b7280]">
                   Quantity to {stockAction === "ADD" ? "add" : "remove"}
@@ -259,6 +293,36 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                   className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
                 />
               </label>
+
+              {stockAction === "REMOVE" && (
+                <>
+                  <label className="block">
+                    <span className="mb-2 block text-[12px] font-medium uppercase tracking-[0.12em] text-[#6b7280]">
+                      Reason for removal
+                    </span>
+                    <select
+                      name="reasonCategory"
+                      defaultValue="DAMAGE"
+                      className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+                    >
+                      <option value="DAMAGE">Damaged Stock</option>
+                      <option value="OTHER">Other Reason</option>
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-[12px] font-medium uppercase tracking-[0.12em] text-[#6b7280]">
+                      Reason details (required)
+                    </span>
+                    <input
+                      name="reasonDetails"
+                      required
+                      placeholder="Why is this stock being removed?"
+                      className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+                    />
+                  </label>
+                </>
+              )}
+
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
@@ -315,7 +379,7 @@ export function RawMaterialsManager({ rows }: { rows: InventoryRow[] }) {
                       <p className="text-[12px] text-[#6b7280]">{row.sku} · {row.warehouseName}</p>
                     </div>
                     <div className="w-32">
-                      <input type="hidden" name="stockItemIds" value={row.id} />
+                      <input type="hidden" name="materialStockIds" value={row.id} />
                       <input
                         name={`quantity_${row.id}`}
                         type="number"

@@ -50,7 +50,7 @@ export function collectSelectedMaterialIds(formData: FormData) {
 }
 
 export async function generateFinishedProductSku(client: typeof prisma = prisma) {
-  const rows = await client.stockItem.findMany({
+  const rows = await client.productStock.findMany({
     where: {
       sku: {
         startsWith: "FP-",
@@ -119,9 +119,8 @@ export async function getExistingRawMaterials(materialIds: string[]) {
       "itemName",
       "unitOfMeasure",
       "availableQty"
-    FROM public.stock_items
+    FROM public.material_stocks
     WHERE id IN (${Prisma.join(materialIds.map((materialId) => Prisma.sql`${materialId}`))})
-      AND "itemType" = 'RAW_MATERIAL'::"InventoryItemType"
     ORDER BY "itemName" ASC
   `)
 }

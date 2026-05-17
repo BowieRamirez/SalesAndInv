@@ -233,22 +233,22 @@ export async function completeReturnRequest(params: {
 
   const materials = await prisma.$queryRaw<
     Array<{
-      stockItemId: string
+      materialStockId: string
       quantityRequired: Prisma.Decimal | number | string | null
       quantityDisplay: string | null
       itemName: string
     }>
   >(Prisma.sql`
     SELECT
-      pm."stockItemId",
+      pm."materialStockId",
       pm."quantityRequired",
       pm."quantityDisplay",
       si."itemName"
     FROM public.customer_inquiries ci
     INNER JOIN public.product_materials pm
       ON pm."productId" = ci."productId"
-    INNER JOIN public.stock_items si
-      ON si.id = pm."stockItemId"
+    INNER JOIN public.material_stocks si
+      ON si.id = pm."materialStockId"
     WHERE ci.id = ${request.inquiryId}
   `)
 
@@ -276,7 +276,7 @@ export async function completeReturnRequest(params: {
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.stock_movements (
           id,
-          "stockItemId",
+          "materialStockId",
           type,
           quantity,
           "requesterName",
@@ -286,7 +286,7 @@ export async function completeReturnRequest(params: {
         )
         VALUES (
           ${randomUUID()},
-          ${material.stockItemId},
+          ${material.materialStockId},
           'DAMAGE'::"StockMovementType",
           ${resolvedQuantity},
           ${request.customerName},
@@ -298,11 +298,11 @@ export async function completeReturnRequest(params: {
 
       // Permanently deduct from availableQty — clamped to 0, never goes back to stock
       await tx.$executeRaw(Prisma.sql`
-        UPDATE public.stock_items
+        UPDATE public.material_stocks
         SET
           "availableQty" = GREATEST(0, "availableQty" - ${resolvedQuantity}),
           "updatedAt" = CURRENT_TIMESTAMP
-        WHERE id = ${material.stockItemId}
+        WHERE id = ${material.materialStockId}
       `)
     }
     return statusUpdateCount

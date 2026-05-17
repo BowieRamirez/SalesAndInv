@@ -27,11 +27,13 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData()
-  const stockItemId = String(formData.get("stockItemId") ?? "").trim()
+  const materialStockId = String(formData.get("materialStockId") ?? "").trim()
   const quantity = Number.parseInt(String(formData.get("quantity") ?? "0"), 10)
   const referenceNumber = String(formData.get("referenceNumber") ?? "").trim()
+  const reasonCategory = String(formData.get("reasonCategory") ?? "OTHER").trim()
+  const reasonDetails = String(formData.get("reasonDetails") ?? "").trim()
 
-  if (!stockItemId) {
+  if (!materialStockId) {
     return buildRedirect(request, "Select a raw material to deduct stock from.", "error")
   }
 
@@ -43,9 +45,8 @@ export async function POST(request: Request) {
     await prisma.$transaction(async (tx) => {
       const existingItem = await tx.$queryRaw<Array<{ id: string; sku: string; itemName: string; availableQty: number }>>(Prisma.sql`
         SELECT id, sku, "itemName", "availableQty"
-        FROM public.stock_items
-        WHERE id = ${stockItemId}
-          AND "itemType" = 'RAW_MATERIAL'::"InventoryItemType"
+        FROM public.material_stocks
+        WHERE id = ${materialStockId}
         LIMIT 1
       `)
 
@@ -58,28 +59,32 @@ export async function POST(request: Request) {
       }
 
       await tx.$executeRaw(Prisma.sql`
-        UPDATE public.stock_items
+        UPDATE public.material_stocks
         SET
           "availableQty" = "availableQty" - ${quantity},
           "updatedAt" = CURRENT_TIMESTAMP
-        WHERE id = ${stockItemId}
+        WHERE id = ${materialStockId}
       `)
+
+      const movementType = reasonCategory === "DAMAGE" ? "DAMAGE" : "OUT"
 
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.stock_movements (
           id,
-          "stockItemId",
+          "materialStockId",
           type,
           quantity,
           "referenceNumber",
+          "projectPurpose",
           "createdAt"
         )
         VALUES (
           ${randomUUID()},
-          ${stockItemId},
-          'OUT'::"StockMovementType",
+          ${materialStockId},
+          ${movementType}::"StockMovementType",
           ${quantity},
           ${referenceNumber || null},
+          ${reasonDetails || null},
           CURRENT_TIMESTAMP
         )
       `)
@@ -99,13 +104,15 @@ export async function POST(request: Request) {
           ${currentUser.id},
           'STOCK_REMOVED'::"AuditAction",
           'STOCK'::"AuditEntityType",
-          ${stockItemId},
+          ${materialStockId},
           ${JSON.stringify({
             auditLabel: "RAW_MATERIAL_STOCK_REMOVED",
             sku: existingItem[0].sku,
             itemName: existingItem[0].itemName,
             quantity,
             referenceNumber: referenceNumber || null,
+            reasonCategory,
+            reasonDetails,
           })}::jsonb,
           CURRENT_TIMESTAMP
         )

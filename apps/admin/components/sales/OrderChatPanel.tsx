@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import type { OrderChatMessage } from "@/lib/order-chat"
 
 type AttachmentDraft = {
@@ -29,7 +30,8 @@ function readFileAsDataUrl(file: File) {
   })
 }
 
-export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; messages: OrderChatMessage[] }) {
+export function OrderChatPanel({ inquiryId, messages, isClosed = false }: { inquiryId: string; messages: OrderChatMessage[]; isClosed?: boolean }) {
+  const router = useRouter()
   const [body, setBody] = useState("")
   const [attachmentType, setAttachmentType] = useState<AttachmentDraft["attachmentType"]>("IMAGE")
   const [attachments, setAttachments] = useState<AttachmentDraft[]>([])
@@ -123,6 +125,7 @@ export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; mes
       form.reset()
       setStatusMessage(result.message ?? "Message sent.")
       void refreshMessages()
+      router.refresh()
     } catch {
       setStatusMessage("Message could not be sent. Please try again.")
     } finally {
@@ -172,38 +175,44 @@ export function OrderChatPanel({ inquiryId, messages }: { inquiryId: string; mes
         )}
       </div>
 
-      <form onSubmit={handleSendMessage} className="mt-4 space-y-3">
-        <input type="hidden" name="inquiryId" value={inquiryId} />
-        <input type="hidden" name="attachmentsJson" value={JSON.stringify(attachments)} />
-        <textarea
-          name="body"
-          value={body}
-          onChange={(event) => setBody(event.target.value)}
-          rows={4}
-          placeholder="Reply to the customer about this order..."
-          className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
-        />
-        <div className="grid gap-3 md:grid-cols-[180px_1fr_auto] md:items-end">
-          <label className="grid gap-2">
-            <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Attachment type</span>
-            <select value={attachmentType} onChange={(event) => setAttachmentType(event.target.value as AttachmentDraft["attachmentType"])} className="rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none focus:border-[#111827]">
-              <option value="IMAGE">Image</option>
-              <option value="DOCUMENT">Document</option>
-              <option value="QUOTATION">Quotation</option>
-              <option value="RECEIPT">Receipt</option>
-            </select>
-          </label>
-          <label className="grid gap-2">
-            <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Images / documents</span>
-            <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onChange={(event) => void handleFiles(event.target.files)} className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827]" />
-          </label>
-          <button type="submit" disabled={isPreparing || isSending || (!body.trim() && attachments.length === 0)} className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]">
-            {isSending ? "Sending..." : "Send"}
-          </button>
+      {isClosed ? (
+        <div className="mt-4 rounded-xl border border-dashed border-[#d1d5db] bg-[#f9fafb] p-6 text-center text-[13px] text-[#6b7280]">
+          This order has been completed. The chat is now closed.
         </div>
-        {attachments.length > 0 ? <p className="text-[12px] text-[#6b7280]">Prepared {attachments.length} attachment(s).</p> : null}
-        {statusMessage ? <p className="text-[12px] text-[#6b7280]">{statusMessage}</p> : null}
-      </form>
+      ) : (
+        <form onSubmit={handleSendMessage} className="mt-4 space-y-3">
+          <input type="hidden" name="inquiryId" value={inquiryId} />
+          <input type="hidden" name="attachmentsJson" value={JSON.stringify(attachments)} />
+          <textarea
+            name="body"
+            value={body}
+            onChange={(event) => setBody(event.target.value)}
+            rows={4}
+            placeholder="Reply to the customer about this order..."
+            className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
+          />
+          <div className="grid gap-3 md:grid-cols-[180px_1fr_auto] md:items-end">
+            <label className="grid gap-2">
+              <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Attachment type</span>
+              <select value={attachmentType} onChange={(event) => setAttachmentType(event.target.value as AttachmentDraft["attachmentType"])} className="rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none focus:border-[#111827]">
+                <option value="IMAGE">Image</option>
+                <option value="DOCUMENT">Document</option>
+                <option value="QUOTATION">Quotation</option>
+                <option value="RECEIPT">Receipt</option>
+              </select>
+            </label>
+            <label className="grid gap-2">
+              <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Images / documents</span>
+              <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onChange={(event) => void handleFiles(event.target.files)} className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827]" />
+            </label>
+            <button type="submit" disabled={isPreparing || isSending || (!body.trim() && attachments.length === 0)} className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]">
+              {isSending ? "Sending..." : "Send"}
+            </button>
+          </div>
+          {attachments.length > 0 ? <p className="text-[12px] text-[#6b7280]">Prepared {attachments.length} attachment(s).</p> : null}
+          {statusMessage ? <p className="text-[12px] text-[#6b7280]">{statusMessage}</p> : null}
+        </form>
+      )}
     </div>
   )
 }

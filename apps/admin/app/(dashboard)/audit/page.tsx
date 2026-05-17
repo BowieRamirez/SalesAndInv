@@ -17,7 +17,7 @@ type DetailedAuditLog = {
   createdAt: Date
 }
 
-async function getAuditLogs() {
+async function getAuditLogs(role: string) {
   return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
     SELECT
       a.id,
@@ -44,13 +44,15 @@ async function getAuditLogs() {
         a.metadata->>'removedEmail',
         a.metadata->>'customerEmail',
         a.metadata->>'referenceNumber',
-        a.metadata->>'category'
+        a.metadata->>'category',
+        a.metadata->>'reasonDetails'
       ) AS details,
       u.name AS "actorName",
       a."createdAt"
     FROM public.audit_logs a
     LEFT JOIN public.users u ON u.id = a."actorId"
       OR u."authUserId"::text = a."actorId"
+    WHERE u.role = ${role}::"UserRole"
     ORDER BY a."createdAt" DESC
     LIMIT 300
   `)
@@ -65,7 +67,7 @@ export default async function AuditDashboard() {
     redirect(ROLE_REDIRECT[currentUser.role])
   }
 
-  const auditLogs = await getAuditLogs()
+  const auditLogs = await getAuditLogs(currentUser.role)
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-8">

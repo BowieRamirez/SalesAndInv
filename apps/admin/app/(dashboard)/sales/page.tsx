@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { getReturnRequests } from "@furnitrack/db"
+import { Prisma, prisma, getReturnRequests } from "@furnitrack/db"
 import {
   formatInquiryWorkflowStatus,
   getInquiryWorkflowStyle,
@@ -8,14 +8,17 @@ import {
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
+import { getUnreadChatInquiryIds } from "@/lib/order-chat"
 import { CustomerReturnsTable } from "@/components/sales/CustomerReturnsTable"
 import { SalesOrdersTable } from "@/components/sales/SalesOrdersTable"
+import { OrderChatsList } from "@/components/sales/OrderChatsList"
+import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
 
 type SalesPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-const SALES_TABS = new Set(["lead", "approvals", "returns", "orders", "chats"])
+const SALES_TABS = new Set(["lead", "approvals", "returns", "orders", "chats", "audit"])
 
 function resolveTab(tab?: string | string[]) {
   const value = Array.isArray(tab) ? tab[0] : tab
@@ -24,6 +27,60 @@ function resolveTab(tab?: string | string[]) {
 
 function resolveValue(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value
+}
+
+type DetailedAuditLog = {
+  id: string
+  action: string
+  entityType: string
+  entityId: string
+  sku: string | null
+  itemName: string | null
+  quantity: number | null
+  details: string | null
+  actorName: string | null
+  createdAt: Date
+}
+
+async function getAuditLogs(role: string) {
+  return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
+    SELECT
+      a.id,
+      COALESCE(a.metadata->>'auditLabel', a.action::text) AS action,
+      a."entityType"::text AS "entityType",
+      a."entityId",
+      a.metadata->>'sku' AS sku,
+      COALESCE(
+        a.metadata->>'itemName',
+        a.metadata->>'name',
+        a.metadata->>'updatedName',
+        a.metadata->>'createdName',
+        a.metadata->>'removedName',
+        a.metadata->>'customerName',
+        a.metadata->>'customerEmail',
+        a.metadata->>'updatedEmail',
+        a.metadata->>'createdEmail',
+        a.metadata->>'removedEmail'
+      ) AS "itemName",
+      NULLIF(a.metadata->>'quantity', '')::int AS quantity,
+      COALESCE(
+        a.metadata->>'updatedEmail',
+        a.metadata->>'createdEmail',
+        a.metadata->>'removedEmail',
+        a.metadata->>'customerEmail',
+        a.metadata->>'referenceNumber',
+        a.metadata->>'category',
+        a.metadata->>'reasonDetails'
+      ) AS details,
+      u.name AS "actorName",
+      a."createdAt"
+    FROM public.audit_logs a
+    LEFT JOIN public.users u ON u.id = a."actorId"
+      OR u."authUserId"::text = a."actorId"
+    WHERE u.role = ${role}::"UserRole"
+    ORDER BY a."createdAt" DESC
+    LIMIT 200
+  `)
 }
 
 function WorkflowBadge({ status }: { status: string }) {
@@ -146,6 +203,9 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
   const recentOverviewItems = [...inquiries]
     .sort((left, right) => new Date(right.updatedAt).getTime() - new Date(left.updatedAt).getTime())
     .slice(0, 5)
+
+  const auditLogs = activeTab === "audit" ? await getAuditLogs(currentUser.role) : []
+  const unreadChats = activeTab === "chats" ? await getUnreadChatInquiryIds() : new Set<string>()
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] p-8">
@@ -362,28 +422,22 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
       )}
 
       {activeTab === "chats" && (
-        <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
-          <div className="mb-5">
-            <h2 className="text-[20px] font-semibold text-[#111827]">Order Chats</h2>
-            <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
-              Open a specific order to chat with the customer, receive images, and send quotation or receipt documents.
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {inquiries.map((inquiry) => (
-              <Link
-                key={inquiry.id}
-                href={`/sales/orders/${inquiry.id}?tab=chats`}
-                className="rounded-2xl border border-[#eef2f7] bg-[#fbfcfd] p-5 transition-colors hover:border-[#111827]"
-              >
-                <p className="text-[12px] uppercase tracking-[0.16em] text-[#94a3b8]">Order chat</p>
-                <h3 className="mt-2 text-[17px] font-semibold text-[#111827]">{inquiry.productName}</h3>
-                <p className="mt-2 text-[13px] text-[#6b7280]">{inquiry.customerName}</p>
-                <p className="mt-3 text-[13px] font-medium text-[#111827]">{formatPeso(inquiry.total)}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <OrderChatsList 
+          inquiries={inquiries.map(i => ({
+            id: i.id,
+            productName: i.productName,
+            customerName: i.customerName,
+            total: i.total
+          }))} 
+          unreadChats={unreadChats} 
+        />
+      )}
+
+      {activeTab === "audit" && (
+        <div className="space-y-6">
+          <div className="mb-6"><h2 className="text-[20px] font-semibold text-[#111827]">Audit Logs</h2></div>
+          <AuditLogsTable rows={auditLogs} />
+        </div>
       )}
 
     </main>

@@ -6,7 +6,7 @@ import { MaterialSelector } from "./MaterialSelector"
 
 type FinishedProduct = {
   id: string
-  stockItemId: string
+  productStockId: string
   name: string
   category: string
   price: number
@@ -308,12 +308,12 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
             <h2 className="text-[28px] font-bold tracking-tight text-[#0f172a]">
-              {isArchivedView ? "Archived Products" : "Finished Products"}
+              {isArchivedView ? "Archived Products" : "Product List"}
             </h2>
             <p className="text-[14px] text-[#64748b]">
               {isArchivedView
                 ? "View products that have been archived and hidden from your active catalog."
-                : "Manage your catalog of finished products and publish them to your storefront."}
+                : "Manage your list of products and publish them to your storefront."}
             </p>
           </div>
           <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center lg:w-auto">
@@ -354,7 +354,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
             </svg>
           </div>
           <h3 className="mt-4 text-[16px] font-semibold text-[#0f172a]">
-            {isArchivedView ? "No archived products found" : "No finished products found"}
+            {isArchivedView ? "No archived products found" : "No products found"}
           </h3>
           <p className="mt-2 text-[14px] text-[#64748b]">
             {isArchivedView
@@ -371,19 +371,11 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                 className="group relative flex flex-col overflow-hidden rounded-[24px] border border-[#e2e8f0] bg-white shadow-sm transition-all hover:border-[#cbd5e1] hover:shadow-md"
               >
                 <div className="relative h-48 w-full overflow-hidden bg-[#f1f5f9] shrink-0 border-b border-[#f1f5f9]">
-                  {product.imageUrl ? (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="grid h-full w-full place-items-center text-[#94a3b8]">
-                      <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                  )}
+                  <img
+                    src={product.imageUrl || `https://placehold.co/400x300/f5f0e8/2d2d2d?text=${encodeURIComponent(product.name)}`}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                   <div className="absolute left-4 top-4 flex flex-col gap-2">
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide shadow-sm backdrop-blur-md ${
@@ -600,7 +592,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
           <div className="flex max-h-full w-full max-w-7xl flex-col overflow-hidden rounded-[32px] border border-[#e5e7eb] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-8 py-6">
               <div>
-                <h2 className="text-[24px] font-bold text-[#0f172a]">Create finished product</h2>
+                <h2 className="text-[24px] font-bold text-[#0f172a]">Create new product</h2>
                 {activeDraft ? (
                   <p className="mt-1.5 flex items-center gap-2 text-[13px] font-medium text-[#64748b]">
                     <span className="relative flex h-2.5 w-2.5">
@@ -1054,7 +1046,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                     }}
                   >
                     <input type="hidden" name="productId" value={selectedProduct.id} />
-                    <input type="hidden" name="stockItemId" value={selectedProduct.stockItemId} />
+                    <input type="hidden" name="productStockId" value={selectedProduct.productStockId} />
                     <button
                       type="submit"
                       className="rounded-xl px-4 py-3 text-[14px] font-medium text-[#b91c1c] transition-colors hover:bg-[#fef2f2]"
@@ -1105,7 +1097,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                 className="flex min-h-0 flex-1 flex-col bg-[#fbfdff]"
               >
                 <input type="hidden" name="productId" value={product.id} />
-                <input type="hidden" name="stockItemId" value={product.stockItemId} />
+                <input type="hidden" name="productStockId" value={product.productStockId} />
 
                 <div className="flex-1 overflow-y-auto p-8">
                   <div className="mx-auto max-w-6xl space-y-8">
@@ -1252,7 +1244,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                             const stockInput = document.createElement("input")
                             stockInput.type = "hidden"
                             stockInput.name = "stockItemId"
-                            stockInput.value = product.stockItemId
+                            stockInput.value = product.productStockId
                             form.appendChild(stockInput)
 
                             document.body.appendChild(form)

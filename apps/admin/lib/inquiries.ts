@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto"
 import { Prisma, prisma } from "@furnitrack/db"
 import type { AccountingPaymentMethod } from "@/lib/accounting-payment-methods"
 
@@ -371,14 +372,41 @@ export async function updateInquiryWorkflowStatus(params: {
       break
   }
 
-  return prisma.$executeRaw(Prisma.sql`
-    UPDATE public.customer_inquiries
-    SET
-      status = ${nextStoredStatus}::"InquiryStatus",
-      "statusNote" = ${nextStoredNote},
-      "updatedAt" = CURRENT_TIMESTAMP
-    WHERE id = ${inquiryId}
-  `)
+  let autoMessage: string | null = null
+  switch (nextStage) {
+    case "PENDING_ACCOUNTING_APPROVAL":
+      autoMessage = "Your order materials have been approved by inventory. It is now waiting for accounting review."
+      break
+    case "GETTING_READY_FOR_BUILDING":
+      autoMessage = "Payment confirmed! Your order is now getting ready for building."
+      break
+    case "READY_FOR_SHIPPING":
+      autoMessage = "Your order is built and ready for shipping. We will set the shipping schedule soon."
+      break
+    case "COMPLETED":
+      autoMessage = "Your order has been marked as complete. Thank you for shopping with FurniTrack!"
+      break
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const result = await tx.$executeRaw(Prisma.sql`
+      UPDATE public.customer_inquiries
+      SET
+        status = ${nextStoredStatus}::"InquiryStatus",
+        "statusNote" = ${nextStoredNote},
+        "updatedAt" = CURRENT_TIMESTAMP
+      WHERE id = ${inquiryId}
+    `)
+
+    if (autoMessage) {
+      await tx.$executeRaw(Prisma.sql`
+        INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
+        VALUES (${randomUUID()}, ${inquiryId}, NULL, 'SALES', ${autoMessage})
+      `)
+    }
+
+    return result
+  })
 }
 
 export async function setInquiryShippingSchedule(params: {
@@ -399,14 +427,23 @@ export async function setInquiryShippingSchedule(params: {
     shippingScheduledAt,
   )
 
-  return prisma.$executeRaw(Prisma.sql`
-    UPDATE public.customer_inquiries
-    SET
-      status = 'READY_FOR_SHIPMENT'::"InquiryStatus",
-      "statusNote" = ${nextStoredNote},
-      "updatedAt" = CURRENT_TIMESTAMP
-    WHERE id = ${inquiryId}
-  `)
+  return prisma.$transaction(async (tx) => {
+    const result = await tx.$executeRaw(Prisma.sql`
+      UPDATE public.customer_inquiries
+      SET
+        status = 'READY_FOR_SHIPMENT'::"InquiryStatus",
+        "statusNote" = ${nextStoredNote},
+        "updatedAt" = CURRENT_TIMESTAMP
+      WHERE id = ${inquiryId}
+    `)
+
+    await tx.$executeRaw(Prisma.sql`
+      INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
+      VALUES (${randomUUID()}, ${inquiryId}, NULL, 'SALES', 'Shipping schedule has been set for this order.')
+    `)
+
+    return result
+  })
 }
 
 export async function updateInquiryPaymentFollowUp(params: {

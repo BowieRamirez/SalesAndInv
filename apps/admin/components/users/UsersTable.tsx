@@ -571,6 +571,39 @@ export function UsersTable({
 
                   <form
                     method="post"
+                    action="/api/admin/accounts/status"
+                    className="border-t border-slate-100 bg-slate-50/50 p-6"
+                  >
+                    <input type="hidden" name="authUserId" value={expandedAccount.authUserId} />
+                    <input type="hidden" name="email" value={expandedAccount.email} />
+                    <input type="hidden" name="status" value={expandedAccount.status.toUpperCase() === "BLOCKED" ? "ACTIVE" : "BLOCKED"} />
+                    <div className="mb-5">
+                      <h4 className="text-[14px] font-semibold text-slate-900">Account Status</h4>
+                      <p className="mt-1 text-[12px] text-slate-500">
+                        {expandedAccount.status.toUpperCase() === "BLOCKED" 
+                          ? "This account is currently deactivated and cannot log in." 
+                          : "Deactivate this account to prevent login without deleting data."}
+                      </p>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={expandedIsCurrentUser || expandedIsExecutive}
+                      className={`w-full rounded-md px-3 py-2 text-[13px] font-medium text-white shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 ${
+                        expandedAccount.status.toUpperCase() === "BLOCKED"
+                          ? "bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500"
+                          : "bg-amber-500 hover:bg-amber-600 focus:ring-amber-500"
+                      }`}
+                    >
+                      {expandedIsCurrentUser || expandedIsExecutive 
+                        ? "Locked" 
+                        : expandedAccount.status.toUpperCase() === "BLOCKED" 
+                          ? "Reactivate Account" 
+                          : "Deactivate Account"}
+                    </button>
+                  </form>
+
+                  <form
+                    method="post"
                     action="/api/admin/accounts/remove"
                     onSubmit={(event) => {
                       event.preventDefault()

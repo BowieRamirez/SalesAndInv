@@ -21,7 +21,7 @@ type OperationsPageProps = {
 
 type ProductCardData = {
   id: string
-  stockItemId: string
+  productStockId: string
   name: string
   category: string
   price: number
@@ -86,7 +86,7 @@ type DetailedAuditLog = {
 
 type DamagedMaterialRow = {
   id: string
-  stockItemId: string
+  materialStockId: string
   sku: string
   itemName: string
   warehouseName: string
@@ -98,7 +98,7 @@ type DamagedMaterialRow = {
 }
 
 export type ReservedMaterialRow = {
-  stockItemId: string
+  materialStockId: string
   sku: string
   itemName: string
   warehouseName: string
@@ -111,7 +111,7 @@ export type ReservedMaterialRow = {
 
 export type ReservedMaterialDetailRow = {
   eventId: string
-  stockItemId: string
+  materialStockId: string
   sku: string
   itemName: string
   warehouseName: string
@@ -471,14 +471,13 @@ async function getOperationsWorkspaceData() {
         "itemName",
         "availableQty",
         "unitOfMeasure"
-      FROM public.stock_items
-      WHERE "itemType" = 'RAW_MATERIAL'::"InventoryItemType"
+      FROM public.material_stocks
       ORDER BY "itemName" ASC /* bust_v3 */
     `,
     prisma.$queryRaw<
       Array<{
         id: string
-        stockItemId: string
+        productStockId: string
         name: string
         category: string
         price: Prisma.Decimal | number | string
@@ -497,7 +496,7 @@ async function getOperationsWorkspaceData() {
     >`
       SELECT
         p.id,
-        p."stockItemId",
+        p."productStockId",
         p.name,
         p.category,
         p.price,
@@ -513,8 +512,8 @@ async function getOperationsWorkspaceData() {
         p.material AS "materialSummary",
         COALESCE(recipe_counts."recipeCount", 0)::int AS "recipeCount"
       FROM public.products p
-      INNER JOIN public.stock_items s
-        ON s.id = p."stockItemId"
+      INNER JOIN public.product_stocks s
+        ON s.id = p."productStockId"
       INNER JOIN public.warehouses w
         ON w.id = s."warehouseId"
       LEFT JOIN LATERAL (
@@ -542,8 +541,8 @@ async function getOperationsWorkspaceData() {
         pm."quantityDisplay",
         pm.notes
       FROM public.product_materials pm
-      INNER JOIN public.stock_items si
-        ON si.id = pm."stockItemId"
+      INNER JOIN public.material_stocks si
+        ON si.id = pm."materialStockId"
       ORDER BY pm."createdAt" ASC /* bust_v3 */
     `,
     prisma.$queryRaw<Array<{ id: string; name: string }>>`
@@ -566,7 +565,7 @@ async function getOperationsWorkspaceData() {
 
   const finishedProducts: ProductCardData[] = products.map((product) => ({
     id: product.id,
-    stockItemId: product.stockItemId,
+    productStockId: product.productStockId,
     name: product.name,
     category: product.category,
     price: asNumber(product.price),
@@ -598,17 +597,17 @@ async function getInventoryRows() {
       s.id,
       s.sku,
       s."itemName",
-      COALESCE(s."itemType"::text, 'RAW_MATERIAL') AS "itemType",
+      'RAW_MATERIAL' AS "itemType",
       s."warehouseId",
       w.name AS "warehouseName",
       s."availableQty",
       s."reservedQty",
       s."reorderThreshold",
       s."unitOfMeasure"
-    FROM public.stock_items s
+    FROM public.material_stocks s
     INNER JOIN public.warehouses w
       ON w.id = s."warehouseId"
-    ORDER BY s."itemType" DESC, s."itemName" ASC
+    ORDER BY s."itemName" ASC
   `)
 }
 
@@ -621,7 +620,7 @@ async function getWarehouseSummaries() {
       w.address,
       COUNT(s.id)::int AS "itemCount"
     FROM public.warehouses w
-    LEFT JOIN public.stock_items s
+    LEFT JOIN public.material_stocks s
       ON s."warehouseId" = w.id
     GROUP BY w.id, w.code, w.name, w.address
     ORDER BY w.name ASC
@@ -639,7 +638,7 @@ async function getStockRequestSummaries() {
   `)
 }
 
-async function getAuditLogs() {
+async function getAuditLogs(role: string) {
   return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
     SELECT
       a.id,
@@ -666,13 +665,15 @@ async function getAuditLogs() {
         a.metadata->>'removedEmail',
         a.metadata->>'customerEmail',
         a.metadata->>'referenceNumber',
-        a.metadata->>'category'
+        a.metadata->>'category',
+        a.metadata->>'reasonDetails'
       ) AS details,
       u.name AS "actorName",
       a."createdAt"
     FROM public.audit_logs a
     LEFT JOIN public.users u ON u.id = a."actorId"
       OR u."authUserId"::text = a."actorId"
+    WHERE u.role = ${role}::"UserRole"
     ORDER BY a."createdAt" DESC
     LIMIT 200
   `)
@@ -682,7 +683,7 @@ async function getDamagedMaterialRows() {
   return prisma.$queryRaw<DamagedMaterialRow[]>(Prisma.sql`
     SELECT
       sm.id,
-      sm."stockItemId",
+      sm."materialStockId",
       si.sku,
       si."itemName",
       w.name AS "warehouseName",
@@ -692,8 +693,8 @@ async function getDamagedMaterialRows() {
       sm."referenceNumber",
       sm."createdAt"
     FROM public.stock_movements sm
-    INNER JOIN public.stock_items si
-      ON si.id = sm."stockItemId"
+    INNER JOIN public.material_stocks si
+      ON si.id = sm."materialStockId"
     INNER JOIN public.warehouses w
       ON w.id = si."warehouseId"
     WHERE sm.type = 'DAMAGE'::"StockMovementType"
@@ -705,7 +706,7 @@ async function getReservedMaterialRows() {
   return prisma.$queryRaw<ReservedMaterialRow[]>(Prisma.sql`
     WITH active_stock_request_reservations AS (
       SELECT
-        si.id AS "stockItemId",
+        si.id AS "materialStockId",
         si.sku,
         si."itemName",
         w.name AS "warehouseName",
@@ -718,8 +719,8 @@ async function getReservedMaterialRows() {
         ON sr.id = srl."stockRequestId"
       INNER JOIN public.sales_orders so
         ON so.id = sr."salesOrderId"
-      INNER JOIN public.stock_items si
-        ON si.id = srl."stockItemId"
+      INNER JOIN public.material_stocks si
+        ON si.id = srl."materialStockId"
       INNER JOIN public.warehouses w
         ON w.id = si."warehouseId"
       WHERE srl."quantityApproved" > 0
@@ -729,7 +730,7 @@ async function getReservedMaterialRows() {
     ),
     active_accounting_reservations AS (
       SELECT
-        si.id AS "stockItemId",
+        si.id AS "materialStockId",
         si.sku,
         si."itemName",
         w.name AS "warehouseName",
@@ -742,8 +743,8 @@ async function getReservedMaterialRows() {
           ORDER BY COALESCE(p.name || ' - ' || ci."customerName", sm."referenceNumber")
         ) AS "orderNumbers"
       FROM public.stock_movements sm
-      INNER JOIN public.stock_items si
-        ON si.id = sm."stockItemId"
+      INNER JOIN public.material_stocks si
+        ON si.id = sm."materialStockId"
       INNER JOIN public.warehouses w
         ON w.id = si."warehouseId"
       LEFT JOIN public.customer_inquiries ci
@@ -756,7 +757,7 @@ async function getReservedMaterialRows() {
           SELECT 1
           FROM public.stock_movements consumed
           WHERE consumed."referenceNumber" = sm."referenceNumber"
-            AND consumed."stockItemId" = sm."stockItemId"
+            AND consumed."materialStockId" = sm."materialStockId"
             AND consumed."projectPurpose" = 'Build Order'
             AND consumed.type = 'OUT'::"StockMovementType"
         )
@@ -768,7 +769,7 @@ async function getReservedMaterialRows() {
       SELECT * FROM active_accounting_reservations
     )
     SELECT
-      si.id AS "stockItemId",
+      si.id AS "materialStockId",
       si.sku,
       si."itemName",
       w.name AS "warehouseName",
@@ -778,8 +779,8 @@ async function getReservedMaterialRows() {
       COALESCE(SUM(combined."orderCount"), 0)::int AS "orderCount",
       STRING_AGG(DISTINCT combined."orderNumbers", ', ' ORDER BY combined."orderNumbers") AS "orderNumbers"
     FROM combined
-    INNER JOIN public.stock_items si
-      ON si.id = combined."stockItemId"
+    INNER JOIN public.material_stocks si
+      ON si.id = combined."materialStockId"
     INNER JOIN public.warehouses w
       ON w.id = si."warehouseId"
     GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure", si."availableQty"
@@ -792,7 +793,7 @@ async function getReservedMaterialDetails() {
     WITH active_stock_request_reservations AS (
       SELECT
         sr.id AS "eventId",
-        si.id AS "stockItemId",
+        si.id AS "materialStockId",
         si.sku,
         si."itemName",
         w.name AS "warehouseName",
@@ -806,7 +807,7 @@ async function getReservedMaterialDetails() {
       FROM public.stock_request_line_items srl
       INNER JOIN public.stock_requests sr ON sr.id = srl."stockRequestId"
       INNER JOIN public.sales_orders so ON so.id = sr."salesOrderId"
-      INNER JOIN public.stock_items si ON si.id = srl."stockItemId"
+      INNER JOIN public.material_stocks si ON si.id = srl."materialStockId"
       INNER JOIN public.warehouses w ON w.id = si."warehouseId"
       LEFT JOIN LATERAL (
         SELECT STRING_AGG(DISTINCT soli."productName", ', ' ORDER BY soli."productName") AS "productName"
@@ -820,7 +821,7 @@ async function getReservedMaterialDetails() {
     active_accounting_reservations AS (
       SELECT
         sm.id AS "eventId",
-        si.id AS "stockItemId",
+        si.id AS "materialStockId",
         si.sku,
         si."itemName",
         w.name AS "warehouseName",
@@ -832,7 +833,7 @@ async function getReservedMaterialDetails() {
         sm."createdAt" AS "dateReserved",
         sm.quantity::int AS "reservedQty"
       FROM public.stock_movements sm
-      INNER JOIN public.stock_items si ON si.id = sm."stockItemId"
+      INNER JOIN public.material_stocks si ON si.id = sm."materialStockId"
       INNER JOIN public.warehouses w ON w.id = si."warehouseId"
       LEFT JOIN public.customer_inquiries ci ON ci.id = sm."referenceNumber"
       LEFT JOIN public.products p ON p.id = ci."productId"
@@ -841,7 +842,7 @@ async function getReservedMaterialDetails() {
         AND NOT EXISTS (
           SELECT 1 FROM public.stock_movements consumed
           WHERE consumed."referenceNumber" = sm."referenceNumber"
-            AND consumed."stockItemId" = sm."stockItemId"
+            AND consumed."materialStockId" = sm."materialStockId"
             AND consumed."projectPurpose" = 'Build Order'
             AND consumed.type = 'OUT'::"StockMovementType"
         )
@@ -883,7 +884,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     getInventoryRows(),
     getWarehouseSummaries(),
     getStockRequestSummaries(),
-    getAuditLogs(),
+    getAuditLogs(currentUser.role),
     getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
     getDamagedMaterialRows(),
     getReservedMaterialRows(),
@@ -1122,7 +1123,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
                 <button type="submit" className="mt-auto rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 xl:self-stretch">Add raw material</button>
               </form>
             </section>
-            <RawMaterialsManager rows={rawMaterialsInv} />
+            <RawMaterialsManager rows={rawMaterialsInv} products={finishedProducts} />
           </div>
         )}
 
@@ -1157,7 +1158,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
             <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
               {[
                 {label:"Damaged Entries",value:damagedMaterials.length},
-                {label:"Unique Materials",value:new Set(damagedMaterials.map(r=>r.stockItemId)).size},
+                {label:"Unique Materials",value:new Set(damagedMaterials.map(r=>r.materialStockId)).size},
                 {label:"Return References",value:new Set(damagedMaterials.map(r=>r.referenceNumber).filter(Boolean)).size},
               ].map(r=>(
                 <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
