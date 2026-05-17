@@ -2,12 +2,14 @@
 
 import { Fragment, useMemo, useState } from "react"
 import {
+  AlertTriangle,
   Crown,
   MoreHorizontal,
   Search,
   Shield,
   ShieldCheck,
   User as UserIcon,
+  X,
 } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { PasswordField } from "./PasswordField"
@@ -63,6 +65,8 @@ function StatusBadge({ status }: { status: string }) {
   const styles =
     normalized === "ACTIVE"
       ? "bg-emerald-100 text-emerald-700 ring-emerald-200"
+      : normalized === "BLOCKED"
+        ? "bg-rose-100 text-rose-700 ring-rose-200"
       : normalized === "INVITED"
         ? "bg-blue-100 text-blue-700 ring-blue-200"
         : normalized === "SUSPENDED"
@@ -105,6 +109,7 @@ export function UsersTable({
   const [pageSize] = useState(10)
   const [page, setPage] = useState(1)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [pendingRemoval, setPendingRemoval] = useState<ManagedAccount | null>(null)
 
   const allStatuses = useMemo(() => {
     const set = new Set<string>()
@@ -134,6 +139,14 @@ export function UsersTable({
   const safePage = Math.min(page, totalPages)
   const start = (safePage - 1) * pageSize
   const paged = filtered.slice(start, start + pageSize)
+
+  const expandedAccount = useMemo(() => expandedId ? users.find(u => u.authUserId === expandedId) || null : null, [users, expandedId])
+  const expandedIsCurrentUser = expandedAccount?.authUserId === currentAuthUserId
+  const expandedIsExecutive = expandedAccount?.role === "ADMIN_MANAGEMENT"
+  const expandedBaselineAccounts = ['admin@sims.com', 'sales@sims.com', 'operations@sims.com', 'accounting@sims.com']
+  const expandedIsBaseline = expandedAccount ? expandedBaselineAccounts.includes(expandedAccount.email) : false
+  const expandedIsCustomizable = expandedAccount ? !expandedIsBaseline && (expandedAccount.role === "SALES" || expandedAccount.role === "OPERATIONS_DESIGN" || expandedAccount.role === "CUSTOM") : false
+  const expandedEditableRoles = expandedIsCurrentUser ? internalRoleOptions : staffRoleOptions
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -213,14 +226,6 @@ export function UsersTable({
               paged.map((account) => {
                 const isCurrentUser = account.authUserId === currentAuthUserId
                 const isExpanded = expandedId === account.authUserId
-                const isExecutive = account.role === "ADMIN_MANAGEMENT"
-                
-                const baselineAccounts = ['admin@sims.com', 'sales@sims.com', 'operations@sims.com', 'accounting@sims.com']
-                const isBaseline = baselineAccounts.includes(account.email)
-                const isCustomizable = !isBaseline && (account.role === "SALES" || account.role === "OPERATIONS_DESIGN" || account.role === "CUSTOM")
-                
-                const editableRoles = isCurrentUser ? internalRoleOptions : staffRoleOptions
-                const expandColSpan = variant === "customer" ? 8 : 7
 
                 return (
                   <Fragment key={account.authUserId}>
@@ -269,222 +274,29 @@ export function UsersTable({
                         >
                           <MoreHorizontal className="h-4 w-4" />
                         </button>
-                      ) : null}
+                      ) : (
+                        <form method="post" action="/api/admin/customers/status">
+                          <input type="hidden" name="authUserId" value={account.authUserId} />
+                          <input type="hidden" name="email" value={account.email} />
+                          <input
+                            type="hidden"
+                            name="status"
+                            value={account.status.toUpperCase() === "BLOCKED" ? "ACTIVE" : "BLOCKED"}
+                          />
+                          <button
+                            type="submit"
+                            className={`rounded-lg px-3 py-2 text-[12px] font-medium transition-colors ${
+                              account.status.toUpperCase() === "BLOCKED"
+                                ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                                : "bg-amber-500 text-white hover:bg-amber-600"
+                            }`}
+                          >
+                            {account.status.toUpperCase() === "BLOCKED" ? "Reactivate" : "Deactivate"}
+                          </button>
+                        </form>
+                      )}
                     </td>
                   </motion.tr>
-                  <AnimatePresence initial={false}>
-                    {variant === "internal" && isExpanded ? (
-                      <motion.tr
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        <td colSpan={expandColSpan} className="border-b border-slate-100 bg-slate-50/80 px-5 py-5">
-                          <motion.div
-                            initial={{ y: -8, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: -8, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_220px]"
-                          >
-                            {/* Edit details */}
-                            <form
-                              method="post"
-                              action="/api/admin/accounts/update"
-                              className="rounded-xl border border-slate-200 bg-white p-4"
-                            >
-                              <input type="hidden" name="authUserId" value={account.authUserId} />
-                              <input type="hidden" name="email" value={account.email} />
-                              <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                                Edit details
-                              </p>
-                              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_140px]">
-                                <input
-                                  name="name"
-                                  defaultValue={account.name}
-                                  disabled={isExecutive}
-                                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] text-slate-900 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500"
-                                />
-                                {isExecutive ? (
-                                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[13px] text-slate-500">
-                                    {roleLabels[account.role] ?? account.role}
-                                  </div>
-                                ) : (
-                                  <select
-                                    name="role"
-                                    defaultValue={account.role}
-                                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] text-slate-900 outline-none focus:border-slate-400"
-                                  >
-                                    {editableRoles.map((opt) => (
-                                      <option key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </option>
-                                    ))}
-                                  </select>
-                                )}
-                                <button
-                                  type="submit"
-                                  disabled={isExecutive}
-                                  className="rounded-lg bg-slate-900 px-3 py-2 text-[13px] font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
-                                >
-                                  {isExecutive ? "Locked" : "Save"}
-                                </button>
-                              </div>
-                              {isCustomizable && (
-                                <div className="mt-4 pt-4 border-t border-slate-100">
-                                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                                    Custom Admin Permissions
-                                  </p>
-                                  
-                                  <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 text-[13px] text-slate-700">
-                                    {/* Sales Permissions */}
-                                    {(account.role === "SALES" || account.role === "CUSTOM") ? (
-                                      <div>
-                                        <p className="mb-2 text-[11px] font-bold text-slate-400">SALES PAGES</p>
-                                        <div className="flex flex-col gap-2">
-                                          <label className="flex items-center gap-2">
-                                            <input type="checkbox" name="tab_lead" defaultChecked={account.permissions?.lead ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                            Dashboard (Lead)
-                                          </label>
-                                          <label className="flex items-center gap-2">
-                                            <input type="checkbox" name="tab_sales_approvals" defaultChecked={account.permissions?.sales_approvals ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                            Approvals
-                                          </label>
-                                          <label className="flex items-center gap-2">
-                                            <input type="checkbox" name="tab_returns" defaultChecked={account.permissions?.returns ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                            Returns
-                                          </label>
-                                          <label className="flex items-center gap-2">
-                                            <input type="checkbox" name="tab_orders" defaultChecked={account.permissions?.orders ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                            Sales Orders
-                                          </label>
-                                          <label className="flex items-center gap-2">
-                                            <input type="checkbox" name="tab_chats" defaultChecked={account.permissions?.chats ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                            Order Chats
-                                          </label>
-                                        </div>
-                                      </div>
-                                    ) : null}
-
-                                    {(account.role === "OPERATIONS_DESIGN" || account.role === "CUSTOM") ? (
-                                      <>
-                                        {/* Operations - Products & Warehouse */}
-                                        <div>
-                                          <p className="mb-2 text-[11px] font-bold text-slate-400">OPERATIONS - PRODUCTS & WAREHOUSE</p>
-                                          <div className="flex flex-col gap-2">
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_finished-products" defaultChecked={account.permissions?.['finished-products'] ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              Finished Products
-                                            </label>
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_locations" defaultChecked={account.permissions?.locations ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              Warehouse Locations
-                                            </label>
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_all-stocks" defaultChecked={account.permissions?.['all-stocks'] ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              All Stocks
-                                            </label>
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_reserved" defaultChecked={account.permissions?.reserved ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              Reserved Materials
-                                            </label>
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_damaged-materials" defaultChecked={account.permissions?.['damaged-materials'] ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              Damaged Materials
-                                            </label>
-                                          </div>
-                                        </div>
-
-                                        {/* Operations - Approvals & Delivery */}
-                                        <div>
-                                          <p className="mb-2 text-[11px] font-bold text-slate-400">OPERATIONS - APPROVALS & DELIVERY</p>
-                                          <div className="flex flex-col gap-2">
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_inv-approvals" defaultChecked={account.permissions?.['inv-approvals'] ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              Inventory Approvals
-                                            </label>
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_ops_approvals" defaultChecked={account.permissions?.ops_approvals ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              Approvals
-                                            </label>
-                                            <label className="flex items-center gap-2">
-                                              <input type="checkbox" name="tab_delivery" defaultChecked={account.permissions?.delivery ?? true} className="rounded border-slate-300 w-4 h-4" />
-                                              Delivery Schedule
-                                            </label>
-                                            <label className="flex items-center gap-2 text-slate-400" title="Always included">
-                                              <input type="checkbox" disabled checked className="rounded border-slate-300 w-4 h-4" />
-                                              Audit Logs (Always Included)
-                                            </label>
-                                          </div>
-                                        </div>
-                                      </>
-                                    ) : null}
-                                  </div>
-                                  <p className="mt-2 text-[11px] text-slate-500">Uncheck to restrict access. Leave checked to grant access.</p>
-                                </div>
-                              )}
-                              <p className="mt-3 text-[11px] text-slate-500">
-                                {isExecutive
-                                  ? "This protected executive account cannot be edited here."
-                                  : "Admin / Management is reserved for the executive account."}
-                              </p>
-                            </form>
-
-                            {/* Password */}
-                            <form
-                              method="post"
-                              action="/api/admin/accounts/password"
-                              className="rounded-xl border border-slate-200 bg-white p-4"
-                            >
-                              <input type="hidden" name="authUserId" value={account.authUserId} />
-                              <input type="hidden" name="email" value={account.email} />
-                              <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                                Password
-                              </p>
-                              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_140px]">
-                                <PasswordField
-                                  name="newPassword"
-                                  placeholder="New password"
-                                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] text-slate-900 outline-none focus:border-slate-400"
-                                />
-                                <button
-                                  type="submit"
-                                  className="rounded-lg bg-[#111827] px-3 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
-                                >
-                                  Update
-                                </button>
-                              </div>
-                            </form>
-
-                            {/* Remove */}
-                            <form
-                              method="post"
-                              action="/api/admin/accounts/remove"
-                              className="rounded-xl border border-rose-200 bg-rose-50/60 p-4"
-                            >
-                              <input type="hidden" name="authUserId" value={account.authUserId} />
-                              <input type="hidden" name="email" value={account.email} />
-                              <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-rose-600">
-                                Remove
-                              </p>
-                              <button
-                                type="submit"
-                                disabled={isCurrentUser}
-                                className="w-full rounded-lg bg-rose-600 px-3 py-2 text-[13px] font-medium text-white transition-colors hover:bg-rose-700 disabled:cursor-not-allowed disabled:bg-rose-300"
-                              >
-                                {isCurrentUser ? "Current account" : "Remove account"}
-                              </button>
-                              <p className="mt-2 text-[11px] text-amber-700">
-                                {isCurrentUser
-                                  ? "You cannot remove the active session."
-                                  : "Deletes the Neon login and app record."}
-                              </p>
-                            </form>
-                          </motion.div>
-                        </td>
-                      </motion.tr>
-                    ) : null}
-                  </AnimatePresence>
                   </Fragment>
                 )
               })
@@ -535,6 +347,339 @@ export function UsersTable({
           {">>"}       
         </button>
       </div>
+
+      <AnimatePresence>
+        {variant === "internal" && expandedAccount ? (
+          <motion.div
+            className="fixed inset-0 z-50 grid place-items-center bg-slate-950/45 px-4 overflow-y-auto pt-10 pb-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              className="my-auto w-full max-w-[800px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+              initial={{ y: 16, opacity: 0, scale: 0.98 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 16, opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-200 text-[13px] font-semibold text-slate-700">
+                    {getInitials(expandedAccount.name)}
+                  </div>
+                  <div>
+                    <h3 className="text-[15px] font-medium text-slate-900">{expandedAccount.name}</h3>
+                    <p className="text-[13px] text-slate-500">{expandedAccount.email}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setExpandedId(null)}
+                  className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                  aria-label="Close modal"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="grid divide-y divide-slate-100 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] sm:divide-x sm:divide-y-0">
+                {/* Left Column: Edit Details */}
+                <form
+                  method="post"
+                  action="/api/admin/accounts/update"
+                  className="p-6"
+                >
+                  <input type="hidden" name="authUserId" value={expandedAccount.authUserId} />
+                  <input type="hidden" name="email" value={expandedAccount.email} />
+                  <div className="mb-5">
+                    <h4 className="text-[14px] font-semibold text-slate-900">Edit Details</h4>
+                    <p className="text-[12px] text-slate-500">Update account information and roles.</p>
+                  </div>
+                  
+                  <div className="mb-5 flex flex-col gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-medium text-slate-700">Full Name</label>
+                      <input
+                        name="name"
+                        defaultValue={expandedAccount.name}
+                        disabled={expandedIsExecutive}
+                        placeholder="Full name"
+                        className="rounded-md border border-slate-300 bg-white px-3 py-2 text-[13px] text-slate-900 outline-none transition-colors focus:border-slate-400 focus:ring-1 focus:ring-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[12px] font-medium text-slate-700">Role</label>
+                      {expandedIsExecutive ? (
+                        <div className="flex h-9 items-center rounded-md border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-500">
+                          {roleLabels[expandedAccount.role] ?? expandedAccount.role}
+                        </div>
+                      ) : (
+                        <select
+                          name="role"
+                          defaultValue={expandedAccount.role}
+                          className="h-9 rounded-md border border-slate-300 bg-white px-3 text-[13px] text-slate-900 outline-none transition-colors focus:border-slate-400 focus:ring-1 focus:ring-slate-400"
+                        >
+                          {expandedEditableRoles.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={expandedIsExecutive}
+                    className="w-full rounded-md bg-slate-900 px-3 py-2 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 sm:w-auto"
+                  >
+                    {expandedIsExecutive ? "Locked" : "Save Changes"}
+                  </button>
+
+                  {expandedIsCustomizable && (
+                    <div className="mt-8 pt-6 border-t border-slate-100">
+                      <h5 className="mb-4 text-[12px] font-semibold uppercase tracking-wider text-slate-500">
+                        Custom Admin Permissions
+                      </h5>
+                      
+                      <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 text-[13px] text-slate-700">
+                        {/* Sales Permissions */}
+                        {(expandedAccount.role === "SALES" || expandedAccount.role === "CUSTOM") ? (
+                          <div>
+                            <p className="mb-3 text-[11px] font-bold text-slate-400">SALES PAGES</p>
+                            <div className="flex flex-col gap-3">
+                              <label className="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" name="tab_lead" defaultChecked={expandedAccount.permissions?.lead ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                <span className="select-none text-slate-600">Dashboard (Lead)</span>
+                              </label>
+                              <label className="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" name="tab_sales_approvals" defaultChecked={expandedAccount.permissions?.sales_approvals ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                <span className="select-none text-slate-600">Approvals</span>
+                              </label>
+                              <label className="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" name="tab_returns" defaultChecked={expandedAccount.permissions?.returns ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                <span className="select-none text-slate-600">Returns</span>
+                              </label>
+                              <label className="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" name="tab_orders" defaultChecked={expandedAccount.permissions?.orders ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                <span className="select-none text-slate-600">Sales Orders</span>
+                              </label>
+                              <label className="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" name="tab_chats" defaultChecked={expandedAccount.permissions?.chats ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                <span className="select-none text-slate-600">Order Chats</span>
+                              </label>
+                            </div>
+                          </div>
+                        ) : null}
+
+                        {(expandedAccount.role === "OPERATIONS_DESIGN" || expandedAccount.role === "CUSTOM") ? (
+                          <>
+                            {/* Operations - Products & Warehouse */}
+                            <div>
+                              <p className="mb-3 text-[11px] font-bold text-slate-400">PRODUCTS & WAREHOUSE</p>
+                              <div className="flex flex-col gap-3">
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_finished-products" defaultChecked={expandedAccount.permissions?.['finished-products'] ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">Finished Products</span>
+                                </label>
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_locations" defaultChecked={expandedAccount.permissions?.locations ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">Warehouse Locations</span>
+                                </label>
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_all-stocks" defaultChecked={expandedAccount.permissions?.['all-stocks'] ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">All Stocks</span>
+                                </label>
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_reserved" defaultChecked={expandedAccount.permissions?.reserved ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">Reserved Materials</span>
+                                </label>
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_damaged-materials" defaultChecked={expandedAccount.permissions?.['damaged-materials'] ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">Damaged Materials</span>
+                                </label>
+                              </div>
+                            </div>
+
+                            {/* Operations - Approvals & Delivery */}
+                            <div className="sm:col-span-2 mt-2">
+                              <p className="mb-3 text-[11px] font-bold text-slate-400">APPROVALS & DELIVERY</p>
+                              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-8">
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_inv-approvals" defaultChecked={expandedAccount.permissions?.['inv-approvals'] ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">Inventory Approvals</span>
+                                </label>
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_ops_approvals" defaultChecked={expandedAccount.permissions?.ops_approvals ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">Approvals</span>
+                                </label>
+                                <label className="flex items-center gap-2.5 cursor-pointer">
+                                  <input type="checkbox" name="tab_delivery" defaultChecked={expandedAccount.permissions?.delivery ?? true} className="rounded border-slate-300 w-4 h-4 text-slate-900 focus:ring-slate-900" />
+                                  <span className="select-none text-slate-600">Delivery Schedule</span>
+                                </label>
+                                <label className="flex items-center gap-2.5 text-slate-400 cursor-not-allowed" title="Always included">
+                                  <input type="checkbox" disabled checked className="rounded border-slate-300 w-4 h-4 text-slate-400" />
+                                  <span className="select-none">Audit Logs (Always Included)</span>
+                                </label>
+                              </div>
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                      <p className="mt-5 text-[12px] text-slate-500">Uncheck to restrict access. Leave checked to grant access.</p>
+                    </div>
+                  )}
+
+                  <p className="mt-6 text-[12px] text-slate-500">
+                    {expandedIsExecutive
+                      ? "This protected executive account cannot be edited here."
+                      : "Admin / Management is reserved for the executive account."}
+                  </p>
+                </form>
+
+                {/* Right Column: Security & Removal */}
+                <div className="flex flex-col bg-slate-50/50">
+                  <form
+                    method="post"
+                    action="/api/admin/accounts/password"
+                    className="flex-1 p-6"
+                  >
+                    <input type="hidden" name="authUserId" value={expandedAccount.authUserId} />
+                    <input type="hidden" name="email" value={expandedAccount.email} />
+                    <div className="mb-5">
+                      <h4 className="text-[14px] font-semibold text-slate-900">Security</h4>
+                      <p className="mt-1 text-[12px] text-slate-500">Reset user's password.</p>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <PasswordField
+                        name="newPassword"
+                        placeholder="New password"
+                        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-[13px] text-slate-900 outline-none transition-colors focus:border-slate-400 focus:ring-1 focus:ring-slate-400"
+                      />
+                      <button
+                        type="submit"
+                        className="w-full rounded-md bg-[#111827] px-3 py-2 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-[#111827]/90 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+                      >
+                        Update Password
+                      </button>
+                    </div>
+                  </form>
+
+                  <form
+                    method="post"
+                    action="/api/admin/accounts/remove"
+                    onSubmit={(event) => {
+                      event.preventDefault()
+                      setExpandedId(null)
+                      setPendingRemoval(expandedAccount)
+                    }}
+                    className="border-t border-rose-100 bg-rose-50/50 p-6"
+                  >
+                    <input type="hidden" name="authUserId" value={expandedAccount.authUserId} />
+                    <input type="hidden" name="email" value={expandedAccount.email} />
+                    <div className="mb-5 flex items-start gap-3">
+                      <div className="mt-0.5 rounded-full bg-rose-100 p-1.5 text-rose-700">
+                        <AlertTriangle className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-[14px] font-semibold text-rose-900">Danger Zone</h4>
+                        <p className="mt-1 text-[12px] text-rose-700/80">Permanent account removal.</p>
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={expandedIsCurrentUser}
+                      className="w-full rounded-md bg-rose-600 px-3 py-2 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-rose-300"
+                    >
+                      {expandedIsCurrentUser ? "Current Account" : "Remove Account"}
+                    </button>
+                    <p className="mt-3 text-[12px] text-rose-700/80">
+                      {expandedIsCurrentUser
+                        ? "You cannot remove the active session."
+                        : "Deletes the Neon login and app record."}
+                    </p>
+                  </form>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {pendingRemoval ? (
+          <motion.div
+            className="fixed inset-0 z-50 grid place-items-center bg-slate-950/45 px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="account-removal-title"
+              className="w-full max-w-[440px] rounded-2xl border border-rose-200 bg-white p-5 shadow-2xl"
+              initial={{ y: 16, scale: 0.98, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 16, scale: 0.98, opacity: 0 }}
+              transition={{ duration: 0.18 }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-rose-100 text-rose-700">
+                    <AlertTriangle className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 id="account-removal-title" className="text-[16px] font-semibold text-slate-950">
+                      Remove account?
+                    </h2>
+                    <p className="mt-1 text-[13px] leading-5 text-slate-600">
+                      Removing this account deletes the Neon login and app record. This action cannot be undone.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPendingRemoval(null)}
+                  className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                  aria-label="Close"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <p className="text-[13px] font-medium text-slate-900">{pendingRemoval.name}</p>
+                <p className="mt-0.5 text-[12px] text-slate-500">{pendingRemoval.email}</p>
+              </div>
+
+              <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setPendingRemoval(null)}
+                  className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-[13px] font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <form method="post" action="/api/admin/accounts/remove">
+                  <input type="hidden" name="authUserId" value={pendingRemoval.authUserId} />
+                  <input type="hidden" name="email" value={pendingRemoval.email} />
+                  <button
+                    type="submit"
+                    className="w-full rounded-lg bg-rose-600 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-rose-700 sm:w-auto"
+                  >
+                    Remove account
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </section>
   )
 }

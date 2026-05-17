@@ -63,11 +63,12 @@ const navConfigs: Record<AppRole, NavConfig> = {
       { name: "Admin Access", href: "/users", icon: Users },
       { name: "Customers", href: "/customers", icon: Users },
       { name: "Reports", href: "/analytics", icon: BarChart3 },
+      { name: "Audit Logs", href: "/audit", icon: History },
       { name: "Archives", href: "/archives", icon: History },
     ],
     roleLabel: "Admin / Management",
     color: "bg-[#34384d]",
-    allowedPaths: ["/", "/approvals", "/users", "/customers", "/analytics", "/archives"],
+    allowedPaths: ["/", "/approvals", "/users", "/customers", "/analytics", "/audit", "/archives"],
     defaultHref: "/",
   },
   SALES: {

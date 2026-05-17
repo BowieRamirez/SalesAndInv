@@ -16,6 +16,14 @@ type CustomerRow = {
   company: string | null
 }
 
+type CustomersPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+function getSearchValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value
+}
+
 async function getCustomers() {
   return prisma.$queryRaw<CustomerRow[]>(Prisma.sql`
     SELECT
@@ -40,7 +48,7 @@ async function getCustomers() {
     WHERE (
       CASE
         WHEN auth.role IN ('ADMIN', 'ANALYTICS', 'ADMIN_MANAGEMENT') THEN 'ADMIN_MANAGEMENT'
-        WHEN auth.role IN ('SALES', 'INVENTORY', 'ACCOUNTING', 'OPERATIONS_DESIGN') THEN auth.role
+        WHEN auth.role IN ('SALES', 'INVENTORY', 'ACCOUNTING', 'OPERATIONS_DESIGN', 'CUSTOM') THEN auth.role
         ELSE 'CLIENT'
       END
     ) = 'CLIENT'
@@ -60,13 +68,16 @@ function StatCard({ label, value, hint }: { label: string; value: string | numbe
 
 export const dynamic = "force-dynamic"
 
-export default async function CustomersDashboard() {
+export default async function CustomersDashboard({ searchParams }: CustomersPageProps) {
   const currentUser = await requireAuthenticatedAppUser()
 
   if (currentUser.role !== "ADMIN_MANAGEMENT") {
     redirect(ROLE_REDIRECT[currentUser.role])
   }
 
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const message = getSearchValue(resolvedSearchParams.message)
+  const tone = getSearchValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
   const customers = await getCustomers()
 
   const totalCustomers = customers.length
@@ -110,6 +121,18 @@ export default async function CustomersDashboard() {
             hint={`${totalCustomers ? Math.round((activeCustomers / totalCustomers) * 100) : 0}% of customers`}
           />
         </section>
+
+        {message ? (
+          <div
+            className={`rounded-xl border px-5 py-4 text-[13px] ${
+              tone === "error"
+                ? "border-rose-200 bg-rose-50 text-rose-700"
+                : "border-emerald-200 bg-emerald-50 text-emerald-700"
+            }`}
+          >
+            {message}
+          </div>
+        ) : null}
 
         <UsersTable
           users={serialized}

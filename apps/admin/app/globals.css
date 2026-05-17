@@ -45,4 +45,8 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
 }

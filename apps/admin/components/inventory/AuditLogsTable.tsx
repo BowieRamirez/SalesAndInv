@@ -5,9 +5,12 @@ import { useMemo, useState } from "react"
 type DetailedAuditLog = {
   id: string
   action: string
+  entityType: string
+  entityId: string
   sku: string | null
   itemName: string | null
   quantity: number | null
+  details: string | null
   actorName: string | null
   createdAt: Date
 }
@@ -26,7 +29,15 @@ export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
     }
 
     return rows.filter((row) =>
-      [row.actorName ?? "", row.action, row.sku ?? "", row.itemName ?? ""].some((value) =>
+      [
+        row.actorName ?? "",
+        row.action,
+        row.entityType,
+        row.entityId,
+        row.sku ?? "",
+        row.itemName ?? "",
+        row.details ?? "",
+      ].some((value) =>
         value.toLowerCase().includes(normalizedQuery),
       ),
     )
@@ -58,7 +69,7 @@ export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
               setQuery(event.target.value)
               setPage(1)
             }}
-            placeholder="Search actor, action, SKU, or item"
+            placeholder="Search actor, action, account, product, SKU, or item"
             className="w-full rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
           />
         </div>
@@ -71,8 +82,9 @@ export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
               <th className="py-3 pr-4 font-medium">Recorded</th>
               <th className="py-3 pr-4 font-medium">Actor</th>
               <th className="py-3 pr-4 font-medium">Action</th>
+              <th className="py-3 pr-4 font-medium">Area</th>
               <th className="py-3 pr-4 font-medium">SKU</th>
-              <th className="py-3 pr-4 font-medium">Item Name</th>
+              <th className="py-3 pr-4 font-medium">Record</th>
               <th className="py-3 font-medium">Qty</th>
             </tr>
           </thead>
@@ -82,14 +94,20 @@ export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
                 <td className="py-3 pr-4 text-[#111827]">{new Date(row.createdAt).toLocaleString()}</td>
                 <td className="py-3 pr-4 text-[#111827]">{row.actorName ?? "System"}</td>
                 <td className="py-3 pr-4 text-[#111827]">{row.action.replaceAll("_", " ")}</td>
+                <td className="py-3 pr-4 text-[#111827]">{row.entityType.replaceAll("_", " ")}</td>
                 <td className="py-3 pr-4 text-[#111827]">{row.sku ?? "-"}</td>
-                <td className="py-3 pr-4 text-[#111827]">{row.itemName ?? "-"}</td>
+                <td className="py-3 pr-4 text-[#111827]">
+                  <div>{row.itemName ?? row.details ?? row.entityId}</div>
+                  {row.itemName && row.details ? (
+                    <div className="mt-1 text-[11px] text-[#6b7280]">{row.details}</div>
+                  ) : null}
+                </td>
                 <td className="py-3 text-[#111827]">{row.quantity ?? "-"}</td>
               </tr>
             ))}
             {pagedRows.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-[#6b7280]">
+                <td colSpan={7} className="py-8 text-center text-[#6b7280]">
                   No audit entries matched your search.
                 </td>
               </tr>

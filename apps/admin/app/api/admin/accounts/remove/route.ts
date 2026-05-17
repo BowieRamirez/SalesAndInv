@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
-import { Prisma, prisma } from "@furnitrack/db"
+import { Prisma, logAudit, prisma } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
@@ -53,6 +53,9 @@ export async function POST(request: Request) {
   }
 
   try {
+    let removedName = email
+    let removedRole = "UNKNOWN"
+
     await prisma.$transaction(async (tx) => {
       // 1. Fetch user details to archive
       const targetAppUser = await tx.user.findFirst({
@@ -62,6 +65,8 @@ export async function POST(request: Request) {
       
       const name = targetAppUser?.name || targetNeonUser[0]?.name || email.split('@')[0]
       const role = targetAppUser?.role || targetNeonUser[0]?.role || "UNKNOWN"
+      removedName = name
+      removedRole = role
 
       // 2. Save to archive
       try {
@@ -113,6 +118,18 @@ export async function POST(request: Request) {
       if (deletedUsers === 0) {
         throw new Error("No Neon Auth user record was found for that account.")
       }
+    })
+
+    await logAudit({
+      actorId: currentUser.authUserId,
+      action: "USER_REMOVED",
+      entityType: "USER",
+      entityId: authUserId,
+      metadata: {
+        removedEmail: email,
+        removedName,
+        removedRole,
+      },
     })
 
     revalidatePath("/users")

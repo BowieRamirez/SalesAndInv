@@ -20,6 +20,10 @@ export function PasswordField({ name, placeholder, className }: PasswordFieldPro
           name={name}
           type={isVisible ? "text" : "password"}
           placeholder={placeholder}
+          autoComplete="new-password"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           className={className}
         />
         <button
