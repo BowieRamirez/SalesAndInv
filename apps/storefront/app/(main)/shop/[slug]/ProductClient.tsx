@@ -6,11 +6,65 @@ import type { Product } from "@furnitrack/validators"
 import { InquiryButton } from "../../../../components/InquiryButton"
 import { formatPeso } from "@/lib/format"
 
-interface ProductClientProps {
-  product: Product
+// Parses description text into labeled sections and renders them cleanly
+function parseDescription(text: string): { label?: string; content: string }[] {
+  const parts: { label?: string; content: string }[] = []
+  // Match patterns like "Word Word:" at start or after a period/space
+  const regex = /([A-Z][A-Za-z\s/]{2,30}):\s*/g
+  let lastIndex = 0
+  let match = regex.exec(text)
+
+  while (match !== null) {
+    if (match.index > lastIndex) {
+      const before = text.slice(lastIndex, match.index).trim()
+      if (before) parts.push({ content: before })
+    }
+    const contentStart = match.index + match[0].length
+    const nextMatch = regex.exec(text)
+    const contentEnd = nextMatch ? nextMatch.index : text.length
+    const content = text.slice(contentStart, contentEnd).trim()
+    parts.push({ label: match[1].trim(), content })
+    lastIndex = contentEnd
+    match = nextMatch
+  }
+
+  if (parts.length === 0) {
+    parts.push({ content: text })
+  }
+
+  return parts
 }
 
-export function ProductClient({ product }: ProductClientProps) {
+function FormattedDescription({ text }: { text: string }) {
+  if (!text) return null
+  const parts = parseDescription(text)
+
+  return (
+    <div className="space-y-3">
+      {parts.map((part, i) => (
+        <div key={i}>
+          {part.label && (
+            <p className="font-semibold text-[#1a1a2e] mb-[2px] text-[13px]">{part.label}</p>
+          )}
+          <p className="text-[#6a7282] leading-[22px] text-[13px]">{part.content}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+interface ProductClientProps {
+  product: Product
+  reviews?: Array<{
+    id: string
+    customerName: string
+    rating: number
+    comment: string | null
+    createdAt: string
+  }>
+}
+
+export function ProductClient({ product, reviews = [] }: ProductClientProps) {
   const [selectedColor, setSelectedColor] = useState(
     product.colorVariants[0] ?? { name: "Standard", hex: "#c9a96e" },
   )
@@ -70,7 +124,9 @@ export function ProductClient({ product }: ProductClientProps) {
         )}
       </div>
 
-      <p className="mb-[24px] text-[14px] leading-[22px] text-[#6a7282]">{product.description}</p>
+      <div className="mb-[24px]">
+        <FormattedDescription text={product.description} />
+      </div>
 
       <div className="mb-[32px]">
         <p className="mb-[8px] text-[13px] text-[#6a7282]">
@@ -103,7 +159,7 @@ export function ProductClient({ product }: ProductClientProps) {
       <div className="mb-[24px] grid grid-cols-3 gap-[16px] border-y border-[#e5e7eb] py-[24px]">
         <div className="flex items-start gap-[12px]">
           <Truck className="mt-0.5 h-[16px] w-[16px] shrink-0 text-[#6a7282]" strokeWidth={1.5} />
-          <p className="text-[12px] leading-[18px] text-[#6a7282]">Free shipping on orders over $500</p>
+          <p className="text-[12px] leading-[18px] text-[#6a7282]">Free shipping on orders over ₱500</p>
         </div>
         <div className="flex items-start gap-[12px]">
           <RotateCcw className="mt-0.5 h-[16px] w-[16px] shrink-0 text-[#6a7282]" strokeWidth={1.5} />
@@ -132,7 +188,9 @@ export function ProductClient({ product }: ProductClientProps) {
           ))}
         </div>
         <div className="text-[13px] leading-[19.5px] text-[#6a7282]">
-          {activeTab === "description" && <p>{product.description}</p>}
+          {activeTab === "description" && (
+            <FormattedDescription text={product.description} />
+          )}
           {activeTab === "specifications" && (
             <table className="w-full text-left text-[13px]">
               <tbody className="divide-y divide-[#e5e7eb]">
@@ -158,30 +216,28 @@ export function ProductClient({ product }: ProductClientProps) {
             </table>
           )}
           {activeTab === "reviews" && (
-            <div className="space-y-4">
-              {[
-                {
-                  name: "Maria S.",
-                  rating: 5,
-                  date: "Jan 2026",
-                  text: "Absolutely love this piece. Quality is exceptional and delivery was fast.",
-                },
-                {
-                  name: "Jose R.",
-                  rating: 4,
-                  date: "Dec 2025",
-                  text: "Great product, exactly as described. Would recommend to anyone.",
-                },
-              ].map((review, index) => (
-                <div key={index} className="border-b border-[#e5e7eb] pb-3 last:border-0">
-                  <div className="mb-1 flex items-center justify-between">
-                    <span className="text-[13px] font-medium text-[#1a1a2e]">{review.name}</span>
-                    <span className="text-[11px] text-[#99a1af]">{review.date}</span>
+            <div id="reviews" className="space-y-4">
+              {reviews.length === 0 ? (
+                <p className="py-6 text-center text-[13px] text-[#99a1af]">
+                  No reviews yet. Be the first to review this product after your order is completed.
+                </p>
+              ) : (
+                reviews.map((review) => (
+                  <div key={review.id} className="border-b border-[#e5e7eb] pb-3 last:border-0">
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="text-[13px] font-medium text-[#1a1a2e]">{review.customerName}</span>
+                      <span className="text-[11px] text-[#99a1af]">
+                        {new Date(review.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                      </span>
+                    </div>
+                    <div className="mb-1 text-[12px] text-[#ffb900]">
+                      {"★".repeat(review.rating)}
+                      <span className="text-[#e5e7eb]">{"★".repeat(5 - review.rating)}</span>
+                    </div>
+                    {review.comment && <p className="text-[12px] leading-[18px]">{review.comment}</p>}
                   </div>
-                  <div className="mb-1 text-[12px] text-[#ffb900]">{"★".repeat(review.rating)}</div>
-                  <p className="text-[12px]">{review.text}</p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           )}
         </div>

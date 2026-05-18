@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronRight } from "lucide-react"
+import { Prisma, prisma } from "@furnitrack/db"
 import { getStorefrontProductBySlug, getStorefrontProducts } from "@furnitrack/db"
 import { Footer } from "../../../../components/Footer"
 import { ProductCard } from "../../../../components/ProductCard"
@@ -9,6 +10,14 @@ import { ProductClient } from "./ProductClient"
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>
+}
+
+type ReviewRow = {
+  id: string
+  customerName: string
+  rating: number
+  comment: string | null
+  createdAt: Date
 }
 
 export const dynamic = "force-dynamic"
@@ -26,6 +35,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
   ])
 
   if (!product) notFound()
+
+  const reviews = await prisma.$queryRaw<ReviewRow[]>(Prisma.sql`
+    SELECT id, "customerName", rating, comment, "createdAt"
+    FROM public.product_reviews
+    WHERE "productId" = ${product.id}
+    ORDER BY "createdAt" DESC
+    LIMIT 50
+  `)
 
   const related = products.filter(
     (p) => p.category === product.category && p.id !== product.id
@@ -62,18 +79,29 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="flex-1">
             <div className="relative w-full aspect-square rounded-[12px] overflow-hidden bg-[#f9fafb] border border-[#e5e7eb]">
               <Image
-                src={`https://placehold.co/800x800/f5f0e8/2d2d2d?text=${encodeURIComponent(product.name)}`}
+                src={
+                  product.images && product.images.length > 0
+                    ? product.images[0]!
+                    : `https://placehold.co/800x800/f5f0e8/2d2d2d?text=${encodeURIComponent(product.name)}`
+                }
                 alt={product.name}
                 fill
                 className="object-cover"
                 priority
+                unoptimized={product.images && product.images.length > 0}
               />
             </div>
           </div>
 
           {/* Details — Right */}
           <div className="flex-1 flex flex-col justify-center">
-            <ProductClient product={product} />
+            <ProductClient product={product} reviews={reviews.map(r => ({
+              id: r.id,
+              customerName: r.customerName,
+              rating: r.rating,
+              comment: r.comment,
+              createdAt: r.createdAt.toISOString(),
+            }))} />
           </div>
         </div>
 

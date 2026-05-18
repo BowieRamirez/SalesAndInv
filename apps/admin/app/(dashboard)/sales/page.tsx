@@ -207,6 +207,29 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
   const auditLogs = activeTab === "audit" ? await getAuditLogs(currentUser.role) : []
   const unreadChats = activeTab === "chats" ? await getUnreadChatInquiryIds() : new Set<string>()
 
+  // Fetch archived chats when on chats tab
+  const archivedChats: Array<{ id: string; productName: string; customerName: string; total: number; createdAt: string }> =
+    activeTab === "chats"
+      ? await prisma.$queryRaw<Array<{ id: string; productName: string; customerName: string; total: number; createdAt: Date }>>(Prisma.sql`
+          SELECT
+            ci.id,
+            p.name AS "productName",
+            ci."customerName",
+            p.price::double precision AS total,
+            ci."createdAt"
+          FROM public.customer_inquiries ci
+          INNER JOIN public.products p ON p.id = ci."productId"
+          WHERE ci."statusNote" LIKE '%[[archived]]%'
+          ORDER BY ci."updatedAt" DESC
+        `).then(rows => rows.map(r => ({
+          id: r.id,
+          productName: r.productName,
+          customerName: r.customerName,
+          total: Number(r.total),
+          createdAt: r.createdAt instanceof Date ? r.createdAt.toISOString() : String(r.createdAt),
+        })))
+      : []
+
   return (
     <main className="min-h-screen bg-[#fcfcfc] p-8">
       <div className="mb-8">
@@ -427,8 +450,10 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
             id: i.id,
             productName: i.productName,
             customerName: i.customerName,
-            total: i.total
+            total: i.total,
+            createdAt: i.createdAt instanceof Date ? i.createdAt.toISOString() : String(i.createdAt),
           }))} 
+          archivedInquiries={archivedChats}
           unreadChats={unreadChats} 
         />
       )}

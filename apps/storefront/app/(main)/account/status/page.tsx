@@ -2,7 +2,9 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Prisma, prisma, getReturnRequests } from "@furnitrack/db"
 import { Clock, Truck } from "lucide-react"
+import { CancelOrderButton } from "@/components/CancelOrderButton"
 import { CompletedOrderReturnCard } from "@/components/CompletedOrderReturnCard"
+import { ReviewForm } from "@/components/ReviewForm"
 import { OrderChatPanel } from "@/components/OrderChatPanel"
 import { OrderStepper } from "@/components/OrderStepper"
 import { getStorefrontSessionUser } from "@/lib/auth/session"
@@ -14,6 +16,8 @@ export const dynamic = "force-dynamic"
 type InquiryRow = {
   id: string
   productName: string
+  productSlug: string
+  productId: string
   status: string
   statusNote: string | null
   customerMessage: string
@@ -85,6 +89,8 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
     SELECT
       ci.id,
       p.name AS "productName",
+      p.slug AS "productSlug",
+      p.id AS "productId",
       ci.status::text AS status,
       ci."statusNote",
       ci.message AS "customerMessage",
@@ -113,6 +119,15 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
     customerUserId: sessionUser.id,
     inquiryIds: completedInquiries.map((inquiry) => inquiry.id),
   })
+
+  // Fetch which completed inquiries already have reviews from this customer
+  const reviewedInquiryIds = completedInquiries.length > 0
+    ? await prisma.$queryRaw<Array<{ inquiryId: string }>>(Prisma.sql`
+        SELECT "inquiryId" FROM public.product_reviews
+        WHERE "inquiryId" IN (${Prisma.join(completedInquiries.map((i) => i.id))})
+          AND "customerUserId" = ${sessionUser.id}
+      `).then((rows) => new Set(rows.map((r) => r.inquiryId)))
+    : new Set<string>()
   const resolvedSearchParams = searchParams ? await searchParams : {}
   const message = resolveValue(resolvedSearchParams.message)
   const tone = resolveValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
@@ -185,6 +200,12 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
                           Placed {formatShortDate(inquiry.createdAt)} · Last updated {formatShortDate(inquiry.updatedAt)}
                         </p>
                       </div>
+                      {/* Show cancel button only before payment is confirmed */}
+                      {(inquiry.workflowStatus === "RECEIVED" || inquiry.workflowStatus === "PENDING_INVENTORY_APPROVAL") && (
+                        <div className="flex shrink-0 items-start">
+                          <CancelOrderButton inquiryId={inquiry.id} productName={inquiry.productName} />
+                        </div>
+                      )}
                     </div>
 
                     {/* Progress stepper */}
@@ -271,6 +292,8 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
                     key={inquiry.id}
                     inquiry={inquiry}
                     existingReturn={returnRequests.find((request) => request.inquiryId === inquiry.id)}
+                    productSlug={inquiry.productSlug}
+                    alreadyReviewed={reviewedInquiryIds.has(inquiry.id)}
                   />
                 ))
               )}

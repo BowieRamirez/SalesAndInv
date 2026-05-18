@@ -46,6 +46,7 @@ type FinishedProductsManagerProps = {
   }>
   categories: readonly string[]
   isArchivedView?: boolean
+  userRole?: string
 }
 
 type FinishedProductDraftMaterial = {
@@ -104,20 +105,31 @@ function formatDraftTime(value: string) {
   }).format(date)
 }
 
-export function FinishedProductsManager({ products, rawMaterials, warehouses, categories, isArchivedView }: FinishedProductsManagerProps) {
+export function FinishedProductsManager({ products, rawMaterials, warehouses, categories, isArchivedView, userRole }: FinishedProductsManagerProps) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [openProductId, setOpenProductId] = useState<string | null>(null)
+  const [editProductId, setEditProductId] = useState<string | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditConfirm, setShowEditConfirm] = useState(false)
   const [drafts, setDrafts] = useState<FinishedProductDraft[]>([])
   const [activeDraftId, setActiveDraftId] = useState<string | null>(null)
   const [createFormVersion, setCreateFormVersion] = useState(0)
   const [draftMessage, setDraftMessage] = useState<string | null>(null)
   const createFormRef = useRef<HTMLFormElement>(null)
   const deferredSearch = useDeferredValue(search)
+
+  // ADMIN_MANAGEMENT can edit directly; OPERATIONS_DESIGN submits for approval
+  const isExecutiveAdmin = userRole === "ADMIN_MANAGEMENT"
+
   const selectedProduct = useMemo(
     () => products.find((product) => product.id === openProductId) ?? null,
     [openProductId, products],
+  )
+
+  const editProduct = useMemo(
+    () => products.find((product) => product.id === editProductId) ?? null,
+    [editProductId, products],
   )
 
   useEffect(() => {
@@ -1055,219 +1067,233 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                     </button>
                   </form>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setOpenProductId(null)}
-                  className="rounded-xl bg-[#0f172a] px-6 py-3 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md active:scale-95"
-                >
-                  Close
-                </button>
+                <div className="flex items-center gap-3">
+                  {!isArchivedView && selectedProduct.state !== "ARCHIVED" && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenProductId(null)
+                        setEditProductId(selectedProduct.id)
+                      }}
+                      className="flex items-center gap-2 rounded-xl border border-[#cbd5e1] bg-white px-5 py-3 text-[14px] font-semibold text-[#0f172a] transition-all hover:bg-[#f8fafc] hover:border-[#94a3b8] active:scale-95"
+                    >
+                      <svg className="h-4 w-4 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Edit product
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setOpenProductId(null)}
+                    className="rounded-xl bg-[#0f172a] px-6 py-3 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md active:scale-95"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       ) : null}
 
-      {/* Legacy edit popup disabled for operations accounts. */}
-      {products.map((product) => {
-        if (openProductId !== "__legacy_edit_disabled__" || openProductId !== product.id) return null;
-
-        return (
-          <div key={`edit-${product.id}`} className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/40 p-4 backdrop-blur-md sm:p-6 lg:p-8">
-            <div className="flex max-h-full w-full max-w-7xl flex-col overflow-hidden rounded-[32px] border border-[#e5e7eb] bg-white shadow-2xl">
-              <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-8 py-6">
-                <div>
-                  <h2 className="text-[24px] font-bold text-[#0f172a]">Editing: {product.name}</h2>
-                  <p className="mt-1 text-[13px] text-[#64748b]">
-                    Update the product details and recipe configuration.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setOpenProductId(null)}
-                  className="grid h-11 w-11 place-items-center rounded-full bg-white border border-[#e2e8f0] text-[#64748b] transition-all hover:bg-[#f1f5f9] hover:text-[#0f172a] hover:shadow-sm"
-                >
-                  ✕
-                </button>
+      {/* Edit product modal */}
+      {editProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/40 p-4 backdrop-blur-md sm:p-6 lg:p-8">
+          <div className="flex max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-[32px] border border-[#e5e7eb] bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-8 py-6">
+              <div>
+                <h2 className="text-[24px] font-bold text-[#0f172a]">Edit: {editProduct.name}</h2>
+                <p className="mt-1 text-[13px] text-[#64748b]">
+                  {isExecutiveAdmin
+                    ? "As executive admin, your changes will be applied immediately."
+                    : "Your edits will be sent to executive admin for approval before going live."}
+                </p>
               </div>
-
-              <form
-                method="post"
-                action="/api/admin/operations/products/update"
-                className="flex min-h-0 flex-1 flex-col bg-[#fbfdff]"
+              <button
+                type="button"
+                onClick={() => setEditProductId(null)}
+                className="grid h-11 w-11 place-items-center rounded-full bg-white border border-[#e2e8f0] text-[#64748b] transition-all hover:bg-[#f1f5f9] hover:text-[#0f172a] hover:shadow-sm"
               >
-                <input type="hidden" name="productId" value={product.id} />
-                <input type="hidden" name="productStockId" value={product.productStockId} />
+                ✕
+              </button>
+            </div>
 
-                <div className="flex-1 overflow-y-auto p-8">
-                  <div className="mx-auto max-w-6xl space-y-8">
-                    <div className="grid gap-8 xl:grid-cols-2">
-                       <div className="flex flex-col gap-6 rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
-                        <div className="flex items-center gap-3 border-b border-[#f1f5f9] pb-5">
-                          <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#f0fdf4] text-[#16a34a]">
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                            </svg>
-                          </div>
-                          <h3 className="text-[16px] font-bold text-[#0f172a]">
-                            Catalog details
-                          </h3>
-                        </div>
-                      <div className="grid gap-6 md:grid-cols-2">
-                        <label className="grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Product name <span className="text-red-500">*</span></span>
-                          <input
-                            name="name"
-                            required
-                            defaultValue={product.name}
-                            className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          />
-                        </label>
-                        <label className="grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Storefront category <span className="text-red-500">*</span></span>
-                          <select
-                            name="category"
-                            defaultValue={product.category}
-                            className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          >
-                             {categories.map((category) => (
-                              <option key={category} value={category}>
-                                {category}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className="grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Selling price (₱) <span className="text-red-500">*</span></span>
-                          <input
-                            name="price"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            required
-                            defaultValue={product.price}
-                            className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          />
-                        </label>
-                        <label className="grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Product badge (Optional)</span>
-                          <input
-                            name="badge"
-                            defaultValue={product.badge ?? ""}
-                            placeholder="e.g. SALE, HOT"
-                            className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          />
-                        </label>
-                        <label className="md:col-span-2 grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Product description <span className="text-red-500">*</span></span>
-                          <textarea
-                            name="description"
-                            rows={4}
-                            required
-                            defaultValue={product.description}
-                            className="w-full resize-none rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          />
-                        </label>
-                        <label className="md:col-span-2 grid gap-2">
-                          <span className="text-[13px] font-semibold text-[#475569]">Product image</span>
-                          <ImageDropField
-                            name="imageUrl"
-                            defaultValue={product.imageUrl}
-                            altPreview={product.name}
-                          />
-                        </label>
-                      </div>
-                      </div>
+            <form
+              method="post"
+              action={isExecutiveAdmin ? "/api/admin/operations/products/update" : "/api/admin/operations/products/request-edit"}
+              onSubmit={() => {
+                if (!isExecutiveAdmin) {
+                  // Show confirmation popup after submit
+                  setTimeout(() => setShowEditConfirm(true), 100)
+                }
+              }}
+              className="flex min-h-0 flex-1 flex-col bg-[#fbfdff]"
+            >
+              <input type="hidden" name="productId" value={editProduct.id} />
+              <input type="hidden" name="productStockId" value={editProduct.productStockId} />
 
-                      <div className="flex flex-col gap-6 rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
-                        <div className="flex items-center gap-3 border-b border-[#f1f5f9] pb-5">
-                          <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#eff6ff] text-[#0ea5e9]">
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                            </svg>
-                          </div>
-                          <h3 className="text-[16px] font-bold text-[#0f172a]">
-                            Visibility & Display
-                          </h3>
-                        </div>
-
-                        <label className="mt-2 flex cursor-pointer items-start gap-4 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-4 transition-colors hover:border-[#0f172a] hover:bg-white">
-                          <div className="flex h-5 items-center">
-                            <input 
-                              type="checkbox" 
-                              name="isPublished" 
-                              defaultChecked={product.isPublished} 
-                              className="h-4 w-4 cursor-pointer rounded border-gray-300 text-[#0f172a] focus:ring-[#0f172a]" 
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-[14px] font-semibold text-[#0f172a]">Publish to Storefront</span>
-                            <span className="text-[13px] text-[#64748b]">Show this product in the customer storefront.</span>
-                          </div>
-                        </label>
-                      </div>
+              <div className="flex-1 overflow-y-auto p-8">
+                <div className="mx-auto max-w-3xl space-y-6">
+                  {!isExecutiveAdmin && (
+                    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-[13px] text-amber-800">
+                      <span className="font-semibold">Note:</span> Recipe changes are not allowed through this form. Only product info (name, price, image, description, warehouse, visibility) can be edited. The executive admin must approve before changes go live.
                     </div>
+                  )}
 
-                    <div className="rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
-                        <MaterialSelector
-                          materials={rawMaterials}
-                          defaultSelectedIds={product.recipeDetails.map((m) => m.id)}
-                          defaultQuantities={Object.fromEntries(
-                            product.recipeDetails.map((m) => [m.id, m.quantityDisplay ?? ""])
-                          )}
-                          defaultNotes={Object.fromEntries(
-                            product.recipeDetails.map((m) => [m.id, m.notes ?? ""])
-                          )}
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="grid gap-2">
+                      <span className="text-[13px] font-semibold text-[#475569]">Product name <span className="text-red-500">*</span></span>
+                      <input
+                        name="name"
+                        required
+                        defaultValue={editProduct.name}
+                        className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-[13px] font-semibold text-[#475569]">Category <span className="text-red-500">*</span></span>
+                      <select
+                        name="category"
+                        defaultValue={editProduct.category}
+                        className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
+                      >
+                        {categories.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-[13px] font-semibold text-[#475569]">Selling price (₱) <span className="text-red-500">*</span></span>
+                      <input
+                        name="price"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        required
+                        defaultValue={editProduct.price}
+                        className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-[13px] font-semibold text-[#475569]">Warehouse</span>
+                      <select
+                        name="warehouseId"
+                        defaultValue={warehouses[0]?.id ?? ""}
+                        className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
+                      >
+                        {warehouses.map((w) => (
+                          <option key={w.id} value={w.id}>{w.name} ({w.code})</option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-[13px] font-semibold text-[#475569]">Badge (optional)</span>
+                      <input
+                        name="badge"
+                        defaultValue={editProduct.badge ?? ""}
+                        placeholder="e.g. SALE, HOT"
+                        className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
+                      />
+                    </label>
+
+                    <label className="flex cursor-pointer items-start gap-4 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-4 transition-colors hover:border-[#0f172a] hover:bg-white self-end">
+                      <div className="flex h-5 items-center">
+                        <input
+                          type="checkbox"
+                          name="isPublished"
+                          defaultChecked={editProduct.isPublished}
+                          className="h-4 w-4 cursor-pointer rounded border-gray-300 text-[#0f172a] focus:ring-[#0f172a]"
                         />
                       </div>
+                      <div className="flex flex-col">
+                        <span className="text-[14px] font-semibold text-[#0f172a]">Published on storefront</span>
+                        <span className="text-[12px] text-[#64748b]">Visible to customers</span>
+                      </div>
+                    </label>
+
+                    <label className="sm:col-span-2 grid gap-2">
+                      <span className="text-[13px] font-semibold text-[#475569]">Description <span className="text-red-500">*</span></span>
+                      <textarea
+                        name="description"
+                        rows={5}
+                        required
+                        defaultValue={editProduct.description}
+                        className="w-full resize-none rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
+                      />
+                    </label>
+
+                    <label className="sm:col-span-2 grid gap-2">
+                      <span className="text-[13px] font-semibold text-[#475569]">Product image</span>
+                      <ImageDropField
+                        name="imageUrl"
+                        defaultValue={editProduct.imageUrl}
+                        altPreview={editProduct.name}
+                      />
+                    </label>
                   </div>
                 </div>
+              </div>
 
-                <div className="flex-shrink-0 border-t border-[#e2e8f0] bg-white px-8 py-5">
-                  <div className="mx-auto flex max-w-6xl items-center justify-between">
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          const confirmed = confirm(`Are you sure you want to delete ${product.name}?`)
-                          if (confirmed) {
-                            const form = document.createElement("form")
-                            form.method = "post"
-                            form.action = "/api/admin/operations/products/delete"
-
-                            const idInput = document.createElement("input")
-                            idInput.type = "hidden"
-                            idInput.name = "productId"
-                            idInput.value = product.id
-                            form.appendChild(idInput)
-
-                            const stockInput = document.createElement("input")
-                            stockInput.type = "hidden"
-                            stockInput.name = "stockItemId"
-                            stockInput.value = product.productStockId
-                            form.appendChild(stockInput)
-
-                            document.body.appendChild(form)
-                            form.submit()
-                          }
-                        }}
-                        className="rounded-xl px-4 py-3 text-[14px] font-medium text-[#b91c1c] transition-colors hover:bg-[#fef2f2]"
-                      >
-                        Delete product
-                      </button>
-                      <button
-                        type="submit"
-                        className="rounded-xl bg-[#0f172a] px-6 py-3 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md active:scale-95"
-                      >
-                        Save Changes
-                      </button>
-                  </div>
+              <div className="flex-shrink-0 border-t border-[#e2e8f0] bg-white px-8 py-5">
+                <div className="mx-auto flex max-w-3xl items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setEditProductId(null)}
+                    className="rounded-xl border border-[#e2e8f0] px-5 py-3 text-[14px] font-semibold text-[#475569] transition-all hover:bg-[#f8fafc]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex items-center gap-2 rounded-xl bg-[#0f172a] px-6 py-3 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md active:scale-95"
+                  >
+                    {isExecutiveAdmin ? (
+                      <>
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        Save changes
+                      </>
+                    ) : (
+                      <>
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                        Submit for approval
+                      </>
+                    )}
+                  </button>
                 </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
-        )
-      })}
+        </div>
+      )}
+
+      {/* Edit submitted confirmation popup */}
+      {showEditConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#0f172a]/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-[24px] border border-[#e2e8f0] bg-white p-8 shadow-2xl text-center">
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-amber-100 text-amber-600">
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-[20px] font-bold text-[#0f172a]">Edit submitted</h3>
+            <p className="mt-2 text-[14px] leading-[22px] text-[#64748b]">
+              Your product edit has been submitted and is waiting for executive admin confirmation before it goes live.
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowEditConfirm(false)}
+              className="mt-6 w-full rounded-xl bg-[#0f172a] px-6 py-3 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] active:scale-95"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

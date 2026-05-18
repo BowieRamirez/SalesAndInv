@@ -48,6 +48,7 @@ type NavLink = {
   href: string
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
   tab?: string
+  hidden?: boolean
 }
 
 type NavGroup = {
@@ -112,6 +113,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
         label: "Stocks and Warehouse",
         links: [
           { name: "Warehouse Locations", href: "/operations?tab=locations", icon: Box, tab: "locations" },
+          { name: "Archived Warehouses", href: "/operations?tab=archived-warehouses", icon: Archive, tab: "archived-warehouses", hidden: true },
           { name: "All Stocks", href: "/operations?tab=all-stocks", icon: Boxes, tab: "all-stocks" },
           { name: "Reserved Materials", href: "/operations?tab=reserved", icon: CheckSquare, tab: "reserved" },
           { name: "Damaged Materials", href: "/operations?tab=damaged-materials", icon: History, tab: "damaged-materials" },
@@ -121,7 +123,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
         label: "Approvals and Delivery",
         links: [
           { name: "Inventory Approvals", href: "/operations?tab=inv-approvals", icon: CheckSquare, tab: "inv-approvals" },
-          { name: "Approvals", href: "/operations?tab=approvals", icon: CheckSquare, tab: "approvals" },
+          { name: "Approval for Building", href: "/operations?tab=approvals", icon: CheckSquare, tab: "approvals" },
           { name: "Delivery Schedule", href: "/operations?tab=delivery", icon: Truck, tab: "delivery" },
         ],
       },
@@ -386,7 +388,7 @@ function NavSection({
               exit="hidden"
               className="space-y-1 border-l border-[#303449] pl-3"
             >
-              {group.links.map((item, index) => (
+              {group.links.filter((item) => !item.hidden).map((item, index) => (
                 <NavItem
                   key={item.name}
                   item={item}
@@ -455,7 +457,7 @@ function NavBody({ config, links, groups, currentUser, pathname, currentTab, onL
                   unreadChatsCount={unreadChatsCount}
                 />
               ) : (
-                group.links.map((item, index) => (
+                group.links.filter((item) => !item.hidden).map((item, index) => (
                   <NavItem
                     key={item.name}
                     item={item}

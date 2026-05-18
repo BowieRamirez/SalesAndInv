@@ -3,50 +3,46 @@
 import { useState } from "react"
 import { type ReturnRequestRow } from "@furnitrack/db"
 import { formatShortDate } from "@/lib/format"
+import { ReviewForm } from "@/components/ReviewForm"
 
 type CompletedOrder = {
   id: string
   productName: string
+  productSlug?: string
   workflowNote: string | null
   updatedAt: Date
 }
 
 function formatReturnStatus(status: ReturnRequestRow["status"]) {
   switch (status) {
-    case "SUBMITTED":
-      return "Return submitted"
-    case "APPROVED_FOR_PICKUP":
-      return "Pickup scheduled"
-    case "PICKED_UP_COMPLETED":
-      return "Return completed"
-    case "REJECTED":
-      return "Return rejected"
-    default:
-      return status
+    case "SUBMITTED": return "Return submitted"
+    case "APPROVED_FOR_PICKUP": return "Pickup scheduled"
+    case "PICKED_UP_COMPLETED": return "Return completed"
+    case "REJECTED": return "Return rejected"
+    default: return status
   }
 }
 
 function getStatusStyle(status: ReturnRequestRow["status"]) {
   switch (status) {
-    case "SUBMITTED":
-      return "bg-[#fff7ed] text-[#c2410c]"
-    case "APPROVED_FOR_PICKUP":
-      return "bg-[#eff6ff] text-[#1d4ed8]"
-    case "PICKED_UP_COMPLETED":
-      return "bg-[#ecfdf3] text-[#166534]"
-    case "REJECTED":
-      return "bg-[#fff1f2] text-[#be123c]"
-    default:
-      return "bg-[#f3f4f6] text-[#374151]"
+    case "SUBMITTED": return "bg-[#fff7ed] text-[#c2410c]"
+    case "APPROVED_FOR_PICKUP": return "bg-[#eff6ff] text-[#1d4ed8]"
+    case "PICKED_UP_COMPLETED": return "bg-[#ecfdf3] text-[#166534]"
+    case "REJECTED": return "bg-[#fff1f2] text-[#be123c]"
+    default: return "bg-[#f3f4f6] text-[#374151]"
   }
 }
 
 export function CompletedOrderReturnCard({
   inquiry,
   existingReturn,
+  productSlug,
+  alreadyReviewed,
 }: {
   inquiry: CompletedOrder
   existingReturn?: ReturnRequestRow
+  productSlug?: string
+  alreadyReviewed?: boolean
 }) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -61,9 +57,7 @@ export function CompletedOrderReturnCard({
           </div>
 
           {existingReturn ? (
-            <span
-              className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getStatusStyle(existingReturn.status)}`}
-            >
+            <span className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getStatusStyle(existingReturn.status)}`}>
               {formatReturnStatus(existingReturn.status)}
             </span>
           ) : null}
@@ -121,6 +115,16 @@ export function CompletedOrderReturnCard({
             </button>
           </div>
         )}
+
+        {/* Review section */}
+        {productSlug && (
+          <ReviewForm
+            inquiryId={inquiry.id}
+            productName={inquiry.productName}
+            productSlug={productSlug}
+            alreadyReviewed={alreadyReviewed}
+          />
+        )}
       </article>
 
       {isOpen ? (
@@ -171,9 +175,7 @@ export function CompletedOrderReturnCard({
               </label>
 
               <label className="grid gap-2">
-                <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
-                  Damage pictures
-                </span>
+                <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Damage pictures</span>
                 <input
                   type="file"
                   name="images"

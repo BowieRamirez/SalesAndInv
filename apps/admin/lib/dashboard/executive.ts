@@ -292,6 +292,8 @@ async function getReportsSnapshot() {
         ),
         inventory_totals AS (
           SELECT
+            (SELECT COALESCE(SUM(p.price * s."availableQty"), 0) FROM public.product_stocks s INNER JOIN public.products p ON p."productStockId" = s.id)::double precision AS "inventoryValue",
+            ((SELECT COUNT(*) FROM public.product_stocks) + (SELECT COUNT(*) FROM public.material_stocks))::int AS "totalStockItems",
             (SELECT COUNT(*) FROM public.product_stocks WHERE "availableQty" <= "reorderThreshold") + (SELECT COUNT(*) FROM public.material_stocks WHERE "availableQty" <= "reorderThreshold")::int AS "lowStockItems",
             (SELECT COUNT(*) FROM public.products WHERE "isPublished" = true)::int AS "publishedProducts"
         ),

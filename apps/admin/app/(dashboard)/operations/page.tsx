@@ -6,6 +6,8 @@ import {
 } from "@furnitrack/validators"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { FinishedProductsManager } from "@/components/operations/FinishedProductsManager"
+import { InventoryApprovalCard } from "@/components/operations/InventoryApprovalCard"
+import { WarehouseLocationsTable, ArchivedWarehousesTable, type WarehouseSummaryRow as WarehouseRow } from "@/components/operations/WarehouseLocationsManager"
 import { StorefrontFilterManager } from "@/components/operations/StorefrontFilterManager"
 import { DamagedMaterialsTable } from "@/components/inventory/DamagedMaterialsTable"
 import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
@@ -56,14 +58,6 @@ type InventoryRow = {
   reservedQty: number
   reorderThreshold: number
   unitOfMeasure: string
-}
-
-type WarehouseSummaryRow = {
-  id: string
-  code: string
-  name: string
-  address: string
-  itemCount: number
 }
 
 type StockRequestSummaryRow = {
@@ -126,7 +120,7 @@ export type ReservedMaterialDetailRow = {
 
 const OPERATIONS_TABS = new Set([
   "design", "new-products", "finished-products", "archived-products", "storefront-filters",
-  "locations", "all-stocks", "reserved", "damaged-materials",
+  "locations", "archived-warehouses", "all-stocks", "reserved", "damaged-materials",
   "inv-approvals", "approvals", "delivery", "audit",
 ])
 
@@ -612,18 +606,38 @@ async function getInventoryRows() {
 }
 
 async function getWarehouseSummaries() {
-  return prisma.$queryRaw<WarehouseSummaryRow[]>(Prisma.sql`
+  return prisma.$queryRaw<WarehouseRow[]>(Prisma.sql`
     SELECT
       w.id,
       w.code,
       w.name,
       w.address,
+      w."archivedAt"::text AS "archivedAt",
       COUNT(s.id)::int AS "itemCount"
     FROM public.warehouses w
     LEFT JOIN public.material_stocks s
       ON s."warehouseId" = w.id
-    GROUP BY w.id, w.code, w.name, w.address
+    WHERE w."archivedAt" IS NULL
+    GROUP BY w.id, w.code, w.name, w.address, w."archivedAt"
     ORDER BY w.name ASC
+  `)
+}
+
+async function getArchivedWarehouses() {
+  return prisma.$queryRaw<WarehouseRow[]>(Prisma.sql`
+    SELECT
+      w.id,
+      w.code,
+      w.name,
+      w.address,
+      w."archivedAt"::text AS "archivedAt",
+      COUNT(s.id)::int AS "itemCount"
+    FROM public.warehouses w
+    LEFT JOIN public.material_stocks s
+      ON s."warehouseId" = w.id
+    WHERE w."archivedAt" IS NOT NULL
+    GROUP BY w.id, w.code, w.name, w.address, w."archivedAt"
+    ORDER BY w."archivedAt" DESC
   `)
 }
 
@@ -872,6 +886,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     operationsInquiries,
     inventoryRows,
     warehouseSummaries,
+    archivedWarehouses,
     requestSummary,
     auditSummary,
     inventoryInquiries,
@@ -883,6 +898,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     getInquiryWorkflowRows(["GETTING_READY_FOR_BUILDING", "READY_FOR_SHIPPING"]),
     getInventoryRows(),
     getWarehouseSummaries(),
+    getArchivedWarehouses(),
     getStockRequestSummaries(),
     getAuditLogs(currentUser.role),
     getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
@@ -898,6 +914,59 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
   const shippingQueue = operationsInquiries.filter((inquiry) => inquiry.workflowStatus === "READY_FOR_SHIPPING")
   const rawMaterialsInv = inventoryRows.filter((row) => row.itemType !== "FINISHED_PRODUCT")
   const lowStockItems = rawMaterialsInv.filter((row) => row.availableQty <= row.reorderThreshold)
+
+  // Fetch product IDs and materials for inventory approval inquiries
+  type InvInquiryWithProduct = {
+    inquiryId: string
+    productId: string
+  }
+  type InvMaterialRow = {
+    inquiryId: string
+    materialStockId: string
+    sku: string
+    itemName: string
+    availableQty: number
+    quantityRequired: number
+  }
+
+  const inventoryInquiryProducts = activeTab === "inv-approvals" && inventoryInquiries.length > 0
+    ? await prisma.$queryRaw<InvInquiryWithProduct[]>(Prisma.sql`
+        SELECT ci.id AS "inquiryId", ci."productId"
+        FROM public.customer_inquiries ci
+        WHERE ci.id IN (${Prisma.join(inventoryInquiries.map((i) => i.id))})
+      `)
+    : []
+
+  const productIdByInquiryId = new Map(
+    inventoryInquiryProducts.map((row) => [row.inquiryId, row.productId])
+  )
+
+  const inventoryMaterialsByInquiryId = new Map<string, InvMaterialRow[]>()
+
+  if (inventoryInquiryProducts.length > 0) {
+    const productIds = [...new Set(inventoryInquiryProducts.map((r) => r.productId))]
+    const allMaterials = await prisma.$queryRaw<Array<InvMaterialRow & { productId: string }>>(Prisma.sql`
+      SELECT
+        pm."productId",
+        pm."materialStockId",
+        ms.sku,
+        ms."itemName",
+        ms."availableQty",
+        CEIL(COALESCE(pm."quantityRequired", 0))::int AS "quantityRequired"
+      FROM public.product_materials pm
+      INNER JOIN public.material_stocks ms ON ms.id = pm."materialStockId"
+      WHERE pm."productId" IN (${Prisma.join(productIds)})
+        AND COALESCE(pm."quantityRequired", 0) > 0
+      ORDER BY ms."itemName" ASC
+    `)
+
+    for (const row of inventoryInquiryProducts) {
+      const mats = allMaterials
+        .filter((m) => m.productId === row.productId)
+        .map(({ productId: _pid, ...rest }) => ({ ...rest, inquiryId: row.inquiryId }))
+      inventoryMaterialsByInquiryId.set(row.inquiryId, mats)
+    }
+  }
 
   return (
     <main className="min-h-screen overflow-auto bg-[#fcfcfc] p-8">
@@ -936,7 +1005,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
         )}
 
         {activeTab === "finished-products" && (
-          <FinishedProductsManager products={activeFinishedProducts} rawMaterials={rawMaterials} warehouses={warehouses} categories={OPERATIONS_PRODUCT_CATEGORIES} />
+          <FinishedProductsManager products={activeFinishedProducts} rawMaterials={rawMaterials} warehouses={warehouses} categories={OPERATIONS_PRODUCT_CATEGORIES} userRole={currentUser.role} />
         )}
 
         {activeTab === "archived-products" && (
@@ -1025,8 +1094,19 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
 
         {activeTab === "locations" && (
           <div className="space-y-6">
-            <div className="mb-6">
+            <div className="mb-6 flex items-center justify-between">
               <h2 className="text-[20px] font-semibold text-[#111827]">Warehouse Locations</h2>
+              {archivedWarehouses.length > 0 && (
+                <a
+                  href="/operations?tab=archived-warehouses"
+                  className="flex items-center gap-2 rounded-xl border border-[#e2e8f0] bg-white px-4 py-2 text-[13px] font-medium text-[#64748b] transition-all hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  </svg>
+                  View archived ({archivedWarehouses.length})
+                </a>
+              )}
             </div>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
               {[{label:"Warehouses",value:warehouseSummaries.length},{label:"Tracked Materials",value:rawMaterialsInv.length},{label:"Low Stock Items",value:lowStockItems.length}].map(r=>(
@@ -1045,30 +1125,27 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
                 <button type="submit" className="rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90">Add warehouse</button>
               </form>
             </section>
-            {warehouseSummaries.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-[#d1d5db] bg-white p-10 text-center text-[13px] text-[#6b7280]">No warehouses have been configured yet.</div>
-            ) : (
-              <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-left text-[13px]">
-                    <thead><tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-                      <th className="py-3 pr-4 font-medium">Code</th>
-                      <th className="py-3 pr-4 font-medium">Warehouse</th>
-                      <th className="py-3 pr-4 font-medium">Address</th>
-                      <th className="py-3 font-medium">Tracked Items</th>
-                    </tr></thead>
-                    <tbody>{warehouseSummaries.map(row=>(
-                      <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
-                        <td className="py-3 pr-4 text-[#111827]">{row.code}</td>
-                        <td className="py-3 pr-4 text-[#111827]">{row.name}</td>
-                        <td className="py-3 pr-4 text-[#6b7280]">{row.address}</td>
-                        <td className="py-3 text-[#111827]">{row.itemCount}</td>
-                      </tr>
-                    ))}</tbody>
-                  </table>
-                </div>
-              </section>
-            )}
+            <WarehouseLocationsTable warehouses={warehouseSummaries} />
+          </div>
+        )}
+
+        {activeTab === "archived-warehouses" && (
+          <div className="space-y-6">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-[20px] font-semibold text-[#111827]">Archived Warehouses</h2>
+                <p className="mt-1 text-[14px] text-[#6b7280]">
+                  These locations are hidden from active lists. Restore them to make them available again.
+                </p>
+              </div>
+              <a
+                href="/operations?tab=locations"
+                className="flex items-center gap-2 rounded-xl border border-[#e2e8f0] bg-white px-4 py-2 text-[13px] font-medium text-[#64748b] hover:bg-[#f8fafc]"
+              >
+                ← Back to active warehouses
+              </a>
+            </div>
+            <ArchivedWarehousesTable warehouses={archivedWarehouses} />
           </div>
         )}
 
@@ -1215,38 +1292,23 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
               ) : (
                 <div className="space-y-4">
                   {inventoryInquiries.map(inquiry=>(
-                    <article key={inquiry.id} className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-5">
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                        <div>
-                          <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Material approval request</p>
-                          <h3 className="mt-1 text-[20px] font-semibold text-[#111827]">{inquiry.productName}</h3>
-                          <p className="mt-2 text-[13px] text-[#6b7280]">{inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}</p>
-                          <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
-                          {inquiry.workflowNote ? (
-                            <p className="mt-3 rounded-xl bg-white px-4 py-3 text-[13px] text-[#4b5563]">Latest note: {inquiry.workflowNote}</p>
-                          ) : null}
-                        </div>
-                        <div className="flex flex-col items-start gap-3 text-[12px] text-[#6b7280] lg:items-end">
-                          <span className={`inline-flex rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${getInquiryWorkflowStyle(inquiry.workflowStatus)}`}>
-                            {formatInquiryWorkflowStatus(inquiry.workflowStatus)}
-                          </span>
-                          <div>
-                            <p>Created {new Date(inquiry.createdAt).toLocaleDateString()}</p>
-                            <p className="mt-1">Updated {new Date(inquiry.updatedAt).toLocaleDateString()}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <form method="post" action="/api/admin/approvals/inventory" className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
-                        <input type="hidden" name="inquiryId" value={inquiry.id} />
-                        <label className="block">
-                          <span className="mb-2 block text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Inventory approval note</span>
-                          <input name="statusNote" defaultValue={inquiry.workflowNote ?? ""} placeholder="Confirm stock readiness for accounting" className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                        </label>
-                        <div className="flex items-end">
-                          <button type="submit" className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90">Approve materials</button>
-                        </div>
-                      </form>
-                    </article>
+                    <InventoryApprovalCard
+                      key={inquiry.id}
+                      inquiry={{
+                        id: inquiry.id,
+                        productName: inquiry.productName,
+                        productId: productIdByInquiryId.get(inquiry.id) ?? "",
+                        customerName: inquiry.customerName,
+                        customerEmail: inquiry.customerEmail,
+                        customerPhone: inquiry.customerPhone,
+                        message: inquiry.message,
+                        workflowStatus: inquiry.workflowStatus,
+                        workflowNote: inquiry.workflowNote,
+                        createdAt: inquiry.createdAt,
+                        updatedAt: inquiry.updatedAt,
+                      }}
+                      materials={inventoryMaterialsByInquiryId.get(inquiry.id) ?? []}
+                    />
                   ))}
                 </div>
               )}
