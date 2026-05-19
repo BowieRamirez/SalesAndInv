@@ -673,6 +673,14 @@ async function getAuditLogs() {
     FROM public.audit_logs a
     LEFT JOIN public.users u ON u.id = a."actorId"
       OR u."authUserId"::text = a."actorId"
+    WHERE a."entityType" IN (
+      'STOCK'::"AuditEntityType",
+      'INVENTORY'::"AuditEntityType",
+      'PRODUCT'::"AuditEntityType",
+      'STOCK_REQUEST'::"AuditEntityType",
+      'BUILDING_PROJECT'::"AuditEntityType",
+      'DELIVERY_SCHEDULE'::"AuditEntityType"
+    )
     ORDER BY a."createdAt" DESC
     LIMIT 200
   `)

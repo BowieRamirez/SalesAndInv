@@ -63,12 +63,11 @@ const navConfigs: Record<AppRole, NavConfig> = {
       { name: "Admin Access", href: "/users", icon: Users },
       { name: "Customers", href: "/customers", icon: Users },
       { name: "Reports", href: "/analytics", icon: BarChart3 },
-      { name: "Audit Logs", href: "/audit", icon: History },
       { name: "Archives", href: "/archives", icon: History },
     ],
     roleLabel: "Admin / Management",
     color: "bg-[#34384d]",
-    allowedPaths: ["/", "/approvals", "/users", "/customers", "/analytics", "/audit", "/archives"],
+    allowedPaths: ["/", "/approvals", "/users", "/customers", "/analytics", "/archives"],
     defaultHref: "/",
   },
   SALES: {
@@ -516,17 +515,13 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
 
     const p = currentUser.permissions;
     const cloned = { ...baseConfig, links: [...baseConfig.links], groups: baseConfig.groups ? [...baseConfig.groups] : undefined };
-    const hasTabAccess = (link: NavLink) => {
-      if (!link.tab) return true;
-      return p[link.tab] === true || (p[link.tab] == null && currentUser.role !== "CUSTOM");
-    };
 
     if (currentUser.role === "SALES" || currentUser.role === "CUSTOM") {
       const salesConfig = navConfigs["SALES"];
       const salesLinks = salesConfig.links?.filter(l => {
         if (!p) return true;
         if (l.tab === "approvals" && p.sales_approvals != null) return p.sales_approvals === true;
-        return hasTabAccess(l);
+        return p[l.tab] === true || (p[l.tab] == null && currentUser.role !== "CUSTOM");
       }) ?? [];
       
       if (currentUser.role === "SALES") {
@@ -550,7 +545,7 @@ function SidebarContent({ currentUser }: { currentUser: SidebarUser }) {
           if (!p) return true;
           if (l.tab === "audit") return true; // Audit logs always accessible
           if (l.tab === "approvals" && p.ops_approvals != null) return p.ops_approvals === true;
-          return hasTabAccess(l);
+          return p[l.tab] === true || (p[l.tab] == null && currentUser.role !== "CUSTOM");
         });
         return g.links.length > 0;
       }) ?? [];

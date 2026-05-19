@@ -1,5 +1,5 @@
 "use client"
-
+import { useDebounce } from "../inventory/hookTs"
 import { Fragment, useMemo, useState } from "react"
 import {
   AlertTriangle,
@@ -110,7 +110,7 @@ export function UsersTable({
   const [page, setPage] = useState(1)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [pendingRemoval, setPendingRemoval] = useState<ManagedAccount | null>(null)
-
+  const debouncedSearch = useDebounce(search, 500)
   const allStatuses = useMemo(() => {
     const set = new Set<string>()
     users.forEach((u) => set.add(u.status.toUpperCase()))
@@ -124,7 +124,7 @@ export function UsersTable({
   }, [users])
 
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase()
+    const q = debouncedSearch.trim().toLowerCase()
     return users.filter((u) => {
       if (q && !u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) {
         return false
@@ -133,7 +133,7 @@ export function UsersTable({
       if (roleFilter && u.role !== roleFilter) return false
       return true
     })
-  }, [users, search, statusFilter, roleFilter])
+  }, [users, debouncedSearch, statusFilter, roleFilter])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const safePage = Math.min(page, totalPages)
@@ -207,7 +207,6 @@ export function UsersTable({
             <tr className="text-[11px] uppercase tracking-wider text-slate-500">
               <th className="px-5 py-3 font-medium">Name</th>
               <th className="px-4 py-3 font-medium">Email</th>
-              {variant === "customer" ? <th className="px-4 py-3 font-medium">Company</th> : null}
               <th className="px-4 py-3 font-medium">Registered Date</th>
               <th className="px-4 py-3 font-medium">Last Login</th>
               <th className="px-4 py-3 font-medium">Status</th>
@@ -251,9 +250,6 @@ export function UsersTable({
                       </div>
                     </td>
                     <td className="px-4 py-4 text-[13px] text-slate-600">{account.email}</td>
-                    {variant === "customer" ? (
-                      <td className="px-4 py-4 text-[13px] text-slate-600">{account.company ?? "—"}</td>
-                    ) : null}
                     <td className="px-4 py-4 text-[13px] text-slate-600">{formatDate(account.createdAt)}</td>
                     <td className="px-4 py-4 text-[13px] text-slate-600">{formatDate(account.lastLoginAt)}</td>
                     <td className="px-4 py-4">

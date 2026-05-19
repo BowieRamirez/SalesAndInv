@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react"
 
+import { useDebounce } from "./hookTs"
+
 type DetailedAuditLog = {
   id: string
   action: string
@@ -20,9 +22,10 @@ const PAGE_SIZE = 10
 export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
   const [query, setQuery] = useState("")
   const [page, setPage] = useState(1)
+  const debouncedQuery = useDebounce(query, 500)
 
   const filteredRows = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase()
+    const normalizedQuery = debouncedQuery.trim().toLowerCase()
 
     if (!normalizedQuery) {
       return rows
@@ -41,7 +44,7 @@ export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
         value.toLowerCase().includes(normalizedQuery),
       ),
     )
-  }, [query, rows])
+  }, [debouncedQuery, rows])
 
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
