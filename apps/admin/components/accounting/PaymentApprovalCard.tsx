@@ -3,10 +3,7 @@
 import { useState } from "react"
 import { formatInquiryWorkflowStatus, getInquiryWorkflowStyle } from "@furnitrack/validators"
 import type { InquiryPaymentStatus, InquiryWorkflowRow } from "@/lib/inquiries"
-import {
-  ACCOUNTING_PAYMENT_METHODS,
-  type AccountingPaymentMethod,
-} from "@/lib/accounting-payment-methods"
+import { formatAccountingPaymentMethod } from "@/lib/accounting-payment-methods"
 
 function WorkflowBadge({ status }: { status: string }) {
   return (
@@ -50,17 +47,30 @@ function PaymentStatusBadge({ status }: { status: InquiryPaymentStatus }) {
 
 export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<AccountingPaymentMethod>("BANK_TRANSFER")
-  const [paymentStatus, setPaymentStatus] = useState<InquiryPaymentStatus>("FULLY_PAID")
-  const [paidAmount, setPaidAmount] = useState(() => inquiry.total.toFixed(2))
-  const requiresPaidAmount = paymentStatus === "DOWN_PAYMENT" || paymentStatus === "PARTIALLY_PAID"
+
+  // The customer's submitted payment is the source of truth. Accounting only
+  // confirms or rejects — they do not edit the method or status.
+  const customerHasPaid = !!inquiry.customerPaidMethod
+  const submittedMethod = inquiry.latestPaymentMethod ?? inquiry.customerPaidMethod
+  const submittedAmount = inquiry.latestPaymentAmount ?? inquiry.paid
+  const submittedRemaining =
+    inquiry.latestPaymentRemaining != null
+      ? inquiry.latestPaymentRemaining
+      : Math.max(inquiry.total - submittedAmount, 0)
+  // Derive the payment type from the actual amount submitted
+  const derivedPaymentType: "FULL_PAYMENT" | "DOWN_PAYMENT" =
+    submittedAmount >= inquiry.total ? "FULL_PAYMENT" : "DOWN_PAYMENT"
+  const derivedPaymentStatus: InquiryPaymentStatus =
+    derivedPaymentType === "FULL_PAYMENT" ? "FULLY_PAID" : "DOWN_PAYMENT"
 
   return (
     <>
       <article className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Payment review</p>
+            <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">
+              Payment review{inquiry.inquiryNumber ? ` · ${inquiry.inquiryNumber}` : ""}
+            </p>
             <h3 className="mt-1 text-[20px] font-semibold text-[#111827]">{inquiry.productName}</h3>
             <p className="mt-2 text-[13px] text-[#6b7280]">
               {inquiry.customerName} - {inquiry.customerEmail} - {inquiry.customerPhone}
@@ -109,15 +119,28 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
         </div>
 
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] pt-4">
-          <p className="text-[13px] text-[#6b7280]">
-            Review the order details, choose the customer's payment method, then confirm the next stage.
-          </p>
+          {customerHasPaid ? (
+            <div className="rounded-[10px] border border-[#bbf7d0] bg-[#f0fdf4] px-4 py-3">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#166534]">
+                Customer payment submitted
+              </p>
+              <p className="mt-1 text-[13px] text-[#15803d]">
+                Method: {submittedMethod ? formatAccountingPaymentMethod(submittedMethod) : "—"}
+                {inquiry.customerPaidNote ? ` — ${inquiry.customerPaidNote}` : ""}
+              </p>
+            </div>
+          ) : (
+            <p className="text-[13px] text-[#6b7280]">
+              Waiting for customer to submit payment details.
+            </p>
+          )}
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+            disabled={!customerHasPaid}
+            className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]"
           >
-            Review and approve
+            {customerHasPaid ? "Confirm payment" : "Awaiting customer payment"}
           </button>
         </div>
       </article>
@@ -130,7 +153,7 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
                 <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Accounting approval</p>
                 <h4 className="mt-2 text-[26px] font-semibold text-[#111827]">{inquiry.productName}</h4>
                 <p className="mt-2 text-[14px] text-[#6b7280]">
-                  Confirm the payment details before releasing this order to operations.
+                  Review the customer&apos;s submitted payment and confirm to release the order to operations.
                 </p>
               </div>
               <button
@@ -173,87 +196,86 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
               </div>
             ) : null}
 
+            {/* Customer payment summary — read-only */}
+            {customerHasPaid ? (
+              <div className="mt-4 rounded-[20px] border border-[#bbf7d0] bg-[#f0fdf4] p-5">
+                <p className="text-[12px] uppercase tracking-[0.18em] text-[#166534]">
+                  Customer payment details
+                </p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-[#15803d]">
+                      Payment method
+                    </p>
+                    <p className="mt-1 text-[15px] font-semibold text-[#111827]">
+                      {submittedMethod ? formatAccountingPaymentMethod(submittedMethod) : "—"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-[#15803d]">
+                      Payment type
+                    </p>
+                    <p className="mt-1 text-[15px] font-semibold text-[#111827]">
+                      {derivedPaymentType === "FULL_PAYMENT" ? "Full payment" : "Down payment"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-[#15803d]">
+                      Amount paid
+                    </p>
+                    <p className="mt-1 text-[15px] font-semibold text-[#111827]">
+                      {formatPeso(submittedAmount)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-[#15803d]">
+                      Remaining balance
+                    </p>
+                    <p className="mt-1 text-[15px] font-semibold text-[#111827]">
+                      {formatPeso(submittedRemaining)}
+                    </p>
+                  </div>
+                </div>
+                {inquiry.customerPaidNote ? (
+                  <div className="mt-4 border-t border-[#bbf7d0] pt-3">
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-[#15803d]">
+                      Customer note
+                    </p>
+                    <p className="mt-1 text-[13px] leading-[20px] text-[#374151]">
+                      {inquiry.customerPaidNote}
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <div className="mt-4 rounded-[20px] border border-[#fef9c3] bg-[#fffbeb] p-5">
+                <p className="text-[12px] uppercase tracking-[0.18em] text-[#a16207]">
+                  Awaiting customer payment
+                </p>
+                <p className="mt-2 text-[13px] text-[#92400e]">
+                  The customer has not submitted their payment details yet. You cannot confirm
+                  payment until they do.
+                </p>
+              </div>
+            )}
+
+            {/* Accounting note + actions */}
             <form method="post" action="/api/admin/approvals/accounting" className="mt-6 space-y-4">
               <input type="hidden" name="inquiryId" value={inquiry.id} />
-              <input type="hidden" name="paymentMethod" value={paymentMethod} />
-              <input type="hidden" name="paymentStatus" value={paymentStatus} />
+              {/* These echo the customer-submitted values so the API has them
+                  for backward compatibility, but accounting cannot edit them. */}
+              <input type="hidden" name="paymentMethod" value={submittedMethod ?? ""} />
+              <input type="hidden" name="paidAmount" value={submittedAmount.toFixed(2)} />
 
               <label className="grid gap-2">
                 <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
-                  Customer payment method
-                </span>
-                <select
-                  value={paymentMethod}
-                  onChange={(event) => setPaymentMethod(event.target.value as AccountingPaymentMethod)}
-                  className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
-                >
-                  {ACCOUNTING_PAYMENT_METHODS.map((method) => (
-                    <option key={method.value} value={method.value}>
-                      {method.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="grid gap-2">
-                <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
-                  Payment status
-                </span>
-                <select
-                  value={paymentStatus}
-                  onChange={(event) => {
-                    const nextPaymentStatus = event.target.value as InquiryPaymentStatus
-                    setPaymentStatus(nextPaymentStatus)
-                    if (nextPaymentStatus === "DOWN_PAYMENT") {
-                      setPaidAmount(inquiry.downPaymentRequired.toFixed(2))
-                    } else if (nextPaymentStatus === "PARTIALLY_PAID") {
-                      setPaidAmount(Math.max(inquiry.paid, inquiry.downPaymentRequired).toFixed(2))
-                    } else if (nextPaymentStatus === "FULLY_PAID") {
-                      setPaidAmount(inquiry.total.toFixed(2))
-                    }
-                  }}
-                  className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
-                >
-                  <option value="DOWN_PAYMENT">Down Payment</option>
-                  <option value="PARTIALLY_PAID">Partially Paid</option>
-                  <option value="FULLY_PAID">Fully Paid</option>
-                  <option value="REJECTED">Rejected</option>
-                </select>
-              </label>
-
-              {requiresPaidAmount ? (
-                <label className="grid gap-2">
-                  <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
-                    Customer paid amount
-                  </span>
-                  <input
-                    type="number"
-                    name="paidAmount"
-                    value={paidAmount}
-                    onChange={(event) => setPaidAmount(event.target.value)}
-                    min="0"
-                    max={inquiry.total}
-                    step="0.01"
-                    required
-                    className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
-                  />
-                  <span className="text-[12px] text-[#6b7280]">
-                    Remaining balance will be computed from the order total.
-                  </span>
-                </label>
-              ) : (
-                <input type="hidden" name="paidAmount" value={paymentStatus === "FULLY_PAID" ? inquiry.total.toFixed(2) : "0"} />
-              )}
-
-              <label className="grid gap-2">
-                <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
-                  Accounting approval note
+                  Accounting approval note <span className="normal-case tracking-normal text-[#9ca3af]">(optional)</span>
                 </span>
                 <textarea
                   name="statusNote"
-                  defaultValue={inquiry.workflowNote ?? ""}
-                  placeholder="Confirm payment before operations starts building."
-                  rows={4}
+                  defaultValue=""
+                  placeholder="Add an internal note for this approval (e.g. confirmed funds received)."
+                  rows={3}
                   className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
                 />
               </label>
@@ -268,7 +290,19 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
                 </button>
                 <button
                   type="submit"
-                  className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+                  name="paymentStatus"
+                  value="REJECTED"
+                  disabled={!customerHasPaid}
+                  className="rounded-[14px] border border-[#fecaca] bg-white px-5 py-3 text-[14px] font-medium text-[#b91c1c] transition-colors hover:bg-[#fff1f2] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Reject payment
+                </button>
+                <button
+                  type="submit"
+                  name="paymentStatus"
+                  value={derivedPaymentStatus}
+                  disabled={!customerHasPaid}
+                  className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]"
                 >
                   Confirm payment and release order
                 </button>

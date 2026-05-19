@@ -69,8 +69,9 @@ export async function reserveInquiryMaterialsForBuild({
     ORDER BY si."itemName" ASC
   `)
 
+  // If no materials have quantities set, nothing to reserve — proceed without blocking.
   if (reservationMaterials.length === 0) {
-    throw new Error(`No material requirements are configured for ${inquiry.product.name}.`)
+    return "already_reserved" as const
   }
 
   for (const material of reservationMaterials) {

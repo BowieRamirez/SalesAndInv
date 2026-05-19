@@ -48,7 +48,8 @@ export function InventoryApprovalCard({ inquiry, materials }: InventoryApprovalC
   const [rejectReason, setRejectReason] = useState("")
 
   const hasMaterials = materials.length > 0
-  const insufficientCount = materials.filter((m) => m.availableQty < m.quantityRequired).length
+  const quantifiedMaterials = materials.filter((m) => m.quantityRequired > 0)
+  const insufficientCount = quantifiedMaterials.filter((m) => m.availableQty < m.quantityRequired).length
   const allSufficient = insufficientCount === 0 && hasMaterials
 
   return (
@@ -148,10 +149,12 @@ export function InventoryApprovalCard({ inquiry, materials }: InventoryApprovalC
                     >
                       <td className="px-5 py-3 font-mono text-[#374151]">{material.sku}</td>
                       <td className="py-3 pr-4 font-medium text-[#111827]">{material.itemName}</td>
-                      <td className="py-3 pr-4 text-right text-[#374151]">{material.quantityRequired}</td>
+                      <td className="py-3 pr-4 text-right text-[#374151]">
+                        {material.quantityRequired > 0 ? material.quantityRequired : <span className="text-[#9ca3af]">—</span>}
+                      </td>
                       <td
                         className={`py-3 pr-4 text-right font-semibold ${
-                          material.availableQty < material.quantityRequired
+                          material.quantityRequired > 0 && material.availableQty < material.quantityRequired
                             ? "text-[#e11d48]"
                             : "text-[#16a34a]"
                         }`}
@@ -159,7 +162,10 @@ export function InventoryApprovalCard({ inquiry, materials }: InventoryApprovalC
                         {material.availableQty}
                       </td>
                       <td className="py-3 pr-5">
-                        <StockBadge available={material.availableQty} required={material.quantityRequired} />
+                        {material.quantityRequired > 0
+                          ? <StockBadge available={material.availableQty} required={material.quantityRequired} />
+                          : <span className="text-[11px] text-[#9ca3af]">Qty not set</span>
+                        }
                       </td>
                     </tr>
                   ))}

@@ -73,19 +73,20 @@ export async function POST(request: Request) {
       ORDER BY si."itemName" ASC
     `)
 
-    if (buildMaterials.length === 0) {
-      throw new Error(`No material requirements are configured for ${inquiry.product.name}.`)
-    }
+    // If no materials have quantities set, skip stock deduction and proceed.
+    const hasQuantifiedMaterials = buildMaterials.length > 0
 
-    // Check inventory availability before proceeding
-    for (const material of buildMaterials) {
-      const required = material.quantityRequired
-      if (required <= 0) continue
+    if (hasQuantifiedMaterials) {
+      // Check inventory availability before proceeding
+      for (const material of buildMaterials) {
+        const required = material.quantityRequired
+        if (required <= 0) continue
 
-      if (material.reservedQty < required && material.availableQty < required) {
-        throw new Error(
-          `Insufficient stock for material ${material.itemName}. Need ${required}, have ${material.availableQty} available and ${material.reservedQty} reserved.`
-        )
+        if (material.reservedQty < required && material.availableQty < required) {
+          throw new Error(
+            `Insufficient stock for material ${material.itemName}. Need ${required}, have ${material.availableQty} available and ${material.reservedQty} reserved.`
+          )
+        }
       }
     }
 
@@ -94,6 +95,8 @@ export async function POST(request: Request) {
       expectedStages: ["GETTING_READY_FOR_BUILDING"],
       nextStage: "READY_FOR_SHIPPING",
       statusNote,
+      actorId: currentUser.id,
+      actorRemarks: statusNote,
     })
 
     if (updatedRows === 0) {
@@ -101,94 +104,96 @@ export async function POST(request: Request) {
     }
 
     try {
-      await prisma.$transaction(async (tx) => {
-        const existingBuildMovements = await tx.$queryRaw<Array<{ count: number }>>(Prisma.sql`
-          SELECT COUNT(*)::int AS count
-          FROM public.stock_movements
-          WHERE "referenceNumber" = ${inquiryId}
-            AND "projectPurpose" = 'Build Order'
-            AND type = 'OUT'::"StockMovementType"
-        `)
+      if (hasQuantifiedMaterials) {
+        await prisma.$transaction(async (tx) => {
+          const existingBuildMovements = await tx.$queryRaw<Array<{ count: number }>>(Prisma.sql`
+            SELECT COUNT(*)::int AS count
+            FROM public.stock_movements
+            WHERE "referenceNumber" = ${inquiryId}
+              AND "projectPurpose" = 'Build Order'
+              AND type = 'OUT'::"StockMovementType"
+          `)
 
-        if ((existingBuildMovements[0]?.count ?? 0) > 0) {
-          return
-        }
-
-        for (const material of buildMaterials) {
-          const required = material.quantityRequired
-          if (required <= 0) continue
-
-          const affectedRows =
-            material.reservedQty >= required
-              ? await tx.$executeRaw(Prisma.sql`
-                  UPDATE public.material_stocks
-                  SET "reservedQty" = "reservedQty" - ${required},
-                      "updatedAt" = CURRENT_TIMESTAMP
-                  WHERE id = ${material.materialStockId}
-                    AND "reservedQty" >= ${required}
-                `)
-              : await tx.$executeRaw(Prisma.sql`
-                  UPDATE public.material_stocks
-                  SET "availableQty" = "availableQty" - ${required},
-                      "updatedAt" = CURRENT_TIMESTAMP
-                  WHERE id = ${material.materialStockId}
-                    AND "availableQty" >= ${required}
-                `)
-
-          if (affectedRows === 0) {
-            throw new Error(`Insufficient stock for material ${material.itemName}.`)
+          if ((existingBuildMovements[0]?.count ?? 0) > 0) {
+            return
           }
 
-          await tx.$executeRaw(Prisma.sql`
-            INSERT INTO public.stock_movements (
-              id,
-              "materialStockId",
-              type,
-              quantity,
-              "projectPurpose",
-              "referenceNumber",
-              "createdAt"
-            )
-            VALUES (
-              gen_random_uuid(),
-              ${material.materialStockId},
-              'OUT'::"StockMovementType",
-              ${required},
-              'Build Order',
-              ${inquiryId},
-              CURRENT_TIMESTAMP
-            )
-          `)
+          for (const material of buildMaterials) {
+            const required = material.quantityRequired
+            if (required <= 0) continue
 
-          await tx.$executeRaw(Prisma.sql`
-            INSERT INTO public.audit_logs (
-              id,
-              "actorId",
-              action,
-              "entityType",
-              "entityId",
-              metadata,
-              "createdAt"
-            )
-            VALUES (
-              gen_random_uuid(),
-              ${currentUser.id},
-              'STOCK_REMOVED'::"AuditAction",
-              'STOCK'::"AuditEntityType",
-              ${material.materialStockId},
-              ${JSON.stringify({
-                auditLabel: "RAW_MATERIAL_STOCK_REMOVED",
-                sku: material.sku,
-                itemName: material.itemName,
-                quantity: required,
-                referenceNumber: inquiryId,
-                reason: "Build Order"
-              })}::jsonb,
-              CURRENT_TIMESTAMP
-            )
-          `)
-        }
-      })
+            const affectedRows =
+              material.reservedQty >= required
+                ? await tx.$executeRaw(Prisma.sql`
+                    UPDATE public.material_stocks
+                    SET "reservedQty" = "reservedQty" - ${required},
+                        "updatedAt" = CURRENT_TIMESTAMP
+                    WHERE id = ${material.materialStockId}
+                      AND "reservedQty" >= ${required}
+                  `)
+                : await tx.$executeRaw(Prisma.sql`
+                    UPDATE public.material_stocks
+                    SET "availableQty" = "availableQty" - ${required},
+                        "updatedAt" = CURRENT_TIMESTAMP
+                    WHERE id = ${material.materialStockId}
+                      AND "availableQty" >= ${required}
+                  `)
+
+            if (affectedRows === 0) {
+              throw new Error(`Insufficient stock for material ${material.itemName}.`)
+            }
+
+            await tx.$executeRaw(Prisma.sql`
+              INSERT INTO public.stock_movements (
+                id,
+                "materialStockId",
+                type,
+                quantity,
+                "projectPurpose",
+                "referenceNumber",
+                "createdAt"
+              )
+              VALUES (
+                gen_random_uuid(),
+                ${material.materialStockId},
+                'OUT'::"StockMovementType",
+                ${required},
+                'Build Order',
+                ${inquiryId},
+                CURRENT_TIMESTAMP
+              )
+            `)
+
+            await tx.$executeRaw(Prisma.sql`
+              INSERT INTO public.audit_logs (
+                id,
+                "actorId",
+                action,
+                "entityType",
+                "entityId",
+                metadata,
+                "createdAt"
+              )
+              VALUES (
+                gen_random_uuid(),
+                ${currentUser.id},
+                'STOCK_REMOVED'::"AuditAction",
+                'STOCK'::"AuditEntityType",
+                ${material.materialStockId},
+                ${JSON.stringify({
+                  auditLabel: "RAW_MATERIAL_STOCK_REMOVED",
+                  sku: material.sku,
+                  itemName: material.itemName,
+                  quantity: required,
+                  referenceNumber: inquiryId,
+                  reason: "Build Order"
+                })}::jsonb,
+                CURRENT_TIMESTAMP
+              )
+            `)
+          }
+        })
+      }
     } catch (e) {
       // Rollback status update if inventory deduction fails
       await prisma.$executeRaw(Prisma.sql`
@@ -214,7 +219,8 @@ export async function POST(request: Request) {
       },
     })
 
-    return buildRedirect(request, "Order approved for building and moved to delivery schedule. Stock was successfully deducted.", "success")
+    const stockMsg = hasQuantifiedMaterials ? " Stock was successfully deducted." : ""
+    return buildRedirect(request, `Order approved for building and moved to delivery schedule.${stockMsg}`, "success")
   } catch (error) {
     console.error("Failed to move order to shipping.", error)
     const message = error instanceof Error ? error.message : "Operations approval failed. Please try again."

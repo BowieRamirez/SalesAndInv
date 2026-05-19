@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { prisma } from "@furnitrack/db"
 import { getCurrentStorefrontUser } from "@/lib/auth/session"
 
 export const dynamic = "force-dynamic"
@@ -26,6 +27,13 @@ export async function GET(request: Request) {
 
     const fresh = new URL(request.url).searchParams.get("fresh") === "1"
     const user = await getCurrentStorefrontUser({ fresh })
+
+    if (fresh && user?.id) {
+      await prisma.user.updateMany({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      })
+    }
 
     return NextResponse.json({ user })
   } catch (error) {

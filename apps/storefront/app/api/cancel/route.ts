@@ -96,16 +96,38 @@ export async function POST(request: Request) {
     )
   }
 
-  // Cancel the order — mark as completed with a cancellation note
-  await prisma.$executeRaw(Prisma.sql`
-    UPDATE public.customer_inquiries
-    SET
-      status = 'COMPLETED'::"InquiryStatus",
-      "statusNote" = '[[completed]] Cancelled by customer.',
-      "updatedAt" = CURRENT_TIMESTAMP
-    WHERE id = ${inquiryId}
-      AND "customerUserId" = ${sessionUser.id}
-  `)
+  // Cancel the order — set cancelled timestamp/actor and mark as completed with a cancellation note
+  await prisma.$transaction(async (tx) => {
+    await tx.$executeRaw(Prisma.sql`
+      UPDATE public.customer_inquiries
+      SET
+        status = 'COMPLETED'::"InquiryStatus",
+        "statusNote" = '[[completed]] Cancelled by customer.',
+        "cancelledAt" = CURRENT_TIMESTAMP,
+        "cancelledById" = ${sessionUser.id},
+        "completedAt" = CURRENT_TIMESTAMP,
+        "completedById" = ${sessionUser.id},
+        "updatedAt" = CURRENT_TIMESTAMP
+      WHERE id = ${inquiryId}
+        AND "customerUserId" = ${sessionUser.id}
+    `)
+
+    // Approval history entry for traceability
+    await tx.$executeRaw(Prisma.sql`
+      INSERT INTO public.approval_history (id, module, "recordId", action, "fromStatus", "toStatus", remarks, "actedById", "actedAt")
+      VALUES (
+        gen_random_uuid(),
+        'CUSTOMER_INQUIRY'::"ApprovalModule",
+        ${inquiryId},
+        'REJECTED'::"ApprovalAction",
+        ${inquiry.status},
+        'CANCELLED',
+        'Cancelled by customer.',
+        ${sessionUser.id},
+        CURRENT_TIMESTAMP
+      )
+    `)
+  })
 
   revalidatePath("/account/status")
 

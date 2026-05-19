@@ -9,10 +9,10 @@ export const ColorVariantSchema = z.object({
 })
 
 export const DimensionsSchema = z.object({
-  width: z.number().positive(),
-  depth: z.number().positive(),
-  height: z.number().positive(),
-  weight: z.number().positive(),
+  width: z.number().nonnegative(),
+  depth: z.number().nonnegative(),
+  height: z.number().nonnegative(),
+  weight: z.number().nonnegative(),
 })
 
 export const ProductSchema = z.object({

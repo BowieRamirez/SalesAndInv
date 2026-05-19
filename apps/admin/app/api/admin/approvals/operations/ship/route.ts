@@ -63,6 +63,8 @@ export async function POST(request: Request) {
             expectedStages: ["READY_FOR_SHIPPING"],
             nextStage: "COMPLETED",
             statusNote,
+            actorId: currentUser.id,
+            actorRemarks: statusNote,
           })
 
     revalidatePath("/operations")

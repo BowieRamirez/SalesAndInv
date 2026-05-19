@@ -41,6 +41,8 @@ export async function POST(request: Request) {
       expectedStages: ["PENDING_INVENTORY_APPROVAL"],
       nextStage: "PENDING_ACCOUNTING_APPROVAL",
       statusNote,
+      actorId: currentUser.id,
+      actorRemarks: statusNote,
     })
 
     revalidatePath("/operations")

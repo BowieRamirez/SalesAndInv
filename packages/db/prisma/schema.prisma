@@ -223,6 +223,7 @@ enum ApprovalModule {
   PAYMENT
   DESIGN_REQUEST
   DELIVERY_SCHEDULE
+  CUSTOMER_INQUIRY
 }
 
 enum ApprovalAction {
@@ -276,12 +277,19 @@ model User {
   stockRequestsRaised  StockRequest[]    @relation("StockRequestRequestedBy")
   stockRequestsChecked StockRequest[]    @relation("StockRequestDecidedBy")
   paymentsRecorded     PaymentRecord[]   @relation("PaymentRecordedBy")
+  paymentsVerified     PaymentRecord[]   @relation("PaymentVerifiedBy")
   designRequested      DesignRequest[]   @relation("DesignRequestedBy")
   designAssigned       DesignRequest[]   @relation("DesignAssignedTo")
   designAssetsUploaded DesignAsset[]     @relation("DesignAssetUploadedBy")
   deliveryAssigned     DeliverySchedule[] @relation("DeliveryAssignedBy")
   deliveryConfirmed    DeliverySchedule[] @relation("DeliveryConfirmedBy")
   customerInquiries    CustomerInquiry[]  @relation("CustomerInquiryUser")
+  inquiriesSalesReviewed       CustomerInquiry[] @relation("InquirySalesReviewedBy")
+  inquiriesInventoryApproved   CustomerInquiry[] @relation("InquiryInventoryApprovedBy")
+  inquiriesAccountingConfirmed CustomerInquiry[] @relation("InquiryAccountingConfirmedBy")
+  inquiriesBuildApproved       CustomerInquiry[] @relation("InquiryBuildApprovedBy")
+  inquiriesCompleted           CustomerInquiry[] @relation("InquiryCompletedBy")
+  inquiriesCancelled           CustomerInquiry[] @relation("InquiryCancelledBy")
   orderChatMessages    OrderChatMessage[]
   draftProducts        DraftProduct[]      @relation("DraftProductCreatedBy")
 
@@ -364,10 +372,15 @@ model QuotationLineItem {
   @@map("quotation_line_items")
 }
 
+/// Formal sales orders for B2B / multi-line workflow.
+/// Flow: Quotation → SalesOrder → StockRequest → DesignRequest → PaymentRecord → DeliverySchedule.
+/// For B2C single-product storefront orders see CustomerInquiry.
+/// A sales order can optionally be converted from a CustomerInquiry via convertedFromInquiryId.
 model SalesOrder {
   id                  String                 @id @default(cuid())
   soNumber            String                 @unique
   quotationId         String?                @unique
+  convertedFromInquiryId String?
   companyId           String
   createdById         String
   orderType           OrderType
@@ -394,6 +407,7 @@ model SalesOrder {
   company           Company            @relation(fields: [companyId], references: [id])
   createdBy         User               @relation("SalesOrderCreatedBy", fields: [createdById], references: [id])
   quotation         Quotation?         @relation(fields: [quotationId], references: [id])
+  convertedFromInquiry CustomerInquiry? @relation("InquiryConvertedToSalesOrder", fields: [convertedFromInquiryId], references: [id])
   lineItems         SalesOrderLineItem[]
   stockRequests     StockRequest[]
   designRequests    DesignRequest[]
@@ -401,9 +415,12 @@ model SalesOrder {
   deliverySchedules DeliverySchedule[]
 
   @@index([companyId, status, companyCodeSnapshot])
+  @@index([convertedFromInquiryId])
   @@map("sales_orders")
 }
 
+/// Line items for B2B sales_orders. One sales_order can have many products.
+/// Each customer_inquiries row by contrast represents a single-product B2C order via products.id.
 model SalesOrderLineItem {
   id               String  @id @default(cuid())
   salesOrderId     String
@@ -528,6 +545,10 @@ model DraftProduct {
   @@map("draft_products")
 }
 
+/// B2C single-product orders from the storefront. The active workflow used today.
+/// One inquiry -> one product (via productId). For multi-line B2B orders see SalesOrder.
+/// An inquiry can optionally be promoted to a SalesOrder (formal B2B flow) via the
+/// convertedToSalesOrder relation.
 model CustomerInquiry {
   id             String        @id @default(cuid())
   productId      String
@@ -538,12 +559,41 @@ model CustomerInquiry {
   message        String
   status         InquiryStatus @default(RECEIVED)
   statusNote     String?
+  inquiryNumber  String?       @unique
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+
+  // Stage transition timestamps
+  salesReviewedAt        DateTime?
+  inventoryApprovedAt    DateTime?
+  customerPaidAt         DateTime?
+  accountingConfirmedAt  DateTime?
+  buildApprovedAt        DateTime?
+  shippingScheduledAt    DateTime?
+  completedAt            DateTime?
+  cancelledAt            DateTime?
+
+  // Stage actor IDs (FK to User)
+  salesReviewedById        String?
+  inventoryApprovedById    String?
+  accountingConfirmedById  String?
+  buildApprovedById        String?
+  completedById            String?
+  cancelledById            String?
 
   product       Product @relation(fields: [productId], references: [id])
   customerUser  User?   @relation("CustomerInquiryUser", fields: [customerUserId], references: [id])
   chatMessages  OrderChatMessage[]
+  paymentRecords PaymentRecord[] @relation("InquiryPaymentRecords")
+  convertedToSalesOrders SalesOrder[] @relation("InquiryConvertedToSalesOrder")
+
+  // Relations to actor users
+  salesReviewedBy        User? @relation("InquirySalesReviewedBy", fields: [salesReviewedById], references: [id])
+  inventoryApprovedBy    User? @relation("InquiryInventoryApprovedBy", fields: [inventoryApprovedById], references: [id])
+  accountingConfirmedBy  User? @relation("InquiryAccountingConfirmedBy", fields: [accountingConfirmedById], references: [id])
+  buildApprovedBy        User? @relation("InquiryBuildApprovedBy", fields: [buildApprovedById], references: [id])
+  completedBy            User? @relation("InquiryCompletedBy", fields: [completedById], references: [id])
+  cancelledBy            User? @relation("InquiryCancelledBy", fields: [cancelledById], references: [id])
 
   @@index([customerUserId, status, createdAt])
   @@index([productId, status, createdAt])
@@ -689,24 +739,32 @@ model DesignAsset {
 
 model PaymentRecord {
   id               String        @id @default(cuid())
-  salesOrderId     String
+  salesOrderId     String?
+  inquiryId        String?
   quotationId      String?
+  paymentNumber    String?       @unique
   recordedById     String
   paymentType      PaymentType
+  paymentMethod    String?
   status           PaymentStatus @default(PENDING)
   amount           Decimal
   remainingBalance Decimal
   paymentDate      DateTime
   referenceNumber  String?
   remarks          String?
+  verifiedAt       DateTime?
+  verifiedById     String?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])
-  quotation  Quotation? @relation(fields: [quotationId], references: [id])
-  recordedBy User       @relation("PaymentRecordedBy", fields: [recordedById], references: [id])
+  salesOrder SalesOrder?      @relation(fields: [salesOrderId], references: [id])
+  inquiry    CustomerInquiry? @relation("InquiryPaymentRecords", fields: [inquiryId], references: [id], onDelete: Cascade)
+  quotation  Quotation?       @relation(fields: [quotationId], references: [id])
+  recordedBy User             @relation("PaymentRecordedBy", fields: [recordedById], references: [id])
+  verifiedBy User?            @relation("PaymentVerifiedBy", fields: [verifiedById], references: [id])
 
   @@index([salesOrderId, status, paymentDate])
+  @@index([inquiryId, status, paymentDate])
   @@map("payment_records")
 }
 

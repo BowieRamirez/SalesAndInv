@@ -55,15 +55,33 @@ export async function POST(request: Request) {
     }
 
     // Move back to RECEIVED so sales can re-review, with a rejection note
-    await prisma.$executeRaw(Prisma.sql`
-      UPDATE public.customer_inquiries
-      SET
-        status = 'RECEIVED'::"InquiryStatus",
-        "statusNote" = ${rejectReason},
-        "updatedAt" = CURRENT_TIMESTAMP
-      WHERE id = ${inquiryId}
-        AND status = 'PENDING_INVENTORY_APPROVAL'::"InquiryStatus"
-    `)
+    await prisma.$transaction(async (tx) => {
+      await tx.$executeRaw(Prisma.sql`
+        UPDATE public.customer_inquiries
+        SET
+          status = 'RECEIVED'::"InquiryStatus",
+          "statusNote" = ${rejectReason},
+          "updatedAt" = CURRENT_TIMESTAMP
+        WHERE id = ${inquiryId}
+          AND status = 'PENDING_INVENTORY_APPROVAL'::"InquiryStatus"
+      `)
+
+      // Approval history entry for traceability
+      await tx.$executeRaw(Prisma.sql`
+        INSERT INTO public.approval_history (id, module, "recordId", action, "fromStatus", "toStatus", remarks, "actedById", "actedAt")
+        VALUES (
+          gen_random_uuid(),
+          'CUSTOMER_INQUIRY'::"ApprovalModule",
+          ${inquiryId},
+          'REJECTED'::"ApprovalAction",
+          'PENDING_INVENTORY_APPROVAL',
+          'RECEIVED',
+          ${rejectReason},
+          ${currentUser.id},
+          CURRENT_TIMESTAMP
+        )
+      `)
+    })
 
     revalidatePath("/operations")
     revalidatePath("/sales")

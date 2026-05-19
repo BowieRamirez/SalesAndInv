@@ -952,11 +952,10 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
         ms.sku,
         ms."itemName",
         ms."availableQty",
-        CEIL(COALESCE(pm."quantityRequired", 0))::int AS "quantityRequired"
+        COALESCE(CEIL(pm."quantityRequired")::int, 0) AS "quantityRequired"
       FROM public.product_materials pm
       INNER JOIN public.material_stocks ms ON ms.id = pm."materialStockId"
       WHERE pm."productId" IN (${Prisma.join(productIds)})
-        AND COALESCE(pm."quantityRequired", 0) > 0
       ORDER BY ms."itemName" ASC
     `)
 

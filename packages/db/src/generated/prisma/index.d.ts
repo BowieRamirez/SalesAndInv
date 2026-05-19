@@ -438,7 +438,8 @@ export const ApprovalModule: {
   STOCK_REQUEST: 'STOCK_REQUEST',
   PAYMENT: 'PAYMENT',
   DESIGN_REQUEST: 'DESIGN_REQUEST',
-  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE',
+  CUSTOMER_INQUIRY: 'CUSTOMER_INQUIRY'
 };
 
 export type ApprovalModule = (typeof ApprovalModule)[keyof typeof ApprovalModule]
@@ -3875,12 +3876,19 @@ export namespace Prisma {
     stockRequestsRaised: number
     stockRequestsChecked: number
     paymentsRecorded: number
+    paymentsVerified: number
     designRequested: number
     designAssigned: number
     designAssetsUploaded: number
     deliveryAssigned: number
     deliveryConfirmed: number
     customerInquiries: number
+    inquiriesSalesReviewed: number
+    inquiriesInventoryApproved: number
+    inquiriesAccountingConfirmed: number
+    inquiriesBuildApproved: number
+    inquiriesCompleted: number
+    inquiriesCancelled: number
     orderChatMessages: number
     draftProducts: number
   }
@@ -3892,12 +3900,19 @@ export namespace Prisma {
     stockRequestsRaised?: boolean | UserCountOutputTypeCountStockRequestsRaisedArgs
     stockRequestsChecked?: boolean | UserCountOutputTypeCountStockRequestsCheckedArgs
     paymentsRecorded?: boolean | UserCountOutputTypeCountPaymentsRecordedArgs
+    paymentsVerified?: boolean | UserCountOutputTypeCountPaymentsVerifiedArgs
     designRequested?: boolean | UserCountOutputTypeCountDesignRequestedArgs
     designAssigned?: boolean | UserCountOutputTypeCountDesignAssignedArgs
     designAssetsUploaded?: boolean | UserCountOutputTypeCountDesignAssetsUploadedArgs
     deliveryAssigned?: boolean | UserCountOutputTypeCountDeliveryAssignedArgs
     deliveryConfirmed?: boolean | UserCountOutputTypeCountDeliveryConfirmedArgs
     customerInquiries?: boolean | UserCountOutputTypeCountCustomerInquiriesArgs
+    inquiriesSalesReviewed?: boolean | UserCountOutputTypeCountInquiriesSalesReviewedArgs
+    inquiriesInventoryApproved?: boolean | UserCountOutputTypeCountInquiriesInventoryApprovedArgs
+    inquiriesAccountingConfirmed?: boolean | UserCountOutputTypeCountInquiriesAccountingConfirmedArgs
+    inquiriesBuildApproved?: boolean | UserCountOutputTypeCountInquiriesBuildApprovedArgs
+    inquiriesCompleted?: boolean | UserCountOutputTypeCountInquiriesCompletedArgs
+    inquiriesCancelled?: boolean | UserCountOutputTypeCountInquiriesCancelledArgs
     orderChatMessages?: boolean | UserCountOutputTypeCountOrderChatMessagesArgs
     draftProducts?: boolean | UserCountOutputTypeCountDraftProductsArgs
   }
@@ -3958,6 +3973,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountPaymentsVerifiedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountDesignRequestedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DesignRequestWhereInput
   }
@@ -3994,6 +4016,48 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountCustomerInquiriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerInquiryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInquiriesSalesReviewedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerInquiryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInquiriesInventoryApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerInquiryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInquiriesAccountingConfirmedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerInquiryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInquiriesBuildApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerInquiryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInquiriesCompletedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerInquiryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInquiriesCancelledArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CustomerInquiryWhereInput
   }
 
@@ -4316,10 +4380,12 @@ export namespace Prisma {
 
   export type CustomerInquiryCountOutputType = {
     chatMessages: number
+    paymentRecords: number
   }
 
   export type CustomerInquiryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     chatMessages?: boolean | CustomerInquiryCountOutputTypeCountChatMessagesArgs
+    paymentRecords?: boolean | CustomerInquiryCountOutputTypeCountPaymentRecordsArgs
   }
 
   // Custom InputTypes
@@ -4338,6 +4404,13 @@ export namespace Prisma {
    */
   export type CustomerInquiryCountOutputTypeCountChatMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrderChatMessageWhereInput
+  }
+
+  /**
+   * CustomerInquiryCountOutputType without action
+   */
+  export type CustomerInquiryCountOutputTypeCountPaymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
   }
 
 
@@ -5947,12 +6020,19 @@ export namespace Prisma {
     stockRequestsRaised?: boolean | User$stockRequestsRaisedArgs<ExtArgs>
     stockRequestsChecked?: boolean | User$stockRequestsCheckedArgs<ExtArgs>
     paymentsRecorded?: boolean | User$paymentsRecordedArgs<ExtArgs>
+    paymentsVerified?: boolean | User$paymentsVerifiedArgs<ExtArgs>
     designRequested?: boolean | User$designRequestedArgs<ExtArgs>
     designAssigned?: boolean | User$designAssignedArgs<ExtArgs>
     designAssetsUploaded?: boolean | User$designAssetsUploadedArgs<ExtArgs>
     deliveryAssigned?: boolean | User$deliveryAssignedArgs<ExtArgs>
     deliveryConfirmed?: boolean | User$deliveryConfirmedArgs<ExtArgs>
     customerInquiries?: boolean | User$customerInquiriesArgs<ExtArgs>
+    inquiriesSalesReviewed?: boolean | User$inquiriesSalesReviewedArgs<ExtArgs>
+    inquiriesInventoryApproved?: boolean | User$inquiriesInventoryApprovedArgs<ExtArgs>
+    inquiriesAccountingConfirmed?: boolean | User$inquiriesAccountingConfirmedArgs<ExtArgs>
+    inquiriesBuildApproved?: boolean | User$inquiriesBuildApprovedArgs<ExtArgs>
+    inquiriesCompleted?: boolean | User$inquiriesCompletedArgs<ExtArgs>
+    inquiriesCancelled?: boolean | User$inquiriesCancelledArgs<ExtArgs>
     orderChatMessages?: boolean | User$orderChatMessagesArgs<ExtArgs>
     draftProducts?: boolean | User$draftProductsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -6017,12 +6097,19 @@ export namespace Prisma {
     stockRequestsRaised?: boolean | User$stockRequestsRaisedArgs<ExtArgs>
     stockRequestsChecked?: boolean | User$stockRequestsCheckedArgs<ExtArgs>
     paymentsRecorded?: boolean | User$paymentsRecordedArgs<ExtArgs>
+    paymentsVerified?: boolean | User$paymentsVerifiedArgs<ExtArgs>
     designRequested?: boolean | User$designRequestedArgs<ExtArgs>
     designAssigned?: boolean | User$designAssignedArgs<ExtArgs>
     designAssetsUploaded?: boolean | User$designAssetsUploadedArgs<ExtArgs>
     deliveryAssigned?: boolean | User$deliveryAssignedArgs<ExtArgs>
     deliveryConfirmed?: boolean | User$deliveryConfirmedArgs<ExtArgs>
     customerInquiries?: boolean | User$customerInquiriesArgs<ExtArgs>
+    inquiriesSalesReviewed?: boolean | User$inquiriesSalesReviewedArgs<ExtArgs>
+    inquiriesInventoryApproved?: boolean | User$inquiriesInventoryApprovedArgs<ExtArgs>
+    inquiriesAccountingConfirmed?: boolean | User$inquiriesAccountingConfirmedArgs<ExtArgs>
+    inquiriesBuildApproved?: boolean | User$inquiriesBuildApprovedArgs<ExtArgs>
+    inquiriesCompleted?: boolean | User$inquiriesCompletedArgs<ExtArgs>
+    inquiriesCancelled?: boolean | User$inquiriesCancelledArgs<ExtArgs>
     orderChatMessages?: boolean | User$orderChatMessagesArgs<ExtArgs>
     draftProducts?: boolean | User$draftProductsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -6044,12 +6131,19 @@ export namespace Prisma {
       stockRequestsRaised: Prisma.$StockRequestPayload<ExtArgs>[]
       stockRequestsChecked: Prisma.$StockRequestPayload<ExtArgs>[]
       paymentsRecorded: Prisma.$PaymentRecordPayload<ExtArgs>[]
+      paymentsVerified: Prisma.$PaymentRecordPayload<ExtArgs>[]
       designRequested: Prisma.$DesignRequestPayload<ExtArgs>[]
       designAssigned: Prisma.$DesignRequestPayload<ExtArgs>[]
       designAssetsUploaded: Prisma.$DesignAssetPayload<ExtArgs>[]
       deliveryAssigned: Prisma.$DeliverySchedulePayload<ExtArgs>[]
       deliveryConfirmed: Prisma.$DeliverySchedulePayload<ExtArgs>[]
       customerInquiries: Prisma.$CustomerInquiryPayload<ExtArgs>[]
+      inquiriesSalesReviewed: Prisma.$CustomerInquiryPayload<ExtArgs>[]
+      inquiriesInventoryApproved: Prisma.$CustomerInquiryPayload<ExtArgs>[]
+      inquiriesAccountingConfirmed: Prisma.$CustomerInquiryPayload<ExtArgs>[]
+      inquiriesBuildApproved: Prisma.$CustomerInquiryPayload<ExtArgs>[]
+      inquiriesCompleted: Prisma.$CustomerInquiryPayload<ExtArgs>[]
+      inquiriesCancelled: Prisma.$CustomerInquiryPayload<ExtArgs>[]
       orderChatMessages: Prisma.$OrderChatMessagePayload<ExtArgs>[]
       draftProducts: Prisma.$DraftProductPayload<ExtArgs>[]
     }
@@ -6468,12 +6562,19 @@ export namespace Prisma {
     stockRequestsRaised<T extends User$stockRequestsRaisedArgs<ExtArgs> = {}>(args?: Subset<T, User$stockRequestsRaisedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockRequestsChecked<T extends User$stockRequestsCheckedArgs<ExtArgs> = {}>(args?: Subset<T, User$stockRequestsCheckedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentsRecorded<T extends User$paymentsRecordedArgs<ExtArgs> = {}>(args?: Subset<T, User$paymentsRecordedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    paymentsVerified<T extends User$paymentsVerifiedArgs<ExtArgs> = {}>(args?: Subset<T, User$paymentsVerifiedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     designRequested<T extends User$designRequestedArgs<ExtArgs> = {}>(args?: Subset<T, User$designRequestedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DesignRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     designAssigned<T extends User$designAssignedArgs<ExtArgs> = {}>(args?: Subset<T, User$designAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DesignRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     designAssetsUploaded<T extends User$designAssetsUploadedArgs<ExtArgs> = {}>(args?: Subset<T, User$designAssetsUploadedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DesignAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     deliveryAssigned<T extends User$deliveryAssignedArgs<ExtArgs> = {}>(args?: Subset<T, User$deliveryAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliverySchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     deliveryConfirmed<T extends User$deliveryConfirmedArgs<ExtArgs> = {}>(args?: Subset<T, User$deliveryConfirmedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliverySchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customerInquiries<T extends User$customerInquiriesArgs<ExtArgs> = {}>(args?: Subset<T, User$customerInquiriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inquiriesSalesReviewed<T extends User$inquiriesSalesReviewedArgs<ExtArgs> = {}>(args?: Subset<T, User$inquiriesSalesReviewedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inquiriesInventoryApproved<T extends User$inquiriesInventoryApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$inquiriesInventoryApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inquiriesAccountingConfirmed<T extends User$inquiriesAccountingConfirmedArgs<ExtArgs> = {}>(args?: Subset<T, User$inquiriesAccountingConfirmedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inquiriesBuildApproved<T extends User$inquiriesBuildApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$inquiriesBuildApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inquiriesCompleted<T extends User$inquiriesCompletedArgs<ExtArgs> = {}>(args?: Subset<T, User$inquiriesCompletedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inquiriesCancelled<T extends User$inquiriesCancelledArgs<ExtArgs> = {}>(args?: Subset<T, User$inquiriesCancelledArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orderChatMessages<T extends User$orderChatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$orderChatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     draftProducts<T extends User$draftProductsArgs<ExtArgs> = {}>(args?: Subset<T, User$draftProductsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -7077,6 +7178,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.paymentsVerified
+   */
+  export type User$paymentsVerifiedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentRecord
+     */
+    omit?: PaymentRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    cursor?: PaymentRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
    * User.designRequested
    */
   export type User$designRequestedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7200,6 +7325,150 @@ export namespace Prisma {
    * User.customerInquiries
    */
   export type User$customerInquiriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiry
+     */
+    select?: CustomerInquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerInquiry
+     */
+    omit?: CustomerInquiryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInquiryInclude<ExtArgs> | null
+    where?: CustomerInquiryWhereInput
+    orderBy?: CustomerInquiryOrderByWithRelationInput | CustomerInquiryOrderByWithRelationInput[]
+    cursor?: CustomerInquiryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerInquiryScalarFieldEnum | CustomerInquiryScalarFieldEnum[]
+  }
+
+  /**
+   * User.inquiriesSalesReviewed
+   */
+  export type User$inquiriesSalesReviewedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiry
+     */
+    select?: CustomerInquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerInquiry
+     */
+    omit?: CustomerInquiryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInquiryInclude<ExtArgs> | null
+    where?: CustomerInquiryWhereInput
+    orderBy?: CustomerInquiryOrderByWithRelationInput | CustomerInquiryOrderByWithRelationInput[]
+    cursor?: CustomerInquiryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerInquiryScalarFieldEnum | CustomerInquiryScalarFieldEnum[]
+  }
+
+  /**
+   * User.inquiriesInventoryApproved
+   */
+  export type User$inquiriesInventoryApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiry
+     */
+    select?: CustomerInquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerInquiry
+     */
+    omit?: CustomerInquiryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInquiryInclude<ExtArgs> | null
+    where?: CustomerInquiryWhereInput
+    orderBy?: CustomerInquiryOrderByWithRelationInput | CustomerInquiryOrderByWithRelationInput[]
+    cursor?: CustomerInquiryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerInquiryScalarFieldEnum | CustomerInquiryScalarFieldEnum[]
+  }
+
+  /**
+   * User.inquiriesAccountingConfirmed
+   */
+  export type User$inquiriesAccountingConfirmedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiry
+     */
+    select?: CustomerInquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerInquiry
+     */
+    omit?: CustomerInquiryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInquiryInclude<ExtArgs> | null
+    where?: CustomerInquiryWhereInput
+    orderBy?: CustomerInquiryOrderByWithRelationInput | CustomerInquiryOrderByWithRelationInput[]
+    cursor?: CustomerInquiryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerInquiryScalarFieldEnum | CustomerInquiryScalarFieldEnum[]
+  }
+
+  /**
+   * User.inquiriesBuildApproved
+   */
+  export type User$inquiriesBuildApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiry
+     */
+    select?: CustomerInquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerInquiry
+     */
+    omit?: CustomerInquiryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInquiryInclude<ExtArgs> | null
+    where?: CustomerInquiryWhereInput
+    orderBy?: CustomerInquiryOrderByWithRelationInput | CustomerInquiryOrderByWithRelationInput[]
+    cursor?: CustomerInquiryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerInquiryScalarFieldEnum | CustomerInquiryScalarFieldEnum[]
+  }
+
+  /**
+   * User.inquiriesCompleted
+   */
+  export type User$inquiriesCompletedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiry
+     */
+    select?: CustomerInquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerInquiry
+     */
+    omit?: CustomerInquiryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInquiryInclude<ExtArgs> | null
+    where?: CustomerInquiryWhereInput
+    orderBy?: CustomerInquiryOrderByWithRelationInput | CustomerInquiryOrderByWithRelationInput[]
+    cursor?: CustomerInquiryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerInquiryScalarFieldEnum | CustomerInquiryScalarFieldEnum[]
+  }
+
+  /**
+   * User.inquiriesCancelled
+   */
+  export type User$inquiriesCancelledArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the CustomerInquiry
      */
@@ -19918,8 +20187,23 @@ export namespace Prisma {
     message: string | null
     status: $Enums.InquiryStatus | null
     statusNote: string | null
+    inquiryNumber: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    salesReviewedAt: Date | null
+    inventoryApprovedAt: Date | null
+    customerPaidAt: Date | null
+    accountingConfirmedAt: Date | null
+    buildApprovedAt: Date | null
+    shippingScheduledAt: Date | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    salesReviewedById: string | null
+    inventoryApprovedById: string | null
+    accountingConfirmedById: string | null
+    buildApprovedById: string | null
+    completedById: string | null
+    cancelledById: string | null
   }
 
   export type CustomerInquiryMaxAggregateOutputType = {
@@ -19932,8 +20216,23 @@ export namespace Prisma {
     message: string | null
     status: $Enums.InquiryStatus | null
     statusNote: string | null
+    inquiryNumber: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    salesReviewedAt: Date | null
+    inventoryApprovedAt: Date | null
+    customerPaidAt: Date | null
+    accountingConfirmedAt: Date | null
+    buildApprovedAt: Date | null
+    shippingScheduledAt: Date | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    salesReviewedById: string | null
+    inventoryApprovedById: string | null
+    accountingConfirmedById: string | null
+    buildApprovedById: string | null
+    completedById: string | null
+    cancelledById: string | null
   }
 
   export type CustomerInquiryCountAggregateOutputType = {
@@ -19946,8 +20245,23 @@ export namespace Prisma {
     message: number
     status: number
     statusNote: number
+    inquiryNumber: number
     createdAt: number
     updatedAt: number
+    salesReviewedAt: number
+    inventoryApprovedAt: number
+    customerPaidAt: number
+    accountingConfirmedAt: number
+    buildApprovedAt: number
+    shippingScheduledAt: number
+    completedAt: number
+    cancelledAt: number
+    salesReviewedById: number
+    inventoryApprovedById: number
+    accountingConfirmedById: number
+    buildApprovedById: number
+    completedById: number
+    cancelledById: number
     _all: number
   }
 
@@ -19962,8 +20276,23 @@ export namespace Prisma {
     message?: true
     status?: true
     statusNote?: true
+    inquiryNumber?: true
     createdAt?: true
     updatedAt?: true
+    salesReviewedAt?: true
+    inventoryApprovedAt?: true
+    customerPaidAt?: true
+    accountingConfirmedAt?: true
+    buildApprovedAt?: true
+    shippingScheduledAt?: true
+    completedAt?: true
+    cancelledAt?: true
+    salesReviewedById?: true
+    inventoryApprovedById?: true
+    accountingConfirmedById?: true
+    buildApprovedById?: true
+    completedById?: true
+    cancelledById?: true
   }
 
   export type CustomerInquiryMaxAggregateInputType = {
@@ -19976,8 +20305,23 @@ export namespace Prisma {
     message?: true
     status?: true
     statusNote?: true
+    inquiryNumber?: true
     createdAt?: true
     updatedAt?: true
+    salesReviewedAt?: true
+    inventoryApprovedAt?: true
+    customerPaidAt?: true
+    accountingConfirmedAt?: true
+    buildApprovedAt?: true
+    shippingScheduledAt?: true
+    completedAt?: true
+    cancelledAt?: true
+    salesReviewedById?: true
+    inventoryApprovedById?: true
+    accountingConfirmedById?: true
+    buildApprovedById?: true
+    completedById?: true
+    cancelledById?: true
   }
 
   export type CustomerInquiryCountAggregateInputType = {
@@ -19990,8 +20334,23 @@ export namespace Prisma {
     message?: true
     status?: true
     statusNote?: true
+    inquiryNumber?: true
     createdAt?: true
     updatedAt?: true
+    salesReviewedAt?: true
+    inventoryApprovedAt?: true
+    customerPaidAt?: true
+    accountingConfirmedAt?: true
+    buildApprovedAt?: true
+    shippingScheduledAt?: true
+    completedAt?: true
+    cancelledAt?: true
+    salesReviewedById?: true
+    inventoryApprovedById?: true
+    accountingConfirmedById?: true
+    buildApprovedById?: true
+    completedById?: true
+    cancelledById?: true
     _all?: true
   }
 
@@ -20077,8 +20436,23 @@ export namespace Prisma {
     message: string
     status: $Enums.InquiryStatus
     statusNote: string | null
+    inquiryNumber: string | null
     createdAt: Date
     updatedAt: Date
+    salesReviewedAt: Date | null
+    inventoryApprovedAt: Date | null
+    customerPaidAt: Date | null
+    accountingConfirmedAt: Date | null
+    buildApprovedAt: Date | null
+    shippingScheduledAt: Date | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    salesReviewedById: string | null
+    inventoryApprovedById: string | null
+    accountingConfirmedById: string | null
+    buildApprovedById: string | null
+    completedById: string | null
+    cancelledById: string | null
     _count: CustomerInquiryCountAggregateOutputType | null
     _min: CustomerInquiryMinAggregateOutputType | null
     _max: CustomerInquiryMaxAggregateOutputType | null
@@ -20108,11 +20482,33 @@ export namespace Prisma {
     message?: boolean
     status?: boolean
     statusNote?: boolean
+    inquiryNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    salesReviewedAt?: boolean
+    inventoryApprovedAt?: boolean
+    customerPaidAt?: boolean
+    accountingConfirmedAt?: boolean
+    buildApprovedAt?: boolean
+    shippingScheduledAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    salesReviewedById?: boolean
+    inventoryApprovedById?: boolean
+    accountingConfirmedById?: boolean
+    buildApprovedById?: boolean
+    completedById?: boolean
+    cancelledById?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
     chatMessages?: boolean | CustomerInquiry$chatMessagesArgs<ExtArgs>
+    paymentRecords?: boolean | CustomerInquiry$paymentRecordsArgs<ExtArgs>
+    salesReviewedBy?: boolean | CustomerInquiry$salesReviewedByArgs<ExtArgs>
+    inventoryApprovedBy?: boolean | CustomerInquiry$inventoryApprovedByArgs<ExtArgs>
+    accountingConfirmedBy?: boolean | CustomerInquiry$accountingConfirmedByArgs<ExtArgs>
+    buildApprovedBy?: boolean | CustomerInquiry$buildApprovedByArgs<ExtArgs>
+    completedBy?: boolean | CustomerInquiry$completedByArgs<ExtArgs>
+    cancelledBy?: boolean | CustomerInquiry$cancelledByArgs<ExtArgs>
     _count?: boolean | CustomerInquiryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customerInquiry"]>
 
@@ -20126,10 +20522,31 @@ export namespace Prisma {
     message?: boolean
     status?: boolean
     statusNote?: boolean
+    inquiryNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    salesReviewedAt?: boolean
+    inventoryApprovedAt?: boolean
+    customerPaidAt?: boolean
+    accountingConfirmedAt?: boolean
+    buildApprovedAt?: boolean
+    shippingScheduledAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    salesReviewedById?: boolean
+    inventoryApprovedById?: boolean
+    accountingConfirmedById?: boolean
+    buildApprovedById?: boolean
+    completedById?: boolean
+    cancelledById?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
+    salesReviewedBy?: boolean | CustomerInquiry$salesReviewedByArgs<ExtArgs>
+    inventoryApprovedBy?: boolean | CustomerInquiry$inventoryApprovedByArgs<ExtArgs>
+    accountingConfirmedBy?: boolean | CustomerInquiry$accountingConfirmedByArgs<ExtArgs>
+    buildApprovedBy?: boolean | CustomerInquiry$buildApprovedByArgs<ExtArgs>
+    completedBy?: boolean | CustomerInquiry$completedByArgs<ExtArgs>
+    cancelledBy?: boolean | CustomerInquiry$cancelledByArgs<ExtArgs>
   }, ExtArgs["result"]["customerInquiry"]>
 
   export type CustomerInquirySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -20142,10 +20559,31 @@ export namespace Prisma {
     message?: boolean
     status?: boolean
     statusNote?: boolean
+    inquiryNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    salesReviewedAt?: boolean
+    inventoryApprovedAt?: boolean
+    customerPaidAt?: boolean
+    accountingConfirmedAt?: boolean
+    buildApprovedAt?: boolean
+    shippingScheduledAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    salesReviewedById?: boolean
+    inventoryApprovedById?: boolean
+    accountingConfirmedById?: boolean
+    buildApprovedById?: boolean
+    completedById?: boolean
+    cancelledById?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
+    salesReviewedBy?: boolean | CustomerInquiry$salesReviewedByArgs<ExtArgs>
+    inventoryApprovedBy?: boolean | CustomerInquiry$inventoryApprovedByArgs<ExtArgs>
+    accountingConfirmedBy?: boolean | CustomerInquiry$accountingConfirmedByArgs<ExtArgs>
+    buildApprovedBy?: boolean | CustomerInquiry$buildApprovedByArgs<ExtArgs>
+    completedBy?: boolean | CustomerInquiry$completedByArgs<ExtArgs>
+    cancelledBy?: boolean | CustomerInquiry$cancelledByArgs<ExtArgs>
   }, ExtArgs["result"]["customerInquiry"]>
 
   export type CustomerInquirySelectScalar = {
@@ -20158,24 +20596,58 @@ export namespace Prisma {
     message?: boolean
     status?: boolean
     statusNote?: boolean
+    inquiryNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    salesReviewedAt?: boolean
+    inventoryApprovedAt?: boolean
+    customerPaidAt?: boolean
+    accountingConfirmedAt?: boolean
+    buildApprovedAt?: boolean
+    shippingScheduledAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    salesReviewedById?: boolean
+    inventoryApprovedById?: boolean
+    accountingConfirmedById?: boolean
+    buildApprovedById?: boolean
+    completedById?: boolean
+    cancelledById?: boolean
   }
 
-  export type CustomerInquiryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "customerUserId" | "customerName" | "customerEmail" | "customerPhone" | "message" | "status" | "statusNote" | "createdAt" | "updatedAt", ExtArgs["result"]["customerInquiry"]>
+  export type CustomerInquiryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "customerUserId" | "customerName" | "customerEmail" | "customerPhone" | "message" | "status" | "statusNote" | "inquiryNumber" | "createdAt" | "updatedAt" | "salesReviewedAt" | "inventoryApprovedAt" | "customerPaidAt" | "accountingConfirmedAt" | "buildApprovedAt" | "shippingScheduledAt" | "completedAt" | "cancelledAt" | "salesReviewedById" | "inventoryApprovedById" | "accountingConfirmedById" | "buildApprovedById" | "completedById" | "cancelledById", ExtArgs["result"]["customerInquiry"]>
   export type CustomerInquiryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
     chatMessages?: boolean | CustomerInquiry$chatMessagesArgs<ExtArgs>
+    paymentRecords?: boolean | CustomerInquiry$paymentRecordsArgs<ExtArgs>
+    salesReviewedBy?: boolean | CustomerInquiry$salesReviewedByArgs<ExtArgs>
+    inventoryApprovedBy?: boolean | CustomerInquiry$inventoryApprovedByArgs<ExtArgs>
+    accountingConfirmedBy?: boolean | CustomerInquiry$accountingConfirmedByArgs<ExtArgs>
+    buildApprovedBy?: boolean | CustomerInquiry$buildApprovedByArgs<ExtArgs>
+    completedBy?: boolean | CustomerInquiry$completedByArgs<ExtArgs>
+    cancelledBy?: boolean | CustomerInquiry$cancelledByArgs<ExtArgs>
     _count?: boolean | CustomerInquiryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerInquiryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
+    salesReviewedBy?: boolean | CustomerInquiry$salesReviewedByArgs<ExtArgs>
+    inventoryApprovedBy?: boolean | CustomerInquiry$inventoryApprovedByArgs<ExtArgs>
+    accountingConfirmedBy?: boolean | CustomerInquiry$accountingConfirmedByArgs<ExtArgs>
+    buildApprovedBy?: boolean | CustomerInquiry$buildApprovedByArgs<ExtArgs>
+    completedBy?: boolean | CustomerInquiry$completedByArgs<ExtArgs>
+    cancelledBy?: boolean | CustomerInquiry$cancelledByArgs<ExtArgs>
   }
   export type CustomerInquiryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     customerUser?: boolean | CustomerInquiry$customerUserArgs<ExtArgs>
+    salesReviewedBy?: boolean | CustomerInquiry$salesReviewedByArgs<ExtArgs>
+    inventoryApprovedBy?: boolean | CustomerInquiry$inventoryApprovedByArgs<ExtArgs>
+    accountingConfirmedBy?: boolean | CustomerInquiry$accountingConfirmedByArgs<ExtArgs>
+    buildApprovedBy?: boolean | CustomerInquiry$buildApprovedByArgs<ExtArgs>
+    completedBy?: boolean | CustomerInquiry$completedByArgs<ExtArgs>
+    cancelledBy?: boolean | CustomerInquiry$cancelledByArgs<ExtArgs>
   }
 
   export type $CustomerInquiryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20184,6 +20656,13 @@ export namespace Prisma {
       product: Prisma.$ProductPayload<ExtArgs>
       customerUser: Prisma.$UserPayload<ExtArgs> | null
       chatMessages: Prisma.$OrderChatMessagePayload<ExtArgs>[]
+      paymentRecords: Prisma.$PaymentRecordPayload<ExtArgs>[]
+      salesReviewedBy: Prisma.$UserPayload<ExtArgs> | null
+      inventoryApprovedBy: Prisma.$UserPayload<ExtArgs> | null
+      accountingConfirmedBy: Prisma.$UserPayload<ExtArgs> | null
+      buildApprovedBy: Prisma.$UserPayload<ExtArgs> | null
+      completedBy: Prisma.$UserPayload<ExtArgs> | null
+      cancelledBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20195,8 +20674,23 @@ export namespace Prisma {
       message: string
       status: $Enums.InquiryStatus
       statusNote: string | null
+      inquiryNumber: string | null
       createdAt: Date
       updatedAt: Date
+      salesReviewedAt: Date | null
+      inventoryApprovedAt: Date | null
+      customerPaidAt: Date | null
+      accountingConfirmedAt: Date | null
+      buildApprovedAt: Date | null
+      shippingScheduledAt: Date | null
+      completedAt: Date | null
+      cancelledAt: Date | null
+      salesReviewedById: string | null
+      inventoryApprovedById: string | null
+      accountingConfirmedById: string | null
+      buildApprovedById: string | null
+      completedById: string | null
+      cancelledById: string | null
     }, ExtArgs["result"]["customerInquiry"]>
     composites: {}
   }
@@ -20594,6 +21088,13 @@ export namespace Prisma {
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customerUser<T extends CustomerInquiry$customerUserArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$customerUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     chatMessages<T extends CustomerInquiry$chatMessagesArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    paymentRecords<T extends CustomerInquiry$paymentRecordsArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$paymentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    salesReviewedBy<T extends CustomerInquiry$salesReviewedByArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$salesReviewedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    inventoryApprovedBy<T extends CustomerInquiry$inventoryApprovedByArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$inventoryApprovedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    accountingConfirmedBy<T extends CustomerInquiry$accountingConfirmedByArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$accountingConfirmedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    buildApprovedBy<T extends CustomerInquiry$buildApprovedByArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$buildApprovedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    completedBy<T extends CustomerInquiry$completedByArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$completedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    cancelledBy<T extends CustomerInquiry$cancelledByArgs<ExtArgs> = {}>(args?: Subset<T, CustomerInquiry$cancelledByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20632,8 +21133,23 @@ export namespace Prisma {
     readonly message: FieldRef<"CustomerInquiry", 'String'>
     readonly status: FieldRef<"CustomerInquiry", 'InquiryStatus'>
     readonly statusNote: FieldRef<"CustomerInquiry", 'String'>
+    readonly inquiryNumber: FieldRef<"CustomerInquiry", 'String'>
     readonly createdAt: FieldRef<"CustomerInquiry", 'DateTime'>
     readonly updatedAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly salesReviewedAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly inventoryApprovedAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly customerPaidAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly accountingConfirmedAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly buildApprovedAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly shippingScheduledAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly completedAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly cancelledAt: FieldRef<"CustomerInquiry", 'DateTime'>
+    readonly salesReviewedById: FieldRef<"CustomerInquiry", 'String'>
+    readonly inventoryApprovedById: FieldRef<"CustomerInquiry", 'String'>
+    readonly accountingConfirmedById: FieldRef<"CustomerInquiry", 'String'>
+    readonly buildApprovedById: FieldRef<"CustomerInquiry", 'String'>
+    readonly completedById: FieldRef<"CustomerInquiry", 'String'>
+    readonly cancelledById: FieldRef<"CustomerInquiry", 'String'>
   }
     
 
@@ -21070,6 +21586,144 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: OrderChatMessageScalarFieldEnum | OrderChatMessageScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerInquiry.paymentRecords
+   */
+  export type CustomerInquiry$paymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentRecord
+     */
+    omit?: PaymentRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    cursor?: PaymentRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerInquiry.salesReviewedBy
+   */
+  export type CustomerInquiry$salesReviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CustomerInquiry.inventoryApprovedBy
+   */
+  export type CustomerInquiry$inventoryApprovedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CustomerInquiry.accountingConfirmedBy
+   */
+  export type CustomerInquiry$accountingConfirmedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CustomerInquiry.buildApprovedBy
+   */
+  export type CustomerInquiry$buildApprovedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CustomerInquiry.completedBy
+   */
+  export type CustomerInquiry$completedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * CustomerInquiry.cancelledBy
+   */
+  export type CustomerInquiry$cancelledByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -30255,15 +30909,20 @@ export namespace Prisma {
   export type PaymentRecordMinAggregateOutputType = {
     id: string | null
     salesOrderId: string | null
+    inquiryId: string | null
     quotationId: string | null
+    paymentNumber: string | null
     recordedById: string | null
     paymentType: $Enums.PaymentType | null
+    paymentMethod: string | null
     status: $Enums.PaymentStatus | null
     amount: Decimal | null
     remainingBalance: Decimal | null
     paymentDate: Date | null
     referenceNumber: string | null
     remarks: string | null
+    verifiedAt: Date | null
+    verifiedById: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30271,15 +30930,20 @@ export namespace Prisma {
   export type PaymentRecordMaxAggregateOutputType = {
     id: string | null
     salesOrderId: string | null
+    inquiryId: string | null
     quotationId: string | null
+    paymentNumber: string | null
     recordedById: string | null
     paymentType: $Enums.PaymentType | null
+    paymentMethod: string | null
     status: $Enums.PaymentStatus | null
     amount: Decimal | null
     remainingBalance: Decimal | null
     paymentDate: Date | null
     referenceNumber: string | null
     remarks: string | null
+    verifiedAt: Date | null
+    verifiedById: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30287,15 +30951,20 @@ export namespace Prisma {
   export type PaymentRecordCountAggregateOutputType = {
     id: number
     salesOrderId: number
+    inquiryId: number
     quotationId: number
+    paymentNumber: number
     recordedById: number
     paymentType: number
+    paymentMethod: number
     status: number
     amount: number
     remainingBalance: number
     paymentDate: number
     referenceNumber: number
     remarks: number
+    verifiedAt: number
+    verifiedById: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -30315,15 +30984,20 @@ export namespace Prisma {
   export type PaymentRecordMinAggregateInputType = {
     id?: true
     salesOrderId?: true
+    inquiryId?: true
     quotationId?: true
+    paymentNumber?: true
     recordedById?: true
     paymentType?: true
+    paymentMethod?: true
     status?: true
     amount?: true
     remainingBalance?: true
     paymentDate?: true
     referenceNumber?: true
     remarks?: true
+    verifiedAt?: true
+    verifiedById?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -30331,15 +31005,20 @@ export namespace Prisma {
   export type PaymentRecordMaxAggregateInputType = {
     id?: true
     salesOrderId?: true
+    inquiryId?: true
     quotationId?: true
+    paymentNumber?: true
     recordedById?: true
     paymentType?: true
+    paymentMethod?: true
     status?: true
     amount?: true
     remainingBalance?: true
     paymentDate?: true
     referenceNumber?: true
     remarks?: true
+    verifiedAt?: true
+    verifiedById?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -30347,15 +31026,20 @@ export namespace Prisma {
   export type PaymentRecordCountAggregateInputType = {
     id?: true
     salesOrderId?: true
+    inquiryId?: true
     quotationId?: true
+    paymentNumber?: true
     recordedById?: true
     paymentType?: true
+    paymentMethod?: true
     status?: true
     amount?: true
     remainingBalance?: true
     paymentDate?: true
     referenceNumber?: true
     remarks?: true
+    verifiedAt?: true
+    verifiedById?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -30449,16 +31133,21 @@ export namespace Prisma {
 
   export type PaymentRecordGroupByOutputType = {
     id: string
-    salesOrderId: string
+    salesOrderId: string | null
+    inquiryId: string | null
     quotationId: string | null
+    paymentNumber: string | null
     recordedById: string
     paymentType: $Enums.PaymentType
+    paymentMethod: string | null
     status: $Enums.PaymentStatus
     amount: Decimal
     remainingBalance: Decimal
     paymentDate: Date
     referenceNumber: string | null
     remarks: string | null
+    verifiedAt: Date | null
+    verifiedById: string | null
     createdAt: Date
     updatedAt: Date
     _count: PaymentRecordCountAggregateOutputType | null
@@ -30485,112 +31174,151 @@ export namespace Prisma {
   export type PaymentRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     salesOrderId?: boolean
+    inquiryId?: boolean
     quotationId?: boolean
+    paymentNumber?: boolean
     recordedById?: boolean
     paymentType?: boolean
+    paymentMethod?: boolean
     status?: boolean
     amount?: boolean
     remainingBalance?: boolean
     paymentDate?: boolean
     referenceNumber?: boolean
     remarks?: boolean
+    verifiedAt?: boolean
+    verifiedById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    salesOrder?: boolean | PaymentRecord$salesOrderArgs<ExtArgs>
+    inquiry?: boolean | PaymentRecord$inquiryArgs<ExtArgs>
     quotation?: boolean | PaymentRecord$quotationArgs<ExtArgs>
     recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    verifiedBy?: boolean | PaymentRecord$verifiedByArgs<ExtArgs>
   }, ExtArgs["result"]["paymentRecord"]>
 
   export type PaymentRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     salesOrderId?: boolean
+    inquiryId?: boolean
     quotationId?: boolean
+    paymentNumber?: boolean
     recordedById?: boolean
     paymentType?: boolean
+    paymentMethod?: boolean
     status?: boolean
     amount?: boolean
     remainingBalance?: boolean
     paymentDate?: boolean
     referenceNumber?: boolean
     remarks?: boolean
+    verifiedAt?: boolean
+    verifiedById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    salesOrder?: boolean | PaymentRecord$salesOrderArgs<ExtArgs>
+    inquiry?: boolean | PaymentRecord$inquiryArgs<ExtArgs>
     quotation?: boolean | PaymentRecord$quotationArgs<ExtArgs>
     recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    verifiedBy?: boolean | PaymentRecord$verifiedByArgs<ExtArgs>
   }, ExtArgs["result"]["paymentRecord"]>
 
   export type PaymentRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     salesOrderId?: boolean
+    inquiryId?: boolean
     quotationId?: boolean
+    paymentNumber?: boolean
     recordedById?: boolean
     paymentType?: boolean
+    paymentMethod?: boolean
     status?: boolean
     amount?: boolean
     remainingBalance?: boolean
     paymentDate?: boolean
     referenceNumber?: boolean
     remarks?: boolean
+    verifiedAt?: boolean
+    verifiedById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    salesOrder?: boolean | PaymentRecord$salesOrderArgs<ExtArgs>
+    inquiry?: boolean | PaymentRecord$inquiryArgs<ExtArgs>
     quotation?: boolean | PaymentRecord$quotationArgs<ExtArgs>
     recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    verifiedBy?: boolean | PaymentRecord$verifiedByArgs<ExtArgs>
   }, ExtArgs["result"]["paymentRecord"]>
 
   export type PaymentRecordSelectScalar = {
     id?: boolean
     salesOrderId?: boolean
+    inquiryId?: boolean
     quotationId?: boolean
+    paymentNumber?: boolean
     recordedById?: boolean
     paymentType?: boolean
+    paymentMethod?: boolean
     status?: boolean
     amount?: boolean
     remainingBalance?: boolean
     paymentDate?: boolean
     referenceNumber?: boolean
     remarks?: boolean
+    verifiedAt?: boolean
+    verifiedById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PaymentRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "salesOrderId" | "quotationId" | "recordedById" | "paymentType" | "status" | "amount" | "remainingBalance" | "paymentDate" | "referenceNumber" | "remarks" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentRecord"]>
+  export type PaymentRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "salesOrderId" | "inquiryId" | "quotationId" | "paymentNumber" | "recordedById" | "paymentType" | "paymentMethod" | "status" | "amount" | "remainingBalance" | "paymentDate" | "referenceNumber" | "remarks" | "verifiedAt" | "verifiedById" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentRecord"]>
   export type PaymentRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    salesOrder?: boolean | PaymentRecord$salesOrderArgs<ExtArgs>
+    inquiry?: boolean | PaymentRecord$inquiryArgs<ExtArgs>
     quotation?: boolean | PaymentRecord$quotationArgs<ExtArgs>
     recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    verifiedBy?: boolean | PaymentRecord$verifiedByArgs<ExtArgs>
   }
   export type PaymentRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    salesOrder?: boolean | PaymentRecord$salesOrderArgs<ExtArgs>
+    inquiry?: boolean | PaymentRecord$inquiryArgs<ExtArgs>
     quotation?: boolean | PaymentRecord$quotationArgs<ExtArgs>
     recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    verifiedBy?: boolean | PaymentRecord$verifiedByArgs<ExtArgs>
   }
   export type PaymentRecordIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    salesOrder?: boolean | PaymentRecord$salesOrderArgs<ExtArgs>
+    inquiry?: boolean | PaymentRecord$inquiryArgs<ExtArgs>
     quotation?: boolean | PaymentRecord$quotationArgs<ExtArgs>
     recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    verifiedBy?: boolean | PaymentRecord$verifiedByArgs<ExtArgs>
   }
 
   export type $PaymentRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "PaymentRecord"
     objects: {
-      salesOrder: Prisma.$SalesOrderPayload<ExtArgs>
+      salesOrder: Prisma.$SalesOrderPayload<ExtArgs> | null
+      inquiry: Prisma.$CustomerInquiryPayload<ExtArgs> | null
       quotation: Prisma.$QuotationPayload<ExtArgs> | null
       recordedBy: Prisma.$UserPayload<ExtArgs>
+      verifiedBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      salesOrderId: string
+      salesOrderId: string | null
+      inquiryId: string | null
       quotationId: string | null
+      paymentNumber: string | null
       recordedById: string
       paymentType: $Enums.PaymentType
+      paymentMethod: string | null
       status: $Enums.PaymentStatus
       amount: Prisma.Decimal
       remainingBalance: Prisma.Decimal
       paymentDate: Date
       referenceNumber: string | null
       remarks: string | null
+      verifiedAt: Date | null
+      verifiedById: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["paymentRecord"]>
@@ -30987,9 +31715,11 @@ export namespace Prisma {
    */
   export interface Prisma__PaymentRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    salesOrder<T extends SalesOrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalesOrderDefaultArgs<ExtArgs>>): Prisma__SalesOrderClient<$Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    salesOrder<T extends PaymentRecord$salesOrderArgs<ExtArgs> = {}>(args?: Subset<T, PaymentRecord$salesOrderArgs<ExtArgs>>): Prisma__SalesOrderClient<$Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    inquiry<T extends PaymentRecord$inquiryArgs<ExtArgs> = {}>(args?: Subset<T, PaymentRecord$inquiryArgs<ExtArgs>>): Prisma__CustomerInquiryClient<$Result.GetResult<Prisma.$CustomerInquiryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     quotation<T extends PaymentRecord$quotationArgs<ExtArgs> = {}>(args?: Subset<T, PaymentRecord$quotationArgs<ExtArgs>>): Prisma__QuotationClient<$Result.GetResult<Prisma.$QuotationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recordedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    verifiedBy<T extends PaymentRecord$verifiedByArgs<ExtArgs> = {}>(args?: Subset<T, PaymentRecord$verifiedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -31021,15 +31751,20 @@ export namespace Prisma {
   interface PaymentRecordFieldRefs {
     readonly id: FieldRef<"PaymentRecord", 'String'>
     readonly salesOrderId: FieldRef<"PaymentRecord", 'String'>
+    readonly inquiryId: FieldRef<"PaymentRecord", 'String'>
     readonly quotationId: FieldRef<"PaymentRecord", 'String'>
+    readonly paymentNumber: FieldRef<"PaymentRecord", 'String'>
     readonly recordedById: FieldRef<"PaymentRecord", 'String'>
     readonly paymentType: FieldRef<"PaymentRecord", 'PaymentType'>
+    readonly paymentMethod: FieldRef<"PaymentRecord", 'String'>
     readonly status: FieldRef<"PaymentRecord", 'PaymentStatus'>
     readonly amount: FieldRef<"PaymentRecord", 'Decimal'>
     readonly remainingBalance: FieldRef<"PaymentRecord", 'Decimal'>
     readonly paymentDate: FieldRef<"PaymentRecord", 'DateTime'>
     readonly referenceNumber: FieldRef<"PaymentRecord", 'String'>
     readonly remarks: FieldRef<"PaymentRecord", 'String'>
+    readonly verifiedAt: FieldRef<"PaymentRecord", 'DateTime'>
+    readonly verifiedById: FieldRef<"PaymentRecord", 'String'>
     readonly createdAt: FieldRef<"PaymentRecord", 'DateTime'>
     readonly updatedAt: FieldRef<"PaymentRecord", 'DateTime'>
   }
@@ -31428,6 +32163,44 @@ export namespace Prisma {
   }
 
   /**
+   * PaymentRecord.salesOrder
+   */
+  export type PaymentRecord$salesOrderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalesOrder
+     */
+    select?: SalesOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalesOrder
+     */
+    omit?: SalesOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SalesOrderInclude<ExtArgs> | null
+    where?: SalesOrderWhereInput
+  }
+
+  /**
+   * PaymentRecord.inquiry
+   */
+  export type PaymentRecord$inquiryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerInquiry
+     */
+    select?: CustomerInquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerInquiry
+     */
+    omit?: CustomerInquiryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInquiryInclude<ExtArgs> | null
+    where?: CustomerInquiryWhereInput
+  }
+
+  /**
    * PaymentRecord.quotation
    */
   export type PaymentRecord$quotationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -31444,6 +32217,25 @@ export namespace Prisma {
      */
     include?: QuotationInclude<ExtArgs> | null
     where?: QuotationWhereInput
+  }
+
+  /**
+   * PaymentRecord.verifiedBy
+   */
+  export type PaymentRecord$verifiedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -39255,8 +40047,23 @@ export namespace Prisma {
     message: 'message',
     status: 'status',
     statusNote: 'statusNote',
+    inquiryNumber: 'inquiryNumber',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    salesReviewedAt: 'salesReviewedAt',
+    inventoryApprovedAt: 'inventoryApprovedAt',
+    customerPaidAt: 'customerPaidAt',
+    accountingConfirmedAt: 'accountingConfirmedAt',
+    buildApprovedAt: 'buildApprovedAt',
+    shippingScheduledAt: 'shippingScheduledAt',
+    completedAt: 'completedAt',
+    cancelledAt: 'cancelledAt',
+    salesReviewedById: 'salesReviewedById',
+    inventoryApprovedById: 'inventoryApprovedById',
+    accountingConfirmedById: 'accountingConfirmedById',
+    buildApprovedById: 'buildApprovedById',
+    completedById: 'completedById',
+    cancelledById: 'cancelledById'
   };
 
   export type CustomerInquiryScalarFieldEnum = (typeof CustomerInquiryScalarFieldEnum)[keyof typeof CustomerInquiryScalarFieldEnum]
@@ -39377,15 +40184,20 @@ export namespace Prisma {
   export const PaymentRecordScalarFieldEnum: {
     id: 'id',
     salesOrderId: 'salesOrderId',
+    inquiryId: 'inquiryId',
     quotationId: 'quotationId',
+    paymentNumber: 'paymentNumber',
     recordedById: 'recordedById',
     paymentType: 'paymentType',
+    paymentMethod: 'paymentMethod',
     status: 'status',
     amount: 'amount',
     remainingBalance: 'remainingBalance',
     paymentDate: 'paymentDate',
     referenceNumber: 'referenceNumber',
     remarks: 'remarks',
+    verifiedAt: 'verifiedAt',
+    verifiedById: 'verifiedById',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -40095,12 +40907,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestListRelationFilter
     stockRequestsChecked?: StockRequestListRelationFilter
     paymentsRecorded?: PaymentRecordListRelationFilter
+    paymentsVerified?: PaymentRecordListRelationFilter
     designRequested?: DesignRequestListRelationFilter
     designAssigned?: DesignRequestListRelationFilter
     designAssetsUploaded?: DesignAssetListRelationFilter
     deliveryAssigned?: DeliveryScheduleListRelationFilter
     deliveryConfirmed?: DeliveryScheduleListRelationFilter
     customerInquiries?: CustomerInquiryListRelationFilter
+    inquiriesSalesReviewed?: CustomerInquiryListRelationFilter
+    inquiriesInventoryApproved?: CustomerInquiryListRelationFilter
+    inquiriesAccountingConfirmed?: CustomerInquiryListRelationFilter
+    inquiriesBuildApproved?: CustomerInquiryListRelationFilter
+    inquiriesCompleted?: CustomerInquiryListRelationFilter
+    inquiriesCancelled?: CustomerInquiryListRelationFilter
     orderChatMessages?: OrderChatMessageListRelationFilter
     draftProducts?: DraftProductListRelationFilter
   }
@@ -40126,12 +40945,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestOrderByRelationAggregateInput
     stockRequestsChecked?: StockRequestOrderByRelationAggregateInput
     paymentsRecorded?: PaymentRecordOrderByRelationAggregateInput
+    paymentsVerified?: PaymentRecordOrderByRelationAggregateInput
     designRequested?: DesignRequestOrderByRelationAggregateInput
     designAssigned?: DesignRequestOrderByRelationAggregateInput
     designAssetsUploaded?: DesignAssetOrderByRelationAggregateInput
     deliveryAssigned?: DeliveryScheduleOrderByRelationAggregateInput
     deliveryConfirmed?: DeliveryScheduleOrderByRelationAggregateInput
     customerInquiries?: CustomerInquiryOrderByRelationAggregateInput
+    inquiriesSalesReviewed?: CustomerInquiryOrderByRelationAggregateInput
+    inquiriesInventoryApproved?: CustomerInquiryOrderByRelationAggregateInput
+    inquiriesAccountingConfirmed?: CustomerInquiryOrderByRelationAggregateInput
+    inquiriesBuildApproved?: CustomerInquiryOrderByRelationAggregateInput
+    inquiriesCompleted?: CustomerInquiryOrderByRelationAggregateInput
+    inquiriesCancelled?: CustomerInquiryOrderByRelationAggregateInput
     orderChatMessages?: OrderChatMessageOrderByRelationAggregateInput
     draftProducts?: DraftProductOrderByRelationAggregateInput
   }
@@ -40160,12 +40986,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestListRelationFilter
     stockRequestsChecked?: StockRequestListRelationFilter
     paymentsRecorded?: PaymentRecordListRelationFilter
+    paymentsVerified?: PaymentRecordListRelationFilter
     designRequested?: DesignRequestListRelationFilter
     designAssigned?: DesignRequestListRelationFilter
     designAssetsUploaded?: DesignAssetListRelationFilter
     deliveryAssigned?: DeliveryScheduleListRelationFilter
     deliveryConfirmed?: DeliveryScheduleListRelationFilter
     customerInquiries?: CustomerInquiryListRelationFilter
+    inquiriesSalesReviewed?: CustomerInquiryListRelationFilter
+    inquiriesInventoryApproved?: CustomerInquiryListRelationFilter
+    inquiriesAccountingConfirmed?: CustomerInquiryListRelationFilter
+    inquiriesBuildApproved?: CustomerInquiryListRelationFilter
+    inquiriesCompleted?: CustomerInquiryListRelationFilter
+    inquiriesCancelled?: CustomerInquiryListRelationFilter
     orderChatMessages?: OrderChatMessageListRelationFilter
     draftProducts?: DraftProductListRelationFilter
   }, "id" | "authUserId" | "email">
@@ -41281,11 +42114,33 @@ export namespace Prisma {
     message?: StringFilter<"CustomerInquiry"> | string
     status?: EnumInquiryStatusFilter<"CustomerInquiry"> | $Enums.InquiryStatus
     statusNote?: StringNullableFilter<"CustomerInquiry"> | string | null
+    inquiryNumber?: StringNullableFilter<"CustomerInquiry"> | string | null
     createdAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
     updatedAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
+    salesReviewedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    inventoryApprovedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    customerPaidAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    accountingConfirmedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    buildApprovedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    shippingScheduledAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    salesReviewedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    inventoryApprovedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    accountingConfirmedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    buildApprovedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    completedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    cancelledById?: StringNullableFilter<"CustomerInquiry"> | string | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     customerUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     chatMessages?: OrderChatMessageListRelationFilter
+    paymentRecords?: PaymentRecordListRelationFilter
+    salesReviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    inventoryApprovedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    accountingConfirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    buildApprovedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    completedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    cancelledBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type CustomerInquiryOrderByWithRelationInput = {
@@ -41298,15 +42153,38 @@ export namespace Prisma {
     message?: SortOrder
     status?: SortOrder
     statusNote?: SortOrderInput | SortOrder
+    inquiryNumber?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    salesReviewedAt?: SortOrderInput | SortOrder
+    inventoryApprovedAt?: SortOrderInput | SortOrder
+    customerPaidAt?: SortOrderInput | SortOrder
+    accountingConfirmedAt?: SortOrderInput | SortOrder
+    buildApprovedAt?: SortOrderInput | SortOrder
+    shippingScheduledAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    salesReviewedById?: SortOrderInput | SortOrder
+    inventoryApprovedById?: SortOrderInput | SortOrder
+    accountingConfirmedById?: SortOrderInput | SortOrder
+    buildApprovedById?: SortOrderInput | SortOrder
+    completedById?: SortOrderInput | SortOrder
+    cancelledById?: SortOrderInput | SortOrder
     product?: ProductOrderByWithRelationInput
     customerUser?: UserOrderByWithRelationInput
     chatMessages?: OrderChatMessageOrderByRelationAggregateInput
+    paymentRecords?: PaymentRecordOrderByRelationAggregateInput
+    salesReviewedBy?: UserOrderByWithRelationInput
+    inventoryApprovedBy?: UserOrderByWithRelationInput
+    accountingConfirmedBy?: UserOrderByWithRelationInput
+    buildApprovedBy?: UserOrderByWithRelationInput
+    completedBy?: UserOrderByWithRelationInput
+    cancelledBy?: UserOrderByWithRelationInput
   }
 
   export type CustomerInquiryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    inquiryNumber?: string
     AND?: CustomerInquiryWhereInput | CustomerInquiryWhereInput[]
     OR?: CustomerInquiryWhereInput[]
     NOT?: CustomerInquiryWhereInput | CustomerInquiryWhereInput[]
@@ -41320,10 +42198,31 @@ export namespace Prisma {
     statusNote?: StringNullableFilter<"CustomerInquiry"> | string | null
     createdAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
     updatedAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
+    salesReviewedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    inventoryApprovedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    customerPaidAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    accountingConfirmedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    buildApprovedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    shippingScheduledAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    salesReviewedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    inventoryApprovedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    accountingConfirmedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    buildApprovedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    completedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    cancelledById?: StringNullableFilter<"CustomerInquiry"> | string | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     customerUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     chatMessages?: OrderChatMessageListRelationFilter
-  }, "id">
+    paymentRecords?: PaymentRecordListRelationFilter
+    salesReviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    inventoryApprovedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    accountingConfirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    buildApprovedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    completedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    cancelledBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "inquiryNumber">
 
   export type CustomerInquiryOrderByWithAggregationInput = {
     id?: SortOrder
@@ -41335,8 +42234,23 @@ export namespace Prisma {
     message?: SortOrder
     status?: SortOrder
     statusNote?: SortOrderInput | SortOrder
+    inquiryNumber?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    salesReviewedAt?: SortOrderInput | SortOrder
+    inventoryApprovedAt?: SortOrderInput | SortOrder
+    customerPaidAt?: SortOrderInput | SortOrder
+    accountingConfirmedAt?: SortOrderInput | SortOrder
+    buildApprovedAt?: SortOrderInput | SortOrder
+    shippingScheduledAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    salesReviewedById?: SortOrderInput | SortOrder
+    inventoryApprovedById?: SortOrderInput | SortOrder
+    accountingConfirmedById?: SortOrderInput | SortOrder
+    buildApprovedById?: SortOrderInput | SortOrder
+    completedById?: SortOrderInput | SortOrder
+    cancelledById?: SortOrderInput | SortOrder
     _count?: CustomerInquiryCountOrderByAggregateInput
     _max?: CustomerInquiryMaxOrderByAggregateInput
     _min?: CustomerInquiryMinOrderByAggregateInput
@@ -41355,8 +42269,23 @@ export namespace Prisma {
     message?: StringWithAggregatesFilter<"CustomerInquiry"> | string
     status?: EnumInquiryStatusWithAggregatesFilter<"CustomerInquiry"> | $Enums.InquiryStatus
     statusNote?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
+    inquiryNumber?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"CustomerInquiry"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CustomerInquiry"> | Date | string
+    salesReviewedAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    inventoryApprovedAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    customerPaidAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    accountingConfirmedAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    buildApprovedAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    shippingScheduledAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    cancelledAt?: DateTimeNullableWithAggregatesFilter<"CustomerInquiry"> | Date | string | null
+    salesReviewedById?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
+    inventoryApprovedById?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
+    accountingConfirmedById?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
+    buildApprovedById?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
+    completedById?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
+    cancelledById?: StringNullableWithAggregatesFilter<"CustomerInquiry"> | string | null
   }
 
   export type OrderChatMessageWhereInput = {
@@ -41966,76 +42895,102 @@ export namespace Prisma {
     OR?: PaymentRecordWhereInput[]
     NOT?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
     id?: StringFilter<"PaymentRecord"> | string
-    salesOrderId?: StringFilter<"PaymentRecord"> | string
+    salesOrderId?: StringNullableFilter<"PaymentRecord"> | string | null
+    inquiryId?: StringNullableFilter<"PaymentRecord"> | string | null
     quotationId?: StringNullableFilter<"PaymentRecord"> | string | null
+    paymentNumber?: StringNullableFilter<"PaymentRecord"> | string | null
     recordedById?: StringFilter<"PaymentRecord"> | string
     paymentType?: EnumPaymentTypeFilter<"PaymentRecord"> | $Enums.PaymentType
+    paymentMethod?: StringNullableFilter<"PaymentRecord"> | string | null
     status?: EnumPaymentStatusFilter<"PaymentRecord"> | $Enums.PaymentStatus
     amount?: DecimalFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFilter<"PaymentRecord"> | Date | string
     referenceNumber?: StringNullableFilter<"PaymentRecord"> | string | null
     remarks?: StringNullableFilter<"PaymentRecord"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"PaymentRecord"> | Date | string | null
+    verifiedById?: StringNullableFilter<"PaymentRecord"> | string | null
     createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentRecord"> | Date | string
-    salesOrder?: XOR<SalesOrderScalarRelationFilter, SalesOrderWhereInput>
+    salesOrder?: XOR<SalesOrderNullableScalarRelationFilter, SalesOrderWhereInput> | null
+    inquiry?: XOR<CustomerInquiryNullableScalarRelationFilter, CustomerInquiryWhereInput> | null
     quotation?: XOR<QuotationNullableScalarRelationFilter, QuotationWhereInput> | null
     recordedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    verifiedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type PaymentRecordOrderByWithRelationInput = {
     id?: SortOrder
-    salesOrderId?: SortOrder
+    salesOrderId?: SortOrderInput | SortOrder
+    inquiryId?: SortOrderInput | SortOrder
     quotationId?: SortOrderInput | SortOrder
+    paymentNumber?: SortOrderInput | SortOrder
     recordedById?: SortOrder
     paymentType?: SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
     status?: SortOrder
     amount?: SortOrder
     remainingBalance?: SortOrder
     paymentDate?: SortOrder
     referenceNumber?: SortOrderInput | SortOrder
     remarks?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    verifiedById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     salesOrder?: SalesOrderOrderByWithRelationInput
+    inquiry?: CustomerInquiryOrderByWithRelationInput
     quotation?: QuotationOrderByWithRelationInput
     recordedBy?: UserOrderByWithRelationInput
+    verifiedBy?: UserOrderByWithRelationInput
   }
 
   export type PaymentRecordWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    paymentNumber?: string
     AND?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
     OR?: PaymentRecordWhereInput[]
     NOT?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
-    salesOrderId?: StringFilter<"PaymentRecord"> | string
+    salesOrderId?: StringNullableFilter<"PaymentRecord"> | string | null
+    inquiryId?: StringNullableFilter<"PaymentRecord"> | string | null
     quotationId?: StringNullableFilter<"PaymentRecord"> | string | null
     recordedById?: StringFilter<"PaymentRecord"> | string
     paymentType?: EnumPaymentTypeFilter<"PaymentRecord"> | $Enums.PaymentType
+    paymentMethod?: StringNullableFilter<"PaymentRecord"> | string | null
     status?: EnumPaymentStatusFilter<"PaymentRecord"> | $Enums.PaymentStatus
     amount?: DecimalFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFilter<"PaymentRecord"> | Date | string
     referenceNumber?: StringNullableFilter<"PaymentRecord"> | string | null
     remarks?: StringNullableFilter<"PaymentRecord"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"PaymentRecord"> | Date | string | null
+    verifiedById?: StringNullableFilter<"PaymentRecord"> | string | null
     createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentRecord"> | Date | string
-    salesOrder?: XOR<SalesOrderScalarRelationFilter, SalesOrderWhereInput>
+    salesOrder?: XOR<SalesOrderNullableScalarRelationFilter, SalesOrderWhereInput> | null
+    inquiry?: XOR<CustomerInquiryNullableScalarRelationFilter, CustomerInquiryWhereInput> | null
     quotation?: XOR<QuotationNullableScalarRelationFilter, QuotationWhereInput> | null
     recordedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+    verifiedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "paymentNumber">
 
   export type PaymentRecordOrderByWithAggregationInput = {
     id?: SortOrder
-    salesOrderId?: SortOrder
+    salesOrderId?: SortOrderInput | SortOrder
+    inquiryId?: SortOrderInput | SortOrder
     quotationId?: SortOrderInput | SortOrder
+    paymentNumber?: SortOrderInput | SortOrder
     recordedById?: SortOrder
     paymentType?: SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
     status?: SortOrder
     amount?: SortOrder
     remainingBalance?: SortOrder
     paymentDate?: SortOrder
     referenceNumber?: SortOrderInput | SortOrder
     remarks?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    verifiedById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: PaymentRecordCountOrderByAggregateInput
@@ -42050,16 +43005,21 @@ export namespace Prisma {
     OR?: PaymentRecordScalarWhereWithAggregatesInput[]
     NOT?: PaymentRecordScalarWhereWithAggregatesInput | PaymentRecordScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"PaymentRecord"> | string
-    salesOrderId?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    salesOrderId?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
+    inquiryId?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
     quotationId?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
+    paymentNumber?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
     recordedById?: StringWithAggregatesFilter<"PaymentRecord"> | string
     paymentType?: EnumPaymentTypeWithAggregatesFilter<"PaymentRecord"> | $Enums.PaymentType
+    paymentMethod?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
     status?: EnumPaymentStatusWithAggregatesFilter<"PaymentRecord"> | $Enums.PaymentStatus
     amount?: DecimalWithAggregatesFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalWithAggregatesFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeWithAggregatesFilter<"PaymentRecord"> | Date | string
     referenceNumber?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
     remarks?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"PaymentRecord"> | Date | string | null
+    verifiedById?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"PaymentRecord"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"PaymentRecord"> | Date | string
   }
@@ -42707,12 +43667,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -42737,12 +43704,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -42767,12 +43741,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -42797,12 +43778,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -44082,11 +45070,27 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
     product: ProductCreateNestedOneWithoutInquiriesInput
     customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
     chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
   }
 
   export type CustomerInquiryUncheckedCreateInput = {
@@ -44099,9 +45103,25 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
     chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryUpdateInput = {
@@ -44112,11 +45132,27 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
     customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
     chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateInput = {
@@ -44129,9 +45165,25 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
     chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryCreateManyInput = {
@@ -44144,8 +45196,23 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
   }
 
   export type CustomerInquiryUpdateManyMutationInput = {
@@ -44156,8 +45223,17 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CustomerInquiryUncheckedUpdateManyInput = {
@@ -44170,8 +45246,23 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderChatMessageCreateInput = {
@@ -44787,109 +45878,142 @@ export namespace Prisma {
 
   export type PaymentRecordCreateInput = {
     id?: string
+    paymentNumber?: string | null
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    salesOrder: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    salesOrder?: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    inquiry?: CustomerInquiryCreateNestedOneWithoutPaymentRecordsInput
     quotation?: QuotationCreateNestedOneWithoutPaymentRecordsInput
     recordedBy: UserCreateNestedOneWithoutPaymentsRecordedInput
+    verifiedBy?: UserCreateNestedOneWithoutPaymentsVerifiedInput
   }
 
   export type PaymentRecordUncheckedCreateInput = {
     id?: string
-    salesOrderId: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
     quotationId?: string | null
+    paymentNumber?: string | null
     recordedById: string
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type PaymentRecordUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    salesOrder?: SalesOrderUpdateOneRequiredWithoutPaymentRecordsNestedInput
+    salesOrder?: SalesOrderUpdateOneWithoutPaymentRecordsNestedInput
+    inquiry?: CustomerInquiryUpdateOneWithoutPaymentRecordsNestedInput
     quotation?: QuotationUpdateOneWithoutPaymentRecordsNestedInput
     recordedBy?: UserUpdateOneRequiredWithoutPaymentsRecordedNestedInput
+    verifiedBy?: UserUpdateOneWithoutPaymentsVerifiedNestedInput
   }
 
   export type PaymentRecordUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    salesOrderId?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
     quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     recordedById?: StringFieldUpdateOperationsInput | string
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentRecordCreateManyInput = {
     id?: string
-    salesOrderId: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
     quotationId?: string | null
+    paymentNumber?: string | null
     recordedById: string
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type PaymentRecordUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentRecordUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    salesOrderId?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
     quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     recordedById?: StringFieldUpdateOperationsInput | string
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47010,8 +48134,23 @@ export namespace Prisma {
     message?: SortOrder
     status?: SortOrder
     statusNote?: SortOrder
+    inquiryNumber?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    salesReviewedAt?: SortOrder
+    inventoryApprovedAt?: SortOrder
+    customerPaidAt?: SortOrder
+    accountingConfirmedAt?: SortOrder
+    buildApprovedAt?: SortOrder
+    shippingScheduledAt?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    salesReviewedById?: SortOrder
+    inventoryApprovedById?: SortOrder
+    accountingConfirmedById?: SortOrder
+    buildApprovedById?: SortOrder
+    completedById?: SortOrder
+    cancelledById?: SortOrder
   }
 
   export type CustomerInquiryMaxOrderByAggregateInput = {
@@ -47024,8 +48163,23 @@ export namespace Prisma {
     message?: SortOrder
     status?: SortOrder
     statusNote?: SortOrder
+    inquiryNumber?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    salesReviewedAt?: SortOrder
+    inventoryApprovedAt?: SortOrder
+    customerPaidAt?: SortOrder
+    accountingConfirmedAt?: SortOrder
+    buildApprovedAt?: SortOrder
+    shippingScheduledAt?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    salesReviewedById?: SortOrder
+    inventoryApprovedById?: SortOrder
+    accountingConfirmedById?: SortOrder
+    buildApprovedById?: SortOrder
+    completedById?: SortOrder
+    cancelledById?: SortOrder
   }
 
   export type CustomerInquiryMinOrderByAggregateInput = {
@@ -47038,8 +48192,23 @@ export namespace Prisma {
     message?: SortOrder
     status?: SortOrder
     statusNote?: SortOrder
+    inquiryNumber?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    salesReviewedAt?: SortOrder
+    inventoryApprovedAt?: SortOrder
+    customerPaidAt?: SortOrder
+    accountingConfirmedAt?: SortOrder
+    buildApprovedAt?: SortOrder
+    shippingScheduledAt?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    salesReviewedById?: SortOrder
+    inventoryApprovedById?: SortOrder
+    accountingConfirmedById?: SortOrder
+    buildApprovedById?: SortOrder
+    completedById?: SortOrder
+    cancelledById?: SortOrder
   }
 
   export type EnumInquiryStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -47452,18 +48621,28 @@ export namespace Prisma {
     not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
   }
 
+  export type CustomerInquiryNullableScalarRelationFilter = {
+    is?: CustomerInquiryWhereInput | null
+    isNot?: CustomerInquiryWhereInput | null
+  }
+
   export type PaymentRecordCountOrderByAggregateInput = {
     id?: SortOrder
     salesOrderId?: SortOrder
+    inquiryId?: SortOrder
     quotationId?: SortOrder
+    paymentNumber?: SortOrder
     recordedById?: SortOrder
     paymentType?: SortOrder
+    paymentMethod?: SortOrder
     status?: SortOrder
     amount?: SortOrder
     remainingBalance?: SortOrder
     paymentDate?: SortOrder
     referenceNumber?: SortOrder
     remarks?: SortOrder
+    verifiedAt?: SortOrder
+    verifiedById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47476,15 +48655,20 @@ export namespace Prisma {
   export type PaymentRecordMaxOrderByAggregateInput = {
     id?: SortOrder
     salesOrderId?: SortOrder
+    inquiryId?: SortOrder
     quotationId?: SortOrder
+    paymentNumber?: SortOrder
     recordedById?: SortOrder
     paymentType?: SortOrder
+    paymentMethod?: SortOrder
     status?: SortOrder
     amount?: SortOrder
     remainingBalance?: SortOrder
     paymentDate?: SortOrder
     referenceNumber?: SortOrder
     remarks?: SortOrder
+    verifiedAt?: SortOrder
+    verifiedById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47492,15 +48676,20 @@ export namespace Prisma {
   export type PaymentRecordMinOrderByAggregateInput = {
     id?: SortOrder
     salesOrderId?: SortOrder
+    inquiryId?: SortOrder
     quotationId?: SortOrder
+    paymentNumber?: SortOrder
     recordedById?: SortOrder
     paymentType?: SortOrder
+    paymentMethod?: SortOrder
     status?: SortOrder
     amount?: SortOrder
     remainingBalance?: SortOrder
     paymentDate?: SortOrder
     referenceNumber?: SortOrder
     remarks?: SortOrder
+    verifiedAt?: SortOrder
+    verifiedById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -48144,6 +49333,13 @@ export namespace Prisma {
     connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
+  export type PaymentRecordCreateNestedManyWithoutVerifiedByInput = {
+    create?: XOR<PaymentRecordCreateWithoutVerifiedByInput, PaymentRecordUncheckedCreateWithoutVerifiedByInput> | PaymentRecordCreateWithoutVerifiedByInput[] | PaymentRecordUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutVerifiedByInput | PaymentRecordCreateOrConnectWithoutVerifiedByInput[]
+    createMany?: PaymentRecordCreateManyVerifiedByInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
   export type DesignRequestCreateNestedManyWithoutRequestedByInput = {
     create?: XOR<DesignRequestCreateWithoutRequestedByInput, DesignRequestUncheckedCreateWithoutRequestedByInput> | DesignRequestCreateWithoutRequestedByInput[] | DesignRequestUncheckedCreateWithoutRequestedByInput[]
     connectOrCreate?: DesignRequestCreateOrConnectWithoutRequestedByInput | DesignRequestCreateOrConnectWithoutRequestedByInput[]
@@ -48183,6 +49379,48 @@ export namespace Prisma {
     create?: XOR<CustomerInquiryCreateWithoutCustomerUserInput, CustomerInquiryUncheckedCreateWithoutCustomerUserInput> | CustomerInquiryCreateWithoutCustomerUserInput[] | CustomerInquiryUncheckedCreateWithoutCustomerUserInput[]
     connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCustomerUserInput | CustomerInquiryCreateOrConnectWithoutCustomerUserInput[]
     createMany?: CustomerInquiryCreateManyCustomerUserInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutSalesReviewedByInput, CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput> | CustomerInquiryCreateWithoutSalesReviewedByInput[] | CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput | CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput[]
+    createMany?: CustomerInquiryCreateManySalesReviewedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput> | CustomerInquiryCreateWithoutInventoryApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput | CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyInventoryApprovedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput> | CustomerInquiryCreateWithoutAccountingConfirmedByInput[] | CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput | CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput[]
+    createMany?: CustomerInquiryCreateManyAccountingConfirmedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutBuildApprovedByInput, CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput> | CustomerInquiryCreateWithoutBuildApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput | CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyBuildApprovedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryCreateNestedManyWithoutCompletedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCompletedByInput, CustomerInquiryUncheckedCreateWithoutCompletedByInput> | CustomerInquiryCreateWithoutCompletedByInput[] | CustomerInquiryUncheckedCreateWithoutCompletedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCompletedByInput | CustomerInquiryCreateOrConnectWithoutCompletedByInput[]
+    createMany?: CustomerInquiryCreateManyCompletedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryCreateNestedManyWithoutCancelledByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCancelledByInput, CustomerInquiryUncheckedCreateWithoutCancelledByInput> | CustomerInquiryCreateWithoutCancelledByInput[] | CustomerInquiryUncheckedCreateWithoutCancelledByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCancelledByInput | CustomerInquiryCreateOrConnectWithoutCancelledByInput[]
+    createMany?: CustomerInquiryCreateManyCancelledByInputEnvelope
     connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
   }
 
@@ -48242,6 +49480,13 @@ export namespace Prisma {
     connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
+  export type PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput = {
+    create?: XOR<PaymentRecordCreateWithoutVerifiedByInput, PaymentRecordUncheckedCreateWithoutVerifiedByInput> | PaymentRecordCreateWithoutVerifiedByInput[] | PaymentRecordUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutVerifiedByInput | PaymentRecordCreateOrConnectWithoutVerifiedByInput[]
+    createMany?: PaymentRecordCreateManyVerifiedByInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
   export type DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput = {
     create?: XOR<DesignRequestCreateWithoutRequestedByInput, DesignRequestUncheckedCreateWithoutRequestedByInput> | DesignRequestCreateWithoutRequestedByInput[] | DesignRequestUncheckedCreateWithoutRequestedByInput[]
     connectOrCreate?: DesignRequestCreateOrConnectWithoutRequestedByInput | DesignRequestCreateOrConnectWithoutRequestedByInput[]
@@ -48281,6 +49526,48 @@ export namespace Prisma {
     create?: XOR<CustomerInquiryCreateWithoutCustomerUserInput, CustomerInquiryUncheckedCreateWithoutCustomerUserInput> | CustomerInquiryCreateWithoutCustomerUserInput[] | CustomerInquiryUncheckedCreateWithoutCustomerUserInput[]
     connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCustomerUserInput | CustomerInquiryCreateOrConnectWithoutCustomerUserInput[]
     createMany?: CustomerInquiryCreateManyCustomerUserInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutSalesReviewedByInput, CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput> | CustomerInquiryCreateWithoutSalesReviewedByInput[] | CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput | CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput[]
+    createMany?: CustomerInquiryCreateManySalesReviewedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput> | CustomerInquiryCreateWithoutInventoryApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput | CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyInventoryApprovedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput> | CustomerInquiryCreateWithoutAccountingConfirmedByInput[] | CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput | CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput[]
+    createMany?: CustomerInquiryCreateManyAccountingConfirmedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutBuildApprovedByInput, CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput> | CustomerInquiryCreateWithoutBuildApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput | CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyBuildApprovedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCompletedByInput, CustomerInquiryUncheckedCreateWithoutCompletedByInput> | CustomerInquiryCreateWithoutCompletedByInput[] | CustomerInquiryUncheckedCreateWithoutCompletedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCompletedByInput | CustomerInquiryCreateOrConnectWithoutCompletedByInput[]
+    createMany?: CustomerInquiryCreateManyCompletedByInputEnvelope
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+  }
+
+  export type CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCancelledByInput, CustomerInquiryUncheckedCreateWithoutCancelledByInput> | CustomerInquiryCreateWithoutCancelledByInput[] | CustomerInquiryUncheckedCreateWithoutCancelledByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCancelledByInput | CustomerInquiryCreateOrConnectWithoutCancelledByInput[]
+    createMany?: CustomerInquiryCreateManyCancelledByInputEnvelope
     connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
   }
 
@@ -48404,6 +49691,20 @@ export namespace Prisma {
     deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
+  export type PaymentRecordUpdateManyWithoutVerifiedByNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutVerifiedByInput, PaymentRecordUncheckedCreateWithoutVerifiedByInput> | PaymentRecordCreateWithoutVerifiedByInput[] | PaymentRecordUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutVerifiedByInput | PaymentRecordCreateOrConnectWithoutVerifiedByInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutVerifiedByInput | PaymentRecordUpsertWithWhereUniqueWithoutVerifiedByInput[]
+    createMany?: PaymentRecordCreateManyVerifiedByInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutVerifiedByInput | PaymentRecordUpdateWithWhereUniqueWithoutVerifiedByInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutVerifiedByInput | PaymentRecordUpdateManyWithWhereWithoutVerifiedByInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
   export type DesignRequestUpdateManyWithoutRequestedByNestedInput = {
     create?: XOR<DesignRequestCreateWithoutRequestedByInput, DesignRequestUncheckedCreateWithoutRequestedByInput> | DesignRequestCreateWithoutRequestedByInput[] | DesignRequestUncheckedCreateWithoutRequestedByInput[]
     connectOrCreate?: DesignRequestCreateOrConnectWithoutRequestedByInput | DesignRequestCreateOrConnectWithoutRequestedByInput[]
@@ -48485,6 +49786,90 @@ export namespace Prisma {
     connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
     update?: CustomerInquiryUpdateWithWhereUniqueWithoutCustomerUserInput | CustomerInquiryUpdateWithWhereUniqueWithoutCustomerUserInput[]
     updateMany?: CustomerInquiryUpdateManyWithWhereWithoutCustomerUserInput | CustomerInquiryUpdateManyWithWhereWithoutCustomerUserInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutSalesReviewedByInput, CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput> | CustomerInquiryCreateWithoutSalesReviewedByInput[] | CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput | CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutSalesReviewedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutSalesReviewedByInput[]
+    createMany?: CustomerInquiryCreateManySalesReviewedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutSalesReviewedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutSalesReviewedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutSalesReviewedByInput | CustomerInquiryUpdateManyWithWhereWithoutSalesReviewedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput> | CustomerInquiryCreateWithoutInventoryApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput | CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutInventoryApprovedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutInventoryApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyInventoryApprovedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutInventoryApprovedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutInventoryApprovedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutInventoryApprovedByInput | CustomerInquiryUpdateManyWithWhereWithoutInventoryApprovedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput> | CustomerInquiryCreateWithoutAccountingConfirmedByInput[] | CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput | CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutAccountingConfirmedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutAccountingConfirmedByInput[]
+    createMany?: CustomerInquiryCreateManyAccountingConfirmedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutAccountingConfirmedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutAccountingConfirmedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutAccountingConfirmedByInput | CustomerInquiryUpdateManyWithWhereWithoutAccountingConfirmedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutBuildApprovedByInput, CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput> | CustomerInquiryCreateWithoutBuildApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput | CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutBuildApprovedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutBuildApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyBuildApprovedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutBuildApprovedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutBuildApprovedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutBuildApprovedByInput | CustomerInquiryUpdateManyWithWhereWithoutBuildApprovedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUpdateManyWithoutCompletedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCompletedByInput, CustomerInquiryUncheckedCreateWithoutCompletedByInput> | CustomerInquiryCreateWithoutCompletedByInput[] | CustomerInquiryUncheckedCreateWithoutCompletedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCompletedByInput | CustomerInquiryCreateOrConnectWithoutCompletedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutCompletedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutCompletedByInput[]
+    createMany?: CustomerInquiryCreateManyCompletedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutCompletedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutCompletedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutCompletedByInput | CustomerInquiryUpdateManyWithWhereWithoutCompletedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUpdateManyWithoutCancelledByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCancelledByInput, CustomerInquiryUncheckedCreateWithoutCancelledByInput> | CustomerInquiryCreateWithoutCancelledByInput[] | CustomerInquiryUncheckedCreateWithoutCancelledByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCancelledByInput | CustomerInquiryCreateOrConnectWithoutCancelledByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutCancelledByInput | CustomerInquiryUpsertWithWhereUniqueWithoutCancelledByInput[]
+    createMany?: CustomerInquiryCreateManyCancelledByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutCancelledByInput | CustomerInquiryUpdateWithWhereUniqueWithoutCancelledByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutCancelledByInput | CustomerInquiryUpdateManyWithWhereWithoutCancelledByInput[]
     deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
   }
 
@@ -48600,6 +49985,20 @@ export namespace Prisma {
     deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
+  export type PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutVerifiedByInput, PaymentRecordUncheckedCreateWithoutVerifiedByInput> | PaymentRecordCreateWithoutVerifiedByInput[] | PaymentRecordUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutVerifiedByInput | PaymentRecordCreateOrConnectWithoutVerifiedByInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutVerifiedByInput | PaymentRecordUpsertWithWhereUniqueWithoutVerifiedByInput[]
+    createMany?: PaymentRecordCreateManyVerifiedByInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutVerifiedByInput | PaymentRecordUpdateWithWhereUniqueWithoutVerifiedByInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutVerifiedByInput | PaymentRecordUpdateManyWithWhereWithoutVerifiedByInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
   export type DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput = {
     create?: XOR<DesignRequestCreateWithoutRequestedByInput, DesignRequestUncheckedCreateWithoutRequestedByInput> | DesignRequestCreateWithoutRequestedByInput[] | DesignRequestUncheckedCreateWithoutRequestedByInput[]
     connectOrCreate?: DesignRequestCreateOrConnectWithoutRequestedByInput | DesignRequestCreateOrConnectWithoutRequestedByInput[]
@@ -48681,6 +50080,90 @@ export namespace Prisma {
     connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
     update?: CustomerInquiryUpdateWithWhereUniqueWithoutCustomerUserInput | CustomerInquiryUpdateWithWhereUniqueWithoutCustomerUserInput[]
     updateMany?: CustomerInquiryUpdateManyWithWhereWithoutCustomerUserInput | CustomerInquiryUpdateManyWithWhereWithoutCustomerUserInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutSalesReviewedByInput, CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput> | CustomerInquiryCreateWithoutSalesReviewedByInput[] | CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput | CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutSalesReviewedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutSalesReviewedByInput[]
+    createMany?: CustomerInquiryCreateManySalesReviewedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutSalesReviewedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutSalesReviewedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutSalesReviewedByInput | CustomerInquiryUpdateManyWithWhereWithoutSalesReviewedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput> | CustomerInquiryCreateWithoutInventoryApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput | CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutInventoryApprovedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutInventoryApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyInventoryApprovedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutInventoryApprovedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutInventoryApprovedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutInventoryApprovedByInput | CustomerInquiryUpdateManyWithWhereWithoutInventoryApprovedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput> | CustomerInquiryCreateWithoutAccountingConfirmedByInput[] | CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput | CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutAccountingConfirmedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutAccountingConfirmedByInput[]
+    createMany?: CustomerInquiryCreateManyAccountingConfirmedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutAccountingConfirmedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutAccountingConfirmedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutAccountingConfirmedByInput | CustomerInquiryUpdateManyWithWhereWithoutAccountingConfirmedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutBuildApprovedByInput, CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput> | CustomerInquiryCreateWithoutBuildApprovedByInput[] | CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput | CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutBuildApprovedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutBuildApprovedByInput[]
+    createMany?: CustomerInquiryCreateManyBuildApprovedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutBuildApprovedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutBuildApprovedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutBuildApprovedByInput | CustomerInquiryUpdateManyWithWhereWithoutBuildApprovedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCompletedByInput, CustomerInquiryUncheckedCreateWithoutCompletedByInput> | CustomerInquiryCreateWithoutCompletedByInput[] | CustomerInquiryUncheckedCreateWithoutCompletedByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCompletedByInput | CustomerInquiryCreateOrConnectWithoutCompletedByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutCompletedByInput | CustomerInquiryUpsertWithWhereUniqueWithoutCompletedByInput[]
+    createMany?: CustomerInquiryCreateManyCompletedByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutCompletedByInput | CustomerInquiryUpdateWithWhereUniqueWithoutCompletedByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutCompletedByInput | CustomerInquiryUpdateManyWithWhereWithoutCompletedByInput[]
+    deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutCancelledByInput, CustomerInquiryUncheckedCreateWithoutCancelledByInput> | CustomerInquiryCreateWithoutCancelledByInput[] | CustomerInquiryUncheckedCreateWithoutCancelledByInput[]
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutCancelledByInput | CustomerInquiryCreateOrConnectWithoutCancelledByInput[]
+    upsert?: CustomerInquiryUpsertWithWhereUniqueWithoutCancelledByInput | CustomerInquiryUpsertWithWhereUniqueWithoutCancelledByInput[]
+    createMany?: CustomerInquiryCreateManyCancelledByInputEnvelope
+    set?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    disconnect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    delete?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    connect?: CustomerInquiryWhereUniqueInput | CustomerInquiryWhereUniqueInput[]
+    update?: CustomerInquiryUpdateWithWhereUniqueWithoutCancelledByInput | CustomerInquiryUpdateWithWhereUniqueWithoutCancelledByInput[]
+    updateMany?: CustomerInquiryUpdateManyWithWhereWithoutCancelledByInput | CustomerInquiryUpdateManyWithWhereWithoutCancelledByInput[]
     deleteMany?: CustomerInquiryScalarWhereInput | CustomerInquiryScalarWhereInput[]
   }
 
@@ -49745,11 +51228,61 @@ export namespace Prisma {
     connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
   }
 
+  export type PaymentRecordCreateNestedManyWithoutInquiryInput = {
+    create?: XOR<PaymentRecordCreateWithoutInquiryInput, PaymentRecordUncheckedCreateWithoutInquiryInput> | PaymentRecordCreateWithoutInquiryInput[] | PaymentRecordUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInquiryInput | PaymentRecordCreateOrConnectWithoutInquiryInput[]
+    createMany?: PaymentRecordCreateManyInquiryInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutInquiriesSalesReviewedInput = {
+    create?: XOR<UserCreateWithoutInquiriesSalesReviewedInput, UserUncheckedCreateWithoutInquiriesSalesReviewedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesSalesReviewedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutInquiriesInventoryApprovedInput = {
+    create?: XOR<UserCreateWithoutInquiriesInventoryApprovedInput, UserUncheckedCreateWithoutInquiriesInventoryApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesInventoryApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput = {
+    create?: XOR<UserCreateWithoutInquiriesAccountingConfirmedInput, UserUncheckedCreateWithoutInquiriesAccountingConfirmedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesAccountingConfirmedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutInquiriesBuildApprovedInput = {
+    create?: XOR<UserCreateWithoutInquiriesBuildApprovedInput, UserUncheckedCreateWithoutInquiriesBuildApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesBuildApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutInquiriesCompletedInput = {
+    create?: XOR<UserCreateWithoutInquiriesCompletedInput, UserUncheckedCreateWithoutInquiriesCompletedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesCompletedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutInquiriesCancelledInput = {
+    create?: XOR<UserCreateWithoutInquiriesCancelledInput, UserUncheckedCreateWithoutInquiriesCancelledInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesCancelledInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput = {
     create?: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput> | OrderChatMessageCreateWithoutInquiryInput[] | OrderChatMessageUncheckedCreateWithoutInquiryInput[]
     connectOrCreate?: OrderChatMessageCreateOrConnectWithoutInquiryInput | OrderChatMessageCreateOrConnectWithoutInquiryInput[]
     createMany?: OrderChatMessageCreateManyInquiryInputEnvelope
     connect?: OrderChatMessageWhereUniqueInput | OrderChatMessageWhereUniqueInput[]
+  }
+
+  export type PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput = {
+    create?: XOR<PaymentRecordCreateWithoutInquiryInput, PaymentRecordUncheckedCreateWithoutInquiryInput> | PaymentRecordCreateWithoutInquiryInput[] | PaymentRecordUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInquiryInput | PaymentRecordCreateOrConnectWithoutInquiryInput[]
+    createMany?: PaymentRecordCreateManyInquiryInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
   export type EnumInquiryStatusFieldUpdateOperationsInput = {
@@ -49788,6 +51321,80 @@ export namespace Prisma {
     deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
   }
 
+  export type PaymentRecordUpdateManyWithoutInquiryNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutInquiryInput, PaymentRecordUncheckedCreateWithoutInquiryInput> | PaymentRecordCreateWithoutInquiryInput[] | PaymentRecordUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInquiryInput | PaymentRecordCreateOrConnectWithoutInquiryInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutInquiryInput | PaymentRecordUpsertWithWhereUniqueWithoutInquiryInput[]
+    createMany?: PaymentRecordCreateManyInquiryInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutInquiryInput | PaymentRecordUpdateWithWhereUniqueWithoutInquiryInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutInquiryInput | PaymentRecordUpdateManyWithWhereWithoutInquiryInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutInquiriesSalesReviewedNestedInput = {
+    create?: XOR<UserCreateWithoutInquiriesSalesReviewedInput, UserUncheckedCreateWithoutInquiriesSalesReviewedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesSalesReviewedInput
+    upsert?: UserUpsertWithoutInquiriesSalesReviewedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInquiriesSalesReviewedInput, UserUpdateWithoutInquiriesSalesReviewedInput>, UserUncheckedUpdateWithoutInquiriesSalesReviewedInput>
+  }
+
+  export type UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutInquiriesInventoryApprovedInput, UserUncheckedCreateWithoutInquiriesInventoryApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesInventoryApprovedInput
+    upsert?: UserUpsertWithoutInquiriesInventoryApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInquiriesInventoryApprovedInput, UserUpdateWithoutInquiriesInventoryApprovedInput>, UserUncheckedUpdateWithoutInquiriesInventoryApprovedInput>
+  }
+
+  export type UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput = {
+    create?: XOR<UserCreateWithoutInquiriesAccountingConfirmedInput, UserUncheckedCreateWithoutInquiriesAccountingConfirmedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesAccountingConfirmedInput
+    upsert?: UserUpsertWithoutInquiriesAccountingConfirmedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInquiriesAccountingConfirmedInput, UserUpdateWithoutInquiriesAccountingConfirmedInput>, UserUncheckedUpdateWithoutInquiriesAccountingConfirmedInput>
+  }
+
+  export type UserUpdateOneWithoutInquiriesBuildApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutInquiriesBuildApprovedInput, UserUncheckedCreateWithoutInquiriesBuildApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesBuildApprovedInput
+    upsert?: UserUpsertWithoutInquiriesBuildApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInquiriesBuildApprovedInput, UserUpdateWithoutInquiriesBuildApprovedInput>, UserUncheckedUpdateWithoutInquiriesBuildApprovedInput>
+  }
+
+  export type UserUpdateOneWithoutInquiriesCompletedNestedInput = {
+    create?: XOR<UserCreateWithoutInquiriesCompletedInput, UserUncheckedCreateWithoutInquiriesCompletedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesCompletedInput
+    upsert?: UserUpsertWithoutInquiriesCompletedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInquiriesCompletedInput, UserUpdateWithoutInquiriesCompletedInput>, UserUncheckedUpdateWithoutInquiriesCompletedInput>
+  }
+
+  export type UserUpdateOneWithoutInquiriesCancelledNestedInput = {
+    create?: XOR<UserCreateWithoutInquiriesCancelledInput, UserUncheckedCreateWithoutInquiriesCancelledInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInquiriesCancelledInput
+    upsert?: UserUpsertWithoutInquiriesCancelledInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInquiriesCancelledInput, UserUpdateWithoutInquiriesCancelledInput>, UserUncheckedUpdateWithoutInquiriesCancelledInput>
+  }
+
   export type OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput = {
     create?: XOR<OrderChatMessageCreateWithoutInquiryInput, OrderChatMessageUncheckedCreateWithoutInquiryInput> | OrderChatMessageCreateWithoutInquiryInput[] | OrderChatMessageUncheckedCreateWithoutInquiryInput[]
     connectOrCreate?: OrderChatMessageCreateOrConnectWithoutInquiryInput | OrderChatMessageCreateOrConnectWithoutInquiryInput[]
@@ -49800,6 +51407,20 @@ export namespace Prisma {
     update?: OrderChatMessageUpdateWithWhereUniqueWithoutInquiryInput | OrderChatMessageUpdateWithWhereUniqueWithoutInquiryInput[]
     updateMany?: OrderChatMessageUpdateManyWithWhereWithoutInquiryInput | OrderChatMessageUpdateManyWithWhereWithoutInquiryInput[]
     deleteMany?: OrderChatMessageScalarWhereInput | OrderChatMessageScalarWhereInput[]
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutInquiryInput, PaymentRecordUncheckedCreateWithoutInquiryInput> | PaymentRecordCreateWithoutInquiryInput[] | PaymentRecordUncheckedCreateWithoutInquiryInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInquiryInput | PaymentRecordCreateOrConnectWithoutInquiryInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutInquiryInput | PaymentRecordUpsertWithWhereUniqueWithoutInquiryInput[]
+    createMany?: PaymentRecordCreateManyInquiryInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutInquiryInput | PaymentRecordUpdateWithWhereUniqueWithoutInquiryInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutInquiryInput | PaymentRecordUpdateManyWithWhereWithoutInquiryInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
   export type CustomerInquiryCreateNestedOneWithoutChatMessagesInput = {
@@ -50194,6 +51815,12 @@ export namespace Prisma {
     connect?: SalesOrderWhereUniqueInput
   }
 
+  export type CustomerInquiryCreateNestedOneWithoutPaymentRecordsInput = {
+    create?: XOR<CustomerInquiryCreateWithoutPaymentRecordsInput, CustomerInquiryUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutPaymentRecordsInput
+    connect?: CustomerInquiryWhereUniqueInput
+  }
+
   export type QuotationCreateNestedOneWithoutPaymentRecordsInput = {
     create?: XOR<QuotationCreateWithoutPaymentRecordsInput, QuotationUncheckedCreateWithoutPaymentRecordsInput>
     connectOrCreate?: QuotationCreateOrConnectWithoutPaymentRecordsInput
@@ -50206,6 +51833,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutPaymentsVerifiedInput = {
+    create?: XOR<UserCreateWithoutPaymentsVerifiedInput, UserUncheckedCreateWithoutPaymentsVerifiedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPaymentsVerifiedInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type EnumPaymentTypeFieldUpdateOperationsInput = {
     set?: $Enums.PaymentType
   }
@@ -50214,12 +51847,24 @@ export namespace Prisma {
     set?: $Enums.PaymentStatus
   }
 
-  export type SalesOrderUpdateOneRequiredWithoutPaymentRecordsNestedInput = {
+  export type SalesOrderUpdateOneWithoutPaymentRecordsNestedInput = {
     create?: XOR<SalesOrderCreateWithoutPaymentRecordsInput, SalesOrderUncheckedCreateWithoutPaymentRecordsInput>
     connectOrCreate?: SalesOrderCreateOrConnectWithoutPaymentRecordsInput
     upsert?: SalesOrderUpsertWithoutPaymentRecordsInput
+    disconnect?: SalesOrderWhereInput | boolean
+    delete?: SalesOrderWhereInput | boolean
     connect?: SalesOrderWhereUniqueInput
     update?: XOR<XOR<SalesOrderUpdateToOneWithWhereWithoutPaymentRecordsInput, SalesOrderUpdateWithoutPaymentRecordsInput>, SalesOrderUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type CustomerInquiryUpdateOneWithoutPaymentRecordsNestedInput = {
+    create?: XOR<CustomerInquiryCreateWithoutPaymentRecordsInput, CustomerInquiryUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: CustomerInquiryCreateOrConnectWithoutPaymentRecordsInput
+    upsert?: CustomerInquiryUpsertWithoutPaymentRecordsInput
+    disconnect?: CustomerInquiryWhereInput | boolean
+    delete?: CustomerInquiryWhereInput | boolean
+    connect?: CustomerInquiryWhereUniqueInput
+    update?: XOR<XOR<CustomerInquiryUpdateToOneWithWhereWithoutPaymentRecordsInput, CustomerInquiryUpdateWithoutPaymentRecordsInput>, CustomerInquiryUncheckedUpdateWithoutPaymentRecordsInput>
   }
 
   export type QuotationUpdateOneWithoutPaymentRecordsNestedInput = {
@@ -50238,6 +51883,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutPaymentsRecordedInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPaymentsRecordedInput, UserUpdateWithoutPaymentsRecordedInput>, UserUncheckedUpdateWithoutPaymentsRecordedInput>
+  }
+
+  export type UserUpdateOneWithoutPaymentsVerifiedNestedInput = {
+    create?: XOR<UserCreateWithoutPaymentsVerifiedInput, UserUncheckedCreateWithoutPaymentsVerifiedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPaymentsVerifiedInput
+    upsert?: UserUpsertWithoutPaymentsVerifiedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPaymentsVerifiedInput, UserUpdateWithoutPaymentsVerifiedInput>, UserUncheckedUpdateWithoutPaymentsVerifiedInput>
   }
 
   export type SalesOrderCreateNestedOneWithoutDeliverySchedulesInput = {
@@ -51127,12 +52782,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -51156,12 +52818,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -51857,30 +53526,40 @@ export namespace Prisma {
 
   export type PaymentRecordCreateWithoutRecordedByInput = {
     id?: string
+    paymentNumber?: string | null
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    salesOrder: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    salesOrder?: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    inquiry?: CustomerInquiryCreateNestedOneWithoutPaymentRecordsInput
     quotation?: QuotationCreateNestedOneWithoutPaymentRecordsInput
+    verifiedBy?: UserCreateNestedOneWithoutPaymentsVerifiedInput
   }
 
   export type PaymentRecordUncheckedCreateWithoutRecordedByInput = {
     id?: string
-    salesOrderId: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
     quotationId?: string | null
+    paymentNumber?: string | null
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -51892,6 +53571,56 @@ export namespace Prisma {
 
   export type PaymentRecordCreateManyRecordedByInputEnvelope = {
     data: PaymentRecordCreateManyRecordedByInput | PaymentRecordCreateManyRecordedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PaymentRecordCreateWithoutVerifiedByInput = {
+    id?: string
+    paymentNumber?: string | null
+    paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
+    status?: $Enums.PaymentStatus
+    amount: Decimal | DecimalJsLike | number | string
+    remainingBalance: Decimal | DecimalJsLike | number | string
+    paymentDate: Date | string
+    referenceNumber?: string | null
+    remarks?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesOrder?: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    inquiry?: CustomerInquiryCreateNestedOneWithoutPaymentRecordsInput
+    quotation?: QuotationCreateNestedOneWithoutPaymentRecordsInput
+    recordedBy: UserCreateNestedOneWithoutPaymentsRecordedInput
+  }
+
+  export type PaymentRecordUncheckedCreateWithoutVerifiedByInput = {
+    id?: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
+    quotationId?: string | null
+    paymentNumber?: string | null
+    recordedById: string
+    paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
+    status?: $Enums.PaymentStatus
+    amount: Decimal | DecimalJsLike | number | string
+    remainingBalance: Decimal | DecimalJsLike | number | string
+    paymentDate: Date | string
+    referenceNumber?: string | null
+    remarks?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentRecordCreateOrConnectWithoutVerifiedByInput = {
+    where: PaymentRecordWhereUniqueInput
+    create: XOR<PaymentRecordCreateWithoutVerifiedByInput, PaymentRecordUncheckedCreateWithoutVerifiedByInput>
+  }
+
+  export type PaymentRecordCreateManyVerifiedByInputEnvelope = {
+    data: PaymentRecordCreateManyVerifiedByInput | PaymentRecordCreateManyVerifiedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -52079,10 +53808,26 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
     product: ProductCreateNestedOneWithoutInquiriesInput
     chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
   }
 
   export type CustomerInquiryUncheckedCreateWithoutCustomerUserInput = {
@@ -52094,9 +53839,25 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
     chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryCreateOrConnectWithoutCustomerUserInput = {
@@ -52106,6 +53867,426 @@ export namespace Prisma {
 
   export type CustomerInquiryCreateManyCustomerUserInputEnvelope = {
     data: CustomerInquiryCreateManyCustomerUserInput | CustomerInquiryCreateManyCustomerUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerInquiryCreateWithoutSalesReviewedByInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutSalesReviewedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutSalesReviewedByInput, CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput>
+  }
+
+  export type CustomerInquiryCreateManySalesReviewedByInputEnvelope = {
+    data: CustomerInquiryCreateManySalesReviewedByInput | CustomerInquiryCreateManySalesReviewedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerInquiryCreateWithoutInventoryApprovedByInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutInventoryApprovedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput>
+  }
+
+  export type CustomerInquiryCreateManyInventoryApprovedByInputEnvelope = {
+    data: CustomerInquiryCreateManyInventoryApprovedByInput | CustomerInquiryCreateManyInventoryApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerInquiryCreateWithoutAccountingConfirmedByInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutAccountingConfirmedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput>
+  }
+
+  export type CustomerInquiryCreateManyAccountingConfirmedByInputEnvelope = {
+    data: CustomerInquiryCreateManyAccountingConfirmedByInput | CustomerInquiryCreateManyAccountingConfirmedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerInquiryCreateWithoutBuildApprovedByInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutBuildApprovedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutBuildApprovedByInput, CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput>
+  }
+
+  export type CustomerInquiryCreateManyBuildApprovedByInputEnvelope = {
+    data: CustomerInquiryCreateManyBuildApprovedByInput | CustomerInquiryCreateManyBuildApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerInquiryCreateWithoutCompletedByInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutCompletedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    cancelledById?: string | null
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutCompletedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutCompletedByInput, CustomerInquiryUncheckedCreateWithoutCompletedByInput>
+  }
+
+  export type CustomerInquiryCreateManyCompletedByInputEnvelope = {
+    data: CustomerInquiryCreateManyCompletedByInput | CustomerInquiryCreateManyCompletedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerInquiryCreateWithoutCancelledByInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutCancelledByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutCancelledByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutCancelledByInput, CustomerInquiryUncheckedCreateWithoutCancelledByInput>
+  }
+
+  export type CustomerInquiryCreateManyCancelledByInputEnvelope = {
+    data: CustomerInquiryCreateManyCancelledByInput | CustomerInquiryCreateManyCancelledByInput[]
     skipDuplicates?: boolean
   }
 
@@ -52327,18 +54508,39 @@ export namespace Prisma {
     OR?: PaymentRecordScalarWhereInput[]
     NOT?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
     id?: StringFilter<"PaymentRecord"> | string
-    salesOrderId?: StringFilter<"PaymentRecord"> | string
+    salesOrderId?: StringNullableFilter<"PaymentRecord"> | string | null
+    inquiryId?: StringNullableFilter<"PaymentRecord"> | string | null
     quotationId?: StringNullableFilter<"PaymentRecord"> | string | null
+    paymentNumber?: StringNullableFilter<"PaymentRecord"> | string | null
     recordedById?: StringFilter<"PaymentRecord"> | string
     paymentType?: EnumPaymentTypeFilter<"PaymentRecord"> | $Enums.PaymentType
+    paymentMethod?: StringNullableFilter<"PaymentRecord"> | string | null
     status?: EnumPaymentStatusFilter<"PaymentRecord"> | $Enums.PaymentStatus
     amount?: DecimalFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFilter<"PaymentRecord"> | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFilter<"PaymentRecord"> | Date | string
     referenceNumber?: StringNullableFilter<"PaymentRecord"> | string | null
     remarks?: StringNullableFilter<"PaymentRecord"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"PaymentRecord"> | Date | string | null
+    verifiedById?: StringNullableFilter<"PaymentRecord"> | string | null
     createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentRecord"> | Date | string
+  }
+
+  export type PaymentRecordUpsertWithWhereUniqueWithoutVerifiedByInput = {
+    where: PaymentRecordWhereUniqueInput
+    update: XOR<PaymentRecordUpdateWithoutVerifiedByInput, PaymentRecordUncheckedUpdateWithoutVerifiedByInput>
+    create: XOR<PaymentRecordCreateWithoutVerifiedByInput, PaymentRecordUncheckedCreateWithoutVerifiedByInput>
+  }
+
+  export type PaymentRecordUpdateWithWhereUniqueWithoutVerifiedByInput = {
+    where: PaymentRecordWhereUniqueInput
+    data: XOR<PaymentRecordUpdateWithoutVerifiedByInput, PaymentRecordUncheckedUpdateWithoutVerifiedByInput>
+  }
+
+  export type PaymentRecordUpdateManyWithWhereWithoutVerifiedByInput = {
+    where: PaymentRecordScalarWhereInput
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyWithoutVerifiedByInput>
   }
 
   export type DesignRequestUpsertWithWhereUniqueWithoutRequestedByInput = {
@@ -52480,8 +54682,119 @@ export namespace Prisma {
     message?: StringFilter<"CustomerInquiry"> | string
     status?: EnumInquiryStatusFilter<"CustomerInquiry"> | $Enums.InquiryStatus
     statusNote?: StringNullableFilter<"CustomerInquiry"> | string | null
+    inquiryNumber?: StringNullableFilter<"CustomerInquiry"> | string | null
     createdAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
     updatedAt?: DateTimeFilter<"CustomerInquiry"> | Date | string
+    salesReviewedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    inventoryApprovedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    customerPaidAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    accountingConfirmedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    buildApprovedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    shippingScheduledAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"CustomerInquiry"> | Date | string | null
+    salesReviewedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    inventoryApprovedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    accountingConfirmedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    buildApprovedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    completedById?: StringNullableFilter<"CustomerInquiry"> | string | null
+    cancelledById?: StringNullableFilter<"CustomerInquiry"> | string | null
+  }
+
+  export type CustomerInquiryUpsertWithWhereUniqueWithoutSalesReviewedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    update: XOR<CustomerInquiryUpdateWithoutSalesReviewedByInput, CustomerInquiryUncheckedUpdateWithoutSalesReviewedByInput>
+    create: XOR<CustomerInquiryCreateWithoutSalesReviewedByInput, CustomerInquiryUncheckedCreateWithoutSalesReviewedByInput>
+  }
+
+  export type CustomerInquiryUpdateWithWhereUniqueWithoutSalesReviewedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    data: XOR<CustomerInquiryUpdateWithoutSalesReviewedByInput, CustomerInquiryUncheckedUpdateWithoutSalesReviewedByInput>
+  }
+
+  export type CustomerInquiryUpdateManyWithWhereWithoutSalesReviewedByInput = {
+    where: CustomerInquiryScalarWhereInput
+    data: XOR<CustomerInquiryUpdateManyMutationInput, CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByInput>
+  }
+
+  export type CustomerInquiryUpsertWithWhereUniqueWithoutInventoryApprovedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    update: XOR<CustomerInquiryUpdateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedUpdateWithoutInventoryApprovedByInput>
+    create: XOR<CustomerInquiryCreateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedCreateWithoutInventoryApprovedByInput>
+  }
+
+  export type CustomerInquiryUpdateWithWhereUniqueWithoutInventoryApprovedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    data: XOR<CustomerInquiryUpdateWithoutInventoryApprovedByInput, CustomerInquiryUncheckedUpdateWithoutInventoryApprovedByInput>
+  }
+
+  export type CustomerInquiryUpdateManyWithWhereWithoutInventoryApprovedByInput = {
+    where: CustomerInquiryScalarWhereInput
+    data: XOR<CustomerInquiryUpdateManyMutationInput, CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByInput>
+  }
+
+  export type CustomerInquiryUpsertWithWhereUniqueWithoutAccountingConfirmedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    update: XOR<CustomerInquiryUpdateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedUpdateWithoutAccountingConfirmedByInput>
+    create: XOR<CustomerInquiryCreateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedCreateWithoutAccountingConfirmedByInput>
+  }
+
+  export type CustomerInquiryUpdateWithWhereUniqueWithoutAccountingConfirmedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    data: XOR<CustomerInquiryUpdateWithoutAccountingConfirmedByInput, CustomerInquiryUncheckedUpdateWithoutAccountingConfirmedByInput>
+  }
+
+  export type CustomerInquiryUpdateManyWithWhereWithoutAccountingConfirmedByInput = {
+    where: CustomerInquiryScalarWhereInput
+    data: XOR<CustomerInquiryUpdateManyMutationInput, CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByInput>
+  }
+
+  export type CustomerInquiryUpsertWithWhereUniqueWithoutBuildApprovedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    update: XOR<CustomerInquiryUpdateWithoutBuildApprovedByInput, CustomerInquiryUncheckedUpdateWithoutBuildApprovedByInput>
+    create: XOR<CustomerInquiryCreateWithoutBuildApprovedByInput, CustomerInquiryUncheckedCreateWithoutBuildApprovedByInput>
+  }
+
+  export type CustomerInquiryUpdateWithWhereUniqueWithoutBuildApprovedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    data: XOR<CustomerInquiryUpdateWithoutBuildApprovedByInput, CustomerInquiryUncheckedUpdateWithoutBuildApprovedByInput>
+  }
+
+  export type CustomerInquiryUpdateManyWithWhereWithoutBuildApprovedByInput = {
+    where: CustomerInquiryScalarWhereInput
+    data: XOR<CustomerInquiryUpdateManyMutationInput, CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByInput>
+  }
+
+  export type CustomerInquiryUpsertWithWhereUniqueWithoutCompletedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    update: XOR<CustomerInquiryUpdateWithoutCompletedByInput, CustomerInquiryUncheckedUpdateWithoutCompletedByInput>
+    create: XOR<CustomerInquiryCreateWithoutCompletedByInput, CustomerInquiryUncheckedCreateWithoutCompletedByInput>
+  }
+
+  export type CustomerInquiryUpdateWithWhereUniqueWithoutCompletedByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    data: XOR<CustomerInquiryUpdateWithoutCompletedByInput, CustomerInquiryUncheckedUpdateWithoutCompletedByInput>
+  }
+
+  export type CustomerInquiryUpdateManyWithWhereWithoutCompletedByInput = {
+    where: CustomerInquiryScalarWhereInput
+    data: XOR<CustomerInquiryUpdateManyMutationInput, CustomerInquiryUncheckedUpdateManyWithoutCompletedByInput>
+  }
+
+  export type CustomerInquiryUpsertWithWhereUniqueWithoutCancelledByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    update: XOR<CustomerInquiryUpdateWithoutCancelledByInput, CustomerInquiryUncheckedUpdateWithoutCancelledByInput>
+    create: XOR<CustomerInquiryCreateWithoutCancelledByInput, CustomerInquiryUncheckedCreateWithoutCancelledByInput>
+  }
+
+  export type CustomerInquiryUpdateWithWhereUniqueWithoutCancelledByInput = {
+    where: CustomerInquiryWhereUniqueInput
+    data: XOR<CustomerInquiryUpdateWithoutCancelledByInput, CustomerInquiryUncheckedUpdateWithoutCancelledByInput>
+  }
+
+  export type CustomerInquiryUpdateManyWithWhereWithoutCancelledByInput = {
+    where: CustomerInquiryScalarWhereInput
+    data: XOR<CustomerInquiryUpdateManyMutationInput, CustomerInquiryUncheckedUpdateManyWithoutCancelledByInput>
   }
 
   export type OrderChatMessageUpsertWithWhereUniqueWithoutSenderInput = {
@@ -52599,12 +54912,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -52628,12 +54948,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -52774,12 +55101,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -52803,12 +55137,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -52922,12 +55263,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -52951,12 +55299,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -53081,30 +55436,40 @@ export namespace Prisma {
 
   export type PaymentRecordCreateWithoutQuotationInput = {
     id?: string
+    paymentNumber?: string | null
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    salesOrder: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    salesOrder?: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    inquiry?: CustomerInquiryCreateNestedOneWithoutPaymentRecordsInput
     recordedBy: UserCreateNestedOneWithoutPaymentsRecordedInput
+    verifiedBy?: UserCreateNestedOneWithoutPaymentsVerifiedInput
   }
 
   export type PaymentRecordUncheckedCreateWithoutQuotationInput = {
     id?: string
-    salesOrderId: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
+    paymentNumber?: string | null
     recordedById: string
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -53235,12 +55600,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -53264,12 +55636,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -53568,12 +55947,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -53597,12 +55983,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -53767,30 +56160,40 @@ export namespace Prisma {
 
   export type PaymentRecordCreateWithoutSalesOrderInput = {
     id?: string
+    paymentNumber?: string | null
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    inquiry?: CustomerInquiryCreateNestedOneWithoutPaymentRecordsInput
     quotation?: QuotationCreateNestedOneWithoutPaymentRecordsInput
     recordedBy: UserCreateNestedOneWithoutPaymentsRecordedInput
+    verifiedBy?: UserCreateNestedOneWithoutPaymentsVerifiedInput
   }
 
   export type PaymentRecordUncheckedCreateWithoutSalesOrderInput = {
     id?: string
+    inquiryId?: string | null
     quotationId?: string | null
+    paymentNumber?: string | null
     recordedById: string
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -53918,12 +56321,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -53947,12 +56357,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -54931,10 +57348,26 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
     customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
     chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
   }
 
   export type CustomerInquiryUncheckedCreateWithoutProductInput = {
@@ -54946,9 +57379,25 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
     chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryCreateOrConnectWithoutProductInput = {
@@ -55056,12 +57505,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
   }
 
@@ -55085,12 +57541,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
@@ -55130,12 +57593,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
   }
 
@@ -55159,12 +57629,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
@@ -55241,11 +57718,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -55270,11 +57754,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -55310,6 +57801,518 @@ export namespace Prisma {
   export type OrderChatMessageCreateManyInquiryInputEnvelope = {
     data: OrderChatMessageCreateManyInquiryInput | OrderChatMessageCreateManyInquiryInput[]
     skipDuplicates?: boolean
+  }
+
+  export type PaymentRecordCreateWithoutInquiryInput = {
+    id?: string
+    paymentNumber?: string | null
+    paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
+    status?: $Enums.PaymentStatus
+    amount: Decimal | DecimalJsLike | number | string
+    remainingBalance: Decimal | DecimalJsLike | number | string
+    paymentDate: Date | string
+    referenceNumber?: string | null
+    remarks?: string | null
+    verifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesOrder?: SalesOrderCreateNestedOneWithoutPaymentRecordsInput
+    quotation?: QuotationCreateNestedOneWithoutPaymentRecordsInput
+    recordedBy: UserCreateNestedOneWithoutPaymentsRecordedInput
+    verifiedBy?: UserCreateNestedOneWithoutPaymentsVerifiedInput
+  }
+
+  export type PaymentRecordUncheckedCreateWithoutInquiryInput = {
+    id?: string
+    salesOrderId?: string | null
+    quotationId?: string | null
+    paymentNumber?: string | null
+    recordedById: string
+    paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
+    status?: $Enums.PaymentStatus
+    amount: Decimal | DecimalJsLike | number | string
+    remainingBalance: Decimal | DecimalJsLike | number | string
+    paymentDate: Date | string
+    referenceNumber?: string | null
+    remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentRecordCreateOrConnectWithoutInquiryInput = {
+    where: PaymentRecordWhereUniqueInput
+    create: XOR<PaymentRecordCreateWithoutInquiryInput, PaymentRecordUncheckedCreateWithoutInquiryInput>
+  }
+
+  export type PaymentRecordCreateManyInquiryInputEnvelope = {
+    data: PaymentRecordCreateManyInquiryInput | PaymentRecordCreateManyInquiryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutInquiriesSalesReviewedInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutInquiriesSalesReviewedInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutInquiriesSalesReviewedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInquiriesSalesReviewedInput, UserUncheckedCreateWithoutInquiriesSalesReviewedInput>
+  }
+
+  export type UserCreateWithoutInquiriesInventoryApprovedInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutInquiriesInventoryApprovedInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutInquiriesInventoryApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInquiriesInventoryApprovedInput, UserUncheckedCreateWithoutInquiriesInventoryApprovedInput>
+  }
+
+  export type UserCreateWithoutInquiriesAccountingConfirmedInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutInquiriesAccountingConfirmedInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutInquiriesAccountingConfirmedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInquiriesAccountingConfirmedInput, UserUncheckedCreateWithoutInquiriesAccountingConfirmedInput>
+  }
+
+  export type UserCreateWithoutInquiriesBuildApprovedInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutInquiriesBuildApprovedInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutInquiriesBuildApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInquiriesBuildApprovedInput, UserUncheckedCreateWithoutInquiriesBuildApprovedInput>
+  }
+
+  export type UserCreateWithoutInquiriesCompletedInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutInquiriesCompletedInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutInquiriesCompletedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInquiriesCompletedInput, UserUncheckedCreateWithoutInquiriesCompletedInput>
+  }
+
+  export type UserCreateWithoutInquiriesCancelledInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutInquiriesCancelledInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutInquiriesCancelledInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInquiriesCancelledInput, UserUncheckedCreateWithoutInquiriesCancelledInput>
   }
 
   export type ProductUpsertWithoutInquiriesInput = {
@@ -55402,11 +58405,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -55431,11 +58441,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -55456,6 +58473,520 @@ export namespace Prisma {
     data: XOR<OrderChatMessageUpdateManyMutationInput, OrderChatMessageUncheckedUpdateManyWithoutInquiryInput>
   }
 
+  export type PaymentRecordUpsertWithWhereUniqueWithoutInquiryInput = {
+    where: PaymentRecordWhereUniqueInput
+    update: XOR<PaymentRecordUpdateWithoutInquiryInput, PaymentRecordUncheckedUpdateWithoutInquiryInput>
+    create: XOR<PaymentRecordCreateWithoutInquiryInput, PaymentRecordUncheckedCreateWithoutInquiryInput>
+  }
+
+  export type PaymentRecordUpdateWithWhereUniqueWithoutInquiryInput = {
+    where: PaymentRecordWhereUniqueInput
+    data: XOR<PaymentRecordUpdateWithoutInquiryInput, PaymentRecordUncheckedUpdateWithoutInquiryInput>
+  }
+
+  export type PaymentRecordUpdateManyWithWhereWithoutInquiryInput = {
+    where: PaymentRecordScalarWhereInput
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyWithoutInquiryInput>
+  }
+
+  export type UserUpsertWithoutInquiriesSalesReviewedInput = {
+    update: XOR<UserUpdateWithoutInquiriesSalesReviewedInput, UserUncheckedUpdateWithoutInquiriesSalesReviewedInput>
+    create: XOR<UserCreateWithoutInquiriesSalesReviewedInput, UserUncheckedCreateWithoutInquiriesSalesReviewedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInquiriesSalesReviewedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInquiriesSalesReviewedInput, UserUncheckedUpdateWithoutInquiriesSalesReviewedInput>
+  }
+
+  export type UserUpdateWithoutInquiriesSalesReviewedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInquiriesSalesReviewedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutInquiriesInventoryApprovedInput = {
+    update: XOR<UserUpdateWithoutInquiriesInventoryApprovedInput, UserUncheckedUpdateWithoutInquiriesInventoryApprovedInput>
+    create: XOR<UserCreateWithoutInquiriesInventoryApprovedInput, UserUncheckedCreateWithoutInquiriesInventoryApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInquiriesInventoryApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInquiriesInventoryApprovedInput, UserUncheckedUpdateWithoutInquiriesInventoryApprovedInput>
+  }
+
+  export type UserUpdateWithoutInquiriesInventoryApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInquiriesInventoryApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutInquiriesAccountingConfirmedInput = {
+    update: XOR<UserUpdateWithoutInquiriesAccountingConfirmedInput, UserUncheckedUpdateWithoutInquiriesAccountingConfirmedInput>
+    create: XOR<UserCreateWithoutInquiriesAccountingConfirmedInput, UserUncheckedCreateWithoutInquiriesAccountingConfirmedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInquiriesAccountingConfirmedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInquiriesAccountingConfirmedInput, UserUncheckedUpdateWithoutInquiriesAccountingConfirmedInput>
+  }
+
+  export type UserUpdateWithoutInquiriesAccountingConfirmedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInquiriesAccountingConfirmedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutInquiriesBuildApprovedInput = {
+    update: XOR<UserUpdateWithoutInquiriesBuildApprovedInput, UserUncheckedUpdateWithoutInquiriesBuildApprovedInput>
+    create: XOR<UserCreateWithoutInquiriesBuildApprovedInput, UserUncheckedCreateWithoutInquiriesBuildApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInquiriesBuildApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInquiriesBuildApprovedInput, UserUncheckedUpdateWithoutInquiriesBuildApprovedInput>
+  }
+
+  export type UserUpdateWithoutInquiriesBuildApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInquiriesBuildApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutInquiriesCompletedInput = {
+    update: XOR<UserUpdateWithoutInquiriesCompletedInput, UserUncheckedUpdateWithoutInquiriesCompletedInput>
+    create: XOR<UserCreateWithoutInquiriesCompletedInput, UserUncheckedCreateWithoutInquiriesCompletedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInquiriesCompletedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInquiriesCompletedInput, UserUncheckedUpdateWithoutInquiriesCompletedInput>
+  }
+
+  export type UserUpdateWithoutInquiriesCompletedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInquiriesCompletedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutInquiriesCancelledInput = {
+    update: XOR<UserUpdateWithoutInquiriesCancelledInput, UserUncheckedUpdateWithoutInquiriesCancelledInput>
+    create: XOR<UserCreateWithoutInquiriesCancelledInput, UserUncheckedCreateWithoutInquiriesCancelledInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInquiriesCancelledInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInquiriesCancelledInput, UserUncheckedUpdateWithoutInquiriesCancelledInput>
+  }
+
+  export type UserUpdateWithoutInquiriesCancelledInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInquiriesCancelledInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
   export type CustomerInquiryCreateWithoutChatMessagesInput = {
     id?: string
     customerName: string
@@ -55464,10 +58995,26 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
     product: ProductCreateNestedOneWithoutInquiriesInput
     customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
   }
 
   export type CustomerInquiryUncheckedCreateWithoutChatMessagesInput = {
@@ -55480,8 +59027,24 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInquiryInput
   }
 
   export type CustomerInquiryCreateOrConnectWithoutChatMessagesInput = {
@@ -55509,12 +59072,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
 
@@ -55538,12 +59108,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
@@ -55599,10 +59176,26 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
     customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateWithoutChatMessagesInput = {
@@ -55615,8 +59208,24 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type UserUpsertWithoutOrderChatMessagesInput = {
@@ -55650,12 +59259,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
 
@@ -55679,12 +59295,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
@@ -56217,12 +59840,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -56246,12 +59876,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -56280,12 +59917,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -56309,12 +59953,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -56455,12 +60106,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -56484,12 +60142,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -56524,12 +60189,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -56553,12 +60225,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -56820,11 +60499,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -56849,11 +60535,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -56883,11 +60576,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -56912,11 +60612,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -57064,11 +60771,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -57093,11 +60807,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -57133,11 +60854,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -57162,11 +60890,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -57236,11 +60971,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -57265,11 +61007,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -57345,11 +61094,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -57374,11 +61130,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -57452,6 +61215,71 @@ export namespace Prisma {
     create: XOR<SalesOrderCreateWithoutPaymentRecordsInput, SalesOrderUncheckedCreateWithoutPaymentRecordsInput>
   }
 
+  export type CustomerInquiryCreateWithoutPaymentRecordsInput = {
+    id?: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    product: ProductCreateNestedOneWithoutInquiriesInput
+    customerUser?: UserCreateNestedOneWithoutCustomerInquiriesInput
+    chatMessages?: OrderChatMessageCreateNestedManyWithoutInquiryInput
+    salesReviewedBy?: UserCreateNestedOneWithoutInquiriesSalesReviewedInput
+    inventoryApprovedBy?: UserCreateNestedOneWithoutInquiriesInventoryApprovedInput
+    accountingConfirmedBy?: UserCreateNestedOneWithoutInquiriesAccountingConfirmedInput
+    buildApprovedBy?: UserCreateNestedOneWithoutInquiriesBuildApprovedInput
+    completedBy?: UserCreateNestedOneWithoutInquiriesCompletedInput
+    cancelledBy?: UserCreateNestedOneWithoutInquiriesCancelledInput
+  }
+
+  export type CustomerInquiryUncheckedCreateWithoutPaymentRecordsInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+    chatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutInquiryInput
+  }
+
+  export type CustomerInquiryCreateOrConnectWithoutPaymentRecordsInput = {
+    where: CustomerInquiryWhereUniqueInput
+    create: XOR<CustomerInquiryCreateWithoutPaymentRecordsInput, CustomerInquiryUncheckedCreateWithoutPaymentRecordsInput>
+  }
+
   export type QuotationCreateWithoutPaymentRecordsInput = {
     id?: string
     quoteNumber: string
@@ -57522,12 +61350,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -57551,12 +61386,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -57564,6 +61406,83 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutPaymentsRecordedInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutPaymentsRecordedInput, UserUncheckedCreateWithoutPaymentsRecordedInput>
+  }
+
+  export type UserCreateWithoutPaymentsVerifiedInput = {
+    id?: string
+    authUserId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    leadsCreated?: LeadCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutPaymentsVerifiedInput = {
+    id?: string
+    authUserId?: string | null
+    companyId?: string | null
+    name: string
+    email: string
+    role: $Enums.UserRole
+    status?: $Enums.AccountStatus
+    accessStartsAt?: Date | string | null
+    accessExpiresAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    quotationsCreated?: QuotationUncheckedCreateNestedManyWithoutCreatedByInput
+    salesOrdersCreated?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
+    designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
+    deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
+    customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
+    orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutPaymentsVerifiedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPaymentsVerifiedInput, UserUncheckedCreateWithoutPaymentsVerifiedInput>
   }
 
   export type SalesOrderUpsertWithoutPaymentRecordsInput = {
@@ -57639,6 +61558,77 @@ export namespace Prisma {
     stockRequests?: StockRequestUncheckedUpdateManyWithoutSalesOrderNestedInput
     designRequests?: DesignRequestUncheckedUpdateManyWithoutSalesOrderNestedInput
     deliverySchedules?: DeliveryScheduleUncheckedUpdateManyWithoutSalesOrderNestedInput
+  }
+
+  export type CustomerInquiryUpsertWithoutPaymentRecordsInput = {
+    update: XOR<CustomerInquiryUpdateWithoutPaymentRecordsInput, CustomerInquiryUncheckedUpdateWithoutPaymentRecordsInput>
+    create: XOR<CustomerInquiryCreateWithoutPaymentRecordsInput, CustomerInquiryUncheckedCreateWithoutPaymentRecordsInput>
+    where?: CustomerInquiryWhereInput
+  }
+
+  export type CustomerInquiryUpdateToOneWithWhereWithoutPaymentRecordsInput = {
+    where?: CustomerInquiryWhereInput
+    data: XOR<CustomerInquiryUpdateWithoutPaymentRecordsInput, CustomerInquiryUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type CustomerInquiryUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type QuotationUpsertWithoutPaymentRecordsInput = {
@@ -57728,12 +61718,19 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -57757,12 +61754,102 @@ export namespace Prisma {
     salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutPaymentsVerifiedInput = {
+    update: XOR<UserUpdateWithoutPaymentsVerifiedInput, UserUncheckedUpdateWithoutPaymentsVerifiedInput>
+    create: XOR<UserCreateWithoutPaymentsVerifiedInput, UserUncheckedCreateWithoutPaymentsVerifiedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPaymentsVerifiedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPaymentsVerifiedInput, UserUncheckedUpdateWithoutPaymentsVerifiedInput>
+  }
+
+  export type UserUpdateWithoutPaymentsVerifiedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    leadsCreated?: LeadUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
+    orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
+    draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPaymentsVerifiedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: NullableJsonNullValueInput | InputJsonValue
+    leadsCreated?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    quotationsCreated?: QuotationUncheckedUpdateManyWithoutCreatedByNestedInput
+    salesOrdersCreated?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+    designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+    deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
+    deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
+    customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -57895,11 +61982,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryConfirmed?: DeliveryScheduleCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -57924,11 +62018,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryConfirmed?: DeliveryScheduleUncheckedCreateNestedManyWithoutConfirmedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -57958,11 +62059,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleCreateNestedManyWithoutAssignedByInput
     customerInquiries?: CustomerInquiryCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductCreateNestedManyWithoutCreatedByInput
   }
@@ -57987,11 +62095,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedCreateNestedManyWithoutRequestedByInput
     stockRequestsChecked?: StockRequestUncheckedCreateNestedManyWithoutDecidedByInput
     paymentsRecorded?: PaymentRecordUncheckedCreateNestedManyWithoutRecordedByInput
+    paymentsVerified?: PaymentRecordUncheckedCreateNestedManyWithoutVerifiedByInput
     designRequested?: DesignRequestUncheckedCreateNestedManyWithoutRequestedByInput
     designAssigned?: DesignRequestUncheckedCreateNestedManyWithoutAssignedToInput
     designAssetsUploaded?: DesignAssetUncheckedCreateNestedManyWithoutUploadedByInput
     deliveryAssigned?: DeliveryScheduleUncheckedCreateNestedManyWithoutAssignedByInput
     customerInquiries?: CustomerInquiryUncheckedCreateNestedManyWithoutCustomerUserInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedCreateNestedManyWithoutSalesReviewedByInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutInventoryApprovedByInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedCreateNestedManyWithoutAccountingConfirmedByInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedCreateNestedManyWithoutBuildApprovedByInput
+    inquiriesCompleted?: CustomerInquiryUncheckedCreateNestedManyWithoutCompletedByInput
+    inquiriesCancelled?: CustomerInquiryUncheckedCreateNestedManyWithoutCancelledByInput
     orderChatMessages?: OrderChatMessageUncheckedCreateNestedManyWithoutSenderInput
     draftProducts?: DraftProductUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -58152,11 +62267,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -58181,11 +62303,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -58221,11 +62350,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -58250,11 +62386,18 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -58474,12 +62617,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUpdateManyWithoutCreatedByNestedInput
   }
@@ -58503,12 +62653,19 @@ export namespace Prisma {
     stockRequestsRaised?: StockRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     stockRequestsChecked?: StockRequestUncheckedUpdateManyWithoutDecidedByNestedInput
     paymentsRecorded?: PaymentRecordUncheckedUpdateManyWithoutRecordedByNestedInput
+    paymentsVerified?: PaymentRecordUncheckedUpdateManyWithoutVerifiedByNestedInput
     designRequested?: DesignRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     designAssigned?: DesignRequestUncheckedUpdateManyWithoutAssignedToNestedInput
     designAssetsUploaded?: DesignAssetUncheckedUpdateManyWithoutUploadedByNestedInput
     deliveryAssigned?: DeliveryScheduleUncheckedUpdateManyWithoutAssignedByNestedInput
     deliveryConfirmed?: DeliveryScheduleUncheckedUpdateManyWithoutConfirmedByNestedInput
     customerInquiries?: CustomerInquiryUncheckedUpdateManyWithoutCustomerUserNestedInput
+    inquiriesSalesReviewed?: CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByNestedInput
+    inquiriesInventoryApproved?: CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByNestedInput
+    inquiriesAccountingConfirmed?: CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByNestedInput
+    inquiriesBuildApproved?: CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByNestedInput
+    inquiriesCompleted?: CustomerInquiryUncheckedUpdateManyWithoutCompletedByNestedInput
+    inquiriesCancelled?: CustomerInquiryUncheckedUpdateManyWithoutCancelledByNestedInput
     orderChatMessages?: OrderChatMessageUncheckedUpdateManyWithoutSenderNestedInput
     draftProducts?: DraftProductUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -58858,15 +63015,40 @@ export namespace Prisma {
 
   export type PaymentRecordCreateManyRecordedByInput = {
     id?: string
-    salesOrderId: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
     quotationId?: string | null
+    paymentNumber?: string | null
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentRecordCreateManyVerifiedByInput = {
+    id?: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
+    quotationId?: string | null
+    paymentNumber?: string | null
+    recordedById: string
+    paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
+    status?: $Enums.PaymentStatus
+    amount: Decimal | DecimalJsLike | number | string
+    remainingBalance: Decimal | DecimalJsLike | number | string
+    paymentDate: Date | string
+    referenceNumber?: string | null
+    remarks?: string | null
+    verifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -58941,8 +63123,191 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+  }
+
+  export type CustomerInquiryCreateManySalesReviewedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+  }
+
+  export type CustomerInquiryCreateManyInventoryApprovedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+  }
+
+  export type CustomerInquiryCreateManyAccountingConfirmedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+  }
+
+  export type CustomerInquiryCreateManyBuildApprovedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
+  }
+
+  export type CustomerInquiryCreateManyCompletedByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    cancelledById?: string | null
+  }
+
+  export type CustomerInquiryCreateManyCancelledByInput = {
+    id?: string
+    productId: string
+    customerUserId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    message: string
+    status?: $Enums.InquiryStatus
+    statusNote?: string | null
+    inquiryNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
   }
 
   export type OrderChatMessageCreateManySenderInput = {
@@ -59241,45 +63606,120 @@ export namespace Prisma {
 
   export type PaymentRecordUpdateWithoutRecordedByInput = {
     id?: StringFieldUpdateOperationsInput | string
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    salesOrder?: SalesOrderUpdateOneRequiredWithoutPaymentRecordsNestedInput
+    salesOrder?: SalesOrderUpdateOneWithoutPaymentRecordsNestedInput
+    inquiry?: CustomerInquiryUpdateOneWithoutPaymentRecordsNestedInput
     quotation?: QuotationUpdateOneWithoutPaymentRecordsNestedInput
+    verifiedBy?: UserUpdateOneWithoutPaymentsVerifiedNestedInput
   }
 
   export type PaymentRecordUncheckedUpdateWithoutRecordedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    salesOrderId?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
     quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentRecordUncheckedUpdateManyWithoutRecordedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    salesOrderId?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
     quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUpdateWithoutVerifiedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesOrder?: SalesOrderUpdateOneWithoutPaymentRecordsNestedInput
+    inquiry?: CustomerInquiryUpdateOneWithoutPaymentRecordsNestedInput
+    quotation?: QuotationUpdateOneWithoutPaymentRecordsNestedInput
+    recordedBy?: UserUpdateOneRequiredWithoutPaymentsRecordedNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateWithoutVerifiedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
+    quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutVerifiedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
+    quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -59479,10 +63919,26 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
     chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateWithoutCustomerUserInput = {
@@ -59494,9 +63950,25 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
     chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateManyWithoutCustomerUserInput = {
@@ -59508,8 +63980,551 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomerInquiryUpdateWithoutSalesReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutSalesReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutSalesReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomerInquiryUpdateWithoutInventoryApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutInventoryApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutInventoryApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomerInquiryUpdateWithoutAccountingConfirmedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutAccountingConfirmedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutAccountingConfirmedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomerInquiryUpdateWithoutBuildApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutBuildApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutBuildApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomerInquiryUpdateWithoutCompletedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutCompletedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutCompletedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomerInquiryUpdateWithoutCancelledByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    product?: ProductUpdateOneRequiredWithoutInquiriesNestedInput
+    customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
+    chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateWithoutCancelledByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
+  }
+
+  export type CustomerInquiryUncheckedUpdateManyWithoutCancelledByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    customerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
+    statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderChatMessageUpdateWithoutSenderInput = {
@@ -59670,15 +64685,20 @@ export namespace Prisma {
 
   export type PaymentRecordCreateManyQuotationInput = {
     id?: string
-    salesOrderId: string
+    salesOrderId?: string | null
+    inquiryId?: string | null
+    paymentNumber?: string | null
     recordedById: string
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -59736,45 +64756,60 @@ export namespace Prisma {
 
   export type PaymentRecordUpdateWithoutQuotationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    salesOrder?: SalesOrderUpdateOneRequiredWithoutPaymentRecordsNestedInput
+    salesOrder?: SalesOrderUpdateOneWithoutPaymentRecordsNestedInput
+    inquiry?: CustomerInquiryUpdateOneWithoutPaymentRecordsNestedInput
     recordedBy?: UserUpdateOneRequiredWithoutPaymentsRecordedNestedInput
+    verifiedBy?: UserUpdateOneWithoutPaymentsVerifiedNestedInput
   }
 
   export type PaymentRecordUncheckedUpdateWithoutQuotationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    salesOrderId?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     recordedById?: StringFieldUpdateOperationsInput | string
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentRecordUncheckedUpdateManyWithoutQuotationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    salesOrderId?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     recordedById?: StringFieldUpdateOperationsInput | string
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -59815,15 +64850,20 @@ export namespace Prisma {
 
   export type PaymentRecordCreateManySalesOrderInput = {
     id?: string
+    inquiryId?: string | null
     quotationId?: string | null
+    paymentNumber?: string | null
     recordedById: string
     paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
     status?: $Enums.PaymentStatus
     amount: Decimal | DecimalJsLike | number | string
     remainingBalance: Decimal | DecimalJsLike | number | string
     paymentDate: Date | string
     referenceNumber?: string | null
     remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -59950,45 +64990,60 @@ export namespace Prisma {
 
   export type PaymentRecordUpdateWithoutSalesOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inquiry?: CustomerInquiryUpdateOneWithoutPaymentRecordsNestedInput
     quotation?: QuotationUpdateOneWithoutPaymentRecordsNestedInput
     recordedBy?: UserUpdateOneRequiredWithoutPaymentsRecordedNestedInput
+    verifiedBy?: UserUpdateOneWithoutPaymentsVerifiedNestedInput
   }
 
   export type PaymentRecordUncheckedUpdateWithoutSalesOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
     quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     recordedById?: StringFieldUpdateOperationsInput | string
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentRecordUncheckedUpdateManyWithoutSalesOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    inquiryId?: NullableStringFieldUpdateOperationsInput | string | null
     quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
     recordedById?: StringFieldUpdateOperationsInput | string
     paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -60336,8 +65391,23 @@ export namespace Prisma {
     message: string
     status?: $Enums.InquiryStatus
     statusNote?: string | null
+    inquiryNumber?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    salesReviewedAt?: Date | string | null
+    inventoryApprovedAt?: Date | string | null
+    customerPaidAt?: Date | string | null
+    accountingConfirmedAt?: Date | string | null
+    buildApprovedAt?: Date | string | null
+    shippingScheduledAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    salesReviewedById?: string | null
+    inventoryApprovedById?: string | null
+    accountingConfirmedById?: string | null
+    buildApprovedById?: string | null
+    completedById?: string | null
+    cancelledById?: string | null
   }
 
   export type ProductMaterialUpdateWithoutProductInput = {
@@ -60378,10 +65448,26 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     customerUser?: UserUpdateOneWithoutCustomerInquiriesNestedInput
     chatMessages?: OrderChatMessageUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInquiryNestedInput
+    salesReviewedBy?: UserUpdateOneWithoutInquiriesSalesReviewedNestedInput
+    inventoryApprovedBy?: UserUpdateOneWithoutInquiriesInventoryApprovedNestedInput
+    accountingConfirmedBy?: UserUpdateOneWithoutInquiriesAccountingConfirmedNestedInput
+    buildApprovedBy?: UserUpdateOneWithoutInquiriesBuildApprovedNestedInput
+    completedBy?: UserUpdateOneWithoutInquiriesCompletedNestedInput
+    cancelledBy?: UserUpdateOneWithoutInquiriesCancelledNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateWithoutProductInput = {
@@ -60393,9 +65479,25 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
     chatMessages?: OrderChatMessageUncheckedUpdateManyWithoutInquiryNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInquiryNestedInput
   }
 
   export type CustomerInquiryUncheckedUpdateManyWithoutProductInput = {
@@ -60407,8 +65509,23 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     status?: EnumInquiryStatusFieldUpdateOperationsInput | $Enums.InquiryStatus
     statusNote?: NullableStringFieldUpdateOperationsInput | string | null
+    inquiryNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inventoryApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customerPaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountingConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    buildApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shippingScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    salesReviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    inventoryApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    accountingConfirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    buildApprovedById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedById?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderChatMessageCreateManyInquiryInput = {
@@ -60417,6 +65534,26 @@ export namespace Prisma {
     senderRole: string
     body?: string | null
     createdAt?: Date | string
+  }
+
+  export type PaymentRecordCreateManyInquiryInput = {
+    id?: string
+    salesOrderId?: string | null
+    quotationId?: string | null
+    paymentNumber?: string | null
+    recordedById: string
+    paymentType: $Enums.PaymentType
+    paymentMethod?: string | null
+    status?: $Enums.PaymentStatus
+    amount: Decimal | DecimalJsLike | number | string
+    remainingBalance: Decimal | DecimalJsLike | number | string
+    paymentDate: Date | string
+    referenceNumber?: string | null
+    remarks?: string | null
+    verifiedAt?: Date | string | null
+    verifiedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type OrderChatMessageUpdateWithoutInquiryInput = {
@@ -60443,6 +65580,66 @@ export namespace Prisma {
     senderRole?: StringFieldUpdateOperationsInput | string
     body?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUpdateWithoutInquiryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesOrder?: SalesOrderUpdateOneWithoutPaymentRecordsNestedInput
+    quotation?: QuotationUpdateOneWithoutPaymentRecordsNestedInput
+    recordedBy?: UserUpdateOneRequiredWithoutPaymentsRecordedNestedInput
+    verifiedBy?: UserUpdateOneWithoutPaymentsVerifiedNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateWithoutInquiryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutInquiryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    quotationId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remainingBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    referenceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    remarks?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrderChatAttachmentCreateManyMessageInput = {

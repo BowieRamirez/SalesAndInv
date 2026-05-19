@@ -326,8 +326,23 @@ exports.Prisma.CustomerInquiryScalarFieldEnum = {
   message: 'message',
   status: 'status',
   statusNote: 'statusNote',
+  inquiryNumber: 'inquiryNumber',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  salesReviewedAt: 'salesReviewedAt',
+  inventoryApprovedAt: 'inventoryApprovedAt',
+  customerPaidAt: 'customerPaidAt',
+  accountingConfirmedAt: 'accountingConfirmedAt',
+  buildApprovedAt: 'buildApprovedAt',
+  shippingScheduledAt: 'shippingScheduledAt',
+  completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
+  salesReviewedById: 'salesReviewedById',
+  inventoryApprovedById: 'inventoryApprovedById',
+  accountingConfirmedById: 'accountingConfirmedById',
+  buildApprovedById: 'buildApprovedById',
+  completedById: 'completedById',
+  cancelledById: 'cancelledById'
 };
 
 exports.Prisma.OrderChatMessageScalarFieldEnum = {
@@ -421,15 +436,20 @@ exports.Prisma.DesignAssetScalarFieldEnum = {
 exports.Prisma.PaymentRecordScalarFieldEnum = {
   id: 'id',
   salesOrderId: 'salesOrderId',
+  inquiryId: 'inquiryId',
   quotationId: 'quotationId',
+  paymentNumber: 'paymentNumber',
   recordedById: 'recordedById',
   paymentType: 'paymentType',
+  paymentMethod: 'paymentMethod',
   status: 'status',
   amount: 'amount',
   remainingBalance: 'remainingBalance',
   paymentDate: 'paymentDate',
   referenceNumber: 'referenceNumber',
   remarks: 'remarks',
+  verifiedAt: 'verifiedAt',
+  verifiedById: 'verifiedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -712,7 +732,8 @@ exports.ApprovalModule = exports.$Enums.ApprovalModule = {
   STOCK_REQUEST: 'STOCK_REQUEST',
   PAYMENT: 'PAYMENT',
   DESIGN_REQUEST: 'DESIGN_REQUEST',
-  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE'
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE',
+  CUSTOMER_INQUIRY: 'CUSTOMER_INQUIRY'
 };
 
 exports.ApprovalAction = exports.$Enums.ApprovalAction = {

@@ -42,6 +42,8 @@ export async function POST(request: Request) {
       expectedStages: ["RECEIVED"],
       nextStage: "PENDING_INVENTORY_APPROVAL",
       statusNote,
+      actorId: currentUser.id,
+      actorRemarks: statusNote,
     })
 
     revalidatePath("/sales")

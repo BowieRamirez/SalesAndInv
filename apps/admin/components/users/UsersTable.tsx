@@ -1,5 +1,5 @@
 "use client"
-
+import { useDebounce } from "../inventory/hookTs"
 import { Fragment, useMemo, useState } from "react"
 import {
   AlertTriangle,
@@ -106,6 +106,7 @@ export function UsersTable({
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("")
   const [roleFilter, setRoleFilter] = useState<string>("")
+  const debouncedSearch = useDebounce(search, 500)
   const [pageSize] = useState(10)
   const [page, setPage] = useState(1)
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -124,7 +125,7 @@ export function UsersTable({
   }, [users])
 
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase()
+    const q = debouncedSearch.trim().toLowerCase()
     return users.filter((u) => {
       if (q && !u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) {
         return false
@@ -133,7 +134,7 @@ export function UsersTable({
       if (roleFilter && u.role !== roleFilter) return false
       return true
     })
-  }, [users, search, statusFilter, roleFilter])
+  }, [users, debouncedSearch, statusFilter, roleFilter])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const safePage = Math.min(page, totalPages)

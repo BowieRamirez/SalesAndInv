@@ -75,7 +75,20 @@ export async function POST(request: Request) {
       statusNote: rawStatusNote || "Accounting rejected this payment. Please request a corrected payment from the customer.",
       paymentMethod: paymentMethodValue,
       paymentStatus: "REJECTED",
+      actorId: currentUser.id,
+      actorRemarks: rawStatusNote || "Accounting rejected this payment.",
     })
+
+    // Mark any pending payment_records for this inquiry as REJECTED
+    await prisma.$executeRaw(Prisma.sql`
+      UPDATE public.payment_records
+      SET status = 'REJECTED'::"PaymentStatus",
+          "verifiedAt" = CURRENT_TIMESTAMP,
+          "verifiedById" = ${currentUser.id},
+          "updatedAt" = CURRENT_TIMESTAMP
+      WHERE "inquiryId" = ${inquiryId}
+        AND status = 'PENDING'::"PaymentStatus"
+    `)
 
     revalidatePath("/accounting")
     revalidatePath("/sales")
@@ -119,9 +132,10 @@ export async function POST(request: Request) {
       ORDER BY si."itemName" ASC
     `)
 
-    if (reservationMaterials.length === 0) {
-      throw new Error(`No material requirements are configured for ${inquiry.product.name}.`)
-    }
+    // If no materials have quantities configured, skip stock reservation and proceed.
+    // Materials that exist but have no quantityRequired are tracked by name only —
+    // reservation will happen once quantities are set on the product.
+    const hasQuantifiedMaterials = reservationMaterials.length > 0
 
     const existingReservations = await prisma.$queryRaw<Array<{ count: number }>>(Prisma.sql`
       SELECT COUNT(*)::int AS count
@@ -132,7 +146,7 @@ export async function POST(request: Request) {
     `)
     const alreadyReserved = (existingReservations[0]?.count ?? 0) > 0
 
-    if (!alreadyReserved) {
+    if (!alreadyReserved && hasQuantifiedMaterials) {
       for (const material of reservationMaterials) {
         if (material.availableQty < material.quantityRequired) {
           throw new Error(
@@ -150,9 +164,25 @@ export async function POST(request: Request) {
       paymentMethod: paymentMethodValue,
       paymentStatus: paymentStatusValue as InquiryPaymentStatus,
       paidAmount: paymentStatusValue === "FULLY_PAID" ? null : paidAmountValue,
+      actorId: currentUser.id,
+      actorRemarks: statusNote,
     })
 
-    if (updatedRows > 0 && !alreadyReserved) {
+    // Verify any pending payment_records for this inquiry — accounting just confirmed them
+    if (updatedRows > 0) {
+      await prisma.$executeRaw(Prisma.sql`
+        UPDATE public.payment_records
+        SET status = 'VERIFIED'::"PaymentStatus",
+            "verifiedAt" = CURRENT_TIMESTAMP,
+            "verifiedById" = ${currentUser.id},
+            "paymentMethod" = COALESCE("paymentMethod", ${paymentMethodValue}),
+            "updatedAt" = CURRENT_TIMESTAMP
+        WHERE "inquiryId" = ${inquiryId}
+          AND status = 'PENDING'::"PaymentStatus"
+      `)
+    }
+
+    if (updatedRows > 0 && !alreadyReserved && hasQuantifiedMaterials) {
       try {
         await prisma.$transaction(async (tx) => {
           for (const material of reservationMaterials) {

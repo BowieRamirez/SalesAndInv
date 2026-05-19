@@ -94,7 +94,17 @@ export async function POST(request: Request) {
   const inquiryId = randomUUID()
   const messageId = randomUUID()
 
+  // Generate a human-readable inquiry number using the DB sequence (atomic, no race conditions)
+  const yearStr = new Date().getFullYear().toString()
+
+  let inquiryNumber: string | null = null
   await prisma.$transaction(async (tx) => {
+    const seqRows = await tx.$queryRaw<Array<{ next_val: number }>>(Prisma.sql`
+      SELECT nextval('public.inquiry_number_seq')::int AS next_val
+    `)
+    const nextSeq = seqRows[0]?.next_val ?? 1
+    inquiryNumber = `INQ-${yearStr}-${String(nextSeq).padStart(5, "0")}`
+
     await tx.$executeRaw(Prisma.sql`
       INSERT INTO public.customer_inquiries (
         id,
@@ -105,6 +115,7 @@ export async function POST(request: Request) {
         "customerPhone",
         message,
         status,
+        "inquiryNumber",
         "createdAt",
         "updatedAt"
       )
@@ -117,6 +128,7 @@ export async function POST(request: Request) {
         ${payload.customerPhone},
         ${payload.message},
         'RECEIVED'::"InquiryStatus",
+        ${inquiryNumber},
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
       )
@@ -126,11 +138,28 @@ export async function POST(request: Request) {
       INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
       VALUES (${messageId}, ${inquiryId}, ${sessionUser.id}, 'CLIENT', ${payload.message})
     `)
+
+    // Approval history entry: order created (SUBMITTED action)
+    await tx.$executeRaw(Prisma.sql`
+      INSERT INTO public.approval_history (id, module, "recordId", action, "fromStatus", "toStatus", remarks, "actedById", "actedAt")
+      VALUES (
+        ${randomUUID()},
+        'CUSTOMER_INQUIRY'::"ApprovalModule",
+        ${inquiryId},
+        'SUBMITTED'::"ApprovalAction",
+        NULL,
+        'RECEIVED',
+        ${`Inquiry ${inquiryNumber} created by customer`},
+        ${sessionUser.id},
+        CURRENT_TIMESTAMP
+      )
+    `)
   })
 
   return NextResponse.json({
     ok: true,
     inquiryId,
+    inquiryNumber,
     productName: product.name,
   })
 }

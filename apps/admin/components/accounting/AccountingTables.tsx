@@ -236,8 +236,19 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
 
     doc.setFontSize(10)
     doc.setTextColor(100)
-    doc.text(`Order #${selectedReceipt.id.slice(-8).toUpperCase()}`, 14, 38)
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 44)
+    doc.text(
+      selectedReceipt.paymentNumber
+        ? `Payment #${selectedReceipt.paymentNumber}`
+        : `Order #${selectedReceipt.id.slice(-8).toUpperCase()}`,
+      14,
+      38,
+    )
+    if (selectedReceipt.inquiryNumber) {
+      doc.text(`Order: ${selectedReceipt.inquiryNumber}`, 14, 44)
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 50)
+    } else {
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 44)
+    }
 
     // Reset color
     doc.setTextColor(0)
@@ -287,7 +298,9 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
     doc.setTextColor(100)
     doc.text("Thank you for your business!", 14, finalY)
 
-    doc.save(`Receipt_${selectedReceipt.id.slice(-8).toUpperCase()}.pdf`)
+    doc.save(
+      `Receipt_${selectedReceipt.paymentNumber ?? selectedReceipt.id.slice(-8).toUpperCase()}.pdf`,
+    )
   }
 
   const filteredRows = useMemo(() => {
@@ -349,7 +362,7 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
           <table className="min-w-full text-left text-[13px]">
             <thead>
               <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-                <th className="py-3 pr-4 font-medium">Order ID</th>
+                <th className="py-3 pr-4 font-medium">Payment ID</th>
                 <th className="py-3 pr-4 font-medium">Date Approved</th>
                 <th className="py-3 pr-4 font-medium">Product</th>
                 <th className="py-3 pr-4 font-medium">Customer</th>
@@ -366,10 +379,12 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
               {pagedRows.map((row) => (
                 <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
                   <td className="py-3 pr-4 text-[#111827] whitespace-nowrap font-mono text-[11px]">
-                    {row.id.slice(-8).toUpperCase()}
+                    {row.paymentNumber ?? row.inquiryNumber ?? row.id.slice(-8).toUpperCase()}
                   </td>
                   <td className="py-3 pr-4 text-[#111827] whitespace-nowrap">
-                    {new Date(row.updatedAt).toLocaleDateString()}
+                    {row.paymentVerifiedAt
+                      ? new Date(row.paymentVerifiedAt).toLocaleDateString()
+                      : new Date(row.updatedAt).toLocaleDateString()}
                   </td>
                   <td className="py-3 pr-4 text-[#111827]">{row.productName}</td>
                   <td className="py-3 pr-4 text-[#111827]">
@@ -453,7 +468,12 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
             <div className="mb-6 flex justify-between items-center border-b border-[#e5e7eb] pb-4">
               <div>
                 <h3 className="text-[18px] font-bold text-[#111827]">Payment Receipt</h3>
-                <p className="text-[12px] text-[#6b7280]">Order #{selectedReceipt.id.slice(-8).toUpperCase()}</p>
+                <p className="text-[12px] text-[#6b7280]">
+                  {selectedReceipt.paymentNumber
+                    ? `Payment #${selectedReceipt.paymentNumber}`
+                    : `Order #${selectedReceipt.id.slice(-8).toUpperCase()}`}
+                  {selectedReceipt.inquiryNumber ? ` · ${selectedReceipt.inquiryNumber}` : ""}
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-[14px] font-medium text-[#111827]">{new Date(selectedReceipt.updatedAt).toLocaleDateString()}</p>

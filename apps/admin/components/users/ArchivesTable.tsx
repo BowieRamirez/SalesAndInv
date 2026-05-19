@@ -1,5 +1,5 @@
 "use client"
-
+import { useDebounce } from "../inventory/hookTs"
 import { useMemo, useState } from "react"
 import { Search, Crown, Shield, ShieldCheck, User as UserIcon } from "lucide-react"
 import Link from "next/link"
@@ -15,16 +15,17 @@ export function ArchivesTable({
   const [search, setSearch] = useState("")
   const [pageSize] = useState(10)
   const [page, setPage] = useState(1)
+  const debouncedSearch = useDebounce(search, 500)
 
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase()
+    const q = debouncedSearch.trim().toLowerCase()
     return users.filter((u) => {
       if (q && !u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) {
         return false
       }
       return true
     })
-  }, [users, search])
+  }, [users, debouncedSearch])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const safePage = Math.min(page, totalPages)
