@@ -275,8 +275,40 @@ function DeliveryQueueCard({
   const canCompleteNow = shippingDayStart ? shippingDayStart.getTime() <= Date.now() && isFullyPaid : false
   const progressWidth = inquiry.shippingScheduledAt ? (canCompleteNow ? "100%" : "66%") : "33%"
 
+  // Remaining balance that the customer still needs to pay
+  const hasRemainingBalance = inquiry.remainingBalance > 0
+  // For the shipping (delivery) stage, block the button if balance is unpaid
+  const isBlockedByBalance = action === "ship" && hasRemainingBalance
+
   return (
-    <article className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm">
+    <article className={`rounded-[24px] border bg-white p-6 shadow-sm ${hasRemainingBalance ? "border-[#fcd34d]" : "border-[#e5e7eb]"}`}>
+      {/* ── Remaining balance warning banner ── */}
+      {hasRemainingBalance && (
+        <div className="mb-5 flex items-start gap-3 rounded-[16px] border border-[#fde68a] bg-[#fffbeb] px-5 py-4">
+          <div className="mt-0.5 flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full bg-[#fef3c7]">
+            <span className="text-[16px]">⚠️</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-[#92400e]">
+              Balance Payment Required
+            </p>
+            <p className="mt-1 text-[13px] text-[#78350f]">
+              This order has an unpaid remaining balance of{" "}
+              <span className="font-bold">{formatPeso(inquiry.remainingBalance)}</span>.
+              The customer must settle this before the order can be set for delivery.
+            </p>
+            {action === "ship" && (
+              <p className="mt-1.5 text-[12px] font-medium text-[#a16207]">
+                Delivery scheduling is disabled until the balance is fully paid.
+              </p>
+            )}
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[#92400e]">Remaining</p>
+            <p className="mt-0.5 text-[18px] font-bold text-[#78350f]">{formatPeso(inquiry.remainingBalance)}</p>
+          </div>
+        </div>
+      )}
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Operations queue</p>
@@ -391,7 +423,8 @@ function DeliveryQueueCard({
                 type="submit"
                 name="submitMode"
                 value="schedule"
-                className="rounded-[12px] border border-[#111827] px-5 py-3 text-[13px] font-medium text-[#111827] transition-colors hover:bg-[#f9fafb]"
+                disabled={isBlockedByBalance}
+                className="rounded-[12px] border border-[#111827] px-5 py-3 text-[13px] font-medium text-[#111827] transition-colors hover:bg-[#f9fafb] disabled:cursor-not-allowed disabled:border-[#cbd5e1] disabled:text-[#cbd5e1]"
               >
                 Save shipping schedule
               </button>
@@ -399,10 +432,10 @@ function DeliveryQueueCard({
                 type="submit"
                 name="submitMode"
                 value="complete"
-                disabled={!canCompleteNow}
+                disabled={!canCompleteNow || isBlockedByBalance}
                 className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#cbd5e1]"
               >
-                {!canCompleteNow ? "Waiting for scheduled ship date" : buttonLabel}
+                {isBlockedByBalance ? "Balance unpaid — cannot ship" : !canCompleteNow ? "Waiting for scheduled ship date" : buttonLabel}
               </button>
             </div>
           ) : (

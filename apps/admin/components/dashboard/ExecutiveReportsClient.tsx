@@ -184,10 +184,10 @@ export function ExecutiveReportsClient({ userName, data }: ExecutiveReportsClien
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center gap-2">
               <ClipboardList className="h-4 w-4 text-emerald-500" />
-              <h3 className="text-[15px] font-semibold text-[#0f172a]">Sales Order Statuses</h3>
+              <h3 className="text-[15px] font-semibold text-[#0f172a]">Order Statuses</h3>
             </div>
             {orderStatuses.length === 0 ? (
-              <EmptyTable message="No sales orders are available yet." />
+              <EmptyTable message="No orders are available yet." />
             ) : (
               <div className="space-y-3">
                 {orderStatuses.map((status) => (

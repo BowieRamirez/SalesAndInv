@@ -84,6 +84,32 @@ function formatPeso(value: number) {
   }).format(value)
 }
 
+function DescriptionBlock({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false)
+  // Rough character threshold — descriptions under ~300 chars don't need a toggle
+  const isLong = text.length > 300
+  return (
+    <dd className="mt-2">
+      <p
+        className={`whitespace-pre-wrap text-[14px] leading-6 text-[#334155] transition-all ${
+          !expanded && isLong ? "line-clamp-4" : ""
+        }`}
+      >
+        {text}
+      </p>
+      {isLong && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-2 text-[12px] font-semibold text-[#6366f1] hover:underline"
+        >
+          {expanded ? "Show less" : "Show full description"}
+        </button>
+      )}
+    </dd>
+  )
+}
+
 const PAGE_SIZE = 10
 
 function readTextValue(formData: FormData, name: string, fallback = "") {
@@ -925,7 +951,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
 
             <div className="flex-1 overflow-y-auto bg-[#fbfdff] p-8">
               <div className="mx-auto grid max-w-6xl gap-8 xl:grid-cols-[360px_minmax(0,1fr)]">
-                <section className="overflow-hidden rounded-[24px] border border-[#e2e8f0] bg-white shadow-sm">
+                <section className="self-start overflow-hidden rounded-[24px] border border-[#e2e8f0] bg-white shadow-sm">
                   <div className="aspect-[4/3] bg-[#f1f5f9]">
                     {selectedProduct.imageUrl ? (
                       <img src={selectedProduct.imageUrl} alt={selectedProduct.name} className="h-full w-full object-cover" />
@@ -996,10 +1022,13 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                         <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Recipe</dt>
                         <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{selectedProduct.recipeCount} materials</dd>
                       </div>
-                      <div className="md:col-span-2">
-                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Description</dt>
-                        <dd className="mt-2 whitespace-pre-wrap text-[14px] leading-6 text-[#334155]">{selectedProduct.description}</dd>
-                      </div>
+                      {/* Description — collapsible to keep catalog fields compact */}
+                      {selectedProduct.description && (
+                        <div className="md:col-span-2">
+                          <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Description</dt>
+                          <DescriptionBlock text={selectedProduct.description} />
+                        </div>
+                      )}
                     </dl>
                   </section>
 

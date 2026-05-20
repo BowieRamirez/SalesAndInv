@@ -208,6 +208,7 @@ exports.Prisma.SalesOrderScalarFieldEnum = {
   id: 'id',
   soNumber: 'soNumber',
   quotationId: 'quotationId',
+  convertedFromInquiryId: 'convertedFromInquiryId',
   companyId: 'companyId',
   createdById: 'createdById',
   orderType: 'orderType',

@@ -47,6 +47,8 @@ function PaymentStatusBadge({ status }: { status: InquiryPaymentStatus }) {
 
 export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [showRejectConfirm, setShowRejectConfirm] = useState(false)
+  const [rejectReason, setRejectReason] = useState("")
 
   // The customer's submitted payment is the source of truth. Accounting only
   // confirms or rejects — they do not edit the method or status.
@@ -158,7 +160,7 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
               </div>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={() => { setIsOpen(false); setShowRejectConfirm(false); setRejectReason("") }}
                 className="rounded-full border border-[#d1d5dc] px-3 py-2 text-[12px] font-medium text-[#4b5563] transition-colors hover:bg-[#f9fafb]"
               >
                 Close
@@ -280,33 +282,77 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
                 />
               </label>
 
-              <div className="flex flex-col-reverse gap-3 border-t border-[#e5e7eb] pt-4 sm:flex-row sm:justify-end">
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-[14px] border border-[#d1d5dc] px-5 py-3 text-[14px] font-medium text-[#374151] transition-colors hover:bg-[#f9fafb]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  name="paymentStatus"
-                  value="REJECTED"
-                  disabled={!customerHasPaid}
-                  className="rounded-[14px] border border-[#fecaca] bg-white px-5 py-3 text-[14px] font-medium text-[#b91c1c] transition-colors hover:bg-[#fff1f2] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Reject payment
-                </button>
-                <button
-                  type="submit"
-                  name="paymentStatus"
-                  value={derivedPaymentStatus}
-                  disabled={!customerHasPaid}
-                  className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]"
-                >
-                  Confirm payment and release order
-                </button>
-              </div>
+              {/* ── Reject confirmation step ── */}
+              {showRejectConfirm ? (
+                <div className="rounded-[16px] border border-[#fecaca] bg-[#fff8f8] px-5 py-5 space-y-4">
+                  <div>
+                    <p className="text-[13px] font-bold text-[#b91c1c]">⚠ Confirm payment rejection</p>
+                    <p className="mt-1 text-[13px] text-[#7f1d1d]">
+                      Rejecting this payment will notify the customer and return the order to accounting review.
+                      This action cannot be undone without the customer re-submitting their payment.
+                    </p>
+                  </div>
+                  <label className="grid gap-2">
+                    <span className="text-[12px] font-medium uppercase tracking-wide text-[#b91c1c]">
+                      Reason for rejection <span className="font-normal text-[#ef4444]">*</span>
+                    </span>
+                    <textarea
+                      name="statusNote"
+                      value={rejectReason}
+                      onChange={(e) => setRejectReason(e.target.value)}
+                      placeholder="e.g. Payment reference not found. Please re-submit with a valid transaction ID."
+                      rows={3}
+                      required
+                      className="w-full rounded-[14px] border border-[#fca5a5] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#b91c1c]"
+                    />
+                  </label>
+                  <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                    <button
+                      type="button"
+                      onClick={() => { setShowRejectConfirm(false); setRejectReason("") }}
+                      className="rounded-[14px] border border-[#d1d5dc] px-5 py-2.5 text-[14px] font-medium text-[#374151] transition-colors hover:bg-[#f9fafb]"
+                    >
+                      Go back
+                    </button>
+                    <button
+                      type="submit"
+                      name="paymentStatus"
+                      value="REJECTED"
+                      disabled={!rejectReason.trim()}
+                      className="rounded-[14px] bg-[#b91c1c] px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-[#991b1b] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Yes, reject this payment
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col-reverse gap-3 border-t border-[#e5e7eb] pt-4 sm:flex-row sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="rounded-[14px] border border-[#d1d5dc] px-5 py-3 text-[14px] font-medium text-[#374151] transition-colors hover:bg-[#f9fafb]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!customerHasPaid}
+                    onClick={() => setShowRejectConfirm(true)}
+                    className="rounded-[14px] border border-[#fecaca] bg-white px-5 py-3 text-[14px] font-medium text-[#b91c1c] transition-colors hover:bg-[#fff1f2] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Reject payment
+                  </button>
+                  <button
+                    type="submit"
+                    name="paymentStatus"
+                    value={derivedPaymentStatus}
+                    disabled={!customerHasPaid}
+                    className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]"
+                  >
+                    Confirm payment and release order
+                  </button>
+                </div>
+              )}
             </form>
           </div>
         </div>

@@ -97,12 +97,22 @@ export type ExecutiveReportsData = {
 async function getOverviewSnapshot() {
   const [row] = await prisma.$queryRaw<OverviewSnapshotRow[]>(Prisma.sql`
     WITH order_totals AS (
+      -- Use customer_inquiries as the source of truth for orders (sales_orders is unused B2B scaffolding)
       SELECT
         COUNT(*)::int AS "salesOrders",
-        COALESCE(SUM(total), 0)::double precision AS "bookedRevenue",
-        COUNT(*) FILTER (WHERE status NOT IN ('DELIVERED', 'CANCELLED'))::int AS "openOrders",
-        COUNT(*) FILTER (WHERE status = 'DELIVERED')::int AS "deliveredOrders"
-      FROM public.sales_orders
+        COALESCE(SUM(p.price), 0)::double precision AS "bookedRevenue",
+        COUNT(*) FILTER (
+          WHERE ci.status::text NOT IN ('COMPLETED','CANCELLED')
+            AND NOT (ci."statusNote" LIKE '%[[completed]]%')
+        )::int AS "openOrders",
+        COUNT(*) FILTER (
+          WHERE ci."statusNote" LIKE '%[[completed]]%'
+            AND ci."statusNote" NOT LIKE '%Cancelled%'
+        )::int AS "deliveredOrders"
+      FROM public.customer_inquiries ci
+      INNER JOIN public.products p ON p.id = ci."productId"
+      WHERE ci.status::text <> 'RECEIVED'
+        OR ci."statusNote" IS NOT NULL
     ),
     payment_totals AS (
       SELECT
@@ -118,8 +128,8 @@ async function getOverviewSnapshot() {
     ),
     delivery_totals AS (
       SELECT
-        COUNT(*) FILTER (WHERE status IN ('SCHEDULED', 'READY', 'IN_TRANSIT'))::int AS "activeDeliveries"
-      FROM public.delivery_schedules
+        COUNT(*) FILTER (WHERE status::text IN ('READY_FOR_SHIPMENT','READY_FOR_SHIPPING'))::int AS "activeDeliveries"
+      FROM public.customer_inquiries
     )
     SELECT
       ot."bookedRevenue",
@@ -155,12 +165,14 @@ async function getMonthlyPerformance() {
         INTERVAL '1 month'
       ) AS month_start
     ),
+    -- Revenue = value of orders placed that progressed past RECEIVED (i.e. endorsed to inventory or further)
     order_totals AS (
       SELECT
-        date_trunc('month', "createdAt") AS month_start,
-        COALESCE(SUM(total), 0)::double precision AS revenue
-      FROM public.sales_orders
-      WHERE status <> 'CANCELLED'
+        date_trunc('month', ci."createdAt") AS month_start,
+        COALESCE(SUM(p.price), 0)::double precision AS revenue
+      FROM public.customer_inquiries ci
+      INNER JOIN public.products p ON p.id = ci."productId"
+      WHERE ci.status::text <> 'RECEIVED'
       GROUP BY 1
     ),
     payment_totals AS (
@@ -228,40 +240,56 @@ async function getLowStockItems() {
 }
 
 async function getPendingOrders() {
-  return prisma.$queryRaw<PendingOrderRow[]>(Prisma.sql`
+  // Use customer_inquiries as the order source — sales_orders is unused B2B scaffolding
+  type InquiryOrderRow = {
+    id: string
+    soNumber: string      // maps to inquiryNumber
+    companyName: string   // maps to customerName
+    total: number
+    status: string
+  }
+  const rows = await prisma.$queryRaw<InquiryOrderRow[]>(Prisma.sql`
     SELECT
-      so.id,
-      so."soNumber",
-      c.name AS "companyName",
-      so.total::double precision AS total,
-      so.status::text AS status
-    FROM public.sales_orders so
-    INNER JOIN public.companies c
-      ON c.id = so."companyId"
-    WHERE so.status NOT IN ('DELIVERED', 'CANCELLED')
-    ORDER BY so."createdAt" DESC
+      ci.id,
+      COALESCE(ci."inquiryNumber", ci.id) AS "soNumber",
+      ci."customerName" AS "companyName",
+      p.price::double precision AS total,
+      ci.status::text AS status
+    FROM public.customer_inquiries ci
+    INNER JOIN public.products p ON p.id = ci."productId"
+    WHERE ci.status::text NOT IN ('RECEIVED')
+      AND NOT (COALESCE(ci."statusNote",'') LIKE '%[[completed]]%')
+    ORDER BY ci."createdAt" DESC
     LIMIT 5
   `)
+  return rows as PendingOrderRow[]
 }
 
 async function getUpcomingDeliveries() {
-  return prisma.$queryRaw<DeliveryRow[]>(Prisma.sql`
+  type InquiryDeliveryRow = {
+    id: string
+    soNumber: string
+    companyName: string
+    scheduledAt: Date
+    status: string
+    readinessStatus: string
+  }
+  const rows = await prisma.$queryRaw<InquiryDeliveryRow[]>(Prisma.sql`
     SELECT
-      ds.id,
-      so."soNumber",
-      c.name AS "companyName",
-      ds."scheduledAt",
-      ds.status::text AS status,
-      ds."readinessStatus"::text AS "readinessStatus"
-    FROM public.delivery_schedules ds
-    INNER JOIN public.sales_orders so
-      ON so.id = ds."salesOrderId"
-    INNER JOIN public.companies c
-      ON c.id = ds."companyId"
-    WHERE ds.status <> 'CANCELLED'
-    ORDER BY ds."scheduledAt" ASC
+      ci.id,
+      COALESCE(ci."inquiryNumber", ci.id) AS "soNumber",
+      ci."customerName" AS "companyName",
+      ci."shippingScheduledAt" AS "scheduledAt",
+      ci.status::text AS status,
+      'READY' AS "readinessStatus"
+    FROM public.customer_inquiries ci
+    WHERE ci."shippingScheduledAt" IS NOT NULL
+      AND ci.status::text IN ('READY_FOR_SHIPMENT','GETTING_READY_FOR_BUILDING')
+      AND NOT (COALESCE(ci."statusNote",'') LIKE '%[[completed]]%')
+    ORDER BY ci."shippingScheduledAt" ASC
     LIMIT 5
   `)
+  return rows as DeliveryRow[]
 }
 
 async function getReportsSnapshot() {
@@ -274,63 +302,53 @@ async function getReportsSnapshot() {
       }
     >
   >(Prisma.sql`
-    WITH overview AS (
-      SELECT *
-      FROM (
-        WITH order_totals AS (
-          SELECT
-            COUNT(*)::int AS "salesOrders",
-            COALESCE(SUM(total), 0)::double precision AS "bookedRevenue",
-            COUNT(*) FILTER (WHERE status NOT IN ('DELIVERED', 'CANCELLED'))::int AS "openOrders",
-            COUNT(*) FILTER (WHERE status = 'DELIVERED')::int AS "deliveredOrders"
-          FROM public.sales_orders
-        ),
-        payment_totals AS (
-          SELECT
-            COALESCE(SUM(amount) FILTER (WHERE status = 'VERIFIED'), 0)::double precision AS "verifiedCollections"
-          FROM public.payment_records
-        ),
-        inventory_totals AS (
-          SELECT
-            (SELECT COALESCE(SUM(p.price * s."availableQty"), 0) FROM public.product_stocks s INNER JOIN public.products p ON p."productStockId" = s.id)::double precision AS "inventoryValue",
-            ((SELECT COUNT(*) FROM public.product_stocks) + (SELECT COUNT(*) FROM public.material_stocks))::int AS "totalStockItems",
-            (SELECT COUNT(*) FROM public.product_stocks WHERE "availableQty" <= "reorderThreshold") + (SELECT COUNT(*) FROM public.material_stocks WHERE "availableQty" <= "reorderThreshold")::int AS "lowStockItems",
-            (SELECT COUNT(*) FROM public.products WHERE "isPublished" = true)::int AS "publishedProducts"
-        ),
-        delivery_totals AS (
-          SELECT
-            COUNT(*) FILTER (WHERE status IN ('SCHEDULED', 'READY', 'IN_TRANSIT'))::int AS "activeDeliveries"
-          FROM public.delivery_schedules
-        )
-        SELECT
-          ot."bookedRevenue",
-          ot."salesOrders",
-          ot."openOrders",
-          ot."deliveredOrders",
-          pt."verifiedCollections",
-          CASE
-            WHEN ot."bookedRevenue" > 0
-              THEN ROUND((((pt."verifiedCollections" / ot."bookedRevenue") * 100)::numeric), 1)
-            ELSE 0
-          END::double precision AS "collectionRate",
-          it."inventoryValue",
-          it."totalStockItems",
-          it."lowStockItems",
-          it."publishedProducts",
-          dt."activeDeliveries"
-        FROM order_totals ot
-        CROSS JOIN payment_totals pt
-        CROSS JOIN inventory_totals it
-        CROSS JOIN delivery_totals dt
-      ) snapshot
+    WITH order_totals AS (
+      SELECT
+        COUNT(*)::int AS "salesOrders",
+        COALESCE(SUM(p.price), 0)::double precision AS "bookedRevenue",
+        COUNT(*) FILTER (
+          WHERE ci.status::text NOT IN ('COMPLETED','CANCELLED')
+            AND NOT (COALESCE(ci."statusNote",'') LIKE '%[[completed]]%')
+        )::int AS "openOrders",
+        COUNT(*) FILTER (
+          WHERE COALESCE(ci."statusNote",'') LIKE '%[[completed]]%'
+            AND COALESCE(ci."statusNote",'') NOT LIKE '%Cancelled%'
+        )::int AS "deliveredOrders"
+      FROM public.customer_inquiries ci
+      INNER JOIN public.products p ON p.id = ci."productId"
+      WHERE ci.status::text <> 'RECEIVED'
+        OR ci."statusNote" IS NOT NULL
     ),
-    latest_balances AS (
-      SELECT DISTINCT ON ("salesOrderId")
-        "salesOrderId",
-        "remainingBalance"
+    payment_totals AS (
+      SELECT
+        COALESCE(SUM(amount) FILTER (WHERE status = 'VERIFIED'), 0)::double precision AS "verifiedCollections"
       FROM public.payment_records
-      WHERE status = 'VERIFIED'
-      ORDER BY "salesOrderId", "paymentDate" DESC, "createdAt" DESC, id DESC
+    ),
+    inventory_totals AS (
+      SELECT
+        (SELECT COALESCE(SUM(p.price * s."availableQty"), 0) FROM public.product_stocks s INNER JOIN public.products p ON p."productStockId" = s.id)::double precision AS "inventoryValue",
+        ((SELECT COUNT(*) FROM public.product_stocks) + (SELECT COUNT(*) FROM public.material_stocks))::int AS "totalStockItems",
+        (SELECT COUNT(*) FROM public.product_stocks WHERE "availableQty" <= "reorderThreshold") +
+        (SELECT COUNT(*) FROM public.material_stocks WHERE "availableQty" <= "reorderThreshold") AS "lowStockItems",
+        (SELECT COUNT(*) FROM public.products WHERE "isPublished" = true)::int AS "publishedProducts"
+    ),
+    delivery_totals AS (
+      SELECT
+        COUNT(*) FILTER (WHERE status::text IN ('READY_FOR_SHIPMENT','READY_FOR_SHIPPING'))::int AS "activeDeliveries"
+      FROM public.customer_inquiries
+    ),
+    -- Outstanding = sum of remaining balance from most recent verified payment per inquiry
+    outstanding AS (
+      SELECT COALESCE(SUM(pr."remainingBalance"), 0)::double precision AS "outstandingReceivables"
+      FROM (
+        SELECT DISTINCT ON ("inquiryId")
+          "inquiryId",
+          "remainingBalance"
+        FROM public.payment_records
+        WHERE status = 'VERIFIED'
+          AND "inquiryId" IS NOT NULL
+        ORDER BY "inquiryId", "verifiedAt" DESC, "createdAt" DESC
+      ) pr
     ),
     payment_statuses AS (
       SELECT
@@ -339,11 +357,29 @@ async function getReportsSnapshot() {
       FROM public.payment_records
     )
     SELECT
-      overview.*,
-      COALESCE((SELECT SUM("remainingBalance") FROM latest_balances), 0)::double precision AS "outstandingReceivables",
+      ot."bookedRevenue",
+      ot."salesOrders",
+      ot."openOrders",
+      ot."deliveredOrders",
+      pt."verifiedCollections",
+      CASE
+        WHEN ot."bookedRevenue" > 0
+          THEN ROUND((((pt."verifiedCollections" / ot."bookedRevenue") * 100)::numeric), 1)
+        ELSE 0
+      END::double precision AS "collectionRate",
+      it."inventoryValue",
+      it."totalStockItems",
+      it."lowStockItems",
+      it."publishedProducts",
+      dt."activeDeliveries",
+      os."outstandingReceivables",
       payment_statuses."verifiedPayments",
       payment_statuses."pendingPayments"
-    FROM overview
+    FROM order_totals ot
+    CROSS JOIN payment_totals pt
+    CROSS JOIN inventory_totals it
+    CROSS JOIN delivery_totals dt
+    CROSS JOIN outstanding os
     CROSS JOIN payment_statuses
   `)
 
@@ -351,12 +387,21 @@ async function getReportsSnapshot() {
 }
 
 async function getOrderStatuses() {
+  // Translate customer_inquiries statuses into readable labels
   return prisma.$queryRaw<StatusCountRow[]>(Prisma.sql`
     SELECT
-      status::text AS label,
+      CASE ci.status::text
+        WHEN 'RECEIVED'                   THEN 'Received'
+        WHEN 'ACCEPTED'                   THEN 'Pending Inventory'
+        WHEN 'WAITING_FOR_PAYMENT'        THEN 'Pending Payment'
+        WHEN 'GETTING_READY_FOR_BUILDING' THEN 'Being Built'
+        WHEN 'READY_FOR_SHIPMENT'         THEN 'Out for Delivery'
+        WHEN 'COMPLETED'                  THEN 'Completed'
+        ELSE ci.status::text
+      END AS label,
       COUNT(*)::int AS count
-    FROM public.sales_orders
-    GROUP BY status
+    FROM public.customer_inquiries ci
+    GROUP BY ci.status
     ORDER BY count DESC, label ASC
   `)
 }

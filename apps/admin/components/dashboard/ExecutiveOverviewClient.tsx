@@ -125,9 +125,9 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
           <div className="rounded-2xl border border-[#e5e7eb] bg-[#f8fbff] px-5 py-4">
             <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-[#94a3b8]">Live Neon Snapshot</p>
             <div className="mt-3 space-y-1 text-[13px] text-[#334155]">
-              <p>{snapshot.salesOrders} sales orders recorded</p>
+              <p>{snapshot.salesOrders} active customer orders</p>
               <p>{snapshot.publishedProducts} published products in catalog</p>
-              <p>{snapshot.activeDeliveries} active deliveries in motion</p>
+              <p>{snapshot.activeDeliveries} orders out for delivery</p>
             </div>
           </div>
         </section>
@@ -148,7 +148,7 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-start justify-between">
               <div>
-                <p className="text-[12px] font-medium text-[#94a3b8]">Sales Orders</p>
+                <p className="text-[12px] font-medium text-[#94a3b8]">Active Orders</p>
                 <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{snapshot.salesOrders}</p>
               </div>
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50">
