@@ -5826,6 +5826,9 @@ export namespace Prisma {
     accessStartsAt: Date | null
     accessExpiresAt: Date | null
     lastLoginAt: Date | null
+    emailVerifiedAt: Date | null
+    phone: string | null
+    address: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5841,6 +5844,9 @@ export namespace Prisma {
     accessStartsAt: Date | null
     accessExpiresAt: Date | null
     lastLoginAt: Date | null
+    emailVerifiedAt: Date | null
+    phone: string | null
+    address: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5856,6 +5862,9 @@ export namespace Prisma {
     accessStartsAt: number
     accessExpiresAt: number
     lastLoginAt: number
+    emailVerifiedAt: number
+    phone: number
+    address: number
     createdAt: number
     updatedAt: number
     permissions: number
@@ -5874,6 +5883,9 @@ export namespace Prisma {
     accessStartsAt?: true
     accessExpiresAt?: true
     lastLoginAt?: true
+    emailVerifiedAt?: true
+    phone?: true
+    address?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5889,6 +5901,9 @@ export namespace Prisma {
     accessStartsAt?: true
     accessExpiresAt?: true
     lastLoginAt?: true
+    emailVerifiedAt?: true
+    phone?: true
+    address?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5904,6 +5919,9 @@ export namespace Prisma {
     accessStartsAt?: true
     accessExpiresAt?: true
     lastLoginAt?: true
+    emailVerifiedAt?: true
+    phone?: true
+    address?: true
     createdAt?: true
     updatedAt?: true
     permissions?: true
@@ -5993,6 +6011,9 @@ export namespace Prisma {
     accessStartsAt: Date | null
     accessExpiresAt: Date | null
     lastLoginAt: Date | null
+    emailVerifiedAt: Date | null
+    phone: string | null
+    address: string | null
     createdAt: Date
     updatedAt: Date
     permissions: JsonValue | null
@@ -6026,6 +6047,9 @@ export namespace Prisma {
     accessStartsAt?: boolean
     accessExpiresAt?: boolean
     lastLoginAt?: boolean
+    emailVerifiedAt?: boolean
+    phone?: boolean
+    address?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     permissions?: boolean
@@ -6065,6 +6089,9 @@ export namespace Prisma {
     accessStartsAt?: boolean
     accessExpiresAt?: boolean
     lastLoginAt?: boolean
+    emailVerifiedAt?: boolean
+    phone?: boolean
+    address?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     permissions?: boolean
@@ -6082,6 +6109,9 @@ export namespace Prisma {
     accessStartsAt?: boolean
     accessExpiresAt?: boolean
     lastLoginAt?: boolean
+    emailVerifiedAt?: boolean
+    phone?: boolean
+    address?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     permissions?: boolean
@@ -6099,12 +6129,15 @@ export namespace Prisma {
     accessStartsAt?: boolean
     accessExpiresAt?: boolean
     lastLoginAt?: boolean
+    emailVerifiedAt?: boolean
+    phone?: boolean
+    address?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     permissions?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "authUserId" | "companyId" | "name" | "email" | "role" | "status" | "accessStartsAt" | "accessExpiresAt" | "lastLoginAt" | "createdAt" | "updatedAt" | "permissions", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "authUserId" | "companyId" | "name" | "email" | "role" | "status" | "accessStartsAt" | "accessExpiresAt" | "lastLoginAt" | "emailVerifiedAt" | "phone" | "address" | "createdAt" | "updatedAt" | "permissions", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | User$companyArgs<ExtArgs>
     leadsCreated?: boolean | User$leadsCreatedArgs<ExtArgs>
@@ -6174,6 +6207,9 @@ export namespace Prisma {
       accessStartsAt: Date | null
       accessExpiresAt: Date | null
       lastLoginAt: Date | null
+      emailVerifiedAt: Date | null
+      phone: string | null
+      address: string | null
       createdAt: Date
       updatedAt: Date
       permissions: Prisma.JsonValue | null
@@ -6632,6 +6668,9 @@ export namespace Prisma {
     readonly accessStartsAt: FieldRef<"User", 'DateTime'>
     readonly accessExpiresAt: FieldRef<"User", 'DateTime'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
+    readonly emailVerifiedAt: FieldRef<"User", 'DateTime'>
+    readonly phone: FieldRef<"User", 'String'>
+    readonly address: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly permissions: FieldRef<"User", 'Json'>
@@ -39917,6 +39956,9 @@ export namespace Prisma {
     accessStartsAt: 'accessStartsAt',
     accessExpiresAt: 'accessExpiresAt',
     lastLoginAt: 'lastLoginAt',
+    emailVerifiedAt: 'emailVerifiedAt',
+    phone: 'phone',
+    address: 'address',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     permissions: 'permissions'
@@ -40982,6 +41024,9 @@ export namespace Prisma {
     accessStartsAt?: DateTimeNullableFilter<"User"> | Date | string | null
     accessExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerifiedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    phone?: StringNullableFilter<"User"> | string | null
+    address?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     permissions?: JsonNullableFilter<"User">
@@ -41020,6 +41065,9 @@ export namespace Prisma {
     accessStartsAt?: SortOrderInput | SortOrder
     accessExpiresAt?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
+    emailVerifiedAt?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     permissions?: SortOrderInput | SortOrder
@@ -41061,6 +41109,9 @@ export namespace Prisma {
     accessStartsAt?: DateTimeNullableFilter<"User"> | Date | string | null
     accessExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerifiedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    phone?: StringNullableFilter<"User"> | string | null
+    address?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     permissions?: JsonNullableFilter<"User">
@@ -41099,6 +41150,9 @@ export namespace Prisma {
     accessStartsAt?: SortOrderInput | SortOrder
     accessExpiresAt?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
+    emailVerifiedAt?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     permissions?: SortOrderInput | SortOrder
@@ -41121,6 +41175,9 @@ export namespace Prisma {
     accessStartsAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     accessExpiresAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    emailVerifiedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    phone?: StringNullableWithAggregatesFilter<"User"> | string | null
+    address?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     permissions?: JsonNullableWithAggregatesFilter<"User">
@@ -43753,6 +43810,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -43791,6 +43851,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -43827,6 +43890,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -43865,6 +43931,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -43902,6 +43971,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -43917,6 +43989,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -43933,6 +44008,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -47045,6 +47123,9 @@ export namespace Prisma {
     accessStartsAt?: SortOrder
     accessExpiresAt?: SortOrder
     lastLoginAt?: SortOrder
+    emailVerifiedAt?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     permissions?: SortOrder
@@ -47061,6 +47142,9 @@ export namespace Prisma {
     accessStartsAt?: SortOrder
     accessExpiresAt?: SortOrder
     lastLoginAt?: SortOrder
+    emailVerifiedAt?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47076,6 +47160,9 @@ export namespace Prisma {
     accessStartsAt?: SortOrder
     accessExpiresAt?: SortOrder
     lastLoginAt?: SortOrder
+    emailVerifiedAt?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52940,6 +53027,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -52976,6 +53066,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -53252,6 +53345,9 @@ export namespace Prisma {
     accessStartsAt?: DateTimeNullableFilter<"User"> | Date | string | null
     accessExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerifiedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    phone?: StringNullableFilter<"User"> | string | null
+    address?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     permissions?: JsonNullableFilter<"User">
@@ -55089,6 +55185,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -55126,6 +55225,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -55278,6 +55380,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -55315,6 +55420,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -55440,6 +55548,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -55477,6 +55588,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -55779,6 +55893,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -55816,6 +55933,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -56128,6 +56248,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -56165,6 +56288,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -56569,6 +56695,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -56606,6 +56735,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -57831,6 +57963,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -57868,6 +58003,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -57919,6 +58057,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -57956,6 +58097,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58044,6 +58188,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58081,6 +58228,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58275,6 +58425,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58312,6 +58465,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58352,6 +58508,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58389,6 +58548,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58429,6 +58591,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58466,6 +58631,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58506,6 +58674,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58543,6 +58714,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58583,6 +58757,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58620,6 +58797,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58660,6 +58840,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58697,6 +58880,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58807,6 +58993,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58844,6 +59033,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58938,6 +59130,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -58975,6 +59170,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59021,6 +59219,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59058,6 +59259,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59104,6 +59308,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59141,6 +59348,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59187,6 +59397,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59224,6 +59437,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59270,6 +59486,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59307,6 +59526,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59353,6 +59575,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59390,6 +59615,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59492,6 +59720,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59529,6 +59760,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59681,6 +59915,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -59718,6 +59955,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60265,6 +60505,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60302,6 +60545,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60342,6 +60588,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60379,6 +60628,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60533,6 +60785,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60570,6 +60825,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60616,6 +60874,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60653,6 +60914,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60927,6 +61191,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -60964,6 +61231,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61004,6 +61274,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61041,6 +61314,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61201,6 +61477,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61238,6 +61517,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61284,6 +61566,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61321,6 +61606,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61401,6 +61689,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61438,6 +61729,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61524,6 +61818,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61561,6 +61858,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61785,6 +62085,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61822,6 +62125,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61862,6 +62168,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -61899,6 +62208,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62157,6 +62469,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62194,6 +62509,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62240,6 +62558,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62277,6 +62598,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62422,6 +62746,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62459,6 +62786,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62499,6 +62829,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62536,6 +62869,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62709,6 +63045,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62746,6 +63085,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62792,6 +63134,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62829,6 +63174,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -62970,6 +63318,9 @@ export namespace Prisma {
     accessStartsAt?: Date | string | null
     accessExpiresAt?: Date | string | null
     lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    phone?: string | null
+    address?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -63061,6 +63412,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -63097,6 +63451,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue
@@ -63133,6 +63490,9 @@ export namespace Prisma {
     accessStartsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accessExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: NullableJsonNullValueInput | InputJsonValue

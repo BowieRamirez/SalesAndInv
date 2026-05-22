@@ -6,6 +6,7 @@ import { ROLE_REDIRECT } from "@/lib/rbac"
 import { formatInquiryWorkflowStatus } from "@furnitrack/validators"
 import { ApprovalsTable } from "@/components/ApprovalsTable"
 import { ProductEditRequestsTable, type ProductEditRequest } from "@/components/approvals/ProductEditRequestsTable"
+import { ProductCatalogModal, type CatalogProduct, type CatalogMaterial } from "@/components/approvals/ProductCatalogModal"
 
 export const dynamic = "force-dynamic"
 
@@ -28,6 +29,80 @@ type EditRequestRow = {
   currentPrice: number
   currentIsPublished: boolean
   currentWarehouseName: string
+}
+
+async function getAllProducts(): Promise<CatalogProduct[]> {
+  type ProductRow = {
+    id: string
+    name: string
+    category: string
+    price: number
+    isPublished: boolean
+    state: string
+    sku: string
+    warehouseName: string
+    availableQty: number
+  }
+
+  type MaterialRow = {
+    productId: string
+    materialSku: string
+    materialName: string
+    quantityRequired: number | null
+    quantityDisplay: string | null
+    notes: string | null
+  }
+
+  const [rows, materialRows] = await Promise.all([
+    prisma.$queryRaw<ProductRow[]>(Prisma.sql`
+      SELECT
+        p.id,
+        p.name,
+        p.category,
+        p.price::double precision AS price,
+        p."isPublished",
+        ps.state::text AS state,
+        ps.sku,
+        w.name AS "warehouseName",
+        ps."availableQty"
+      FROM public.products p
+      INNER JOIN public.product_stocks ps ON ps.id = p."productStockId"
+      INNER JOIN public.warehouses w ON w.id = ps."warehouseId"
+      ORDER BY ps.state ASC, p.name ASC
+    `),
+    prisma.$queryRaw<MaterialRow[]>(Prisma.sql`
+      SELECT
+        pm."productId",
+        ms.sku AS "materialSku",
+        ms."itemName" AS "materialName",
+        pm."quantityRequired"::double precision AS "quantityRequired",
+        pm."quantityDisplay",
+        pm.notes
+      FROM public.product_materials pm
+      INNER JOIN public.material_stocks ms ON ms.id = pm."materialStockId"
+      ORDER BY ms."itemName" ASC
+    `),
+  ])
+
+  // Group materials by productId
+  const materialsByProduct = new Map<string, CatalogMaterial[]>()
+  for (const m of materialRows) {
+    const list = materialsByProduct.get(m.productId) ?? []
+    list.push({
+      materialSku: m.materialSku,
+      materialName: m.materialName,
+      quantityRequired: m.quantityRequired != null ? Number(m.quantityRequired) : null,
+      quantityDisplay: m.quantityDisplay,
+      notes: m.notes,
+    })
+    materialsByProduct.set(m.productId, list)
+  }
+
+  return rows.map((r) => ({
+    ...r,
+    price: Number(r.price),
+    materials: materialsByProduct.get(r.id) ?? [],
+  }))
 }
 
 async function getPendingProductEditRequests(): Promise<ProductEditRequest[]> {
@@ -95,9 +170,10 @@ export default async function AdminApprovalsPage() {
     redirect(ROLE_REDIRECT[currentUser.role])
   }
 
-  const [inquiries, productEditRequests] = await Promise.all([
+  const [inquiries, productEditRequests, allProducts] = await Promise.all([
     getInquiryWorkflowRows(),
     getPendingProductEditRequests(),
+    getAllProducts(),
   ])
 
   const stages = [
@@ -112,12 +188,17 @@ export default async function AdminApprovalsPage() {
   return (
     <main className="min-h-screen bg-[#fcfcfc] p-8">
       <div className="mx-auto max-w-7xl space-y-8">
-        <div>
-          <h1 className="text-[28px] font-semibold text-[#111827]">Approval Oversight</h1>
-          <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
-            Management can monitor every customer order approval stage here across sales, inventory, accounting,
-            operations, shipping, and completion. Product edits from operations also require your approval below.
-          </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-[28px] font-semibold text-[#111827]">Approval Oversight</h1>
+            <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
+              Management can monitor every customer order approval stage here across sales, inventory, accounting,
+              operations, shipping, and completion. Product edits from operations also require your approval below.
+            </p>
+          </div>
+          <div className="shrink-0">
+            <ProductCatalogModal products={allProducts} />
+          </div>
         </div>
 
         {/* Product Edit Requests */}

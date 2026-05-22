@@ -21,6 +21,7 @@ export type ManagedAccount = {
   name: string
   role: string
   status: string
+  emailVerifiedAt?: string | null
   lastLoginAt: string | null
   createdAt: string | null
   updatedAt: string | null
@@ -212,6 +213,7 @@ export function UsersTable({
               <th className="px-4 py-3 font-medium">Registered Date</th>
               <th className="px-4 py-3 font-medium">Last Login</th>
               <th className="px-4 py-3 font-medium">Status</th>
+              {variant === "customer" ? <th className="px-4 py-3 font-medium">Verified</th> : null}
               <th className="px-4 py-3 font-medium">Role</th>
               <th className="px-4 py-3 font-medium" />
             </tr>
@@ -260,6 +262,21 @@ export function UsersTable({
                     <td className="px-4 py-4">
                       <StatusBadge status={account.status} />
                     </td>
+                    {variant === "customer" ? (
+                      <td className="px-4 py-4">
+                        {account.emailVerifiedAt ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                            Verified
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
+                            <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                            Unverified
+                          </span>
+                        )}
+                      </td>
+                    ) : null}
                     <td className="px-4 py-4">
                       <RoleBadge role={account.role} label={roleLabels[account.role] ?? account.role} />
                     </td>

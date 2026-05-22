@@ -15,10 +15,12 @@
     "@furnitrack/ui": "workspace:*",
     "@furnitrack/validators": "workspace:*",
     "@neondatabase/auth": "0.2.0-beta.1",
+    "better-auth": "^1.6.11",
     "lucide-react": "^0.577.0",
     "next": "16.2.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "resend": "^6.12.3",
     "tailwindcss": "^4.0.0"
   },
   "devDependencies": {

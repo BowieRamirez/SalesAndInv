@@ -27,6 +27,7 @@ type AppUserRow = {
   name: string
   role: AppRole
   status: string
+  emailVerifiedAt: string | null
 }
 
 type AppRole =
@@ -67,6 +68,7 @@ export type StorefrontSessionUser = {
   name: string
   role: AppRole
   status: string
+  emailVerifiedAt: string | null
 }
 
 function base64UrlDecode(value: string) {
@@ -233,7 +235,8 @@ async function findAppUserForSession(
       u.email,
       u.name,
       u.role::text AS role,
-      u.status::text AS status
+      u.status::text AS status,
+      u."emailVerifiedAt"::text AS "emailVerifiedAt"
     FROM public.users u
     WHERE u."authUserId" = ${sessionUser.id}::uuid
       OR (
@@ -268,6 +271,7 @@ export async function getCurrentStorefrontUser({ fresh = false }: { fresh?: bool
         name: sessionUser.name,
         role: normalizeAppRole(sessionUser.role),
         status: "ACTIVE",
+        emailVerifiedAt: null,
       }
     }
 
@@ -278,6 +282,7 @@ export async function getCurrentStorefrontUser({ fresh = false }: { fresh?: bool
       name: appUser.name,
       role: normalizeAppRole(appUser.role),
       status: appUser.status,
+      emailVerifiedAt: appUser.emailVerifiedAt ?? null,
     }
   }
 
@@ -288,6 +293,7 @@ export async function getCurrentStorefrontUser({ fresh = false }: { fresh?: bool
     name: appUser.name,
     role: normalizeAppRole(appUser.role),
     status: appUser.status,
+    emailVerifiedAt: appUser.emailVerifiedAt ?? null,
   }
 }
 

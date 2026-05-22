@@ -112,6 +112,14 @@ function SignInContent() {
               Create an account
             </Link>
           </p>
+          <p className="mt-2 text-[14px] text-[#6a7282]">
+            <Link
+              href="/forgot-password"
+              className="font-medium text-[#1a1a2e] transition-colors hover:text-[#1a1a2e]/70"
+            >
+              Forgot your password?
+            </Link>
+          </p>
         </>
       }
     />

@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { AuthMarketingPanel } from "@/components/AuthMarketingPanel"
+import { validatePassword, passwordHint } from "@/lib/password-rules"
 
 const REGISTER_TIMEOUT_MS = 15000
 
@@ -45,6 +46,14 @@ export default function SignUpPage() {
     e.preventDefault()
     setError("")
     setSuccess("")
+
+    // Client-side password validation
+    const pwValidation = validatePassword(form.password)
+    if (!pwValidation.ok) {
+      setError(pwValidation.error)
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -66,7 +75,7 @@ export default function SignUpPage() {
         return
       }
 
-      setSuccess("Your account has been created in Neon. You can sign in now.")
+      setSuccess("Your account has been created. Check your email for a verification link, then sign in.")
       setForm({ name: "", email: "", password: "" })
       setIsLoading(false)
     } catch {
@@ -207,6 +216,13 @@ export default function SignUpPage() {
                   )}
                 </button>
               </div>
+              {form.password && (() => {
+                const hint = passwordHint(form.password)
+                return hint ? <p className={`mt-1.5 text-[12px] ${hint.color}`}>{hint.text}</p> : null
+              })()}
+              <p className="mt-1 text-[11px] text-[#9ca3af]">
+                8–15 characters, must include a special character (e.g. !@#$%).
+              </p>
             </div>
 
             <button

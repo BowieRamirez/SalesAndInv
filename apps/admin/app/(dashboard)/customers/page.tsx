@@ -10,6 +10,7 @@ type CustomerRow = {
   email: string
   name: string
   status: string
+  emailVerifiedAt: Date | null
   lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -32,6 +33,7 @@ async function getCustomers() {
       LOWER(auth.email) AS email,
       COALESCE(NULLIF(app.name, ''), NULLIF(auth.name, ''), split_part(auth.email, '@', 1)) AS name,
       COALESCE(app.status::text, 'ACTIVE') AS status,
+      app."emailVerifiedAt",
       app."lastLoginAt",
       COALESCE(app."createdAt", auth."createdAt") AS "createdAt",
       COALESCE(app."updatedAt", auth."updatedAt") AS "updatedAt",
@@ -95,6 +97,7 @@ export default async function CustomersDashboard({ searchParams }: CustomersPage
     name: c.name,
     role: "CLIENT",
     status: c.status,
+    emailVerifiedAt: c.emailVerifiedAt ? new Date(c.emailVerifiedAt).toISOString() : null,
     lastLoginAt: c.lastLoginAt ? new Date(c.lastLoginAt).toISOString() : null,
     createdAt: c.createdAt ? new Date(c.createdAt).toISOString() : null,
     updatedAt: c.updatedAt ? new Date(c.updatedAt).toISOString() : null,

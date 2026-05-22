@@ -114,6 +114,20 @@ export async function POST(request: Request) {
     )
   }
 
+  const specialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/
+  if (password.length > 15) {
+    return NextResponse.json(
+      { message: "Password must be no more than 15 characters." },
+      { status: 400 }
+    )
+  }
+  if (!specialChar.test(password)) {
+    return NextResponse.json(
+      { message: "Password must include at least one special character (e.g. !@#$%^&*)." },
+      { status: 400 }
+    )
+  }
+
   const existingIdentity = await findAuthIdentityByEmail(email)
 
   if (existingIdentity) {
@@ -195,6 +209,24 @@ export async function POST(request: Request) {
     email,
     name,
   })
+
+  // Send email verification — fire and forget, don't block registration
+  try {
+    const verifyResponse = await fetchWithTimeout(
+      `${authUrl}/send-verification-email`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Origin: authUrl },
+        body: JSON.stringify({ email }),
+        cache: "no-store",
+      },
+    )
+    if (!verifyResponse.ok) {
+      console.warn("[register] Failed to send verification email", await verifyResponse.text())
+    }
+  } catch (err) {
+    console.warn("[register] Could not send verification email", err)
+  }
 
   return NextResponse.json({ ok: true })
 }
