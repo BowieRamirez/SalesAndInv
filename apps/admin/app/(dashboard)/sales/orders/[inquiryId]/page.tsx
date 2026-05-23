@@ -103,8 +103,8 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
   const balance = totalWithVat * 0.3
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] p-8">
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <main className={isChatView ? "flex h-screen flex-col bg-[#fcfcfc]" : "min-h-screen bg-[#fcfcfc] p-8"}>
+      <div className={isChatView ? "flex shrink-0 items-center justify-between border-b border-[#e5e7eb] bg-white px-6 py-4" : "mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between"}>
         <div>
           <Link
             href={backHref}
@@ -113,14 +113,16 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
             <ArrowLeft className="h-4 w-4" />
             {backLabel}
           </Link>
-          <h1 className="mt-5 text-[28px] font-semibold text-[#111827]">{inquiry.productName}</h1>
-          <p className="mt-2 text-[14px] text-[#6b7280]">
-            {isChatView
-              ? "Order-specific customer conversation with quick context."
-              : "Order details, inquiry information, and customer information."}
-          </p>
+          {!isChatView && (
+            <>
+              <h1 className="mt-5 text-[28px] font-semibold text-[#111827]">{inquiry.productName}</h1>
+              <p className="mt-2 text-[14px] text-[#6b7280]">
+                Order details, inquiry information, and customer information.
+              </p>
+            </>
+          )}
         </div>
-        <div className="flex flex-col items-start gap-2 md:items-end">
+        <div className={`flex items-center gap-2 ${!isChatView && "flex-col items-start md:items-end"}`}>
           <span className={`rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] ${
             inquiry.workflowStatus === "PENDING_SALES_QUOTATION"
               ? "bg-[#f1f5f9] text-[#475569]"
@@ -128,41 +130,41 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
           }`}>
             {formatInquiryWorkflowStatus(inquiry.workflowStatus)}
           </span>
-          {inquiry.inquiryNumber && (
+          {inquiry.inquiryNumber && !isChatView && (
             <span className="font-mono text-[12px] text-[#94a3b8]">{inquiry.inquiryNumber}</span>
           )}
         </div>
       </div>
 
-      {message ? (
-        <div
-          className={`mb-6 rounded-2xl border px-5 py-4 text-[14px] ${
-            tone === "error"
-              ? "border-[#fecaca] bg-[#fff1f2] text-[#9f1239]"
-              : "border-[#bbf7d0] bg-[#f0fdf4] text-[#166534]"
-          }`}
-        >
-          {message}
-        </div>
-      ) : null}
+      <div className={isChatView ? "flex-1 overflow-hidden" : ""}>
+        {message ? (
+          <div
+            className={`mb-6 rounded-2xl border px-5 py-4 text-[14px] ${
+              tone === "error"
+                ? "border-[#fecaca] bg-[#fff1f2] text-[#9f1239]"
+                : "border-[#bbf7d0] bg-[#f0fdf4] text-[#166534]"
+            } ${isChatView ? "m-6" : ""}`}
+          >
+            {message}
+          </div>
+        ) : null}
 
-      {isChatView ? (
-        <div className="grid gap-6 xl:grid-cols-[0.75fr_1.25fr]">
-          <section className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
-            <h2 className="text-[20px] font-semibold text-[#111827]">Order context</h2>
-            <p className="mt-2 text-[14px] leading-[22px] text-[#6b7280]">
-              Use this quick info while chatting with the customer.
-            </p>
-            <div className="mt-5 grid gap-4">
-              <InfoCard label="Customer" value={inquiry.customerName} />
-              <InfoCard label="Order ID" value={inquiry.id.slice(-8).toUpperCase()} />
-              <InfoCard label="Order total" value={formatPeso(totalWithVat)} />
-              <InfoCard label="Remaining balance" value={formatPeso(inquiry.remainingBalance)} />
-            </div>
-          </section>
-          <OrderChatPanel inquiryId={inquiry.id} messages={messages} isClosed={inquiry.workflowStatus === "COMPLETED"} />
-        </div>
-      ) : (
+        {isChatView ? (
+          <OrderChatPanel 
+            inquiryId={inquiry.id} 
+            messages={messages} 
+            isClosed={inquiry.workflowStatus === "COMPLETED"} 
+            defaultOpen={false}
+            contextNode={
+              <div className="grid gap-4">
+                <h1 className="mb-2 text-[30px] font-semibold text-[#111827]">Order Information</h1>
+                <h2 className="mb-2 text-[20px] font-semibold text-[#111827]">{inquiry.productName}</h2>
+                <InfoCard label="Customer" value={inquiry.customerName} />
+                <InfoCard label="Order ID" value={inquiry.id.slice(-8).toUpperCase()} />
+              </div>
+            }
+          />
+        ) : (
         <div className="space-y-6">
           {/* ── Customer info ── */}
           <section className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
@@ -320,6 +322,7 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
           </section>
         </div>
       )}
+      </div>
     </main>
   )
 }

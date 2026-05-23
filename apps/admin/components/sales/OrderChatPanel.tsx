@@ -1,8 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import type { OrderChatMessage } from "@/lib/order-chat"
+import { Image as ImageIcon, FileText, Receipt, Send, X } from "lucide-react"
 
 type AttachmentDraft = {
   fileName: string
@@ -30,8 +31,21 @@ function readFileAsDataUrl(file: File) {
   })
 }
 
-export function OrderChatPanel({ inquiryId, messages, isClosed = false }: { inquiryId: string; messages: OrderChatMessage[]; isClosed?: boolean }) {
+export function OrderChatPanel({
+  inquiryId,
+  messages,
+  isClosed = false,
+  contextNode,
+  defaultOpen,
+}: {
+  inquiryId: string
+  messages: OrderChatMessage[]
+  isClosed?: boolean
+  contextNode?: React.ReactNode
+  defaultOpen?: boolean
+}) {
   const router = useRouter()
+  const [isExpanded, setIsExpanded] = useState(defaultOpen ?? true)
   const [body, setBody] = useState("")
   const [attachmentType, setAttachmentType] = useState<AttachmentDraft["attachmentType"]>("IMAGE")
   const [attachments, setAttachments] = useState<AttachmentDraft[]>([])
@@ -39,6 +53,7 @@ export function OrderChatPanel({ inquiryId, messages, isClosed = false }: { inqu
   const [isPreparing, setIsPreparing] = useState(false)
   const [isSending, setIsSending] = useState(false)
   const [statusMessage, setStatusMessage] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const refreshMessages = useCallback(async () => {
     const response = await fetch(`/api/admin/sales/order-chat?inquiryId=${encodeURIComponent(inquiryId)}`, {
@@ -74,15 +89,19 @@ export function OrderChatPanel({ inquiryId, messages, isClosed = false }: { inqu
     if (!files?.length) return
 
     setIsPreparing(true)
+    // Clear the input value so selecting the same file again triggers onChange
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
     const nextAttachments = await Promise.all(
-      Array.from(files).slice(0, 3).map(async (file) => ({
+      Array.from(files).map(async (file) => ({
         fileName: file.name,
         mimeType: file.type || "application/octet-stream",
         attachmentType: attachmentType === "IMAGE" && !file.type.startsWith("image/") ? "DOCUMENT" : attachmentType,
         dataUrl: await readFileAsDataUrl(file),
       })),
     )
-    setAttachments(nextAttachments)
+    setAttachments(prev => [...prev, ...nextAttachments].slice(0, 5)) // Keep up to 5 attachments max
     setIsPreparing(false)
   }
 
@@ -134,13 +153,29 @@ export function OrderChatPanel({ inquiryId, messages, isClosed = false }: { inqu
   }
 
   return (
-    <div className="rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
-      <div className="mb-4">
-        <h2 className="text-[20px] font-semibold text-[#111827]">Order chat</h2>
-        <p className="mt-1 text-[13px] text-[#6b7280]">This conversation is tied only to this specific order.</p>
-      </div>
+    <div className={`flex h-full flex-col md:flex-row bg-white overflow-hidden ${contextNode ? 'min-h-[500px]' : ''}`}>
+      <div className="flex-1 p-5 lg:p-6 flex flex-col relative w-full h-full min-h-0">
+        <div className="mb-4 flex items-center justify-between shrink-0">
+          <div>
+            <h2 className="text-[20px] font-semibold text-[#111827]">Order chat</h2>
+            <p className="mt-1 text-[13px] text-[#6b7280]">This conversation is tied only to this specific order.</p>
+          </div>
+          {contextNode && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="p-2 rounded-xl hover:bg-gray-100 transition-colors shrink-0 text-gray-500"
+              aria-label="Toggle context panel"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+          )}
+        </div>
 
-      <div className="max-h-[460px] space-y-3 overflow-y-auto rounded-2xl bg-[#f8fafc] p-4">
+        <div className="flex-1 space-y-3 overflow-y-auto rounded-2xl bg-[#f8fafc] p-4 min-h-0">
         {localMessages.length === 0 ? (
           <div className="rounded-xl border border-dashed border-[#d1d5db] bg-white p-8 text-center text-[13px] text-[#6b7280]">
             No chat messages yet.
@@ -195,41 +230,68 @@ export function OrderChatPanel({ inquiryId, messages, isClosed = false }: { inqu
       </div>
 
       {isClosed ? (
-        <div className="mt-4 rounded-xl border border-dashed border-[#d1d5db] bg-[#f9fafb] p-6 text-center text-[13px] text-[#6b7280]">
+        <div className="mt-4 rounded-xl border border-dashed border-[#d1d5db] bg-[#f9fafb] p-6 text-center text-[13px] text-[#6b7280] shrink-0">
           This order has been completed. The chat is now closed.
         </div>
       ) : (
-        <form onSubmit={handleSendMessage} className="mt-4 space-y-3">
+        <form onSubmit={handleSendMessage} className="mt-4 shrink-0">
           <input type="hidden" name="inquiryId" value={inquiryId} />
           <input type="hidden" name="attachmentsJson" value={JSON.stringify(attachments)} />
-          <textarea
-            name="body"
-            value={body}
-            onChange={(event) => setBody(event.target.value)}
-            rows={4}
-            placeholder="Reply to the customer about this order..."
-            className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
-          />
-          <div className="grid gap-3 md:grid-cols-[180px_1fr_auto] md:items-end">
-            <label className="grid gap-2">
-              <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Attachment type</span>
-              <select value={attachmentType} onChange={(event) => setAttachmentType(event.target.value as AttachmentDraft["attachmentType"])} className="rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none focus:border-[#111827]">
-                <option value="IMAGE">Image</option>
-                <option value="DOCUMENT">Document</option>
-                <option value="RECEIPT">Receipt</option>
-              </select>
-            </label>
-            <label className="grid gap-2">
-              <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Images / documents</span>
-              <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onChange={(event) => void handleFiles(event.target.files)} className="w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827]" />
-            </label>
-            <button type="submit" disabled={isPreparing || isSending || (!body.trim() && attachments.length === 0)} className="rounded-[14px] bg-[#111827] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]">
-              {isSending ? "Sending..." : "Send"}
-            </button>
+
+          <div className="relative flex flex-col rounded-[16px] border border-[#d1d5dc] bg-white shadow-sm transition-colors focus-within:border-[#111827]">
+            <textarea
+              name="body"
+              value={body}
+              onChange={(event) => setBody(event.target.value)}
+              rows={3}
+              placeholder="Reply to the customer about this order..."
+              className="w-full resize-none bg-transparent px-4 py-3 text-[14px] text-[#111827] outline-none"
+            />
+            
+            {attachments.length > 0 && (
+              <div className="flex flex-wrap gap-2 px-4 pb-2">
+                {attachments.map((att, i) => (
+                  <div key={i} className="flex items-center gap-1.5 rounded-md border border-[#e5e7eb] bg-[#f9fafb] px-2 py-1 text-[12px] text-[#4b5563]">
+                    <span className="max-w-[120px] truncate">{att.fileName}</span>
+                    <button type="button" onClick={() => setAttachments(attachments.filter((_, index) => index !== i))} className="text-[#9ca3af] hover:text-[#4b5563]">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between border-t border-[#f3f4f6] px-3 py-2">
+              <div className="flex items-center gap-1">
+                <label className="relative cursor-pointer rounded-lg p-2 text-[#6b7280] transition-colors hover:bg-[#f3f4f6]" title="Attach Image">
+                  <ImageIcon className="h-5 w-5" />
+                  <input ref={fileInputRef} type="file" multiple accept="image/*" onChange={(event) => { setAttachmentType("IMAGE"); void handleFiles(event.target.files) }} className="hidden" />
+                </label>
+                <label className="relative cursor-pointer rounded-lg p-2 text-[#6b7280] transition-colors hover:bg-[#f3f4f6]" title="Attach Document">
+                  <FileText className="h-5 w-5" />
+                  <input ref={fileInputRef} type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={(event) => { setAttachmentType("DOCUMENT"); void handleFiles(event.target.files) }} className="hidden" />
+                </label>
+                <label className="relative cursor-pointer rounded-lg p-2 text-[#6b7280] transition-colors hover:bg-[#f3f4f6]" title="Attach Receipt">
+                  <Receipt className="h-5 w-5" />
+                  <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf" onChange={(event) => { setAttachmentType("RECEIPT"); void handleFiles(event.target.files) }} className="hidden" />
+                </label>
+              </div>
+
+              <button type="submit" disabled={isPreparing || isSending || (!body.trim() && attachments.length === 0)} className="flex items-center gap-2 rounded-xl bg-[#111827] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 disabled:cursor-not-allowed disabled:bg-[#9ca3af]">
+                <span>{isSending ? "Sending..." : "Send"}</span>
+                <Send className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-          {attachments.length > 0 ? <p className="text-[12px] text-[#6b7280]">Prepared {attachments.length} attachment(s).</p> : null}
-          {statusMessage ? <p className="text-[12px] text-[#6b7280]">{statusMessage}</p> : null}
+          {statusMessage ? <p className="mt-2 text-[12px] text-[#6b7280]">{statusMessage}</p> : null}
         </form>
+      )}
+      </div>
+
+      {contextNode && isExpanded && (
+        <div className="w-full md:w-[320px] lg:w-[380px] shrink-0 border-t border-[#e5e7eb] md:border-t-0 md:border-l bg-[#f9fafb] p-5 lg:p-6 overflow-y-auto">
+          {contextNode}
+        </div>
       )}
     </div>
   )

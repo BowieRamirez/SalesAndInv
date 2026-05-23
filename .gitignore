@@ -9,3 +9,9 @@ dist/
 
 # Graphify output
 graphify-out/
+
+# Local dev-server logs
+.dev-server.*.log
+
+# Prisma engine temp files
+packages/db/src/generated/prisma/query_engine-*.tmp*

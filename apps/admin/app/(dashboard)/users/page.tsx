@@ -3,7 +3,7 @@ import { Prisma, prisma } from "@furnitrack/db"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { APP_ROLES, ROLE_LABELS, ROLE_REDIRECT, type AppRole } from "@/lib/rbac"
 import { UsersTable, type ManagedAccount } from "@/components/users/UsersTable"
-import { AddUserForm } from "@/components/users/AddUserForm"
+import { AddUserModal } from "@/components/users/AddUserModal"
 
 type UsersPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -16,6 +16,7 @@ type ManagedAccountRow = {
   name: string
   role: AppRole
   status: string
+  emailVerifiedAt: Date | null
   lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +50,7 @@ async function getManagedAccounts() {
       COALESCE(NULLIF(app.name, ''), NULLIF(auth.name, ''), split_part(auth.email, '@', 1)) AS name,
       ${AUTH_ROLE_CASE_SQL}::text AS role,
       COALESCE(app.status::text, 'ACTIVE') AS status,
+      app."emailVerifiedAt",
       app."lastLoginAt",
       COALESCE(app."createdAt", auth."createdAt") AS "createdAt",
       COALESCE(app."updatedAt", auth."updatedAt") AS "updatedAt",
@@ -61,35 +63,17 @@ async function getManagedAccounts() {
       ORDER BY CASE WHEN app."authUserId"::text = auth.id::text THEN 0 ELSE 1 END
       LIMIT 1
     ) app ON TRUE
-    WHERE ${AUTH_ROLE_CASE_SQL} <> 'CLIENT'
     ORDER BY
       CASE ${AUTH_ROLE_CASE_SQL}
         WHEN 'ADMIN_MANAGEMENT' THEN 0
         WHEN 'SALES' THEN 1
         WHEN 'OPERATIONS_DESIGN' THEN 2
         WHEN 'ACCOUNTING' THEN 3
-        ELSE 4
+        WHEN 'CUSTOM' THEN 4
+        ELSE 5
       END,
       LOWER(auth.email) ASC
   `)
-}
-
-function StatCard({
-  label,
-  value,
-  hint,
-}: {
-  label: string
-  value: string | number
-  hint?: string
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-[12px] text-slate-500">{label}</p>
-      <p className="mt-2 text-[28px] font-semibold text-slate-900">{value}</p>
-      {hint ? <p className="mt-1 text-[11px] text-slate-400">{hint}</p> : null}
-    </div>
-  )
 }
 
 export const dynamic = "force-dynamic"
@@ -106,14 +90,6 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
   const tone = getSearchValue(resolvedSearchParams.tone) === "error" ? "error" : "success"
   const managedAccounts = await getManagedAccounts()
 
-  const totalUsers = managedAccounts.length
-  const activeUsers = managedAccounts.filter((a) => a.status.toUpperCase() === "ACTIVE").length
-  const invitedUsers = managedAccounts.filter((a) => a.status.toUpperCase() === "INVITED").length
-  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
-  const newUsers = managedAccounts.filter(
-    (a) => a.createdAt && new Date(a.createdAt).getTime() >= thirtyDaysAgo,
-  ).length
-
   const serialized: ManagedAccount[] = managedAccounts.map((a) => ({
     id: a.id,
     authUserId: a.authUserId,
@@ -121,6 +97,7 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
     name: a.name,
     role: a.role,
     status: a.status,
+    emailVerifiedAt: a.emailVerifiedAt ? new Date(a.emailVerifiedAt).toISOString() : null,
     lastLoginAt: a.lastLoginAt ? new Date(a.lastLoginAt).toISOString() : null,
     createdAt: a.createdAt ? new Date(a.createdAt).toISOString() : null,
     updatedAt: a.updatedAt ? new Date(a.updatedAt).toISOString() : null,
@@ -132,18 +109,14 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+      <div className="w-full space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-[12px] text-slate-500">Home / Users</p>
             <h1 className="mt-1 text-[24px] font-semibold text-slate-900">User List</h1>
+            <p className="mt-1 text-[13px] text-slate-500">Internal staff and client accounts in one place.</p>
           </div>
-          <a
-            href="#add-user"
-            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-slate-800"
-          >
-            + Add User
-          </a>
+          <AddUserModal roles={staffRoleOptions} />
         </div>
 
         {message ? (
@@ -158,17 +131,6 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
           </div>
         ) : null}
 
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Total Users" value={totalUsers} hint="Internal accounts" />
-          <StatCard label="New Users" value={`+${newUsers}`} hint="Last 30 days" />
-          <StatCard label="Pending Verifications" value={invitedUsers} hint="Status: Invited" />
-          <StatCard
-            label="Active Users"
-            value={activeUsers}
-            hint={`${totalUsers ? Math.round((activeUsers / totalUsers) * 100) : 0}% of users`}
-          />
-        </section>
-
         <UsersTable
           users={serialized}
           currentAuthUserId={currentUser.authUserId ?? ""}
@@ -177,19 +139,6 @@ export default async function UsersDashboard({ searchParams }: UsersPageProps) {
           internalRoleOptions={internalRoleOptions}
           roleLabels={ROLE_LABELS}
         />
-
-        <section
-          id="add-user"
-          className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
-          <div className="mb-4">
-            <h2 className="text-[18px] font-semibold text-slate-900">Add internal account</h2>
-            <p className="mt-1 text-[12px] text-slate-500">
-              Creates a Neon Auth login and syncs the staff record.
-            </p>
-          </div>
-          <AddUserForm roles={staffRoleOptions} />
-        </section>
       </div>
     </main>
   )

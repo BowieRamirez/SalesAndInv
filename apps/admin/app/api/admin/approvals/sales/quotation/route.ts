@@ -129,8 +129,6 @@ export async function POST(request: Request) {
         AND status = 'PENDING_SALES_QUOTATION'::"InquiryStatus"
     `)
 
-    const updatedRows = 1 // we already verified the row exists above
-
     // ── Save quotation record to quotations table ─────────────────────────────
     const quotationNumber = `QUO-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`
     await prisma.$executeRaw(Prisma.sql`

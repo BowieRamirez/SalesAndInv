@@ -58,28 +58,60 @@ type NavGroup = {
 
 const navConfigs: Record<AppRole, NavConfig> = {
   ADMIN_MANAGEMENT: {
-    links: [
-      { name: "Executive Overview", href: "/", icon: LayoutDashboard },
-      { name: "Approvals", href: "/approvals", icon: CheckSquare },
-      { name: "Admin Access", href: "/users", icon: Users },
-      { name: "Customers", href: "/customers", icon: Users },
-      { name: "Reports", href: "/analytics", icon: BarChart3 },
-      { name: "Audit Logs", href: "/audit", icon: History },
-      { name: "Archives", href: "/archives", icon: History },
+    links: [],
+    groups: [
+      {
+        label: "Workspace",
+        links: [
+          { name: "Executive Overview", href: "/", icon: LayoutDashboard },
+          { name: "Approvals", href: "/approvals", icon: CheckSquare },
+        ],
+      },
+      {
+        label: "People & Entities",
+        links: [
+          { name: "User List", href: "/users", icon: Users },
+        ],
+      },
+      {
+        label: "System & Logs",
+        links: [
+          { name: "Reports", href: "/analytics", icon: BarChart3 },
+          { name: "Audit Logs", href: "/audit", icon: History },
+          { name: "Archives", href: "/archives", icon: History },
+        ],
+      },
     ],
     roleLabel: "Admin / Management",
     color: "bg-[#34384d]",
-    allowedPaths: ["/", "/approvals", "/users", "/customers", "/analytics", "/audit", "/archives"],
+    allowedPaths: ["/", "/approvals", "/users", "/analytics", "/audit", "/archives"],
     defaultHref: "/",
   },
   SALES: {
-    links: [
-      { name: "Dashboard", href: "/sales?tab=lead", icon: FileEdit, tab: "lead" },
-      { name: "Approvals", href: "/sales?tab=approvals", icon: CheckSquare, tab: "approvals" },
-      { name: "Returns", href: "/sales?tab=returns", icon: History, tab: "returns" },
-      { name: "Sales Orders", href: "/sales?tab=orders", icon: CheckSquare, tab: "orders" },
-      { name: "Order Chats", href: "/sales?tab=chats", icon: Calculator, tab: "chats" },
-      { name: "Audit Logs", href: "/sales?tab=audit", icon: History, tab: "audit" },
+    links: [],
+    groups: [
+      {
+        label: "Workspace",
+        links: [
+          { name: "Dashboard", href: "/sales?tab=lead", icon: FileEdit, tab: "lead" },
+          { name: "Order Chats", href: "/sales?tab=chats", icon: Calculator, tab: "chats" },
+        ],
+      },
+      {
+        label: "Sales & Orders",
+        links: [
+          { name: "Quotations", href: "/sales?tab=quotations", icon: FileText, tab: "quotations" },
+          { name: "Sales Orders", href: "/sales?tab=orders", icon: CheckSquare, tab: "orders" },
+          { name: "Returns", href: "/sales?tab=returns", icon: History, tab: "returns" },
+        ],
+      },
+      {
+        label: "System",
+        links: [
+          { name: "Approvals", href: "/sales?tab=approvals", icon: CheckSquare, tab: "approvals" },
+          { name: "Audit Logs", href: "/sales?tab=audit", icon: History, tab: "audit" },
+        ],
+      },
     ],
     roleLabel: "Sales",
     color: "bg-emerald-500",
@@ -101,6 +133,12 @@ const navConfigs: Record<AppRole, NavConfig> = {
   OPERATIONS_DESIGN: {
     links: [],
     groups: [
+      {
+        label: "Workspace",
+        links: [
+          { name: "Dashboard", href: "/operations?tab=dashboard", icon: LayoutDashboard, tab: "dashboard" },
+        ],
+      },
       {
         label: "Product",
         links: [
@@ -130,7 +168,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
       {
         label: "System",
         links: [
-          { name: "Suppliers", href: "/operations?tab=procurement", icon: Truck, tab: "procurement" },
+          { name: "Suppliers", href: "/operations?tab=suppliers", icon: Truck, tab: "suppliers" },
           { name: "Audit Logs", href: "/operations?tab=audit", icon: History, tab: "audit" },
         ],
       },
@@ -138,7 +176,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
     roleLabel: "Operations / Design",
     color: "bg-rose-500",
     allowedPaths: ["/operations"],
-    defaultHref: "/operations?tab=finished-products",
+    defaultHref: "/operations?tab=dashboard",
   },
   CUSTOM: {
     links: [],
@@ -545,15 +583,30 @@ function SidebarContent({ currentUser, unreadChatsCount }: { currentUser: Sideba
 
     if (currentUser.role === "SALES" || currentUser.role === "CUSTOM") {
       const salesConfig = navConfigs["SALES"];
-      const salesLinks = salesConfig.links?.filter(l => {
+      // Flatten links if using groups
+      const allSalesLinks = salesConfig.groups?.flatMap(g => g.links) ?? salesConfig.links;
+      
+      const salesLinks = allSalesLinks.filter(l => {
         if (!p) return true;
         if (l.tab === "approvals" && p.sales_approvals != null) return p.sales_approvals === true;
         return hasTabAccess(l);
-      }) ?? [];
+      });
       
       if (currentUser.role === "SALES") {
-        cloned.links = salesLinks;
-        if (cloned.links.length > 0) cloned.defaultHref = cloned.links[0].href;
+        if (salesConfig.groups) {
+          cloned.groups = salesConfig.groups.map(g => ({
+            ...g,
+            links: g.links.filter(l => {
+              if (l.tab === "approvals" && p?.sales_approvals != null) return p.sales_approvals === true;
+              return hasTabAccess(l);
+            })
+          })).filter(g => g.links.length > 0);
+        } else {
+          cloned.links = salesLinks;
+        }
+        
+        const firstLink = cloned.groups?.flatMap(g => g.links)[0] ?? cloned.links[0];
+        if (firstLink) cloned.defaultHref = firstLink.href;
       } else {
         if (!cloned.groups) cloned.groups = [];
         if (salesLinks.length > 0) {

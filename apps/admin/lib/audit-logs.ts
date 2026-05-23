@@ -23,12 +23,18 @@ export type DetailedAuditLog = {
  *
  * displayRecord = primary label (product name, customer name, warehouse name, etc.)
  * displaySub    = secondary label (inquiry number, product code, etc.)
+ *
+ * Pass `actorIds` to scope the query to a specific user (or set of users).
+ * Pass an empty array to return every audit log — used by the admin / management
+ * audit page so executives can review activity from every role.
  */
 export async function getAuditLogs(
   actorIds: string[],
   limit = 300,
 ): Promise<DetailedAuditLog[]> {
-  if (actorIds.length === 0) return []
+  const actorFilter = actorIds.length === 0
+    ? Prisma.empty
+    : Prisma.sql`WHERE a."actorId" IN (${Prisma.join(actorIds)})`
 
   return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
     SELECT
@@ -188,7 +194,7 @@ export async function getAuditLogs(
     LEFT JOIN public.users u
       ON u.id = a."actorId"
       OR u."authUserId"::text = a."actorId"
-    WHERE a."actorId" IN (${Prisma.join(actorIds)})
+    ${actorFilter}
     ORDER BY a."createdAt" DESC
     LIMIT ${Prisma.raw(String(limit))}
   `)

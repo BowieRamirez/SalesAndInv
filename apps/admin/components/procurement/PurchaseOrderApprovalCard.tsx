@@ -7,7 +7,7 @@ function formatPeso(v: number) {
   return new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP", maximumFractionDigits: 2 }).format(v)
 }
 
-export function PurchaseOrderApprovalCard({ po, onDone }: { po: PurchaseOrderDetailRow; onDone: () => void }) {
+export function PurchaseOrderApprovalCard({ po }: { po: PurchaseOrderDetailRow }) {
   const [expanded, setExpanded] = useState(false)
   const [rejecting, setRejecting] = useState(false)
   const [remarks, setRemarks] = useState("")
@@ -118,7 +118,7 @@ export function PurchaseOrderApprovalCard({ po, onDone }: { po: PurchaseOrderDet
 }
 
 export function PurchaseOrderApprovalList({ pos: initialPos }: { pos: PurchaseOrderDetailRow[] }) {
-  const [pos, setPos] = useState(initialPos)
+  const pos = initialPos
   if (pos.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-[#d1d5db] bg-[#f9fafb] px-6 py-12 text-center text-[13px] text-[#6b7280]">
@@ -129,7 +129,7 @@ export function PurchaseOrderApprovalList({ pos: initialPos }: { pos: PurchaseOr
   return (
     <div className="space-y-4">
       {pos.map((po) => (
-        <PurchaseOrderApprovalCard key={po.id} po={po} onDone={() => setPos((p) => p.filter((x) => x.id !== po.id))} />
+        <PurchaseOrderApprovalCard key={po.id} po={po} />
       ))}
     </div>
   )

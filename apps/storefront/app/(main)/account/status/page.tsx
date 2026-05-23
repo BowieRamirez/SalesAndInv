@@ -382,6 +382,7 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
                           <OrderChatPanel
                             inquiryId={inquiry.id}
                             messages={chatMessagesByInquiryId.get(inquiry.id) ?? []}
+                            contextNode={null}
                             defaultOpen={openOrderChatId === inquiry.id}
                           />
                         </div>

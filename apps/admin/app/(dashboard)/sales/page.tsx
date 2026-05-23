@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation"
-import Link from "next/link"
 import { Prisma, prisma, getReturnRequests } from "@furnitrack/db"
 import {
   formatInquiryWorkflowStatus,
@@ -7,9 +6,8 @@ import {
 } from "@furnitrack/validators"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { ROLE_REDIRECT } from "@/lib/rbac"
-import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
+import { getInquiryWorkflowRows } from "@/lib/inquiries"
 import { getAuditLogs } from "@/lib/audit-logs"
-import type { DetailedAuditLog } from "@/lib/audit-logs"
 import { getUnreadChatInquiryIds } from "@/lib/order-chat"
 import { CustomerReturnsTable } from "@/components/sales/CustomerReturnsTable"
 import { SalesOrdersTable } from "@/components/sales/SalesOrdersTable"
@@ -22,7 +20,7 @@ type SalesPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-const SALES_TABS = new Set(["lead", "approvals", "returns", "orders", "chats", "audit"])
+const SALES_TABS = new Set(["lead", "quotations", "approvals", "returns", "orders", "chats", "audit"])
 
 function resolveTab(tab?: string | string[]) {
   const value = Array.isArray(tab) ? tab[0] : tab
@@ -42,17 +40,6 @@ function WorkflowBadge({ status }: { status: string }) {
     </span>
   )
 }
-
-function formatPeso(value: number) {
-  return new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    maximumFractionDigits: 2,
-  }).format(value)
-}
-
-
-
 
 function SummaryPanel({
   title,
@@ -283,14 +270,10 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
 
       {activeTab === "approvals" && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
               <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Waiting on sales</p>
               <p className="mt-2 text-[28px] font-semibold text-[#b45309]">{salesQueue.length}</p>
-            </div>
-            <div className="rounded-xl border border-[#fce7f3] bg-[#fdf2f8] p-5">
-              <p className="text-[12px] uppercase tracking-wide text-[#9d174d]">Quotation stage</p>
-              <p className="mt-2 text-[28px] font-semibold text-[#9d174d]">{quotationQueue.length}</p>
             </div>
             <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
               <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Sent to inventory</p>
@@ -324,11 +307,22 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
               </div>
             )}
           </section>
+        </div>
+      )}
+
+      {activeTab === "quotations" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+            <div className="rounded-xl border border-[#fce7f3] bg-[#fdf2f8] p-5">
+              <p className="text-[12px] uppercase tracking-wide text-[#9d174d]">Pending Quotations</p>
+              <p className="mt-2 text-[28px] font-semibold text-[#9d174d]">{quotationQueue.length}</p>
+            </div>
+          </div>
 
           {/* Quotation stage — back from inventory, sales sets price */}
           <section className="rounded-xl border border-[#fce7f3] bg-white p-6 shadow-sm">
             <div className="mb-5">
-              <h2 className="text-[20px] font-semibold text-[#111827]">Quotation — negotiate price</h2>
+              <h2 className="text-[20px] font-semibold text-[#111827]">Negotiate price & quotes</h2>
               <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
                 Inventory has confirmed materials for these orders. Set the final price and send a quotation to the
                 customer. The customer must accept before payment can proceed.

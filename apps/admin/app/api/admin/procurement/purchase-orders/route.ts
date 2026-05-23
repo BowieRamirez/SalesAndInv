@@ -7,7 +7,7 @@ import { generatePoNumber } from "@/lib/procurement"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/operations", request.url)
-  url.searchParams.set("tab", "procurement")
+  url.searchParams.set("tab", "suppliers")
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
   return NextResponse.redirect(url, { status: 303 })

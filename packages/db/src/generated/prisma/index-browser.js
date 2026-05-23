@@ -193,6 +193,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   badge: 'badge',
   images: 'images',
   colorVariants: 'colorVariants',
+  productCode: 'productCode',
   rating: 'rating',
   reviewCount: 'reviewCount',
   widthCm: 'widthCm',
@@ -375,6 +376,24 @@ exports.Prisma.ReturnRequestScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.QuotationScalarFieldEnum = {
+  id: 'id',
+  inquiryId: 'inquiryId',
+  quotationNumber: 'quotationNumber',
+  revisionNumber: 'revisionNumber',
+  sentById: 'sentById',
+  quotedPrice: 'quotedPrice',
+  quotedPriceBeforeDiscount: 'quotedPriceBeforeDiscount',
+  quotationDiscount: 'quotationDiscount',
+  salesNote: 'salesNote',
+  status: 'status',
+  declineReason: 'declineReason',
+  sentAt: 'sentAt',
+  respondedAt: 'respondedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SupplierScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -394,6 +413,8 @@ exports.Prisma.SupplierAddressScalarFieldEnum = {
   address: 'address',
   city: 'city',
   province: 'province',
+  country: 'country',
+  postalCode: 'postalCode',
   isMain: 'isMain',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -409,6 +430,31 @@ exports.Prisma.SupplierProductScalarFieldEnum = {
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PurchaseOrderScalarFieldEnum = {
+  id: 'id',
+  poNumber: 'poNumber',
+  supplierId: 'supplierId',
+  requestedById: 'requestedById',
+  approvedById: 'approvedById',
+  status: 'status',
+  totalAmount: 'totalAmount',
+  remarks: 'remarks',
+  expectedDeliveryAt: 'expectedDeliveryAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PurchaseOrderItemScalarFieldEnum = {
+  id: 'id',
+  purchaseOrderId: 'purchaseOrderId',
+  materialStockId: 'materialStockId',
+  quantityOrdered: 'quantityOrdered',
+  quantityReceived: 'quantityReceived',
+  unitCost: 'unitCost',
+  lineTotal: 'lineTotal',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -531,7 +577,11 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   BUILDING_APPROVED: 'BUILDING_APPROVED',
   DELIVERY_SCHEDULED: 'DELIVERY_SCHEDULED',
   PRODUCT_CREATED: 'PRODUCT_CREATED',
-  PRODUCT_UPDATED: 'PRODUCT_UPDATED'
+  PRODUCT_UPDATED: 'PRODUCT_UPDATED',
+  PURCHASE_ORDER_CREATED: 'PURCHASE_ORDER_CREATED',
+  PURCHASE_ORDER_APPROVED: 'PURCHASE_ORDER_APPROVED',
+  PURCHASE_ORDER_REJECTED: 'PURCHASE_ORDER_REJECTED',
+  GOODS_RECEIVED: 'GOODS_RECEIVED'
 };
 
 exports.AuditEntityType = exports.$Enums.AuditEntityType = {
@@ -542,7 +592,19 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   INVENTORY: 'INVENTORY',
   STOCK: 'STOCK',
   BUILDING_PROJECT: 'BUILDING_PROJECT',
-  PRODUCT: 'PRODUCT'
+  DELIVERY_SCHEDULE: 'DELIVERY_SCHEDULE',
+  PRODUCT: 'PRODUCT',
+  PURCHASE_ORDER: 'PURCHASE_ORDER'
+};
+
+exports.PurchaseOrderStatus = exports.$Enums.PurchaseOrderStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  ORDERED: 'ORDERED',
+  GOODS_RECEIVED: 'GOODS_RECEIVED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.Prisma.ModelName = {
@@ -564,9 +626,12 @@ exports.Prisma.ModelName = {
   AdminAccountArchive: 'AdminAccountArchive',
   AdminActionArchive: 'AdminActionArchive',
   ReturnRequest: 'ReturnRequest',
+  Quotation: 'Quotation',
   Supplier: 'Supplier',
   SupplierAddress: 'SupplierAddress',
-  SupplierProduct: 'SupplierProduct'
+  SupplierProduct: 'SupplierProduct',
+  PurchaseOrder: 'PurchaseOrder',
+  PurchaseOrderItem: 'PurchaseOrderItem'
 };
 
 /**

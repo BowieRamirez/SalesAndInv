@@ -13,12 +13,13 @@ export default async function AuditDashboard() {
     redirect(ROLE_REDIRECT[currentUser.role])
   }
 
-  const ids = [currentUser.id, currentUser.authUserId].filter(Boolean) as string[]
-  const auditLogs = await getAuditLogs(ids, 300)
+  // Empty array → unscoped, returns audit logs from every actor across the system.
+  // Only admin/management reaches this page (the redirect above gates everyone else).
+  const auditLogs = await getAuditLogs([], 300)
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+      <div className="w-full space-y-6">
         <div>
           <p className="text-[12px] text-slate-500">Home / Audit Logs</p>
           <h1 className="mt-1 text-[24px] font-semibold text-slate-900">Audit Logs</h1>

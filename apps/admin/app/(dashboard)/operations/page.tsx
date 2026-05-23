@@ -11,12 +11,13 @@ import { WarehouseLocationsTable, ArchivedWarehousesTable, type WarehouseSummary
 import { StorefrontFilterManager } from "@/components/operations/StorefrontFilterManager"
 import { DamagedMaterialsTable } from "@/components/inventory/DamagedMaterialsTable"
 import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
+import { AddRawMaterialModal } from "@/components/inventory/AddRawMaterialModal"
+import { OperationsDashboard as OperationsDashboardPanel } from "@/components/operations/OperationsDashboard"
 import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
 import { ReservedMaterialsAccordion } from "@/components/operations/ReservedMaterialsAccordion"
 import { SuppliersManager } from "@/components/procurement/SuppliersManager"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
 import { getAuditLogs } from "@/lib/audit-logs"
-import type { DetailedAuditLog } from "@/lib/audit-logs"
 import { getSuppliers } from "@/lib/procurement"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { OPERATIONS_DEFAULT_TAB, OPERATIONS_PRODUCT_CATEGORIES } from "@/lib/operations-products"
@@ -109,7 +110,7 @@ type DamagedMaterialRow = {
 const OPERATIONS_TABS = new Set([
   "design", "new-products", "finished-products", "archived-products", "storefront-filters",
   "locations", "archived-warehouses", "all-stocks", "reserved", "damaged-materials",
-  "inv-approvals", "approvals", "delivery", "audit", "procurement",
+  "inv-approvals", "approvals", "delivery", "audit", "suppliers", "dashboard",
 ])
 
 function getSearchValue(value?: string | string[]) {
@@ -811,8 +812,8 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     getReservedMaterialDetails(),
   ])
 
-  // Suppliers data (only fetch when on procurement tab)
-  const suppliers = activeTab === "procurement" ? await getSuppliers() : []
+  // Suppliers data (only fetch when on suppliers tab)
+  const suppliers = activeTab === "suppliers" ? await getSuppliers() : []
 
   const activeFinishedProducts = finishedProducts.filter((product) => product.state !== "ARCHIVED")
   const archivedFinishedProducts = finishedProducts.filter((product) => product.state === "ARCHIVED")
@@ -876,9 +877,9 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
 
   return (
     <main className="min-h-screen overflow-auto bg-[#fcfcfc] p-8">
-      <div className="mx-auto max-w-[1600px] space-y-8">
+      <div className={`${activeTab === "dashboard" ? "w-full" : "mx-auto max-w-[1600px]"} space-y-8`}>
         <div>
-          <h1 className="text-[28px] font-semibold text-[#111827]">Operations Product Workspace</h1>
+          <h1 className="text-[20px] font-semibold text-[#111827]">Welcome back, {currentUser.name}</h1>
         </div>
 
         {message ? (
@@ -892,6 +893,10 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
             {message}
           </div>
         ) : null}
+
+        {activeTab === "dashboard" && (
+          <OperationsDashboardPanel />
+        )}
 
         {activeTab === "finished-products" && (
           <div className="grid gap-5 md:grid-cols-3">
@@ -1062,55 +1067,13 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
 
         {activeTab === "all-stocks" && (
           <div className="space-y-8">
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-              {[{label:"Raw Materials",value:rawMaterialsInv.length},{label:"Low Stock",value:lowStockItems.length},{label:"Warehouses",value:warehouseSummaries.length}].map(r=>(
-                <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
-                  <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
-                  <p className="mt-2 text-[28px] font-semibold text-[#111827]">{r.value}</p>
-                </div>
-              ))}
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-[18px] font-semibold text-[#111827]">Online Raw Materials: {rawMaterialsInv.length} </h3>
+                <p className="mt-0.5 text-[13px] text-[#6b7280]">All stock entries across warehouses.</p>
+              </div>
+              <AddRawMaterialModal warehouses={warehouseSummaries.map(w => ({ id: w.id, name: w.name }))} />
             </div>
-            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
-              <h3 className="text-[18px] font-semibold text-[#111827]">Add new raw material</h3>
-              <form method="post" action="/api/admin/inventory/raw-materials/create" className="mt-5 grid gap-4 xl:grid-cols-[1.2fr_1.1fr_1fr_0.9fr]">
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-[12px] font-medium text-[#374151]">Material name</span>
-                  <input name="itemName" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                </label>
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-[12px] font-medium text-[#374151]">SKU (optional auto-generate)</span>
-                  <input name="sku" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                </label>
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-[12px] font-medium text-[#374151]">Select warehouse</span>
-                  <select name="warehouseId" defaultValue="" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]">
-                    <option value="" disabled>Select warehouse</option>
-                    {warehouseSummaries.map(w=>(<option key={w.id} value={w.id}>{w.name}</option>))}
-                  </select>
-                </label>
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-[12px] font-medium text-[#374151]">Unit</span>
-                  <input name="unitOfMeasure" defaultValue="0" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                </label>
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-[12px] font-medium text-[#374151]">Reorder threshold</span>
-                  <input name="reorderThreshold" type="number" min="0" defaultValue="10" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                </label>
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-[12px] font-medium text-[#374151]">Opening stock</span>
-                  <input name="openingQty" type="number" min="0" defaultValue="0" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                </label>
-                <label className="flex flex-col gap-1.5 xl:col-span-2">
-                  <span className="text-[12px] font-medium text-[#374151]">Reference number (optional)</span>
-                  <input name="referenceNumber" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                </label>
-                <label className="flex flex-col gap-1.5 xl:col-span-3">
-                  <span className="text-[12px] font-medium text-[#374151]">Description (optional)</span>
-                  <textarea name="description" className="min-h-[96px] rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                </label>
-                <button type="submit" className="mt-auto rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90 xl:self-stretch">Add raw material</button>
-              </form>
-            </section>
             <RawMaterialsManager rows={rawMaterialsInv} products={finishedProducts} />
           </div>
         )}
@@ -1216,7 +1179,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           </div>
         )}
 
-        {activeTab === "procurement" && (
+        {activeTab === "suppliers" && (
           <div className="space-y-6">
             <SuppliersManager
               suppliers={suppliers}

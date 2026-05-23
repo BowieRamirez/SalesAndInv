@@ -3,11 +3,12 @@ import { useDebounce } from "../inventory/hookTs"
 import { Fragment, useMemo, useState } from "react"
 import {
   AlertTriangle,
+  ArrowRight,
   Crown,
-  MoreHorizontal,
   Search,
   Shield,
   ShieldCheck,
+  SlidersHorizontal,
   User as UserIcon,
   X,
 } from "lucide-react"
@@ -88,9 +89,15 @@ function StatusBadge({ status }: { status: string }) {
 function RoleBadge({ role, label }: { role: string; label: string }) {
   const Icon =
     role === "ADMIN_MANAGEMENT" ? Crown : role === "CLIENT" ? UserIcon : role === "OPERATIONS_DESIGN" ? ShieldCheck : Shield
+  const tone =
+    role === "CLIENT"
+      ? "bg-blue-50 text-blue-700 ring-blue-100"
+      : role === "ADMIN_MANAGEMENT"
+        ? "bg-violet-50 text-violet-700 ring-violet-100"
+        : "bg-slate-50 text-slate-700 ring-slate-200"
   return (
-    <span className="inline-flex items-center gap-1.5 text-[12px] text-slate-700">
-      <Icon className="h-3.5 w-3.5 text-slate-500" />
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ring-1 ring-inset ${tone}`}>
+      <Icon className="h-3.5 w-3.5" />
       {label}
     </span>
   )
@@ -107,6 +114,8 @@ export function UsersTable({
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("")
   const [roleFilter, setRoleFilter] = useState<string>("")
+  const [accountTypeFilter, setAccountTypeFilter] = useState<"" | "internal" | "client">("")
+  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false)
   const debouncedSearch = useDebounce(search, 500)
   const [pageSize] = useState(10)
   const [page, setPage] = useState(1)
@@ -133,9 +142,11 @@ export function UsersTable({
       }
       if (statusFilter && u.status.toUpperCase() !== statusFilter) return false
       if (roleFilter && u.role !== roleFilter) return false
+      if (accountTypeFilter === "internal" && u.role === "CLIENT") return false
+      if (accountTypeFilter === "client" && u.role !== "CLIENT") return false
       return true
     })
-  }, [users, debouncedSearch, statusFilter, roleFilter])
+  }, [users, debouncedSearch, statusFilter, roleFilter, accountTypeFilter])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const safePage = Math.min(page, totalPages)
@@ -145,77 +156,187 @@ export function UsersTable({
   const expandedAccount = useMemo(() => expandedId ? users.find(u => u.authUserId === expandedId) || null : null, [users, expandedId])
   const expandedIsCurrentUser = expandedAccount?.authUserId === currentAuthUserId
   const expandedIsExecutive = expandedAccount?.role === "ADMIN_MANAGEMENT"
+  const expandedIsClient = expandedAccount?.role === "CLIENT"
   const expandedBaselineAccounts = ['admin@sims.com', 'sales@sims.com', 'operations@sims.com', 'accounting@sims.com']
   const expandedIsBaseline = expandedAccount ? expandedBaselineAccounts.includes(expandedAccount.email) : false
   const expandedIsCustomizable = expandedAccount ? !expandedIsBaseline && (expandedAccount.role === "SALES" || expandedAccount.role === "OPERATIONS_DESIGN" || expandedAccount.role === "CUSTOM") : false
   const expandedEditableRoles = expandedIsCurrentUser ? internalRoleOptions : staffRoleOptions
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4">
-        <div className="relative min-w-[240px] flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value)
-              setPage(1)
-            }}
-            placeholder="Filter users..."
-            className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-[13px] text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400"
-          />
+    <div className="space-y-4">
+      {/* Search & Filters — separate container */}
+      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex flex-wrap items-center gap-3 px-5 py-4">
+          <div className="relative min-w-[260px] flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
+              placeholder={variant === "customer" ? "Search customer, email" : "Search user, email"}
+              className="w-full rounded-full border border-slate-200 bg-white py-2 pl-10 pr-4 text-[13px] text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400"
+            />
+          </div>
+
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            {/* Account type pill (internal-variant only) */}
+            {variant === "internal" ? (
+              <div className="inline-flex items-center rounded-full border border-slate-200 bg-white p-0.5 text-[12px]">
+                {([
+                  { value: "", label: "All" },
+                  { value: "internal", label: "Internal" },
+                  { value: "client", label: "Clients" },
+                ] as const).map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      setAccountTypeFilter(opt.value)
+                      setPage(1)
+                    }}
+                    className={`rounded-full px-3 py-1 transition-colors ${
+                      accountTypeFilter === opt.value
+                        ? "bg-slate-900 text-white"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            {/* Active filter pills */}
+            {statusFilter ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setStatusFilter("")
+                  setPage(1)
+                }}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[13px] text-slate-700 transition-colors hover:border-slate-300"
+              >
+                {statusFilter.charAt(0) + statusFilter.slice(1).toLowerCase()}
+                <X className="h-3.5 w-3.5 text-slate-400" />
+              </button>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[13px] text-slate-700">
+                All status
+                <span className="text-slate-300">·</span>
+                <span className="text-slate-400">{filtered.length}</span>
+              </span>
+            )}
+
+            {variant === "internal" && roleFilter ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setRoleFilter("")
+                  setPage(1)
+                }}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[13px] text-slate-700 transition-colors hover:border-slate-300"
+              >
+                {roleLabels[roleFilter] ?? roleFilter}
+                <X className="h-3.5 w-3.5 text-slate-400" />
+              </button>
+            ) : null}
+
+            {/* More filters toggle */}
+            <button
+              type="button"
+              onClick={() => setMoreFiltersOpen((v) => !v)}
+              className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
+                moreFiltersOpen
+                  ? "border-slate-300 bg-slate-50 text-slate-900"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+              }`}
+              aria-expanded={moreFiltersOpen}
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              More filters
+            </button>
+          </div>
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value)
-            setPage(1)
-          }}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] text-slate-700 outline-none focus:border-slate-400"
-        >
-          <option value="">All statuses</option>
-          {allStatuses.map((s) => (
-            <option key={s} value={s}>
-              {s.charAt(0) + s.slice(1).toLowerCase()}
-            </option>
-          ))}
-        </select>
+        {/* Expanded filter row */}
+        {moreFiltersOpen ? (
+          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 bg-slate-50/40 px-5 py-3">
+            <div className="flex items-center gap-2">
+              <label className="text-[12px] font-medium text-slate-500">Status</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value)
+                  setPage(1)
+                }}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[13px] text-slate-700 outline-none focus:border-slate-400"
+              >
+                <option value="">All statuses</option>
+                {allStatuses.map((s) => (
+                  <option key={s} value={s}>
+                    {s.charAt(0) + s.slice(1).toLowerCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {variant === "internal" && allRoles.length > 1 ? (
-          <select
-            value={roleFilter}
-            onChange={(e) => {
-              setRoleFilter(e.target.value)
-              setPage(1)
-            }}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] text-slate-700 outline-none focus:border-slate-400"
-          >
-            <option value="">All roles</option>
-            {allRoles.map((r) => (
-              <option key={r} value={r}>
-                {roleLabels[r] ?? r}
-              </option>
-            ))}
-          </select>
+            {variant === "internal" && allRoles.length > 1 ? (
+              <div className="flex items-center gap-2">
+                <label className="text-[12px] font-medium text-slate-500">Role</label>
+                <select
+                  value={roleFilter}
+                  onChange={(e) => {
+                    setRoleFilter(e.target.value)
+                    setPage(1)
+                  }}
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[13px] text-slate-700 outline-none focus:border-slate-400"
+                >
+                  <option value="">All roles</option>
+                  {allRoles.map((r) => (
+                    <option key={r} value={r}>
+                      {roleLabels[r] ?? r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : null}
+
+            {(statusFilter || roleFilter) ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setStatusFilter("")
+                  setRoleFilter("")
+                  setPage(1)
+                }}
+                className="ml-auto rounded-lg px-3 py-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:text-slate-900"
+              >
+                Clear filters
+              </button>
+            ) : null}
+          </div>
         ) : null}
-      </div>
+      </section>
+
+      {/* Users table — its own container */}
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-left">
-          <thead className="border-b border-slate-200 bg-slate-50">
+          <thead className="border-b border-slate-200 bg-white">
             <tr className="text-[11px] uppercase tracking-wider text-slate-500">
-              <th className="px-5 py-3 font-medium">Name</th>
+              <th className="px-5 py-3 font-medium">User Name</th>
               <th className="px-4 py-3 font-medium">Email</th>
               {variant === "customer" ? <th className="px-4 py-3 font-medium">Company</th> : null}
-              <th className="px-4 py-3 font-medium">Registered Date</th>
+              <th className="px-4 py-3 font-medium">Date Created</th>
               <th className="px-4 py-3 font-medium">Last Login</th>
               <th className="px-4 py-3 font-medium">Status</th>
               {variant === "customer" ? <th className="px-4 py-3 font-medium">Verified</th> : null}
               <th className="px-4 py-3 font-medium">Role</th>
-              <th className="px-4 py-3 font-medium" />
+              <th className="px-4 py-3 font-medium text-right">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -280,20 +401,19 @@ export function UsersTable({
                     <td className="px-4 py-4">
                       <RoleBadge role={account.role} label={roleLabels[account.role] ?? account.role} />
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 text-right">
                       {variant === "internal" ? (
                         <button
                           type="button"
                           onClick={() => setExpandedId(isExpanded ? null : account.authUserId)}
                           aria-label="Manage user"
-                          className={`rounded-md p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 ${
-                            isExpanded ? "bg-slate-100 text-slate-900" : ""
-                          }`}
+                          className="inline-flex items-center gap-1 text-[13px] font-medium text-violet-600 transition-colors hover:text-violet-700"
                         >
-                          <MoreHorizontal className="h-4 w-4" />
+                          View
+                          <ArrowRight className="h-3.5 w-3.5" />
                         </button>
                       ) : (
-                        <form method="post" action="/api/admin/customers/status">
+                        <form method="post" action="/api/admin/customers/status" className="inline-flex justify-end">
                           <input type="hidden" name="authUserId" value={account.authUserId} />
                           <input type="hidden" name="email" value={account.email} />
                           <input
@@ -303,13 +423,14 @@ export function UsersTable({
                           />
                           <button
                             type="submit"
-                            className={`rounded-lg px-3 py-2 text-[12px] font-medium transition-colors ${
+                            className={`inline-flex items-center gap-1 text-[13px] font-medium transition-colors ${
                               account.status.toUpperCase() === "BLOCKED"
-                                ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                                : "bg-amber-500 text-white hover:bg-amber-600"
+                                ? "text-emerald-600 hover:text-emerald-700"
+                                : "text-violet-600 hover:text-violet-700"
                             }`}
                           >
                             {account.status.toUpperCase() === "BLOCKED" ? "Reactivate" : "Deactivate"}
+                            <ArrowRight className="h-3.5 w-3.5" />
                           </button>
                         </form>
                       )}
@@ -323,47 +444,29 @@ export function UsersTable({
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-center gap-2 border-t border-slate-100 px-5 py-5">
-        <button
-          type="button"
-          onClick={() => setPage(1)}
-          disabled={safePage <= 1}
-          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
-          aria-label="First page"
-        >
-          {"<<"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={safePage <= 1}
-          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
-          aria-label="Previous page"
-        >
-          {"<"}
-        </button>
-        <div className="min-w-[112px] rounded-md border border-[#111827] bg-white px-4 py-2 text-center text-[13px] font-semibold text-[#6b7280] shadow-sm">
-          <span className="rounded-md bg-[#020617] px-2 py-1 text-white">{safePage}</span> of {totalPages}
+      {/* Pagination — slim, mirrors the reference */}
+      <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-4">
+        <p className="text-[13px] text-slate-500">
+          Page {safePage} of {totalPages}
+        </p>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={safePage <= 1}
+            className="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-[13px] font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-white disabled:text-slate-300"
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage >= totalPages}
+            className="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-[13px] font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-white disabled:text-slate-300"
+          >
+            Next
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          disabled={safePage >= totalPages}
-          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
-          aria-label="Next page"
-        >
-          {">"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setPage(totalPages)}
-          disabled={safePage >= totalPages}
-          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d1d5db] bg-white text-[13px] font-semibold text-[#111827] transition-colors hover:border-[#111827] hover:bg-[#111827] hover:text-white disabled:cursor-not-allowed disabled:border-[#e5e7eb] disabled:bg-white disabled:text-[#cbd5e1]"
-          aria-label="Last page"
-        >
-          {">>"}       
-        </button>
       </div>
 
       <AnimatePresence>
@@ -404,7 +507,35 @@ export function UsersTable({
               </div>
 
               <div className="grid divide-y divide-slate-100 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] sm:divide-x sm:divide-y-0">
-                {/* Left Column: Edit Details */}
+                {/* Left Column: Edit Details (internal-only — clients can't be edited here) */}
+                {expandedIsClient ? (
+                  <div className="p-6">
+                    <div className="mb-5">
+                      <h4 className="text-[14px] font-semibold text-slate-900">Client account</h4>
+                      <p className="text-[12px] text-slate-500">
+                        Customer-facing account. Use the security and status controls on the right to manage access.
+                      </p>
+                    </div>
+                    <dl className="grid grid-cols-1 gap-3 text-[13px]">
+                      <div className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2">
+                        <dt className="text-slate-500">Email</dt>
+                        <dd className="text-slate-900">{expandedAccount.email}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2">
+                        <dt className="text-slate-500">Joined</dt>
+                        <dd className="text-slate-900">{formatDate(expandedAccount.createdAt)}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2">
+                        <dt className="text-slate-500">Last login</dt>
+                        <dd className="text-slate-900">{formatDate(expandedAccount.lastLoginAt)}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2">
+                        <dt className="text-slate-500">Status</dt>
+                        <dd><StatusBadge status={expandedAccount.status} /></dd>
+                      </div>
+                    </dl>
+                  </div>
+                ) : (
                 <form
                   method="post"
                   action="/api/admin/accounts/update"
@@ -558,6 +689,7 @@ export function UsersTable({
                       : "Admin / Management is reserved for the executive account."}
                   </p>
                 </form>
+                )}
 
                 {/* Right Column: Security & Removal */}
                 <div className="flex flex-col bg-slate-50/50">
@@ -589,7 +721,7 @@ export function UsersTable({
 
                   <form
                     method="post"
-                    action="/api/admin/accounts/status"
+                    action={expandedIsClient ? "/api/admin/customers/status" : "/api/admin/accounts/status"}
                     className="border-t border-slate-100 bg-slate-50/50 p-6"
                   >
                     <input type="hidden" name="authUserId" value={expandedAccount.authUserId} />
@@ -732,5 +864,6 @@ export function UsersTable({
         ) : null}
       </AnimatePresence>
     </section>
+    </div>
   )
 }

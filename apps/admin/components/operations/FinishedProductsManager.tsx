@@ -9,6 +9,7 @@ type FinishedProduct = {
   id: string
   productStockId: string
   name: string
+  productCode: string | null
   category: string
   price: number
   badge: string | null

@@ -102,7 +102,7 @@ export default async function ArchivesDashboard() {
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+      <div className="w-full space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-[12px] text-slate-500">Home / Archives</p>

@@ -83,10 +83,13 @@ export async function POST(request: Request) {
         status = 'ACCEPTED',
         "respondedAt" = CURRENT_TIMESTAMP,
         "updatedAt" = CURRENT_TIMESTAMP
-      WHERE "inquiryId" = ${inquiryId}
-        AND status = 'PENDING'
-      ORDER BY "sentAt" DESC
-      LIMIT 1
+      WHERE id = (
+        SELECT id FROM public.quotations
+        WHERE "inquiryId" = ${inquiryId}
+          AND status = 'PENDING'
+        ORDER BY "sentAt" DESC
+        LIMIT 1
+      )
     `)
   } else {
     // Stay in PENDING_SALES_QUOTATION — sales will revise the price
@@ -108,10 +111,13 @@ export async function POST(request: Request) {
         "declineReason" = ${responseNote},
         "respondedAt" = CURRENT_TIMESTAMP,
         "updatedAt" = CURRENT_TIMESTAMP
-      WHERE "inquiryId" = ${inquiryId}
-        AND status = 'PENDING'
-      ORDER BY "sentAt" DESC
-      LIMIT 1
+      WHERE id = (
+        SELECT id FROM public.quotations
+        WHERE "inquiryId" = ${inquiryId}
+          AND status = 'PENDING'
+        ORDER BY "sentAt" DESC
+        LIMIT 1
+      )
     `)
   }
 

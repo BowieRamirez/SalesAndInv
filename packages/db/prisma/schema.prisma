@@ -61,6 +61,16 @@ enum InquiryStatus {
   COMPLETED
 }
 
+enum PurchaseOrderStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  ORDERED
+  GOODS_RECEIVED
+  CANCELLED
+}
+
 enum StockState {
   AVAILABLE
   RESERVED
@@ -98,6 +108,10 @@ enum AuditAction {
   DELIVERY_SCHEDULED
   PRODUCT_CREATED
   PRODUCT_UPDATED
+  PURCHASE_ORDER_CREATED
+  PURCHASE_ORDER_APPROVED
+  PURCHASE_ORDER_REJECTED
+  GOODS_RECEIVED
 }
 
 enum AuditEntityType {
@@ -108,7 +122,9 @@ enum AuditEntityType {
   INVENTORY
   STOCK
   BUILDING_PROJECT
+  DELIVERY_SCHEDULE
   PRODUCT
+  PURCHASE_ORDER
 }
 
 enum ApprovalModule {
@@ -215,6 +231,7 @@ model MaterialStock {
   materialFor       ProductMaterial[] @relation("ProductMaterialStockItem")
   stockMovements    StockMovement[]
   supplierProducts  SupplierProduct[]
+  purchaseOrderItems PurchaseOrderItem[]
 
   @@index([warehouseId, state])
   @@map("material_stocks")
@@ -524,6 +541,8 @@ model Quotation {
   @@index([inquiryId, createdAt(sort: Desc)])
   @@map("quotations")
 }
+
+model Supplier {
   id            String   @id @default(cuid())
   name          String
   contactPerson String?
@@ -536,6 +555,7 @@ model Quotation {
 
   addresses SupplierAddress[]
   products  SupplierProduct[]
+  purchaseOrders PurchaseOrder[]
 
   @@map("suppliers")
 }
@@ -547,6 +567,8 @@ model SupplierAddress {
   address    String
   city       String?
   province   String?
+  country    String?
+  postalCode String?
   isMain     Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -573,4 +595,42 @@ model SupplierProduct {
 
   @@index([supplierId])
   @@map("supplier_products")
+}
+
+model PurchaseOrder {
+  id                 String              @id @default(cuid())
+  poNumber           String              @unique
+  supplierId         String?
+  requestedById      String
+  approvedById       String?
+  status             PurchaseOrderStatus @default(DRAFT)
+  totalAmount        Decimal             @default(0)
+  remarks            String?
+  expectedDeliveryAt DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  supplier Supplier?           @relation(fields: [supplierId], references: [id])
+  items    PurchaseOrderItem[]
+
+  @@index([status])
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id               String   @id @default(cuid())
+  purchaseOrderId  String
+  materialStockId  String
+  quantityOrdered  Int
+  quantityReceived Int      @default(0)
+  unitCost         Decimal?
+  lineTotal        Decimal  @default(0)
+  createdAt        DateTime @default(now())
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  materialStock  MaterialStock @relation(fields: [materialStockId], references: [id])
+
+  @@index([purchaseOrderId])
+  @@index([materialStockId])
+  @@map("purchase_order_items")
 }

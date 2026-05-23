@@ -6,7 +6,7 @@ import { getAuthenticatedAppUser } from "@/lib/auth/session"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/operations", request.url)
-  url.searchParams.set("tab", "procurement")
+  url.searchParams.set("tab", "suppliers")
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
   return NextResponse.redirect(url, { status: 303 })
@@ -45,6 +45,20 @@ export async function POST(request: Request) {
           INSERT INTO public.suppliers (id, name, "contactPerson", email, phone, notes, "isActive", "createdAt", "updatedAt")
           VALUES (${newId}, ${name}, ${contactPerson}, ${email}, ${phone}, ${notes}, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         `)
+
+        // Optionally create the main address from the same form
+        const street = String(formData.get("address") ?? "").trim()
+        if (street) {
+          const city = String(formData.get("city") ?? "").trim() || null
+          const province = String(formData.get("province") ?? "").trim() || null
+          const country = String(formData.get("country") ?? "").trim() || null
+          const postalCode = String(formData.get("postalCode") ?? "").trim() || null
+          await prisma.$executeRaw(Prisma.sql`
+            INSERT INTO public.supplier_addresses (id, "supplierId", label, address, city, province, country, "postalCode", "isMain", "createdAt", "updatedAt")
+            VALUES (${randomUUID()}, ${newId}, ${"Main"}, ${street}, ${city}, ${province}, ${country}, ${postalCode}, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+          `)
+        }
+
         await logAudit({
           actorId: currentUser.authUserId,
           action: "PRODUCT_UPDATED",
@@ -104,6 +118,8 @@ export async function POST(request: Request) {
       const address = String(formData.get("address") ?? "").trim()
       const city = String(formData.get("city") ?? "").trim() || null
       const province = String(formData.get("province") ?? "").trim() || null
+      const country = String(formData.get("country") ?? "").trim() || null
+      const postalCode = String(formData.get("postalCode") ?? "").trim() || null
       const isMain = formData.get("isMain") === "on"
 
       if (!address) return buildRedirect(request, "Address is required.", "error")
@@ -114,8 +130,8 @@ export async function POST(request: Request) {
         `)
       }
       await prisma.$executeRaw(Prisma.sql`
-        INSERT INTO public.supplier_addresses (id, "supplierId", label, address, city, province, "isMain", "createdAt", "updatedAt")
-        VALUES (${randomUUID()}, ${supplierId}, ${label}, ${address}, ${city}, ${province}, ${isMain}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO public.supplier_addresses (id, "supplierId", label, address, city, province, country, "postalCode", "isMain", "createdAt", "updatedAt")
+        VALUES (${randomUUID()}, ${supplierId}, ${label}, ${address}, ${city}, ${province}, ${country}, ${postalCode}, ${isMain}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `)
       revalidatePath("/operations")
       return buildRedirect(request, "Address added.", "success")
@@ -129,24 +145,67 @@ export async function POST(request: Request) {
       return buildRedirect(request, "Address removed.", "success")
     }
 
-    // ── ADD PRODUCT ──────────────────────────────────────────────────────────
+    // ── ADD PRODUCT (batch) ──────────────────────────────────────────────────
     if (action === "add-product") {
       const supplierId = String(formData.get("supplierId") ?? "").trim()
-      const materialStockId = String(formData.get("materialStockId") ?? "").trim() || null
-      const materialName = String(formData.get("materialName") ?? "").trim()
-      const unitCostRaw = parseFloat(String(formData.get("unitCost") ?? ""))
-      const unitCost = Number.isFinite(unitCostRaw) && unitCostRaw > 0 ? unitCostRaw : null
-      const unitOfMeasure = String(formData.get("unitOfMeasure") ?? "").trim() || null
-      const notes = String(formData.get("notes") ?? "").trim() || null
 
-      if (!materialName) return buildRedirect(request, "Material name is required.", "error")
+      // Collect all rows — fields are submitted as materialName[0], materialName[1], etc.
+      type MaterialRow = {
+        materialStockId: string | null
+        materialName: string
+        unitCost: number | null
+        unitOfMeasure: string | null
+        notes: string | null
+      }
 
-      await prisma.$executeRaw(Prisma.sql`
-        INSERT INTO public.supplier_products (id, "supplierId", "materialStockId", "materialName", "unitCost", "unitOfMeasure", notes, "createdAt", "updatedAt")
-        VALUES (${randomUUID()}, ${supplierId}, ${materialStockId}, ${materialName}, ${unitCost != null ? new Prisma.Decimal(unitCost) : null}, ${unitOfMeasure}, ${notes}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `)
+      const rows: MaterialRow[] = []
+      let i = 0
+      while (formData.has(`materialName[${i}]`)) {
+        const materialName = String(formData.get(`materialName[${i}]`) ?? "").trim()
+        if (materialName) {
+          const materialStockId = String(formData.get(`materialStockId[${i}]`) ?? "").trim() || null
+          const unitCostRaw = parseFloat(String(formData.get(`unitCost[${i}]`) ?? ""))
+          const unitCost = Number.isFinite(unitCostRaw) && unitCostRaw > 0 ? unitCostRaw : null
+          const unitOfMeasure = String(formData.get(`unitOfMeasure[${i}]`) ?? "").trim() || null
+          const notes = String(formData.get(`notes[${i}]`) ?? "").trim() || null
+          rows.push({ materialStockId, materialName, unitCost, unitOfMeasure, notes })
+        }
+        i += 1
+      }
+
+      // Fallback: single-field form (legacy / non-batch)
+      if (rows.length === 0) {
+        const materialName = String(formData.get("materialName") ?? "").trim()
+        if (!materialName) return buildRedirect(request, "Material name is required.", "error")
+        const materialStockId = String(formData.get("materialStockId") ?? "").trim() || null
+        const unitCostRaw = parseFloat(String(formData.get("unitCost") ?? ""))
+        const unitCost = Number.isFinite(unitCostRaw) && unitCostRaw > 0 ? unitCostRaw : null
+        const unitOfMeasure = String(formData.get("unitOfMeasure") ?? "").trim() || null
+        const notes = String(formData.get("notes") ?? "").trim() || null
+        rows.push({ materialStockId, materialName, unitCost, unitOfMeasure, notes })
+      }
+
+      if (rows.length === 0) return buildRedirect(request, "At least one material name is required.", "error")
+
+      for (const row of rows) {
+        await prisma.$executeRaw(Prisma.sql`
+          INSERT INTO public.supplier_products (id, "supplierId", "materialStockId", "materialName", "unitCost", "unitOfMeasure", notes, "createdAt", "updatedAt")
+          VALUES (
+            ${randomUUID()}, ${supplierId}, ${row.materialStockId}, ${row.materialName},
+            ${row.unitCost != null ? new Prisma.Decimal(row.unitCost) : null},
+            ${row.unitOfMeasure}, ${row.notes}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+          )
+        `)
+      }
+
       revalidatePath("/operations")
-      return buildRedirect(request, `Material "${materialName}" added to supplier.`, "success")
+      return buildRedirect(
+        request,
+        rows.length === 1
+          ? `Material "${rows[0].materialName}" added to supplier.`
+          : `${rows.length} materials added to supplier.`,
+        "success",
+      )
     }
 
     // ── DELETE PRODUCT ───────────────────────────────────────────────────────

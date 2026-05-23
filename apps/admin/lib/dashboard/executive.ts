@@ -14,6 +14,7 @@ type OverviewSnapshotRow = {
   lowStockItems: number
   publishedProducts: number
   activeDeliveries: number
+  activeClients: number
 }
 
 type MonthlyPerformanceRow = {
@@ -130,6 +131,20 @@ async function getOverviewSnapshot() {
       SELECT
         COUNT(*) FILTER (WHERE status::text IN ('READY_FOR_SHIPMENT','READY_FOR_SHIPPING'))::int AS "activeDeliveries"
       FROM public.customer_inquiries
+    ),
+    client_totals AS (
+      -- Mirrors the User List role resolution: anything not in the internal role set is a CLIENT
+      SELECT COUNT(*)::int AS "activeClients"
+      FROM neon_auth."user" auth
+      LEFT JOIN LATERAL (
+        SELECT *
+        FROM public.users app
+        WHERE app."authUserId"::text = auth.id::text OR LOWER(app.email) = LOWER(auth.email)
+        ORDER BY CASE WHEN app."authUserId"::text = auth.id::text THEN 0 ELSE 1 END
+        LIMIT 1
+      ) app ON TRUE
+      WHERE COALESCE(auth.role, '') NOT IN ('ADMIN','ANALYTICS','ADMIN_MANAGEMENT','SALES','INVENTORY','ACCOUNTING','OPERATIONS_DESIGN','CUSTOM')
+        AND UPPER(COALESCE(app.status::text, 'ACTIVE')) = 'ACTIVE'
     )
     SELECT
       ot."bookedRevenue",
@@ -146,11 +161,13 @@ async function getOverviewSnapshot() {
       it."totalStockItems",
       it."lowStockItems",
       it."publishedProducts",
-      dt."activeDeliveries"
+      dt."activeDeliveries",
+      ct."activeClients"
     FROM order_totals ot
     CROSS JOIN payment_totals pt
     CROSS JOIN inventory_totals it
     CROSS JOIN delivery_totals dt
+    CROSS JOIN client_totals ct
   `)
 
   return row
@@ -337,6 +354,19 @@ async function getReportsSnapshot() {
         COUNT(*) FILTER (WHERE status::text IN ('READY_FOR_SHIPMENT','READY_FOR_SHIPPING'))::int AS "activeDeliveries"
       FROM public.customer_inquiries
     ),
+    client_totals AS (
+      SELECT COUNT(*)::int AS "activeClients"
+      FROM neon_auth."user" auth
+      LEFT JOIN LATERAL (
+        SELECT *
+        FROM public.users app
+        WHERE app."authUserId"::text = auth.id::text OR LOWER(app.email) = LOWER(auth.email)
+        ORDER BY CASE WHEN app."authUserId"::text = auth.id::text THEN 0 ELSE 1 END
+        LIMIT 1
+      ) app ON TRUE
+      WHERE COALESCE(auth.role, '') NOT IN ('ADMIN','ANALYTICS','ADMIN_MANAGEMENT','SALES','INVENTORY','ACCOUNTING','OPERATIONS_DESIGN','CUSTOM')
+        AND UPPER(COALESCE(app.status::text, 'ACTIVE')) = 'ACTIVE'
+    ),
     -- Outstanding = sum of remaining balance from most recent verified payment per inquiry
     outstanding AS (
       SELECT COALESCE(SUM(pr."remainingBalance"), 0)::double precision AS "outstandingReceivables"
@@ -372,6 +402,7 @@ async function getReportsSnapshot() {
       it."lowStockItems",
       it."publishedProducts",
       dt."activeDeliveries",
+      ct."activeClients",
       os."outstandingReceivables",
       payment_statuses."verifiedPayments",
       payment_statuses."pendingPayments"
@@ -379,6 +410,7 @@ async function getReportsSnapshot() {
     CROSS JOIN payment_totals pt
     CROSS JOIN inventory_totals it
     CROSS JOIN delivery_totals dt
+    CROSS JOIN client_totals ct
     CROSS JOIN outstanding os
     CROSS JOIN payment_statuses
   `)

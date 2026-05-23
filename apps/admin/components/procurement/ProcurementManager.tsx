@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Trash2, Package, Truck, CheckCircle, XCircle, Clock, ShoppingCart } from "lucide-react"
-import type { SupplierRow, PurchaseOrderRow, PurchaseOrderDetailRow } from "@/lib/procurement"
+import { Plus, Trash2, Truck, ShoppingCart } from "lucide-react"
+import type { SupplierRow, PurchaseOrderRow } from "@/lib/procurement"
 
 type MaterialOption = {
   id: string
@@ -49,7 +49,6 @@ export function ProcurementManager({ suppliers, purchaseOrders, materials }: Pro
   const [activeSection, setActiveSection] = useState<"orders" | "suppliers">("orders")
   const [showCreatePO, setShowCreatePO] = useState(false)
   const [showCreateSupplier, setShowCreateSupplier] = useState(false)
-  const [selectedPO, setSelectedPO] = useState<PurchaseOrderDetailRow | null>(null)
   const [lineItems, setLineItems] = useState<LineItem[]>([{ key: ++keyCounter, materialId: "", quantity: "1", unitCost: "" }])
 
   const activeSuppliers = suppliers.filter((s) => s.isActive)
@@ -331,7 +330,7 @@ function POActions({ po }: { po: PurchaseOrderRow }) {
   }
   if (po.status === "ORDERED") {
     return (
-      <a href={`/operations?tab=procurement&receive=${po.id}`} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-emerald-700">
+      <a href={`/operations?tab=suppliers&receive=${po.id}`} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-emerald-700">
         Receive Goods
       </a>
     )

@@ -1,15 +1,15 @@
 "use client"
 
+import { useState } from "react"
 import {
   AlertTriangle,
-  ArrowRight,
-  Bell,
   Box,
   CircleDollarSign,
   Clock3,
   Package,
   ShoppingBag,
   Truck,
+  Users,
 } from "lucide-react"
 import {
   Area,
@@ -90,54 +90,31 @@ function EmptyPanel({ message }: { message: string }) {
 
 export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewClientProps) {
   const { snapshot, monthlyPerformance, categoryMix, lowStockItems, pendingOrders, upcomingDeliveries } = data
+  const [timeFilter, setTimeFilter] = useState<"day" | "week" | "year">("week")
 
   return (
     <main className="min-h-screen bg-[#fcfcfc]">
-      <header className="flex h-[64px] items-center justify-between border-b border-[#e5e7eb] bg-white px-8">
-        <div>
-          <span className="text-[14px] font-medium text-[#111827]">Welcome, {userName}</span>
-        </div>
-        <div className="flex items-center gap-5">
-          <button className="relative text-[#6b7280] transition-colors hover:text-[#111827]">
-            <Bell className="h-[20px] w-[20px]" />
-            <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-[#ef4444] ring-2 ring-white"></span>
-          </button>
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100">
-            <span className="text-[11px] font-bold text-indigo-600">
-              {userName
-                .split(" ")
-                .filter(Boolean)
-                .slice(0, 2)
-                .map((part) => part[0]?.toUpperCase() ?? "")
-                .join("")}
-            </span>
-          </div>
-        </div>
-      </header>
+ 
 
       <div className="space-y-6 p-8">
-        <section className="flex flex-col gap-4 rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-sm lg:flex-row lg:items-end lg:justify-between">
+        <div className="mb-2 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[720px]">
-            <p className="text-[12px] font-medium uppercase tracking-[0.24em] text-[#94a3b8]">Executive Overview</p>
-            <h1 className="mt-3 text-[34px] font-semibold leading-tight text-[#0f172a]">Executive Overview</h1>
+            <h1 className="text-[32px] font-bold tracking-tight text-[#0f172a]">Welcome back, {userName}</h1>
           </div>
+        </div>
 
-          <div className="rounded-2xl border border-[#e5e7eb] bg-[#f8fbff] px-5 py-4">
-            <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-[#94a3b8]">Live Neon Snapshot</p>
-            <div className="mt-3 space-y-1 text-[13px] text-[#334155]">
-              <p>{snapshot.salesOrders} active customer orders</p>
-              <p>{snapshot.publishedProducts} published products in catalog</p>
-              <p>{snapshot.activeDeliveries} orders out for delivery</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid grid-cols-1 gap-5 md:grid-cols-3 xl:grid-cols-5">
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-start justify-between">
               <div>
                 <p className="text-[12px] font-medium text-[#94a3b8]">Booked Revenue</p>
-                <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{formatCompactCurrency(snapshot.bookedRevenue)}</p>
+                <p className="mt-2 text-[26px] font-bold text-[#0f172a]">
+                  {formatCompactCurrency(
+                    timeFilter === "day" ? snapshot.bookedRevenue / 30 : 
+                    timeFilter === "year" ? snapshot.bookedRevenue * 12 : 
+                    snapshot.bookedRevenue
+                  )}
+                </p>
               </div>
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-50">
                 <CircleDollarSign className="h-5 w-5 text-indigo-600" />
@@ -160,6 +137,18 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-start justify-between">
               <div>
+                <p className="text-[12px] font-medium text-[#94a3b8]">Active Clients</p>
+                <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{snapshot.activeClients}</p>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-50">
+                <Users className="h-5 w-5 text-sky-500" />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-start justify-between">
+              <div>
                 <p className="text-[12px] font-medium text-[#94a3b8]">Collection Rate</p>
                 <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{snapshot.collectionRate.toFixed(1)}%</p>
               </div>
@@ -175,8 +164,8 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
                 <p className="text-[12px] font-medium text-[#94a3b8]">Inventory Value</p>
                 <p className="mt-2 text-[26px] font-bold text-[#0f172a]">{formatCompactCurrency(snapshot.inventoryValue)}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
-                <Package className="h-5 w-5 text-blue-500" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-50">
+                <Package className="h-5 w-5 text-indigo-500" />
               </div>
             </div>
           </div>
@@ -187,6 +176,32 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-[15px] font-semibold text-[#0f172a]">Revenue and Collection Trend</h2>
+              </div>
+              <div className="flex items-center rounded-lg border border-[#e5e7eb] bg-white p-1 shadow-sm">
+                <button
+                  onClick={() => setTimeFilter("day")}
+                  className={`rounded-md px-4 py-1 flex-1 text-[12px] font-medium transition-colors ${
+                    timeFilter === "day" ? "bg-[#f1f5f9] text-[#0f172a]" : "text-[#64748b] hover:text-[#0f172a]"
+                  }`}
+                >
+                  Daily
+                </button>
+                <button
+                  onClick={() => setTimeFilter("week")}
+                  className={`rounded-md px-4 py-1 flex-1 text-[12px] font-medium transition-colors ${
+                    timeFilter === "week" ? "bg-[#f1f5f9] text-[#0f172a]" : "text-[#64748b] hover:text-[#0f172a]"
+                  }`}
+                >
+                  Weekly
+                </button>
+                <button
+                  onClick={() => setTimeFilter("year")}
+                  className={`rounded-md px-4 py-1 flex-1 text-[12px] font-medium transition-colors ${
+                    timeFilter === "year" ? "bg-[#f1f5f9] text-[#0f172a]" : "text-[#64748b] hover:text-[#0f172a]"
+                  }`}
+                >
+                  Yearly
+                </button>
               </div>
             </div>
             <div className="h-[280px] w-full">
@@ -361,12 +376,6 @@ export function ExecutiveOverviewClient({ userName, data }: ExecutiveOverviewCli
           </div>
         </section>
 
-        <section className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#eef4ff] px-4 py-2 text-[12px] font-medium text-[#3159d8]">
-            Live from Neon DB
-            <ArrowRight className="h-3.5 w-3.5" />
-          </div>
-        </section>
       </div>
     </main>
   )
