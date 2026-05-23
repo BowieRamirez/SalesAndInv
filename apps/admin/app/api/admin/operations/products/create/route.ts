@@ -6,9 +6,11 @@ import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import {
   buildProductMaterialSummary,
   collectSelectedMaterialIds,
+  ensureColorVariantSkusAreGlobalUnique,
   generateFinishedProductSku,
   generateUniqueProductSlug,
   getExistingRawMaterials,
+  parseColorVariantsFromForm,
   parseDecimal,
   parseInteger,
   splitLines,
@@ -20,6 +22,23 @@ function buildRedirect(request: Request, message: string, tone: "success" | "err
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
   return NextResponse.redirect(url, { status: 303 })
+}
+
+async function generateProductCode(tx: { $queryRaw: typeof prisma.$queryRaw }, name: string): Promise<string> {
+  const words = name.trim().toUpperCase().split(/\s+/)
+  const base = words.length === 1 ? words[0].slice(0, 3) : words.map(w => w[0]).join("")
+  // Find the highest existing sequence for this base
+  const rows = await tx.$queryRaw<Array<{ code: string }>>(Prisma.sql`
+    SELECT "productCode" AS code FROM public.products
+    WHERE "productCode" LIKE ${base + "-%"}
+    ORDER BY "productCode" DESC
+  `)
+  let maxN = 0
+  for (const row of rows) {
+    const n = parseInt(row.code.split("-").pop() ?? "0", 10)
+    if (n > maxN) maxN = n
+  }
+  return `${base}-${String(maxN + 1).padStart(3, "0")}`
 }
 
 export async function POST(request: Request) {
@@ -125,6 +144,19 @@ export async function POST(request: Request) {
     const imageUrls = splitLines(imageUrl)
     const materialSummary = buildProductMaterialSummary(rawMaterials.map((material) => material.itemName))
 
+    // Parse and validate optional color variants. The product's main SKU is `sku`.
+    const variantParse = parseColorVariantsFromForm(formData, { productStockSku: sku })
+    if (!variantParse.ok) {
+      return buildRedirect(request, variantParse.error, "error")
+    }
+    const colorVariants = variantParse.variants
+    if (colorVariants.length > 0) {
+      const conflict = await ensureColorVariantSkusAreGlobalUnique(colorVariants)
+      if (conflict) {
+        return buildRedirect(request, conflict, "error")
+      }
+    }
+
     const created = await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.product_stocks (
@@ -163,11 +195,13 @@ export async function POST(request: Request) {
           "productStockId",
           slug,
           name,
+          "productCode",
           category,
           material,
           price,
           badge,
           images,
+          "colorVariants",
           rating,
           "reviewCount",
           "widthCm",
@@ -184,11 +218,13 @@ export async function POST(request: Request) {
           ${productStockId},
           ${slug},
           ${name},
+          ${await generateProductCode(tx, name)},
           ${category},
           ${materialSummary},
           ${new Prisma.Decimal(price)},
           ${badge},
           ${JSON.stringify(imageUrls)}::jsonb,
+          ${JSON.stringify(colorVariants)}::jsonb,
           0,
           0,
           ${new Prisma.Decimal(widthCm)},

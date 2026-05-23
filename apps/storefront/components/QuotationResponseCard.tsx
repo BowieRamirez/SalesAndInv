@@ -1,0 +1,243 @@
+"use client"
+
+import { useState } from "react"
+import { CheckCircle, XCircle, FileText, Loader2 } from "lucide-react"
+
+const VAT_RATE = 0.12
+
+function formatPeso(value: number) {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+type Props = {
+  inquiryId: string
+  productName: string
+  quotedPrice: number
+  quotedPriceBeforeDiscount: number | null
+  quotationDiscount: number
+  quotationRevisionCount: number
+}
+
+export function QuotationResponseCard({
+  inquiryId,
+  productName,
+  quotedPrice,
+  quotedPriceBeforeDiscount,
+  quotationDiscount,
+  quotationRevisionCount,
+}: Props) {
+  const [status, setStatus] = useState<"idle" | "loading" | "accepted" | "declined" | "error">("idle")
+  const [note, setNote] = useState("")
+  const [message, setMessage] = useState<string | null>(null)
+  const [showDeclineConfirm, setShowDeclineConfirm] = useState(false)
+
+  const hasDiscount = quotationDiscount > 0 && quotedPriceBeforeDiscount != null
+  const discountPct = hasDiscount
+    ? ((quotationDiscount / quotedPriceBeforeDiscount!) * 100).toFixed(1)
+    : null
+
+  const vatAmount = quotedPrice * VAT_RATE
+  const totalWithVat = quotedPrice + vatAmount
+  const downPayment = totalWithVat * 0.7
+  const balance = totalWithVat * 0.3
+
+  async function respond(accepted: boolean) {
+    setStatus("loading")
+    setMessage(null)
+    try {
+      const res = await fetch("/api/orders/quotation-response", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inquiryId, accepted, note: note.trim() || null }),
+      })
+      const data = await res.json() as { message?: string }
+      if (res.ok) {
+        setStatus(accepted ? "accepted" : "declined")
+        setMessage(data.message ?? (accepted ? "Quotation accepted!" : "Quotation declined."))
+        setTimeout(() => window.location.reload(), 2000)
+      } else {
+        setStatus("error")
+        setMessage(data.message ?? "Something went wrong. Please try again.")
+      }
+    } catch {
+      setStatus("error")
+      setMessage("Network error. Please check your connection.")
+    }
+  }
+
+  if (status === "accepted") {
+    return (
+      <div className="mt-5 rounded-[18px] border border-[#bbf7d0] bg-[#f0fdf4] px-5 py-5 text-center">
+        <CheckCircle className="mx-auto h-8 w-8 text-[#16a34a]" />
+        <p className="mt-3 text-[15px] font-medium text-[#166534]">{message}</p>
+        <p className="mt-1 text-[13px] text-[#4ade80]">Redirecting to payment…</p>
+      </div>
+    )
+  }
+
+  if (status === "declined") {
+    return (
+      <div className="mt-5 rounded-[18px] border border-[#e5e7eb] bg-[#f9fafb] px-5 py-5 text-center">
+        <p className="text-[15px] font-medium text-[#374151]">{message}</p>
+        <p className="mt-1 text-[13px] text-[#6b7280]">Refreshing your order…</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-5 rounded-[18px] border border-[#e5e7eb] bg-white px-5 py-5">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3">
+          <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full bg-[#f1f5f9]">
+            <FileText className="h-5 w-5 text-[#475569]" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748b]">
+                Sales Quotation — Action Required
+              </p>
+              {quotationRevisionCount > 0 && (
+                <span className="rounded-full bg-[#f1f5f9] px-2.5 py-0.5 text-[10px] font-semibold text-[#475569]">
+                  Revision #{quotationRevisionCount}
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-[14px] font-medium text-[#1a1a2e]">
+              Our sales team has prepared a quotation for your order.
+            </p>
+            <p className="mt-0.5 text-[13px] text-[#6a7282]">
+              Please review the pricing below and accept or decline.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing breakdown */}
+      <div className="mt-4 rounded-[14px] border border-[#e5e7eb] bg-[#f8fafc] p-4">
+        <p className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[#64748b]">
+          Quotation for {productName}
+        </p>
+        <div className="space-y-2 text-[13px]">
+          {hasDiscount ? (
+            <>
+              <div className="flex justify-between text-[#6b7280]">
+                <span>Original price</span>
+                <span>{formatPeso(quotedPriceBeforeDiscount!)}</span>
+              </div>
+              <div className="flex justify-between font-medium text-[#16a34a]">
+                <span>Discount ({discountPct}%)</span>
+                <span>- {formatPeso(quotationDiscount)}</span>
+              </div>
+              <div className="flex justify-between text-[#374151]">
+                <span>Price after discount</span>
+                <span className="font-medium">{formatPeso(quotedPrice)}</span>
+              </div>
+            </>
+          ) : (
+            <div className="flex justify-between text-[#374151]">
+              <span>Quoted price</span>
+              <span className="font-medium">{formatPeso(quotedPrice)}</span>
+            </div>
+          )}
+          <div className="flex justify-between text-[#374151]">
+            <span>VAT (12%)</span>
+            <span>{formatPeso(vatAmount)}</span>
+          </div>
+          <div className="flex justify-between border-t border-[#e5e7eb] pt-2 text-[15px] font-semibold text-[#111827]">
+            <span>Total (VAT inclusive)</span>
+            <span>{formatPeso(totalWithVat)}</span>
+          </div>
+        </div>
+        <div className="mt-3 grid gap-2 rounded-[10px] bg-white border border-[#e5e7eb] p-3 sm:grid-cols-2 text-[12px]">
+          <div>
+            <p className="text-[#94a3b8] uppercase tracking-wide">Down payment (70%)</p>
+            <p className="mt-0.5 font-semibold text-[#111827]">{formatPeso(downPayment)}</p>
+          </div>
+          <div>
+            <p className="text-[#94a3b8] uppercase tracking-wide">Remaining balance (30%)</p>
+            <p className="mt-0.5 font-semibold text-[#111827]">{formatPeso(balance)}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Error */}
+      {status === "error" && message && (
+        <div className="mt-3 rounded-[12px] border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-[13px] text-[#374151]">
+          {message}
+        </div>
+      )}
+
+      {/* Decline confirm */}
+      {showDeclineConfirm ? (
+        <div className="mt-4 space-y-3">
+          <div className="rounded-[14px] border border-[#e5e7eb] bg-[#f9fafb] px-4 py-4">
+            <p className="text-[13px] font-medium text-[#111827]">
+              Are you sure you want to decline this quotation?
+            </p>
+            <p className="mt-1 text-[12px] text-[#6b7280]">
+              Sales will be notified and may revise the offer.
+            </p>
+          </div>
+          <label className="grid gap-2">
+            <span className="text-[12px] font-medium text-[#374151]">Reason (optional)</span>
+            <input
+              type="text"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="e.g. Price is too high, please revise"
+              className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none focus:border-[#111827]"
+            />
+          </label>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setShowDeclineConfirm(false)}
+              className="flex-1 rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] font-medium text-[#374151] hover:bg-[#f9fafb]"
+            >
+              Go back
+            </button>
+            <button
+              type="button"
+              onClick={() => void respond(false)}
+              disabled={status === "loading"}
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60"
+            >
+              {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+              Confirm decline
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => void respond(true)}
+            disabled={status === "loading"}
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#1a1a2e] px-5 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-[#111] disabled:opacity-60"
+          >
+            {status === "loading" ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CheckCircle className="h-4 w-4" />
+            )}
+            Accept quotation &amp; proceed to payment
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowDeclineConfirm(true)}
+            disabled={status === "loading"}
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-[12px] border border-[#d1d5dc] bg-white px-5 py-3 text-[14px] font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:opacity-60"
+          >
+            <XCircle className="h-4 w-4" />
+            Decline
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}

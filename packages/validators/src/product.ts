@@ -4,8 +4,9 @@ export const StockStatusEnum = z.enum(["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK"])
 export const ProductBadgeEnum = z.enum(["BEST_SELLER", "SALE", "HOT"]).nullable()
 
 export const ColorVariantSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1).max(50),
   hex: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  sku: z.string().min(1).max(80),
 })
 
 export const DimensionsSchema = z.object({

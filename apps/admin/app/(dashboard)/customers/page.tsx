@@ -37,7 +37,7 @@ async function getCustomers() {
       app."lastLoginAt",
       COALESCE(app."createdAt", auth."createdAt") AS "createdAt",
       COALESCE(app."updatedAt", auth."updatedAt") AS "updatedAt",
-      c.name AS company
+      NULL::text AS company
     FROM neon_auth."user" auth
     LEFT JOIN LATERAL (
       SELECT *
@@ -46,7 +46,6 @@ async function getCustomers() {
       ORDER BY CASE WHEN app."authUserId"::text = auth.id::text THEN 0 ELSE 1 END
       LIMIT 1
     ) app ON TRUE
-    LEFT JOIN public.companies c ON c.id = app."companyId"
     WHERE (
       CASE
         WHEN auth.role IN ('ADMIN', 'ANALYTICS', 'ADMIN_MANAGEMENT') THEN 'ADMIN_MANAGEMENT'

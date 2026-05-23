@@ -3,6 +3,7 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { ImageDropField } from "./ImageDropField"
 import { MaterialSelector } from "./MaterialSelector"
+import { ColorVariantsEditor } from "./ColorVariantsEditor"
 
 type FinishedProduct = {
   id: string
@@ -28,6 +29,7 @@ type FinishedProduct = {
     quantityDisplay: string | null
     notes: string | null
   }>
+  colorVariants: Array<{ name: string; hex: string; sku: string }>
 }
 
 type FinishedProductsManagerProps = {
@@ -74,6 +76,7 @@ type FinishedProductDraft = {
   badge: string
   isPublished: boolean
   materials: FinishedProductDraftMaterial[]
+  colorVariants?: Array<{ name: string; hex: string; sku: string }>
 }
 
 function formatPeso(value: number) {
@@ -450,6 +453,11 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                     <p className="text-[12px] font-medium text-[#64748b]">
                       SKU: <span className="font-mono text-[#0f172a]">{product.sku}</span>
                     </p>
+                    {product.productCode && (
+                      <p className="text-[12px] font-medium text-[#64748b]">
+                        Code: <span className="font-mono font-bold text-[#0f172a]">{product.productCode}</span>
+                      </p>
+                    )}
                   </div>
 
                   <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -750,6 +758,16 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                         <span className="text-[13px] font-semibold text-[#475569]">Product image</span>
                         <ImageDropField name="imageUrl" defaultValue={activeDraft?.imageUrl ?? ""} />
                       </label>
+
+                      <div className="md:col-span-2 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] p-5">
+                        <ColorVariantsEditor
+                          defaultValue={activeDraft?.colorVariants ?? []}
+                          productMainSku={null}
+                        />
+                        <p className="mt-2 text-[11px] text-[#94a3b8]">
+                          The product's main SKU is auto-generated on create. Variant SKUs just need to be unique among themselves and not collide with other products' SKUs.
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -964,6 +982,12 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                       <p className="text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">SKU</p>
                       <p className="mt-1 font-mono text-[15px] font-semibold text-[#0f172a]">{selectedProduct.sku}</p>
                     </div>
+                    {selectedProduct.productCode && (
+                      <div>
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">Product Code</p>
+                        <p className="mt-1 font-mono text-[15px] font-bold text-[#1d4ed8]">{selectedProduct.productCode}</p>
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="rounded-2xl bg-[#f8fafc] p-4">
                         <p className="text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">Stock</p>
@@ -1063,6 +1087,34 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                           </tbody>
                         </table>
                       </div>
+                    )}
+                  </section>
+
+                  <section className="rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
+                    <div className="mb-6 border-b border-[#f1f5f9] pb-5">
+                      <h3 className="text-[16px] font-bold text-[#0f172a]">Color variants</h3>
+                    </div>
+                    {selectedProduct.colorVariants.length === 0 ? (
+                      <p className="rounded-2xl border border-dashed border-[#cbd5e1] p-6 text-center text-[13px] text-[#64748b]">
+                        No color variants defined for this product.
+                      </p>
+                    ) : (
+                      <ul className="flex flex-wrap gap-2">
+                        {selectedProduct.colorVariants.map((v, i) => (
+                          <li
+                            key={i}
+                            className="inline-flex items-center gap-2 rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-3 py-1.5 text-[12px]"
+                          >
+                            <span
+                              className="inline-block h-4 w-4 rounded-full border border-[#e2e8f0]"
+                              style={{ backgroundColor: v.hex }}
+                              aria-hidden
+                            />
+                            <span className="font-semibold text-[#0f172a]">{v.name}</span>
+                            <span className="font-mono text-[10px] text-[#64748b]">{v.sku}</span>
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </section>
                 </div>
@@ -1264,6 +1316,13 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                         altPreview={editProduct.name}
                       />
                     </label>
+
+                    <div className="sm:col-span-2 rounded-2xl border border-[#e2e8f0] bg-white p-5">
+                      <ColorVariantsEditor
+                        defaultValue={editProduct.colorVariants}
+                        productMainSku={editProduct.sku}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

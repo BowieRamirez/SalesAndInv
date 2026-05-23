@@ -11,11 +11,11 @@ const PAYMENT_METHODS = [
 
 type PaymentMethodValue = (typeof PAYMENT_METHODS)[number]["value"]
 
-type GCashFields = { gcashNumber: string; referenceNumber: string; transactionDate: string }
+type GCashFields = { gcashNumber: string; amountPaid: string; transactionDate: string }
 type CashFields = { amountTendered: string; datePaid: string }
-type CardFields = { cardType: string; lastFourDigits: string; transactionDate: string }
+type CardFields = { cardNumber: string; cardholderName: string; expiryMonth: string; expiryYear: string; cvv: string; cardType: string }
 
-const CARD_TYPES = ["Visa", "Mastercard", "JCB", "Amex", "Other"]
+const inputClass = "w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
 
 function formatPeso(value: number) {
   return new Intl.NumberFormat("en-PH", {
@@ -38,7 +38,7 @@ function buildNote(method: PaymentMethodValue, fields: Record<string, string>): 
     case "GCASH":
       return [
         fields.gcashNumber && `GCash #: ${fields.gcashNumber}`,
-        fields.referenceNumber && `Ref #: ${fields.referenceNumber}`,
+        fields.amountPaid && `Amount: ₱${fields.amountPaid}`,
         fields.transactionDate && `Date: ${fields.transactionDate}`,
       ].filter(Boolean).join(" | ")
     case "CASH":
@@ -49,15 +49,14 @@ function buildNote(method: PaymentMethodValue, fields: Record<string, string>): 
     case "CARD":
       return [
         fields.cardType && `Card: ${fields.cardType}`,
-        fields.lastFourDigits && `Last 4: ${fields.lastFourDigits}`,
-        fields.transactionDate && `Date: ${fields.transactionDate}`,
+        fields.cardholderName && `Name: ${fields.cardholderName}`,
+        fields.cardNumber && `Last 4: ${fields.cardNumber.replace(/\s/g, "").slice(-4)}`,
+        fields.expiryMonth && fields.expiryYear && `Expiry: ${fields.expiryMonth}/${fields.expiryYear}`,
       ].filter(Boolean).join(" | ")
     default:
       return ""
   }
 }
-
-const inputClass = "w-full rounded-[14px] border border-[#d1d5dc] bg-white px-4 py-3 text-[14px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
 
 type Props = {
   inquiryId: string
@@ -81,9 +80,9 @@ export function CustomerBalancePaymentForm({
   const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [message, setMessage] = useState<string | null>(null)
 
-  const [gcashFields, setGcashFields] = useState<GCashFields>({ gcashNumber: "", referenceNumber: "", transactionDate: today() })
+  const [gcashFields, setGcashFields] = useState<GCashFields>({ gcashNumber: "", amountPaid: "", transactionDate: today() })
   const [cashFields, setCashFields] = useState<CashFields>({ amountTendered: "", datePaid: today() })
-  const [cardFields, setCardFields] = useState<CardFields>({ cardType: "", lastFourDigits: "", transactionDate: today() })
+  const [cardFields, setCardFields] = useState<CardFields>({ cardNumber: "", cardholderName: "", expiryMonth: "", expiryYear: "", cvv: "", cardType: "" })
 
   function getActiveFields(): Record<string, string> {
     if (paymentMethod === "GCASH") return gcashFields
@@ -288,13 +287,19 @@ export function CustomerBalancePaymentForm({
 
                   {paymentMethod === "GCASH" && (
                     <div className="space-y-4">
+                      {/* Amount to send banner */}
+                      <div className="rounded-[12px] border border-[#bfdbfe] bg-[#eff6ff] px-4 py-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-[#1d4ed8]">Amount to send via GCash</p>
+                        <p className="mt-1 text-[22px] font-bold text-[#1e40af]">{formatPeso(remainingBalance)}</p>
+                        <p className="mt-0.5 text-[11px] text-[#3b82f6]">Send to our GCash number: <span className="font-semibold">0906 015 5922</span></p>
+                      </div>
                       <label className="grid gap-2">
-                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">GCash number</span>
+                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Your GCash number</span>
                         <input type="tel" placeholder="09XX XXX XXXX" value={gcashFields.gcashNumber} onChange={(e) => setGcashFields(p => ({ ...p, gcashNumber: e.target.value }))} maxLength={13} className={inputClass} required />
                       </label>
                       <label className="grid gap-2">
-                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Reference number</span>
-                        <input type="text" placeholder="13-digit GCash reference" value={gcashFields.referenceNumber} onChange={(e) => setGcashFields(p => ({ ...p, referenceNumber: e.target.value }))} className={inputClass} required />
+                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Amount you sent (₱)</span>
+                        <input type="number" placeholder={String(remainingBalance)} min="0" step="0.01" value={gcashFields.amountPaid} onChange={(e) => setGcashFields(p => ({ ...p, amountPaid: e.target.value }))} className={inputClass} required />
                       </label>
                       <label className="grid gap-2">
                         <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Transaction date</span>
@@ -340,20 +345,75 @@ export function CustomerBalancePaymentForm({
 
                   {paymentMethod === "CARD" && (
                     <div className="space-y-4">
+                      {/* Amount banner */}
+                      <div className="rounded-[12px] border border-[#e0e7ff] bg-[#eef2ff] px-4 py-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-[#4338ca]">Amount to charge</p>
+                        <p className="mt-1 text-[22px] font-bold text-[#312e81]">{formatPeso(remainingBalance)}</p>
+                      </div>
+                      {/* Card visual */}
+                      <div className="relative h-[140px] w-full overflow-hidden rounded-[16px] bg-gradient-to-br from-[#1a1a2e] to-[#374151] p-5 text-white shadow-lg">
+                        <div className="flex items-start justify-between">
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-white/60">Balance payment</p>
+                          {cardFields.cardType && <span className="rounded-md bg-white/20 px-2 py-0.5 text-[11px] font-bold text-white">{cardFields.cardType}</span>}
+                        </div>
+                        <p className="mt-3 font-mono text-[16px] tracking-[0.2em] text-white">{cardFields.cardNumber || "•••• •••• •••• ••••"}</p>
+                        <div className="mt-2 flex items-end justify-between">
+                          <div>
+                            <p className="text-[9px] uppercase tracking-[0.15em] text-white/50">Cardholder</p>
+                            <p className="text-[11px] font-medium uppercase text-white">{cardFields.cardholderName || "YOUR NAME"}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[9px] uppercase tracking-[0.15em] text-white/50">Expires</p>
+                            <p className="text-[11px] font-medium text-white">{cardFields.expiryMonth && cardFields.expiryYear ? `${cardFields.expiryMonth}/${cardFields.expiryYear.slice(-2)}` : "MM/YY"}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <label className="grid gap-2">
+                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Card number</span>
+                        <input type="text" inputMode="numeric" placeholder="1234 5678 9012 3456"
+                          value={cardFields.cardNumber}
+                          onChange={(e) => {
+                            const digits = e.target.value.replace(/\D/g, "").slice(0, 16)
+                            const formatted = digits.replace(/(.{4})/g, "$1 ").trim()
+                            let detected = cardFields.cardType
+                            if (/^4/.test(digits)) detected = "Visa"
+                            else if (/^5[1-5]/.test(digits) || /^2[2-7]/.test(digits)) detected = "Mastercard"
+                            else if (/^3[47]/.test(digits)) detected = "Amex"
+                            else if (/^35/.test(digits)) detected = "JCB"
+                            setCardFields(p => ({ ...p, cardNumber: formatted, cardType: detected }))
+                          }}
+                          maxLength={19} className={inputClass} required />
+                      </label>
+                      <label className="grid gap-2">
+                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Cardholder name</span>
+                        <input type="text" placeholder="Name as shown on card" value={cardFields.cardholderName} onChange={(e) => setCardFields(p => ({ ...p, cardholderName: e.target.value.toUpperCase() }))} className={inputClass} required />
+                      </label>
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        <label className="grid gap-2">
+                          <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Month</span>
+                          <select value={cardFields.expiryMonth} onChange={(e) => setCardFields(p => ({ ...p, expiryMonth: e.target.value }))} className={inputClass} required>
+                            <option value="">MM</option>
+                            {["01","02","03","04","05","06","07","08","09","10","11","12"].map(m => <option key={m} value={m}>{m}</option>)}
+                          </select>
+                        </label>
+                        <label className="grid gap-2">
+                          <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Year</span>
+                          <select value={cardFields.expiryYear} onChange={(e) => setCardFields(p => ({ ...p, expiryYear: e.target.value }))} className={inputClass} required>
+                            <option value="">YYYY</option>
+                            {Array.from({ length: 12 }, (_, i) => String(new Date().getFullYear() + i)).map(y => <option key={y} value={y}>{y}</option>)}
+                          </select>
+                        </label>
+                        <label className="grid gap-2">
+                          <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">CVV</span>
+                          <input type="password" placeholder="•••" value={cardFields.cvv} onChange={(e) => setCardFields(p => ({ ...p, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) }))} maxLength={4} className={inputClass} required />
+                        </label>
+                      </div>
                       <label className="grid gap-2">
                         <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Card type</span>
                         <select value={cardFields.cardType} onChange={(e) => setCardFields(p => ({ ...p, cardType: e.target.value }))} className={inputClass} required>
                           <option value="">Select card type</option>
-                          {CARD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                          {["Visa","Mastercard","JCB","Amex","Other"].map(t => <option key={t} value={t}>{t}</option>)}
                         </select>
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Last 4 digits</span>
-                        <input type="text" placeholder="e.g. 4321" value={cardFields.lastFourDigits} onChange={(e) => setCardFields(p => ({ ...p, lastFourDigits: e.target.value.replace(/\D/g, "").slice(0, 4) }))} maxLength={4} pattern="\d{4}" className={inputClass} required />
-                      </label>
-                      <label className="grid gap-2">
-                        <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">Transaction date</span>
-                        <input type="date" value={cardFields.transactionDate} onChange={(e) => setCardFields(p => ({ ...p, transactionDate: e.target.value }))} className={inputClass} required />
                       </label>
                     </div>
                   )}

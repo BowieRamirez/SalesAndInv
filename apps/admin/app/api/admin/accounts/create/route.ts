@@ -97,7 +97,6 @@ async function syncManagedUserRecord(params: {
         name: params.name,
         role: params.role,
         status: "ACTIVE",
-        companyId: null,
         permissions: params.permissions ? params.permissions : undefined,
       },
     })
@@ -113,7 +112,6 @@ async function syncManagedUserRecord(params: {
       name: params.name,
       role: params.role,
       status: "ACTIVE",
-      companyId: null,
       permissions: params.permissions ? params.permissions : undefined,
     },
   })

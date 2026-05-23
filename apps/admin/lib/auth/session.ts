@@ -29,8 +29,6 @@ type AppUserRow = {
   name: string
   role: AppRole
   status: string
-  companyId: string | null
-  companyCode: string | null
   accessExpiresAt: Date | null
 }
 
@@ -41,8 +39,6 @@ export type AuthenticatedAppUser = {
   name: string
   role: AppRole
   status: string
-  companyId: string | null
-  companyCode: string | null
   permissions: Record<string, boolean> | null
 }
 
@@ -216,12 +212,9 @@ async function findAppUserForSession(
       u.name,
       u.role::text AS role,
       u.status::text AS status,
-      u."companyId" AS "companyId",
-      c.code AS "companyCode",
       u."accessExpiresAt" AS "accessExpiresAt",
       u.permissions
     FROM public.users u
-    LEFT JOIN public.companies c ON c.id = u."companyId"
     WHERE u."authUserId" = ${sessionUser.id}::uuid
       OR (
         ${sessionUser.email ?? null}::text IS NOT NULL
@@ -254,8 +247,6 @@ export async function getCurrentAdminPortalUser({ fresh = false }: { fresh?: boo
       name: sessionUser.name,
       role: normalizeAppRole(sessionUser.role),
       status: "ACTIVE",
-      companyId: null,
-      companyCode: null,
       permissions: null,
     }
   }
@@ -274,8 +265,6 @@ export async function getCurrentAdminPortalUser({ fresh = false }: { fresh?: boo
     name: appUser.name,
     role: normalizedRole,
     status: effectiveStatus,
-    companyId: appUser.companyId,
-    companyCode: appUser.companyCode,
     permissions: (appUser as any).permissions ? (typeof (appUser as any).permissions === 'string' ? JSON.parse((appUser as any).permissions) : (appUser as any).permissions) : null,
   }
 }

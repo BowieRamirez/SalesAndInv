@@ -147,6 +147,7 @@ export async function POST(request: Request) {
               INSERT INTO public.stock_movements (
                 id,
                 "materialStockId",
+                "stockItemId",
                 type,
                 quantity,
                 "projectPurpose",
@@ -155,6 +156,7 @@ export async function POST(request: Request) {
               )
               VALUES (
                 gen_random_uuid(),
+                ${material.materialStockId},
                 ${material.materialStockId},
                 'OUT'::"StockMovementType",
                 ${required},
@@ -181,7 +183,7 @@ export async function POST(request: Request) {
                 'STOCK'::"AuditEntityType",
                 ${material.materialStockId},
                 ${JSON.stringify({
-                  auditLabel: "RAW_MATERIAL_STOCK_REMOVED",
+                  auditLabel: "Stock used for build",
                   sku: material.sku,
                   itemName: material.itemName,
                   quantity: required,

@@ -11,6 +11,7 @@ type EditRequestPayload = {
   badge?: string | null
   price?: number
   isPublished?: boolean
+  colorVariants?: Array<{ name: string; hex: string; sku: string }>
 }
 
 type CurrentProductData = {
@@ -22,6 +23,7 @@ type CurrentProductData = {
   price: number
   isPublished: boolean
   warehouseName: string
+  colorVariants: Array<{ name: string; hex: string; sku: string }>
 }
 
 export type ProductEditRequest = {
@@ -198,9 +200,68 @@ function RequestCard({ request, onDone }: { request: ProductEditRequest; onDone:
             />
           </dl>
 
+          {/* Color variants diff */}
+          {payload.colorVariants !== undefined && (() => {
+            const before = request.current.colorVariants ?? []
+            const after = payload.colorVariants ?? []
+            const beforeKey = JSON.stringify(before.map((v) => `${v.name}|${v.hex.toLowerCase()}|${v.sku.toLowerCase()}`).sort())
+            const afterKey = JSON.stringify(after.map((v) => `${v.name}|${v.hex.toLowerCase()}|${v.sku.toLowerCase()}`).sort())
+            const changed = beforeKey !== afterKey
+            const renderRow = (variants: typeof before, tone: "before" | "after" | "neutral") => (
+              variants.length === 0 ? (
+                <p className="text-[12px] italic text-[#94a3b8]">No color variants.</p>
+              ) : (
+                <ul className="flex flex-wrap gap-2">
+                  {variants.map((v, i) => (
+                    <li
+                      key={`${tone}-${i}`}
+                      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[12px] ${
+                        tone === "before"
+                          ? "border-[#e2e8f0] bg-white text-[#94a3b8] line-through"
+                          : tone === "after"
+                            ? "border-amber-200 bg-amber-50 text-[#0f172a]"
+                            : "border-[#e2e8f0] bg-white text-[#475569]"
+                      }`}
+                    >
+                      <span
+                        className="inline-block h-3 w-3 rounded-full border border-[#e2e8f0]"
+                        style={{ backgroundColor: v.hex }}
+                        aria-hidden
+                      />
+                      <span className="font-medium">{v.name}</span>
+                      <span className="font-mono text-[10px] text-[#64748b]">{v.sku}</span>
+                    </li>
+                  ))}
+                </ul>
+              )
+            )
+
+            return (
+              <div className="mt-4">
+                <dt className="mb-2 text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">Color variants</dt>
+                {changed ? (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-xl border border-[#e2e8f0] bg-[#f8fafc] p-4">
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[#94a3b8]">Before</p>
+                      {renderRow(before, "before")}
+                    </div>
+                    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-amber-600">After (proposed)</p>
+                      {renderRow(after, "after")}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-xl bg-[#f8fafc] p-4">
+                    {renderRow(after, "neutral")}
+                    <p className="mt-2 text-[10px] font-bold text-[#94a3b8]">(unchanged)</p>
+                  </div>
+                )}
+              </div>
+            )
+          })()}
+
           {/* Description diff */}
-          {payload.description !== undefined && (
-            <div className="mt-4">
+          {payload.description !== undefined && (            <div className="mt-4">
               <dt className="mb-2 text-[11px] font-bold uppercase tracking-wide text-[#94a3b8]">Description</dt>
               {payload.description !== request.current.description ? (
                 <div className="grid gap-3 sm:grid-cols-2">

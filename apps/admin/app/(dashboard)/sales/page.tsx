@@ -8,11 +8,15 @@ import {
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
+import { getAuditLogs } from "@/lib/audit-logs"
+import type { DetailedAuditLog } from "@/lib/audit-logs"
 import { getUnreadChatInquiryIds } from "@/lib/order-chat"
 import { CustomerReturnsTable } from "@/components/sales/CustomerReturnsTable"
 import { SalesOrdersTable } from "@/components/sales/SalesOrdersTable"
 import { OrderChatsList } from "@/components/sales/OrderChatsList"
 import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
+import { SalesLeadCard } from "@/components/sales/SalesLeadCard"
+import { SalesQuotationCard } from "@/components/sales/SalesQuotationCard"
 
 type SalesPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -29,60 +33,6 @@ function resolveValue(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value
 }
 
-type DetailedAuditLog = {
-  id: string
-  action: string
-  entityType: string
-  entityId: string
-  sku: string | null
-  itemName: string | null
-  quantity: number | null
-  details: string | null
-  actorName: string | null
-  createdAt: Date
-}
-
-async function getAuditLogs(role: string) {
-  return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
-    SELECT
-      a.id,
-      COALESCE(a.metadata->>'auditLabel', a.action::text) AS action,
-      a."entityType"::text AS "entityType",
-      a."entityId",
-      a.metadata->>'sku' AS sku,
-      COALESCE(
-        a.metadata->>'itemName',
-        a.metadata->>'name',
-        a.metadata->>'updatedName',
-        a.metadata->>'createdName',
-        a.metadata->>'removedName',
-        a.metadata->>'customerName',
-        a.metadata->>'customerEmail',
-        a.metadata->>'updatedEmail',
-        a.metadata->>'createdEmail',
-        a.metadata->>'removedEmail'
-      ) AS "itemName",
-      NULLIF(a.metadata->>'quantity', '')::int AS quantity,
-      COALESCE(
-        a.metadata->>'updatedEmail',
-        a.metadata->>'createdEmail',
-        a.metadata->>'removedEmail',
-        a.metadata->>'customerEmail',
-        a.metadata->>'referenceNumber',
-        a.metadata->>'category',
-        a.metadata->>'reasonDetails'
-      ) AS details,
-      u.name AS "actorName",
-      a."createdAt"
-    FROM public.audit_logs a
-    LEFT JOIN public.users u ON u.id = a."actorId"
-      OR u."authUserId"::text = a."actorId"
-    WHERE u.role = ${role}::"UserRole"
-    ORDER BY a."createdAt" DESC
-    LIMIT 200
-  `)
-}
-
 function WorkflowBadge({ status }: { status: string }) {
   return (
     <span
@@ -90,55 +40,6 @@ function WorkflowBadge({ status }: { status: string }) {
     >
       {formatInquiryWorkflowStatus(status)}
     </span>
-  )
-}
-
-function SalesLeadCard({ inquiry }: { inquiry: InquiryWorkflowRow }) {
-  return (
-    <article className="rounded-xl border border-[#eef2f7] bg-[#fbfcfd] p-5">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <p className="text-[12px] uppercase tracking-[0.18em] text-[#99a1af]">Customer order inquiry</p>
-          <h3 className="mt-1 text-[20px] font-semibold text-[#111827]">{inquiry.productName}</h3>
-          <p className="mt-2 text-[13px] text-[#6b7280]">
-            {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
-          </p>
-          <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
-        </div>
-
-        <div className="flex flex-col items-start gap-3 text-[12px] text-[#6b7280] lg:items-end">
-          <WorkflowBadge status={inquiry.workflowStatus} />
-          <div>
-            <p>Created {new Date(inquiry.createdAt).toLocaleDateString()}</p>
-            <p className="mt-1">Updated {new Date(inquiry.updatedAt).toLocaleDateString()}</p>
-          </div>
-        </div>
-      </div>
-
-      <form method="post" action="/api/admin/approvals/sales" className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
-        <input type="hidden" name="inquiryId" value={inquiry.id} />
-        <label className="block">
-          <span className="mb-2 block text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
-            Sales note before inventory review
-          </span>
-          <input
-            name="statusNote"
-            defaultValue={inquiry.workflowNote ?? ""}
-            placeholder="Tell inventory what to validate for this customer order"
-            className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
-          />
-        </label>
-
-        <div className="flex items-end">
-          <button
-            type="submit"
-            className="rounded-[12px] bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
-          >
-            Request inventory approval
-          </button>
-        </div>
-      </form>
-    </article>
   )
 }
 
@@ -189,6 +90,7 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
   const inquiries = await getInquiryWorkflowRows()
   const returnRequests = await getReturnRequests()
   const salesQueue = inquiries.filter((inquiry) => inquiry.workflowStatus === "RECEIVED")
+  const quotationQueue = inquiries.filter((inquiry) => inquiry.workflowStatus === "PENDING_SALES_QUOTATION")
   const forwardedCount = inquiries.filter((inquiry) => inquiry.workflowStatus === "PENDING_INVENTORY_APPROVAL").length
   const completedCount = inquiries.filter((inquiry) => inquiry.workflowStatus === "COMPLETED").length
   const accountingWaitingCount = inquiries.filter((inquiry) => inquiry.workflowStatus === "PENDING_ACCOUNTING_APPROVAL").length
@@ -204,7 +106,7 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
     .sort((left, right) => new Date(right.updatedAt).getTime() - new Date(left.updatedAt).getTime())
     .slice(0, 5)
 
-  const auditLogs = activeTab === "audit" ? await getAuditLogs(currentUser.role) : []
+  const auditLogs = activeTab === "audit" ? await getAuditLogs([currentUser.id, currentUser.authUserId].filter(Boolean) as string[], 200) : []
   const unreadChats = activeTab === "chats" ? await getUnreadChatInquiryIds() : new Set<string>()
 
   // Fetch archived chats when on chats tab
@@ -278,10 +180,11 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
                 Quick dashboard view of where customer orders are across the sales-to-delivery workflow.
               </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+            <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-7">
               {[
                 "RECEIVED",
                 "PENDING_INVENTORY_APPROVAL",
+                "PENDING_SALES_QUOTATION",
                 "PENDING_ACCOUNTING_APPROVAL",
                 "GETTING_READY_FOR_BUILDING",
                 "READY_FOR_SHIPPING",
@@ -380,10 +283,14 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
 
       {activeTab === "approvals" && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
             <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
               <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Waiting on sales</p>
               <p className="mt-2 text-[28px] font-semibold text-[#b45309]">{salesQueue.length}</p>
+            </div>
+            <div className="rounded-xl border border-[#fce7f3] bg-[#fdf2f8] p-5">
+              <p className="text-[12px] uppercase tracking-wide text-[#9d174d]">Quotation stage</p>
+              <p className="mt-2 text-[28px] font-semibold text-[#9d174d]">{quotationQueue.length}</p>
             </div>
             <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
               <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Sent to inventory</p>
@@ -395,12 +302,13 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
             </div>
           </div>
 
+          {/* New inquiries — send to inventory */}
           <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
             <div className="mb-5">
-              <h2 className="text-[20px] font-semibold text-[#111827]">Sales approval page</h2>
+              <h2 className="text-[20px] font-semibold text-[#111827]">New customer inquiries</h2>
               <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
                 New customer orders start here. Once sales confirms the inquiry details, send it to inventory so they
-                can approve material availability before accounting handles payment.
+                can approve material availability before the quotation step.
               </p>
             </div>
 
@@ -412,6 +320,29 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
               <div className="space-y-4">
                 {salesQueue.map((inquiry) => (
                   <SalesLeadCard key={inquiry.id} inquiry={inquiry} />
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Quotation stage — back from inventory, sales sets price */}
+          <section className="rounded-xl border border-[#fce7f3] bg-white p-6 shadow-sm">
+            <div className="mb-5">
+              <h2 className="text-[20px] font-semibold text-[#111827]">Quotation — negotiate price</h2>
+              <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
+                Inventory has confirmed materials for these orders. Set the final price and send a quotation to the
+                customer. The customer must accept before payment can proceed.
+              </p>
+            </div>
+
+            {quotationQueue.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-[#fce7f3] bg-[#fdf2f8] px-6 py-12 text-center text-[13px] text-[#9d174d]">
+                No orders are currently in the quotation stage.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {quotationQueue.map((inquiry) => (
+                  <SalesQuotationCard key={inquiry.id} inquiry={inquiry} />
                 ))}
               </div>
             )}

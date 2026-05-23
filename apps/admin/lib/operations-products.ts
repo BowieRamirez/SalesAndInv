@@ -134,3 +134,120 @@ export function buildProductMaterialSummary(materialNames: string[]) {
 
   return uniqueNames.join(", ")
 }
+
+export type ColorVariantInput = { name: string; hex: string; sku: string }
+
+const HEX_PATTERN = /^#[0-9a-fA-F]{6}$/
+
+/**
+ * Parses parallel form fields `colorName[]`, `colorHex[]`, `colorSku[]` from a FormData
+ * into a clean ColorVariantInput[]. Validates:
+ *   - all three fields are non-empty
+ *   - hex matches #RRGGBB
+ *   - SKUs are unique within the variants list
+ *   - SKUs do not collide with the product's own SKU (productStockSku, if provided)
+ * Returns either { ok: true, variants } or { ok: false, error }.
+ */
+export function parseColorVariantsFromForm(
+  formData: FormData,
+  options: { productStockSku?: string | null } = {},
+): { ok: true; variants: ColorVariantInput[] } | { ok: false; error: string } {
+  const names = formData.getAll("colorName").map((v) => String(v ?? "").trim())
+  const hexes = formData.getAll("colorHex").map((v) => String(v ?? "").trim())
+  const skus = formData.getAll("colorSku").map((v) => String(v ?? "").trim())
+
+  const length = Math.max(names.length, hexes.length, skus.length)
+  const variants: ColorVariantInput[] = []
+  const seenSkus = new Set<string>()
+  const productSku = options.productStockSku?.trim().toLowerCase()
+
+  for (let i = 0; i < length; i++) {
+    const name = names[i] ?? ""
+    const hex = hexes[i] ?? ""
+    const sku = skus[i] ?? ""
+
+    // Skip rows where everything is blank — user added then removed
+    if (!name && !hex && !sku) continue
+
+    if (!name) return { ok: false, error: `Color variant #${i + 1} is missing a name.` }
+    if (!HEX_PATTERN.test(hex)) {
+      return { ok: false, error: `Color variant "${name}" must have a valid hex color like #C9A96E.` }
+    }
+    if (!sku) return { ok: false, error: `Color variant "${name}" is missing a SKU.` }
+    if (sku.length > 80) {
+      return { ok: false, error: `Color variant SKU "${sku}" is too long (max 80 characters).` }
+    }
+
+    const skuLower = sku.toLowerCase()
+    if (seenSkus.has(skuLower)) {
+      return { ok: false, error: `Duplicate color variant SKU "${sku}". Each variant must have a unique SKU.` }
+    }
+    if (productSku && skuLower === productSku) {
+      return {
+        ok: false,
+        error: `Color variant SKU "${sku}" conflicts with the product's main SKU. Use a different SKU.`,
+      }
+    }
+    seenSkus.add(skuLower)
+    variants.push({ name, hex, sku })
+  }
+
+  return { ok: true, variants }
+}
+
+/**
+ * Checks that no color-variant SKU is already used by another product (either as the
+ * product's own product_stocks.sku or as another product's color variant SKU).
+ * Returns null on success, or an error message on conflict.
+ */
+export async function ensureColorVariantSkusAreGlobalUnique(
+  variants: ColorVariantInput[],
+  excludeProductId?: string,
+): Promise<string | null> {
+  if (variants.length === 0) return null
+
+  const skus = variants.map((v) => v.sku)
+
+  // Check against product_stocks SKUs
+  const stockClash = await prisma.$queryRaw<Array<{ sku: string }>>(Prisma.sql`
+    SELECT ps.sku
+    FROM public.product_stocks ps
+    WHERE LOWER(ps.sku) IN (${Prisma.join(skus.map((s) => Prisma.sql`LOWER(${s})`))})
+      ${excludeProductId
+        ? Prisma.sql`AND ps.id <> (SELECT "productStockId" FROM public.products WHERE id = ${excludeProductId})`
+        : Prisma.empty}
+    LIMIT 1
+  `)
+
+  if (stockClash[0]) {
+    return `Color variant SKU "${stockClash[0].sku}" is already used by another product. Use a different SKU.`
+  }
+
+  // Check against material_stocks SKUs
+  const materialClash = await prisma.$queryRaw<Array<{ sku: string }>>(Prisma.sql`
+    SELECT ms.sku
+    FROM public.material_stocks ms
+    WHERE LOWER(ms.sku) IN (${Prisma.join(skus.map((s) => Prisma.sql`LOWER(${s})`))})
+    LIMIT 1
+  `)
+
+  if (materialClash[0]) {
+    return `Color variant SKU "${materialClash[0].sku}" is already used by a raw material. Use a different SKU.`
+  }
+
+  // Check against other products' color variants
+  const variantClash = await prisma.$queryRaw<Array<{ id: string; name: string; sku: string }>>(Prisma.sql`
+    SELECT p.id, p.name, cv->>'sku' AS sku
+    FROM public.products p,
+         jsonb_array_elements(COALESCE(p."colorVariants", '[]'::jsonb)) cv
+    WHERE LOWER(cv->>'sku') IN (${Prisma.join(skus.map((s) => Prisma.sql`LOWER(${s})`))})
+      ${excludeProductId ? Prisma.sql`AND p.id <> ${excludeProductId}` : Prisma.empty}
+    LIMIT 1
+  `)
+
+  if (variantClash[0]) {
+    return `Color variant SKU "${variantClash[0].sku}" is already used by product "${variantClash[0].name}". Use a different SKU.`
+  }
+
+  return null
+}

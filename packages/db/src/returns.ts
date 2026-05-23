@@ -277,6 +277,7 @@ export async function completeReturnRequest(params: {
         INSERT INTO public.stock_movements (
           id,
           "materialStockId",
+          "stockItemId",
           type,
           quantity,
           "requesterName",
@@ -286,6 +287,7 @@ export async function completeReturnRequest(params: {
         )
         VALUES (
           ${randomUUID()},
+          ${material.materialStockId},
           ${material.materialStockId},
           'DAMAGE'::"StockMovementType",
           ${resolvedQuantity},

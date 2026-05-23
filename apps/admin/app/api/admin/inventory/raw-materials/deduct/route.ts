@@ -72,6 +72,7 @@ export async function POST(request: Request) {
         INSERT INTO public.stock_movements (
           id,
           "materialStockId",
+          "stockItemId",
           type,
           quantity,
           "referenceNumber",
@@ -80,6 +81,7 @@ export async function POST(request: Request) {
         )
         VALUES (
           ${randomUUID()},
+          ${materialStockId},
           ${materialStockId},
           ${movementType}::"StockMovementType",
           ${quantity},

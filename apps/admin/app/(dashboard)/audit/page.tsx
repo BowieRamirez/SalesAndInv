@@ -1,62 +1,8 @@
 import { redirect } from "next/navigation"
-import { Prisma, prisma } from "@furnitrack/db"
 import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
 import { requireAuthenticatedAppUser } from "@/lib/auth/session"
+import { getAuditLogs } from "@/lib/audit-logs"
 import { ROLE_REDIRECT } from "@/lib/rbac"
-
-type DetailedAuditLog = {
-  id: string
-  action: string
-  entityType: string
-  entityId: string
-  sku: string | null
-  itemName: string | null
-  quantity: number | null
-  details: string | null
-  actorName: string | null
-  createdAt: Date
-}
-
-async function getAuditLogs(role: string) {
-  return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
-    SELECT
-      a.id,
-      COALESCE(a.metadata->>'auditLabel', a.action::text) AS action,
-      a."entityType"::text AS "entityType",
-      a."entityId",
-      a.metadata->>'sku' AS sku,
-      COALESCE(
-        a.metadata->>'itemName',
-        a.metadata->>'name',
-        a.metadata->>'updatedName',
-        a.metadata->>'createdName',
-        a.metadata->>'removedName',
-        a.metadata->>'customerName',
-        a.metadata->>'customerEmail',
-        a.metadata->>'updatedEmail',
-        a.metadata->>'createdEmail',
-        a.metadata->>'removedEmail'
-      ) AS "itemName",
-      NULLIF(a.metadata->>'quantity', '')::int AS quantity,
-      COALESCE(
-        a.metadata->>'updatedEmail',
-        a.metadata->>'createdEmail',
-        a.metadata->>'removedEmail',
-        a.metadata->>'customerEmail',
-        a.metadata->>'referenceNumber',
-        a.metadata->>'category',
-        a.metadata->>'reasonDetails'
-      ) AS details,
-      u.name AS "actorName",
-      a."createdAt"
-    FROM public.audit_logs a
-    LEFT JOIN public.users u ON u.id = a."actorId"
-      OR u."authUserId"::text = a."actorId"
-    WHERE u.role = ${role}::"UserRole"
-    ORDER BY a."createdAt" DESC
-    LIMIT 300
-  `)
-}
 
 export const dynamic = "force-dynamic"
 
@@ -67,7 +13,8 @@ export default async function AuditDashboard() {
     redirect(ROLE_REDIRECT[currentUser.role])
   }
 
-  const auditLogs = await getAuditLogs(currentUser.role)
+  const ids = [currentUser.id, currentUser.authUserId].filter(Boolean) as string[]
+  const auditLogs = await getAuditLogs(ids, 300)
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-8">

@@ -33,26 +33,25 @@ export async function POST(request: Request) {
   const inquiryId = String(formData.get("inquiryId") ?? "")
   const statusNote =
     String(formData.get("statusNote") ?? "").trim()
-    || "Inventory approved material availability and forwarded the order to accounting for payment."
+    || "Inventory approved material availability. Order returned to sales for quotation."
 
   try {
     const updatedRows = await updateInquiryWorkflowStatus({
       inquiryId,
       expectedStages: ["PENDING_INVENTORY_APPROVAL"],
-      nextStage: "PENDING_ACCOUNTING_APPROVAL",
+      nextStage: "PENDING_SALES_QUOTATION",
       statusNote,
       actorId: currentUser.id,
       actorRemarks: statusNote,
     })
 
     revalidatePath("/operations")
-    revalidatePath("/accounting")
     revalidatePath("/sales")
     revalidatePath("/account/status")
 
     return buildRedirect(
       request,
-      updatedRows > 0 ? "Materials approved and order forwarded to accounting." : "That order is no longer waiting on inventory.",
+      updatedRows > 0 ? "Materials approved. Order returned to sales for quotation." : "That order is no longer waiting on inventory.",
       updatedRows > 0 ? "success" : "error",
     )
   } catch (error) {

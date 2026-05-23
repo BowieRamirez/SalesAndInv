@@ -25,6 +25,7 @@ type EditRequestRow = {
   currentCategory: string
   currentDescription: string
   currentImages: unknown
+  currentColorVariants: unknown
   currentBadge: string | null
   currentPrice: number
   currentIsPublished: boolean
@@ -121,6 +122,7 @@ async function getPendingProductEditRequests(): Promise<ProductEditRequest[]> {
       p.category AS "currentCategory",
       p.description AS "currentDescription",
       p.images AS "currentImages",
+      p."colorVariants" AS "currentColorVariants",
       p.badge AS "currentBadge",
       p.price::double precision AS "currentPrice",
       p."isPublished" AS "currentIsPublished",
@@ -137,6 +139,19 @@ async function getPendingProductEditRequests(): Promise<ProductEditRequest[]> {
   return rows.map((row) => {
     const images = Array.isArray(row.currentImages)
       ? row.currentImages.filter((x): x is string => typeof x === "string")
+      : []
+
+    const colorVariants = Array.isArray(row.currentColorVariants)
+      ? row.currentColorVariants.flatMap((v) => {
+          if (v && typeof v === "object" && !Array.isArray(v)) {
+            const o = v as Record<string, unknown>
+            const n = typeof o.name === "string" ? o.name : null
+            const h = typeof o.hex === "string" ? o.hex : null
+            const s = typeof o.sku === "string" ? o.sku : null
+            if (n && h && s) return [{ name: n, hex: h, sku: s }]
+          }
+          return []
+        })
       : []
 
     return {
@@ -156,6 +171,7 @@ async function getPendingProductEditRequests(): Promise<ProductEditRequest[]> {
         price: Number(row.currentPrice),
         isPublished: row.currentIsPublished,
         warehouseName: row.currentWarehouseName,
+        colorVariants,
       },
       remarks: row.remarks,
       createdAt: row.createdAt instanceof Date ? row.createdAt.toISOString() : String(row.createdAt),

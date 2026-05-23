@@ -6,7 +6,10 @@ export type WarehouseSummaryRow = {
   id: string
   code: string
   name: string
-  address: string
+  street: string | null
+  city: string | null
+  country: string
+  postalCode: string | null
   itemCount: number
   archivedAt: string | null
 }
@@ -68,17 +71,23 @@ function EditWarehouseModal({
           </div>
 
           <div>
-            <label className={LABEL_CLASS} htmlFor={`address-${warehouse.id}`}>Address <span className="text-red-500">*</span></label>
-            <input
-              id={`address-${warehouse.id}`}
-              name="address"
-              required
-              defaultValue={warehouse.address}
-              placeholder="Street, city"
-              className={INPUT_CLASS}
-            />
+            <label className={LABEL_CLASS} htmlFor={`street-${warehouse.id}`}>Street address</label>
+            <input id={`street-${warehouse.id}`} name="street" defaultValue={warehouse.street ?? ""} placeholder="e.g. 001B Carlos cor Dizon St" className={INPUT_CLASS} />
           </div>
-
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className={LABEL_CLASS} htmlFor={`city-${warehouse.id}`}>City</label>
+              <input id={`city-${warehouse.id}`} name="city" defaultValue={warehouse.city ?? ""} placeholder="e.g. Novaliches" className={INPUT_CLASS} />
+            </div>
+            <div>
+              <label className={LABEL_CLASS} htmlFor={`postalCode-${warehouse.id}`}>Postal code</label>
+              <input id={`postalCode-${warehouse.id}`} name="postalCode" defaultValue={warehouse.postalCode ?? ""} placeholder="e.g. 1105" className={INPUT_CLASS} />
+            </div>
+          </div>
+          <div>
+            <label className={LABEL_CLASS} htmlFor={`country-${warehouse.id}`}>Country</label>
+            <input id={`country-${warehouse.id}`} name="country" defaultValue={warehouse.country ?? "Philippines"} placeholder="Philippines" className={INPUT_CLASS} />
+          </div>
           <div className="flex gap-3 pt-2">
             <button
               type="submit"
@@ -183,7 +192,9 @@ export function WarehouseLocationsTable({
                 <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0">
                   <td className="py-3 pr-4 font-mono font-semibold text-[#111827]">{row.code}</td>
                   <td className="py-3 pr-4 font-medium text-[#111827]">{row.name}</td>
-                  <td className="py-3 pr-4 text-[#6b7280]">{row.address}</td>
+                  <td className="py-3 pr-4 text-[#6b7280]">
+                    {[row.street, row.city, row.postalCode, row.country].filter(Boolean).join(", ") || "—"}
+                  </td>
                   <td className="py-3 pr-4 font-semibold text-[#111827]">{row.itemCount}</td>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
@@ -252,7 +263,9 @@ export function ArchivedWarehousesTable({
               <tr key={row.id} className="border-b border-[#f3f4f6] last:border-b-0 opacity-75">
                 <td className="py-3 pr-4 font-mono font-semibold text-[#6b7280]">{row.code}</td>
                 <td className="py-3 pr-4 font-medium text-[#374151]">{row.name}</td>
-                <td className="py-3 pr-4 text-[#9ca3af]">{row.address}</td>
+                <td className="py-3 pr-4 text-[#9ca3af]">
+                  {[row.street, row.city, row.postalCode, row.country].filter(Boolean).join(", ") || "—"}
+                </td>
                 <td className="py-3 pr-4 text-[#374151]">{row.itemCount}</td>
                 <td className="py-3 pr-4 text-[#9ca3af]">
                   {row.archivedAt

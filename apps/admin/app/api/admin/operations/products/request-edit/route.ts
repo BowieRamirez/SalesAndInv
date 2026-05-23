@@ -2,7 +2,12 @@ import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 import { Prisma, prisma, logAudit } from "@furnitrack/db"
 import { getAuthenticatedAppUser } from "@/lib/auth/session"
-import { parseDecimal, splitLines } from "@/lib/operations-products"
+import {
+  ensureColorVariantSkusAreGlobalUnique,
+  parseColorVariantsFromForm,
+  parseDecimal,
+  splitLines,
+} from "@/lib/operations-products"
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/operations", request.url)
@@ -46,16 +51,32 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Verify the product exists
-    const existing = await prisma.$queryRaw<Array<{ id: string; name: string }>>(Prisma.sql`
-      SELECT p.id, p.name
+    // Verify the product exists and load its main SKU for variant validation
+    const existing = await prisma.$queryRaw<Array<{ id: string; name: string; sku: string }>>(Prisma.sql`
+      SELECT p.id, p.name, ps.sku
       FROM public.products p
+      INNER JOIN public.product_stocks ps ON ps.id = p."productStockId"
       WHERE p.id = ${productId}
       LIMIT 1
     `)
 
     if (!existing[0]) {
       return buildRedirect(request, "Product not found.", "error")
+    }
+
+    const productMainSku = existing[0].sku
+
+    // Parse and validate optional color variants
+    const variantParse = parseColorVariantsFromForm(formData, { productStockSku: productMainSku })
+    if (!variantParse.ok) {
+      return buildRedirect(request, variantParse.error, "error")
+    }
+    const colorVariants = variantParse.variants
+    if (colorVariants.length > 0) {
+      const conflict = await ensureColorVariantSkusAreGlobalUnique(colorVariants, productId)
+      if (conflict) {
+        return buildRedirect(request, conflict, "error")
+      }
     }
 
     // Cancel any existing pending request for this product from this user
@@ -80,6 +101,7 @@ export async function POST(request: Request) {
       badge,
       price,
       isPublished,
+      colorVariants,
     }
 
     await prisma.$executeRaw(Prisma.sql`
@@ -106,17 +128,56 @@ export async function POST(request: Request) {
     revalidatePath("/operations")
     revalidatePath("/approvals")
 
+    // Build a human-readable summary of color variant changes if any are in this request
+    let colorVariantsSummary: string | null = null
+    if (colorVariants.length > 0) {
+      const beforeColorRows = await prisma.$queryRaw<Array<{ colorVariants: unknown }>>(Prisma.sql`
+        SELECT "colorVariants" FROM public.products WHERE id = ${productId} LIMIT 1
+      `)
+      const beforeColors = Array.isArray(beforeColorRows[0]?.colorVariants)
+        ? (beforeColorRows[0].colorVariants as unknown[]).flatMap((v) => {
+            if (v && typeof v === "object" && !Array.isArray(v)) {
+              const o = v as Record<string, unknown>
+              const n = typeof o.name === "string" ? o.name : null
+              const h = typeof o.hex === "string" ? o.hex : null
+              const s = typeof o.sku === "string" ? o.sku : null
+              if (n && h && s) return [{ name: n, hex: h, sku: s }]
+            }
+            return []
+          })
+        : []
+      const beforeBySku = new Map(beforeColors.map((v) => [v.sku.toLowerCase(), v]))
+      const afterBySku = new Map(colorVariants.map((v) => [v.sku.toLowerCase(), v]))
+      const added = colorVariants.filter((v) => !beforeBySku.has(v.sku.toLowerCase()))
+      const removed = beforeColors.filter((v) => !afterBySku.has(v.sku.toLowerCase()))
+      const updated = colorVariants.filter((v) => {
+        const before = beforeBySku.get(v.sku.toLowerCase())
+        return (
+          before &&
+          (before.name !== v.name || before.hex.toLowerCase() !== v.hex.toLowerCase())
+        )
+      })
+      const parts: string[] = []
+      if (added.length > 0) parts.push(`+${added.length} added (${added.map((v) => v.name).join(", ")})`)
+      if (removed.length > 0) parts.push(`-${removed.length} removed (${removed.map((v) => v.name).join(", ")})`)
+      if (updated.length > 0) parts.push(`${updated.length} updated (${updated.map((v) => v.name).join(", ")})`)
+      colorVariantsSummary = parts.length > 0 ? parts.join(" · ") : "Color variants unchanged"
+    }
+
     await logAudit({
       actorId: currentUser.authUserId,
       action: "PRODUCT_UPDATED",
       entityType: "PRODUCT",
       entityId: productId,
       metadata: {
-        auditLabel: "PRODUCT_EDIT_REQUESTED",
+        auditLabel: colorVariantsSummary
+          ? "PRODUCT_COLOR_VARIANTS_REQUESTED"
+          : "PRODUCT_EDIT_REQUESTED",
         name,
         category,
         price,
         submittedBy: currentUser.name,
+        ...(colorVariantsSummary ? { colorVariantsSummary, colorVariantsProposed: colorVariants } : {}),
       },
     })
 

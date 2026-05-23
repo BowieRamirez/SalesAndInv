@@ -69,7 +69,7 @@ export function SalesOrdersTable({ inquiries }: { inquiries: InquiryWorkflowRow[
             <tr className="border-b border-[#e5e7eb] text-[#6b7280]">
               <th className="py-3 pr-4 font-medium">Product</th>
               <th className="py-3 pr-4 font-medium">Customer</th>
-              <th className="py-3 pr-4 font-medium">Quotation total</th>
+              <th className="py-3 pr-4 font-medium">Order total</th>
               <th className="py-3 pr-4 font-medium">Current stage</th>
               <th className="py-3 font-medium text-right">Action</th>
             </tr>

@@ -101,9 +101,10 @@ export async function reserveInquiryMaterialsForBuild({
       }
 
       await tx.$executeRaw(Prisma.sql`
-        INSERT INTO public.stock_movements (id, "materialStockId", type, quantity, "requesterName", "projectPurpose", "referenceNumber", "createdAt")
+        INSERT INTO public.stock_movements (id, "materialStockId", "stockItemId", type, quantity, "requesterName", "projectPurpose", "referenceNumber", "createdAt")
         VALUES (
           gen_random_uuid(),
+          ${material.materialStockId},
           ${material.materialStockId},
           'ADJUSTMENT'::"StockMovementType",
           ${required},

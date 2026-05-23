@@ -2,19 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { useDebounce } from "./hookTs"
-
-type DetailedAuditLog = {
-  id: string
-  action: string
-  entityType: string
-  entityId: string
-  sku: string | null
-  itemName: string | null
-  quantity: number | null
-  details: string | null
-  actorName: string | null
-  createdAt: Date
-}
+import type { DetailedAuditLog } from "@/lib/audit-logs"
 
 const PAGE_SIZE = 10
 
@@ -35,10 +23,11 @@ export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
         row.actorName ?? "",
         row.action,
         row.entityType,
-        row.entityId,
         row.sku ?? "",
         row.itemName ?? "",
         row.details ?? "",
+        row.displayRecord ?? "",
+        row.displaySub ?? "",
       ].some((value) =>
         value.toLowerCase().includes(normalizedQuery),
       ),
@@ -99,9 +88,16 @@ export function AuditLogsTable({ rows }: { rows: DetailedAuditLog[] }) {
                 <td className="py-3 pr-4 text-[#111827]">{row.entityType.replaceAll("_", " ")}</td>
                 <td className="py-3 pr-4 text-[#111827]">{row.sku ?? "-"}</td>
                 <td className="py-3 pr-4 text-[#111827]">
-                  <div>{row.itemName ?? row.details ?? row.entityId}</div>
-                  {row.itemName && row.details ? (
-                    <div className="mt-1 text-[11px] text-[#6b7280]">{row.details}</div>
+                  {/* Primary: displayRecord (resolved name, never a raw UUID) */}
+                  {/* Fallback chain: displayRecord → itemName → details → "—" */}
+                  <div className="font-medium">
+                    {row.displayRecord ?? row.itemName ?? row.details ?? "—"}
+                  </div>
+                  {/* Secondary line: displaySub or details (if primary is already set) */}
+                  {(row.displaySub ?? (row.displayRecord && row.details)) ? (
+                    <div className="mt-0.5 text-[11px] text-[#6b7280]">
+                      {row.displaySub ?? row.details}
+                    </div>
                   ) : null}
                 </td>
                 <td className="py-3 text-[#111827]">{row.quantity ?? "-"}</td>

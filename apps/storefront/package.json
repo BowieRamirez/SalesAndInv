@@ -15,6 +15,7 @@
     "@furnitrack/ui": "workspace:*",
     "@furnitrack/validators": "workspace:*",
     "@neondatabase/auth": "0.2.0-beta.1",
+    "@react-pdf/renderer": "^4.5.1",
     "better-auth": "^1.6.11",
     "lucide-react": "^0.577.0",
     "next": "16.2.6",

@@ -4,7 +4,7 @@ import { Prisma, prisma } from "@furnitrack/db"
 export type OrderChatAttachmentInput = {
   fileName: string
   mimeType: string
-  attachmentType: "IMAGE" | "DOCUMENT" | "QUOTATION" | "RECEIPT"
+  attachmentType: "IMAGE" | "DOCUMENT" | "RECEIPT"
   dataUrl: string
 }
 
@@ -20,7 +20,7 @@ export type OrderChatMessage = {
     id: string
     fileName: string
     mimeType: string
-    attachmentType: "IMAGE" | "DOCUMENT" | "QUOTATION" | "RECEIPT"
+    attachmentType: "IMAGE" | "DOCUMENT" | "RECEIPT"
     dataUrl: string
   }>
 }
@@ -40,7 +40,7 @@ type AttachmentRow = {
   messageId: string
   fileName: string
   mimeType: string
-  attachmentType: "IMAGE" | "DOCUMENT" | "QUOTATION" | "RECEIPT"
+  attachmentType: "IMAGE" | "DOCUMENT" | "RECEIPT"
   dataUrl: string
 }
 

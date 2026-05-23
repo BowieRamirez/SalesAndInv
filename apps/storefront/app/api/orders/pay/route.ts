@@ -66,6 +66,9 @@ export async function POST(request: Request) {
   const paymentNote = typeof data.paymentNote === "string"
     ? data.paymentNote.trim().slice(0, 500)
     : null
+  const proofImage = (data.proofImage && typeof data.proofImage === "object")
+    ? data.proofImage as { dataUrl: string; fileName: string }
+    : null
 
   if (!inquiryId) {
     return NextResponse.json({ message: "Order ID is required." }, { status: 400 })
@@ -86,6 +89,7 @@ export async function POST(request: Request) {
       status: string
       statusNote: string | null
       productPrice: Prisma.Decimal | number | string | null
+      quotedPrice: Prisma.Decimal | number | string | null
     }
     const rows = await prisma.$queryRaw<InquiryRow[]>(
       Prisma.sql`
@@ -93,7 +97,8 @@ export async function POST(request: Request) {
           ci.id,
           ci.status::text AS status,
           ci."statusNote",
-          p.price AS "productPrice"
+          p.price AS "productPrice",
+          ci."quotedPrice"
         FROM public.customer_inquiries ci
         INNER JOIN public.products p ON p.id = ci."productId"
         WHERE ci.id = ${inquiryId}
@@ -130,7 +135,11 @@ export async function POST(request: Request) {
       )
     }
 
-    const orderTotal = inquiry.productPrice == null ? 0 : Number(inquiry.productPrice)
+    // Use quotedPrice (VAT-inclusive) as the effective total — falls back to catalog price + VAT
+    const basePrice = inquiry.quotedPrice != null
+      ? Number(inquiry.quotedPrice)
+      : Number(inquiry.productPrice ?? 0)
+    const orderTotal = basePrice * 1.12  // VAT-inclusive total
     const minDownPayment = orderTotal * MIN_DOWN_PAYMENT_RATIO
 
     // Server-side authoritative validation of payment amounts.
@@ -166,10 +175,10 @@ export async function POST(request: Request) {
       resolvedPaymentType = amountPaid >= orderTotal ? "FULL_PAYMENT" : "DOWN_PAYMENT"
       resolvedAmount = amountPaid
     } else {
-      // For non-cash methods we accept the client-supplied paymentType but cap it
-      // to FULL_PAYMENT for now since there's no partial rail.
-      resolvedPaymentType = "FULL_PAYMENT"
-      resolvedAmount = orderTotal
+      // For GCash and Card, use the actual amount the customer sent
+      const paid = Number.isFinite(amountPaid) && amountPaid > 0 ? amountPaid : orderTotal
+      resolvedPaymentType = paid >= orderTotal ? "FULL_PAYMENT" : "DOWN_PAYMENT"
+      resolvedAmount = Math.min(paid, orderTotal)
     }
 
     const remainingBalance = Math.max(0, orderTotal - resolvedAmount)
@@ -293,16 +302,28 @@ export async function POST(request: Request) {
         `(₱${resolvedAmount.toFixed(2)}${
           remainingBalance > 0 ? `, remaining ₱${remainingBalance.toFixed(2)}` : ""
         })${paymentNote ? ": " + paymentNote : "."}`
+      const chatMsgId = randomUUID()
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
         VALUES (
-          ${randomUUID()},
+          ${chatMsgId},
           ${inquiryId},
           ${sessionUser.id},
           'CLIENT',
           ${chatBody}
         )
       `)
+
+      // 3a. Attach proof image if provided
+      if (proofImage?.dataUrl && proofImage.dataUrl.startsWith("data:image/")) {
+        const ext = proofImage.dataUrl.split(";")[0]?.split("/")[1] ?? "jpg"
+        const fileName = proofImage.fileName || `payment-proof.${ext}`
+        const mimeType = proofImage.dataUrl.split(";")[0]?.replace("data:", "") ?? "image/jpeg"
+        await tx.$executeRaw(Prisma.sql`
+          INSERT INTO public.order_chat_attachments (id, message_id, file_name, mime_type, attachment_type, data_url)
+          VALUES (${randomUUID()}, ${chatMsgId}, ${fileName}, ${mimeType}, 'RECEIPT', ${proofImage.dataUrl})
+        `)
+      }
 
       // 4. Approval history entry
       await tx.$executeRaw(Prisma.sql`

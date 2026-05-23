@@ -1,54 +1,88 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ArrowLeft, Mail, Loader2, CheckCircle } from "lucide-react"
+import { authClient } from "@/lib/auth/client"
 
 export default function VerifyEmailPage() {
-  const router = useRouter()
   const [code, setCode] = useState("")
+  const [email, setEmail] = useState("")
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "resending" | "resent" | "error">("idle")
   const [error, setError] = useState("")
+
+  // Get the current user's email from the session so we can pass it to the SDK
+  useEffect(() => {
+    authClient.getSession().then(({ data }) => {
+      const userEmail = (data?.user as { email?: string } | null)?.email
+      if (userEmail) setEmail(userEmail)
+    }).catch(() => {})
+  }, [])
 
   async function handleVerify(e: React.FormEvent) {
     e.preventDefault()
     setError("")
     setStatus("loading")
 
-    // Send code to our server-side API route which calls Neon Auth and syncs the DB
-    const res = await fetch("/api/account/verify-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: code.trim() }),
+    if (!email) {
+      setError("Could not determine your email address. Please sign in again.")
+      setStatus("error")
+      return
+    }
+
+    // Use the Neon Auth SDK directly — this is the correct way to verify an OTP
+    const { error: sdkError } = await authClient.emailOtp.verifyEmail({
+      email,
+      otp: code.trim(),
     })
 
-    const data = await res.json().catch(() => ({})) as { message?: string }
-
-    if (res.ok) {
-      setStatus("done")
-      // Force a fresh session reload so the navbar reflects verified status
-      setTimeout(() => {
-        window.location.href = "/?verified=1"
-      }, 2000)
-    } else {
-      setError(data.message ?? "Invalid or expired code. Please try again.")
+    if (sdkError) {
+      setError(
+        (sdkError as { message?: string }).message ??
+        "Invalid or expired code. Please try again."
+      )
       setStatus("error")
+      return
     }
+
+    // SDK verified — now stamp emailVerifiedAt in our own users table
+    await fetch("/api/account/verify-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ syncOnly: true }),
+    }).catch(() => {})
+
+    setStatus("done")
+    // Force a fresh session reload so the navbar reflects verified status
+    setTimeout(() => {
+      window.location.href = "/?verified=1"
+    }, 2000)
   }
 
   async function handleResend() {
     setStatus("resending")
     setError("")
 
-    const res = await fetch("/api/account/send-verification", { method: "POST" })
-    const data = await res.json().catch(() => ({})) as { message?: string }
-
-    if (res.ok) {
-      setStatus("resent")
-    } else {
-      setError(data.message ?? "Failed to resend. Please try again.")
+    if (!email) {
+      setError("Could not determine your email address. Please sign in again.")
       setStatus("error")
+      return
+    }
+
+    // Use the Neon Auth SDK to resend the verification OTP
+    const { error: sdkError } = await authClient.emailOtp.sendVerificationOtp({
+      email,
+      type: "email-verification",
+    })
+
+    if (sdkError) {
+      setError(
+        (sdkError as { message?: string }).message ??
+        "Failed to resend. Please try again."
+      )
+      setStatus("error")
+    } else {
+      setStatus("resent")
     }
   }
 

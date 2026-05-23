@@ -8,6 +8,7 @@ import { OrderChatPanel } from "@/components/OrderChatPanel"
 import { OrderStepper } from "@/components/OrderStepper"
 import { CustomerPaymentForm } from "@/components/CustomerPaymentForm"
 import { CustomerBalancePaymentForm } from "@/components/CustomerBalancePaymentForm"
+import { QuotationResponseCard } from "@/components/QuotationResponseCard"
 import { StatusTabs } from "@/components/StatusTabs"
 import { getStorefrontSessionUser } from "@/lib/auth/session"
 import { formatShortDate } from "@/lib/format"
@@ -22,6 +23,10 @@ type InquiryRow = {
   productSlug: string
   productId: string
   productPrice: string | number
+  quotedPrice: string | number | null
+  quotationDiscount: string | number | null
+  quotedPriceBeforeDiscount: string | number | null
+  quotationRevisionCount: string | number | null
   status: string
   statusNote: string | null
   customerMessage: string
@@ -89,6 +94,7 @@ function resolveWorkflowStatus(status: string, note: string | null) {
   if (hasCompletedMarker(note)) return "COMPLETED"
   switch (status) {
     case "ACCEPTED": return "PENDING_INVENTORY_APPROVAL"
+    case "PENDING_SALES_QUOTATION": return "PENDING_SALES_QUOTATION"
     case "WAITING_FOR_PAYMENT": return "PENDING_ACCOUNTING_APPROVAL"
     case "READY_FOR_SHIPMENT": return "READY_FOR_SHIPPING"
     default: return status
@@ -107,6 +113,10 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
       p.slug AS "productSlug",
       p.id AS "productId",
       p.price::text AS "productPrice",
+      ci."quotedPrice"::text AS "quotedPrice",
+      COALESCE(ci."quotationDiscount", 0)::text AS "quotationDiscount",
+      ci."quotedPriceBeforeDiscount"::text AS "quotedPriceBeforeDiscount",
+      COALESCE(ci."quotationRevisionCount", 0)::text AS "quotationRevisionCount",
       ci.status::text AS status,
       ci."statusNote",
       ci.message AS "customerMessage",
@@ -144,6 +154,10 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
     verifiedAmount: inquiry.verifiedAmount == null ? null : Number(inquiry.verifiedAmount),
     verifiedRemaining: inquiry.verifiedRemaining == null ? null : Number(inquiry.verifiedRemaining),
     hasPendingBalance: inquiry.pendingBalanceMethod !== null,
+    quotedPrice: inquiry.quotedPrice == null ? null : Number(inquiry.quotedPrice),
+    quotationDiscount: inquiry.quotationDiscount == null ? 0 : Number(inquiry.quotationDiscount),
+    quotedPriceBeforeDiscount: inquiry.quotedPriceBeforeDiscount == null ? null : Number(inquiry.quotedPriceBeforeDiscount),
+    quotationRevisionCount: inquiry.quotationRevisionCount == null ? 0 : Number(inquiry.quotationRevisionCount),
   }))
 
   const activeInquiries = workflowInquiries.filter((i) => i.workflowStatus !== "COMPLETED")
@@ -252,7 +266,12 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
                             · Updated {formatShortDate(inquiry.updatedAt)}
                           </span>
                         </div>
-                        {(inquiry.workflowStatus === "RECEIVED" || inquiry.workflowStatus === "PENDING_INVENTORY_APPROVAL") && (
+                        {(
+                          inquiry.workflowStatus === "RECEIVED" ||
+                          inquiry.workflowStatus === "PENDING_INVENTORY_APPROVAL" ||
+                          inquiry.workflowStatus === "PENDING_SALES_QUOTATION" ||
+                          (inquiry.workflowStatus === "PENDING_ACCOUNTING_APPROVAL" && !inquiry.customerPaidMethod)
+                        ) && (
                           <CancelOrderButton inquiryId={inquiry.id} productName={inquiry.productName} />
                         )}
                       </div>
@@ -277,11 +296,24 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
                         </div>
 
                         {/* Payment panels */}
+                        {inquiry.workflowStatus === "PENDING_SALES_QUOTATION" && (
+                          <QuotationResponseCard
+                            inquiryId={inquiry.id}
+                            productName={inquiry.productName}
+                            quotedPrice={inquiry.quotedPrice ?? Number(inquiry.productPrice)}
+                            quotedPriceBeforeDiscount={inquiry.quotedPriceBeforeDiscount}
+                            quotationDiscount={inquiry.quotationDiscount}
+                            quotationRevisionCount={inquiry.quotationRevisionCount}
+                          />
+                        )}
+
                         {inquiry.workflowStatus === "PENDING_ACCOUNTING_APPROVAL" && (
                           <CustomerPaymentForm
                             inquiryId={inquiry.id}
                             productName={inquiry.productName}
-                            totalPrice={Number(inquiry.productPrice)}
+                            totalPrice={inquiry.quotedPrice ?? Number(inquiry.productPrice)}
+                            quotedPriceBeforeDiscount={inquiry.quotedPriceBeforeDiscount}
+                            quotationDiscount={inquiry.quotationDiscount}
                             alreadySubmitted={!!inquiry.customerPaidMethod}
                             submittedMethod={inquiry.customerPaidMethod}
                             submittedNote={inquiry.customerPaidNote}

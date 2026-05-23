@@ -1,7 +1,6 @@
 export * from "./product"
 export * from "./user"
 export * from "./lead"
-export * from "./quotation"
 export * from "./order"
 export * from "./payment"
 export * from "./kpi"

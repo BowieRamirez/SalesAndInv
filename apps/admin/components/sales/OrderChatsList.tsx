@@ -282,7 +282,7 @@ export function OrderChatsList({
               <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
                 {showArchived
                   ? "Viewing archived chats. These are hidden from the active list."
-                  : "Open a specific order to chat with the customer, receive images, and send quotation or receipt documents."}
+                  : "Open a specific order to chat with the customer, receive images, and send receipt documents."}
               </p>
             </div>
             <div className="relative w-full md:w-[320px]">

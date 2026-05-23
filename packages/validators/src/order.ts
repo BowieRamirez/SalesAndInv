@@ -12,7 +12,6 @@ export const OrderSchema = z.object({
   id: z.string(),
   soNumber: z.string(),
   poNumber: z.string().nullable(),
-  quotationId: z.string(),
   clientName: z.string(),
   status: OrderStatusEnum,
   rushOrder: z.boolean(),

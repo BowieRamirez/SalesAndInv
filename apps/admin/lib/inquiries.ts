@@ -22,6 +22,8 @@ type InquiryBaseRow = {
   id: string
   inquiryNumber: string | null
   productName: string
+  productBadge: string | null
+  productOriginalPrice: Prisma.Decimal | number | string | null
   customerName: string
   customerEmail: string
   customerPhone: string
@@ -29,17 +31,20 @@ type InquiryBaseRow = {
   status: string
   statusNote: string | null
   total: Prisma.Decimal | number | string | null
+  quotedPrice: Prisma.Decimal | number | string | null
+  quotationAccepted: boolean | null
+  quotationDeclineReason: string | null
+  quotationRevisionCount: number
+  quotationDiscount: Prisma.Decimal | number | string | null
+  quotedPriceBeforeDiscount: Prisma.Decimal | number | string | null
   createdAt: Date
   updatedAt: Date
-  // Latest payment_records linkage (most recent verified or pending row, if any)
   latestPaymentNumber: string | null
   latestPaymentStatus: string | null
   latestPaymentMethod: string | null
-  // From the VERIFIED row (source of truth once accounting confirms)
   latestPaymentAmount: Prisma.Decimal | number | string | null
   latestPaymentRemaining: Prisma.Decimal | number | string | null
   latestPaymentVerifiedAt: Date | null
-  // From the PENDING row (customer submitted but not yet confirmed)
   pendingPaymentAmount: Prisma.Decimal | number | string | null
   pendingPaymentRemaining: Prisma.Decimal | number | string | null
 }
@@ -47,6 +52,7 @@ type InquiryBaseRow = {
 export type InquiryWorkflowStage =
   | "RECEIVED"
   | "PENDING_INVENTORY_APPROVAL"
+  | "PENDING_SALES_QUOTATION"
   | "PENDING_ACCOUNTING_APPROVAL"
   | "GETTING_READY_FOR_BUILDING"
   | "READY_FOR_SHIPPING"
@@ -61,6 +67,14 @@ export type InquiryWorkflowRow = Omit<
   shippingScheduledAt: Date | null
   paymentMethod: AccountingPaymentMethod | null
   total: number
+  quotedPrice: number | null
+  quotationAccepted: boolean | null
+  quotationDeclineReason: string | null
+  quotationRevisionCount: number
+  quotationDiscount: number
+  quotedPriceBeforeDiscount: number | null
+  productOriginalPrice: number | null
+  productBadge: string | null
   downPaymentRequired: number
   paid: number
   remainingBalance: number
@@ -219,6 +233,8 @@ function resolveWorkflowStatus(status: string, note: string | null): InquiryWork
     case "ACCEPTED":
     case "PENDING_INVENTORY_APPROVAL":
       return "PENDING_INVENTORY_APPROVAL"
+    case "PENDING_SALES_QUOTATION":
+      return "PENDING_SALES_QUOTATION"
     case "WAITING_FOR_PAYMENT":
     case "PENDING_ACCOUNTING_APPROVAL":
       return "PENDING_ACCOUNTING_APPROVAL"
@@ -267,7 +283,8 @@ function toWorkflowRows(rows: InquiryBaseRow[]): InquiryWorkflowRow[] {
     let paymentStatus: InquiryPaymentStatus
     if (hasRealPayment && row.latestPaymentAmount !== null) {
       // latestPaymentAmount/Remaining come from the VERIFIED row (balance facts)
-      paymentStatus = (realRemaining ?? 0) === 0 ? "FULLY_PAID" : "DOWN_PAYMENT"
+      // Use a small tolerance (< ₱1) to handle floating-point precision from quotedPrice * 1.12
+      paymentStatus = (realRemaining ?? 0) < 1 ? "FULLY_PAID" : "DOWN_PAYMENT"
     } else if (hasRealPayment && row.latestPaymentStatus === "PENDING") {
       // Only a PENDING row exists, no VERIFIED row yet — still awaiting initial confirmation
       paymentStatus = "PENDING"
@@ -279,16 +296,22 @@ function toWorkflowRows(rows: InquiryBaseRow[]): InquiryWorkflowRow[] {
 
     const balanceFields = (() => {
       if (hasRealPayment && realPaid !== null && realRemaining !== null) {
-        const total = Number(row.total ?? 0)
-        const downPaymentRequired = total * 0.3
+        // Use quotedPrice (VAT-inclusive) as the effective total when available
+        const effectiveBase = row.quotedPrice != null ? Number(row.quotedPrice) : Number(row.total ?? 0)
+        const effectiveTotal = effectiveBase * 1.12  // VAT-inclusive
+        const downPaymentRequired = effectiveTotal * 0.7
+        // Clamp tiny floating-point remainders (< ₱1) to 0
+        const clampedRemaining = realRemaining < 1 ? 0 : realRemaining
         return {
-          total,
+          total: effectiveBase,
           downPaymentRequired,
           paid: realPaid,
-          remainingBalance: realRemaining,
+          remainingBalance: clampedRemaining,
         }
       }
-      return getBalanceFields(row.total, paymentStatus, parsePaidAmount(row.statusNote))
+      // Fall back to catalog price if no quotation
+      const effectiveBase = row.quotedPrice != null ? Number(row.quotedPrice) : Number(row.total ?? 0)
+      return getBalanceFields(effectiveBase * 1.12, paymentStatus, parsePaidAmount(row.statusNote))
     })()
 
     const paymentReviewStatus: InquiryWorkflowRow["paymentReviewStatus"] =
@@ -307,6 +330,8 @@ function toWorkflowRows(rows: InquiryBaseRow[]): InquiryWorkflowRow[] {
       id: row.id,
       inquiryNumber: row.inquiryNumber,
       productName: row.productName,
+      productBadge: row.productBadge,
+      productOriginalPrice: row.productOriginalPrice == null ? null : Number(row.productOriginalPrice),
       customerName: row.customerName,
       customerEmail: row.customerEmail,
       customerPhone: row.customerPhone,
@@ -315,6 +340,12 @@ function toWorkflowRows(rows: InquiryBaseRow[]): InquiryWorkflowRow[] {
       statusNote: row.statusNote,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      quotedPrice: row.quotedPrice == null ? null : Number(row.quotedPrice),
+      quotationAccepted: row.quotationAccepted ?? null,
+      quotationDeclineReason: row.quotationDeclineReason ?? null,
+      quotationRevisionCount: row.quotationRevisionCount ?? 0,
+      quotationDiscount: row.quotationDiscount == null ? 0 : Number(row.quotationDiscount),
+      quotedPriceBeforeDiscount: row.quotedPriceBeforeDiscount == null ? null : Number(row.quotedPriceBeforeDiscount),
       // Latest payment_records linkage (kept for downstream consumers; converted
       // to plain primitives so they survive the server -> client boundary)
       latestPaymentNumber: row.latestPaymentNumber,
@@ -347,6 +378,8 @@ export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowSt
       ci.id,
       ci."inquiryNumber",
       p.name AS "productName",
+      p.badge AS "productBadge",
+      p."originalPrice" AS "productOriginalPrice",
       ci."customerName",
       ci."customerEmail",
       ci."customerPhone",
@@ -354,6 +387,12 @@ export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowSt
       ci.status::text AS status,
       ci."statusNote",
       p.price AS total,
+      ci."quotedPrice",
+      ci."quotationAccepted",
+      ci."quotationDeclineReason",
+      COALESCE(ci."quotationRevisionCount", 0)::int AS "quotationRevisionCount",
+      COALESCE(ci."quotationDiscount", 0) AS "quotationDiscount",
+      ci."quotedPriceBeforeDiscount",
       ci."createdAt",
       ci."updatedAt",
       -- For balance/amount tracking: use the most recent VERIFIED row
@@ -488,6 +527,7 @@ function withCustomerPaymentMarkers(
   paymentMethod?: AccountingPaymentMethod | null
   paymentStatus?: InquiryPaymentStatus | null
   paidAmount?: number | null
+  quotedPrice?: number | null
   actorId?: string | null
   actorRemarks?: string | null
 }) {
@@ -500,6 +540,7 @@ function withCustomerPaymentMarkers(
     paymentMethod = null,
     paymentStatus = null,
     paidAmount = null,
+    quotedPrice = null,
     actorId = null,
     actorRemarks = null,
   } = params
@@ -523,6 +564,10 @@ function withCustomerPaymentMarkers(
   switch (nextStage) {
     case "PENDING_INVENTORY_APPROVAL":
       nextStoredStatus = "ACCEPTED"
+      nextStoredNote = stripWorkflowMarkers(statusNote)
+      break
+    case "PENDING_SALES_QUOTATION":
+      nextStoredStatus = "PENDING_SALES_QUOTATION"
       nextStoredNote = stripWorkflowMarkers(statusNote)
       break
     case "PENDING_ACCOUNTING_APPROVAL":
@@ -570,6 +615,9 @@ function withCustomerPaymentMarkers(
 
   let autoMessage: string | null = null
   switch (nextStage) {
+    case "PENDING_SALES_QUOTATION":
+      autoMessage = "✅ Inventory has confirmed material availability for your order. Our sales team is preparing a quotation for you. You will receive it shortly — please review and accept or decline."
+      break
     case "PENDING_ACCOUNTING_APPROVAL":
       autoMessage = "Your order materials have been approved by inventory. It is now waiting for accounting review."
       break
@@ -593,6 +641,12 @@ function withCustomerPaymentMarkers(
           return Prisma.sql`,
             "salesReviewedAt" = CURRENT_TIMESTAMP,
             "salesReviewedById" = ${actorId}`
+        case "PENDING_SALES_QUOTATION":
+          // Inventory approved → record inventory approval + quotation sent
+          return Prisma.sql`,
+            "inventoryApprovedAt" = CURRENT_TIMESTAMP,
+            "inventoryApprovedById" = ${actorId},
+            "quotationSentAt" = CURRENT_TIMESTAMP`
         case "PENDING_ACCOUNTING_APPROVAL":
           // Inventory approved → record inventory approval timestamp/actor
           return Prisma.sql`,
@@ -628,7 +682,11 @@ function withCustomerPaymentMarkers(
       SET
         status = ${nextStoredStatus}::"InquiryStatus",
         "statusNote" = ${nextStoredNote},
-        "updatedAt" = CURRENT_TIMESTAMP${stageColumnSql}
+        "updatedAt" = CURRENT_TIMESTAMP,
+        "quotedPrice" = CASE
+          WHEN ${quotedPrice}::numeric IS NOT NULL THEN ${quotedPrice}::numeric
+          ELSE "quotedPrice"
+        END${stageColumnSql}
       WHERE id = ${inquiryId}
     `)
 
@@ -636,6 +694,124 @@ function withCustomerPaymentMarkers(
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
         VALUES (${randomUUID()}, ${inquiryId}, NULL, 'SALES', ${autoMessage})
+      `)
+    }
+
+    // When moving to PENDING_ACCOUNTING_APPROVAL, send three structured messages:
+    // 1. Order summary with pricing breakdown
+    // 2. Company contact & value proposition
+    // 3. Terms and Conditions
+    if (nextStage === "PENDING_ACCOUNTING_APPROVAL") {
+      // Fetch the product price for the order summary
+      const priceRows = await tx.$queryRaw<Array<{ productName: string; price: string }>>(Prisma.sql`
+        SELECT p.name AS "productName", p.price::text AS price
+        FROM public.customer_inquiries ci
+        INNER JOIN public.products p ON p.id = ci."productId"
+        WHERE ci.id = ${inquiryId}
+        LIMIT 1
+      `)
+      const productName = priceRows[0]?.productName ?? "Your order"
+      const basePrice = Number(priceRows[0]?.price ?? 0)
+      const vatRate = 0.12
+      const vatAmount = basePrice * vatRate
+      const total = basePrice + vatAmount
+
+      const formatPeso = (v: number) =>
+        new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP", maximumFractionDigits: 2 }).format(v)
+
+      // Message 1 — Order summary
+      const orderSummaryMsg = [
+        "📋 ORDER SUMMARY",
+        "─────────────────────────────",
+        `Product: ${productName}`,
+        `Base price: ${formatPeso(basePrice)}`,
+        `VAT (12%): ${formatPeso(vatAmount)}`,
+        `─────────────────────────────`,
+        `Total: ${formatPeso(total)}`,
+        "",
+        "A 70% down payment is required to begin production.",
+        `Down payment (70%): ${formatPeso(total * 0.7)}`,
+        `Remaining balance (30%): ${formatPeso(total * 0.3)}`,
+        "",
+        "Please review your order summary and proceed with payment to get started.",
+      ].join("\n")
+
+      await tx.$executeRaw(Prisma.sql`
+        INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
+        VALUES (${randomUUID()}, ${inquiryId}, NULL, 'SALES', ${orderSummaryMsg})
+      `)
+
+      // Message 2 — Company contact & value proposition
+      const contactMsg = [
+        "🏢 NEED TO CHANGE DESIGN? HAVE A BUDGET IN MIND?",
+        "",
+        "Let's bring your vision to life!",
+        "",
+        "1. Schedule a free consultation: Call or Viber us at 09165900555",
+        "2. Visit our showroom: 001B Carlos cor Dizon St, San Bartolome, Novaliches, QC",
+        "   (Open Mon–Fri 8 am to 5 pm)",
+        "",
+        "Feel free to visit our showroom to see the actual colors and materials we'll use, and to take advantage of additional discounts. We'll be very glad to accommodate your inquiry / request.",
+        "",
+        "─────────────────────────────",
+        "WHEN YOU PROCEED TO ORDER WITH US, YOU'LL GET:",
+        "",
+        "✅ Each piece is the result of precision engineering and expert craftsmanship — built with E1 moisture-resistant boards, heavy-duty hardware, and premium finishes that last.",
+        "",
+        "✅ Expect fast turnaround (7–10 working days), nationwide delivery, and smart layouts that boost productivity.",
+        "",
+        "✅ We value trust and long-term relationships. That's why we offer free interior design consultations to ensure everything fits not just your space — but your people.",
+        "",
+        "✅ Create a modern space that impresses clients and energizes your team! Choose from trendy finishes, stylish combinations, and layouts that spark creativity.",
+        "",
+        "💬 Let's build your dream space together.",
+        "Schedule a consultation, request a discount, or simply tell us what you need — we'll take care of the rest.",
+        "",
+        "📍 Showroom: 001B Carlos cor Dizon St, San Bartolome, Novaliches, QC",
+        "📞 Call/Viber: 0906 015 5922",
+        "🌐 www.queensartsandtrends.com",
+      ].join("\n")
+
+      await tx.$executeRaw(Prisma.sql`
+        INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
+        VALUES (${randomUUID()}, ${inquiryId}, NULL, 'SALES', ${contactMsg})
+      `)
+
+      // Message 3 — Terms and Conditions
+      const termsMsg = [
+        "📄 TERMS AND CONDITIONS",
+        "",
+        "1. PRICING AND PAYMENT TERMS",
+        "1.1 Quotation price is VAT inclusive.",
+        "1.2 Prices may vary without prior notice and shall not be considered final, unless and until this quotation proposal has been signed and accepted.",
+        "1.3 Changes in design or specifications after approval of the proposal may be subject to price adjustment as the parties may agree.",
+        "1.4 Quoted prices are based on current material costs, labor rates, and other relevant factors. Any significant changes in these factors may result in a revision of the quoted prices.",
+        "1.5 Down Payment: A 70% down payment is required upon receipt of purchase order, unless otherwise agreed. The remaining 30% balance must be paid before the scheduled delivery date. Otherwise, delivery and installation shall be rescheduled if balance payment is NOT settled.",
+        "1.6 Visayas and Mindanao: Remaining balance must be settled first before shipment to all provinces of Visayas and Mindanao; otherwise, delivery shall be rescheduled if balance payment is NOT settled.",
+        "1.7 Payment Methods: Online Transfer, Bank Deposit, Cash, and Cheque.",
+        "1.8 All cheques should be payable to Queens Arts and Trends Corp.",
+        "",
+        "2. PRODUCTION LEAD TIME AND DELIVERY",
+        "2.1 Approval Process: All purchased orders require approval of shop drawings and/or summary of order (SOO) before production begins. The client must review and approve the SOO upon receipt. Failure to provide timely approval may result in a delay of the production schedule.",
+        "2.2 Production will start upon receipt of signed Quotation, completion of Down Payment, and client's approval of SOO with affixed signature.",
+        "2.3 Disclaimer: Weekends, holidays, and/or natural calamities that may cause delays of operations are not included in each set lead time. Lead time may extend due to availability of raw materials and/or site condition.",
+        "2.4 Customized items: All customized items shall be delivered and installed within 7 to 10 working days.",
+        "2.5 Sofas/Accent Chairs: All sofas and accent chairs shall be delivered within 3–4 weeks.",
+        "2.6 Blinds and Operable Walls: Blinds shall be installed within 2 weeks, and operable walls shall be installed within 3–4 weeks.",
+        "2.7 On-hand Items: All office chairs, filing cabinets, etc. shall be delivered within 3–5 working days.",
+        "2.8 Site Condition: Site for installation must be clean, ready, and clear of any obstruction or debris before the scheduled delivery and installation to avoid delays, losses, or damages. We require photos of the area status to avoid delays and/or rescheduling.",
+        "2.9 Free delivery: Purchased orders amounting ₱50,000 and above within Metro Manila.",
+        "",
+        "3. ADDITIONAL LEAD TIME FOR SHIPPING",
+        "3.1 Visayas and Mindanao: All furniture deliveries to the Visayas and Mindanao regions are subject to an additional lead time of 5 to 7 working days beyond the standard delivery schedule.",
+        "3.2 Shipping Delays: Any delays caused by the shipping provider or third-party courier services are beyond the control of the supplier.",
+        "",
+        "By proceeding with this order, you confirm that you have read, understood, and agreed to these Terms and Conditions.",
+      ].join("\n")
+
+      await tx.$executeRaw(Prisma.sql`
+        INSERT INTO public.order_chat_messages (id, inquiry_id, sender_user_id, sender_role, body)
+        VALUES (${randomUUID()}, ${inquiryId}, NULL, 'SALES', ${termsMsg})
       `)
     }
 

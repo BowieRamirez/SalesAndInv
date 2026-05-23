@@ -29,14 +29,16 @@ export async function POST(request: Request) {
   const warehouseId = String(formData.get("warehouseId") ?? "").trim()
   const code = String(formData.get("code") ?? "").trim().toUpperCase()
   const name = String(formData.get("name") ?? "").trim()
-  const address = String(formData.get("address") ?? "").trim()
+  const street = String(formData.get("street") ?? "").trim() || null
+  const city = String(formData.get("city") ?? "").trim() || null
+  const country = String(formData.get("country") ?? "Philippines").trim() || "Philippines"
+  const postalCode = String(formData.get("postalCode") ?? "").trim() || null
 
-  if (!warehouseId || !code || !name || !address) {
-    return buildRedirect(request, "Warehouse ID, code, name, and address are required.", "error")
+  if (!warehouseId || !code || !name) {
+    return buildRedirect(request, "Warehouse ID, code, and name are required.", "error")
   }
 
   try {
-    // Check the warehouse exists and is not archived
     const rows = await prisma.$queryRaw<Array<{ id: string; code: string; name: string }>>(Prisma.sql`
       SELECT id, code, name FROM public.warehouses
       WHERE id = ${warehouseId} AND "archivedAt" IS NULL
@@ -52,7 +54,8 @@ export async function POST(request: Request) {
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
         UPDATE public.warehouses
-        SET code = ${code}, name = ${name}, address = ${address}, "updatedAt" = CURRENT_TIMESTAMP
+        SET code = ${code}, name = ${name}, street = ${street}, city = ${city},
+            country = ${country}, "postalCode" = ${postalCode}, "updatedAt" = CURRENT_TIMESTAMP
         WHERE id = ${warehouseId}
       `)
 
@@ -71,7 +74,10 @@ export async function POST(request: Request) {
             previousName: prev.name,
             newCode: code,
             newName: name,
-            newAddress: address,
+            street,
+            city,
+            country,
+            postalCode,
             updatedBy: currentUser.name,
           })}::jsonb,
           CURRENT_TIMESTAMP

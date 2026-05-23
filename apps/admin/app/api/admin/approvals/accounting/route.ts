@@ -169,13 +169,26 @@ export async function POST(request: Request) {
     })
 
     // Verify any pending payment_records for this inquiry — accounting just confirmed them
+    // Recalculate remainingBalance using the VAT-inclusive quoted price
     if (updatedRows > 0) {
+      const quotedPriceRows = await prisma.$queryRaw<Array<{ quotedPrice: string | null; productPrice: string }>>(Prisma.sql`
+        SELECT ci."quotedPrice"::text AS "quotedPrice", p.price::text AS "productPrice"
+        FROM public.customer_inquiries ci
+        INNER JOIN public.products p ON p.id = ci."productId"
+        WHERE ci.id = ${inquiryId} LIMIT 1
+      `)
+      const basePrice = quotedPriceRows[0]?.quotedPrice != null
+        ? Number(quotedPriceRows[0].quotedPrice)
+        : Number(quotedPriceRows[0]?.productPrice ?? 0)
+      const totalWithVat = basePrice * 1.12
+
       await prisma.$executeRaw(Prisma.sql`
         UPDATE public.payment_records
         SET status = 'VERIFIED'::"PaymentStatus",
             "verifiedAt" = CURRENT_TIMESTAMP,
             "verifiedById" = ${currentUser.id},
             "paymentMethod" = COALESCE("paymentMethod", ${paymentMethodValue}),
+            "remainingBalance" = GREATEST(0, ${totalWithVat}::numeric - amount),
             "updatedAt" = CURRENT_TIMESTAMP
         WHERE "inquiryId" = ${inquiryId}
           AND status = 'PENDING'::"PaymentStatus"
@@ -203,9 +216,10 @@ export async function POST(request: Request) {
             }
 
             await tx.$executeRaw(Prisma.sql`
-              INSERT INTO public.stock_movements (id, "materialStockId", type, quantity, "requesterName", "projectPurpose", "referenceNumber", "createdAt")
+              INSERT INTO public.stock_movements (id, "materialStockId", "stockItemId", type, quantity, "requesterName", "projectPurpose", "referenceNumber", "createdAt")
               VALUES (
                 gen_random_uuid(),
+                ${material.materialStockId},
                 ${material.materialStockId},
                 'ADJUSTMENT'::"StockMovementType",
                 ${required},
@@ -225,7 +239,7 @@ export async function POST(request: Request) {
                 'USER'::"AuditEntityType",
                 ${material.materialStockId},
                 ${JSON.stringify({
-                  auditLabel: "RAW_MATERIAL_STOCK_RESERVED",
+                  auditLabel: "Stock reserved for order",
                   sku: material.sku,
                   itemName: material.itemName,
                   quantity: required,

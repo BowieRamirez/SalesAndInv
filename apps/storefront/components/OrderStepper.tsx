@@ -1,10 +1,11 @@
 "use client"
 
-import { ClipboardList, CreditCard, Hammer, PackageCheck, ScanSearch, Truck } from "lucide-react"
+import { ClipboardList, CreditCard, FileText, Hammer, PackageCheck, ScanSearch, Truck } from "lucide-react"
 
 type StepKey =
   | "RECEIVED"
   | "PENDING_INVENTORY_APPROVAL"
+  | "PENDING_SALES_QUOTATION"
   | "PENDING_ACCOUNTING_APPROVAL"
   | "GETTING_READY_FOR_BUILDING"
   | "READY_FOR_SHIPPING"
@@ -18,8 +19,9 @@ type StepConfig = {
 
 const ORDER_STEPS: StepConfig[] = [
   { key: "RECEIVED", label: "Order Placed", Icon: ClipboardList },
-  { key: "PENDING_INVENTORY_APPROVAL", label: "Sales Review", Icon: ScanSearch },
-  { key: "PENDING_ACCOUNTING_APPROVAL", label: "Payment Confirmed", Icon: CreditCard },
+  { key: "PENDING_INVENTORY_APPROVAL", label: "Stock Check", Icon: ScanSearch },
+  { key: "PENDING_SALES_QUOTATION", label: "Quotation", Icon: FileText },
+  { key: "PENDING_ACCOUNTING_APPROVAL", label: "Payment", Icon: CreditCard },
   { key: "GETTING_READY_FOR_BUILDING", label: "Being Built", Icon: Hammer },
   { key: "READY_FOR_SHIPPING", label: "Out for Delivery", Icon: Truck },
   { key: "COMPLETED", label: "Delivered", Icon: PackageCheck },
@@ -28,6 +30,7 @@ const ORDER_STEPS: StepConfig[] = [
 const STEP_ORDER: StepKey[] = [
   "RECEIVED",
   "PENDING_INVENTORY_APPROVAL",
+  "PENDING_SALES_QUOTATION",
   "PENDING_ACCOUNTING_APPROVAL",
   "GETTING_READY_FOR_BUILDING",
   "READY_FOR_SHIPPING",

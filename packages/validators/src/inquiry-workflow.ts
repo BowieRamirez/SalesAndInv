@@ -3,6 +3,7 @@ import { z } from "zod"
 export const InquiryWorkflowStatusEnum = z.enum([
   "RECEIVED",
   "PENDING_INVENTORY_APPROVAL",
+  "PENDING_SALES_QUOTATION",
   "PENDING_ACCOUNTING_APPROVAL",
   "GETTING_READY_FOR_BUILDING",
   "READY_FOR_SHIPPING",
@@ -27,6 +28,7 @@ export const INQUIRY_WORKFLOW_LABELS: Record<AnyInquiryWorkflowStatus, string> =
   RECEIVED: "Received by Sales",
   ACCEPTED: "Accepted by Sales",
   PENDING_INVENTORY_APPROVAL: "Pending Inventory Approval",
+  PENDING_SALES_QUOTATION: "Pending Sales Quotation",
   WAITING_FOR_PAYMENT: "Waiting for Payment",
   PENDING_ACCOUNTING_APPROVAL: "Pending Accounting Approval",
   GETTING_READY_FOR_BUILDING: "Getting Ready for Building",
@@ -36,15 +38,16 @@ export const INQUIRY_WORKFLOW_LABELS: Record<AnyInquiryWorkflowStatus, string> =
 }
 
 export const INQUIRY_WORKFLOW_STYLES: Record<AnyInquiryWorkflowStatus, string> = {
-  RECEIVED: "border border-[#d1d5db] text-[#374151]",
-  ACCEPTED: "border border-[#d1d5db] text-[#374151]",
-  PENDING_INVENTORY_APPROVAL: "border border-[#d1d5db] text-[#374151]",
-  WAITING_FOR_PAYMENT: "border border-[#d1d5db] text-[#374151]",
-  PENDING_ACCOUNTING_APPROVAL: "border border-[#d1d5db] text-[#374151]",
-  GETTING_READY_FOR_BUILDING: "border border-[#d1d5db] text-[#374151]",
-  READY_FOR_SHIPMENT: "border border-[#d1d5db] text-[#374151]",
-  READY_FOR_SHIPPING: "border border-[#d1d5db] text-[#374151]",
-  COMPLETED: "border border-[#d1d5db] text-[#374151]",
+  RECEIVED: "bg-[#fef9c3] text-[#854d0e]",
+  ACCEPTED: "bg-[#f3f4f6] text-[#374151]",
+  PENDING_INVENTORY_APPROVAL: "bg-[#dbeafe] text-[#1d4ed8]",
+  PENDING_SALES_QUOTATION: "bg-[#fce7f3] text-[#9d174d]",
+  WAITING_FOR_PAYMENT: "bg-[#fef3c7] text-[#92400e]",
+  PENDING_ACCOUNTING_APPROVAL: "bg-[#fef3c7] text-[#92400e]",
+  GETTING_READY_FOR_BUILDING: "bg-[#f3e8ff] text-[#7e22ce]",
+  READY_FOR_SHIPMENT: "bg-[#dcfce7] text-[#166534]",
+  READY_FOR_SHIPPING: "bg-[#dcfce7] text-[#166534]",
+  COMPLETED: "bg-[#f0fdf4] text-[#047857]",
 }
 
 export const ACTIVE_INQUIRY_WORKFLOW_STATUSES = [

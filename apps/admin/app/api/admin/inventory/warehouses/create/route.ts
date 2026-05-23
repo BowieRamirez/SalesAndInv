@@ -29,10 +29,13 @@ export async function POST(request: Request) {
   const formData = await request.formData()
   const code = String(formData.get("code") ?? "").trim().toUpperCase()
   const name = String(formData.get("name") ?? "").trim()
-  const address = String(formData.get("address") ?? "").trim()
+  const street = String(formData.get("street") ?? "").trim() || null
+  const city = String(formData.get("city") ?? "").trim() || null
+  const country = String(formData.get("country") ?? "Philippines").trim() || "Philippines"
+  const postalCode = String(formData.get("postalCode") ?? "").trim() || null
 
-  if (!code || !name || !address) {
-    return buildRedirect(request, "Warehouse code, name, and address are required.", "error")
+  if (!code || !name) {
+    return buildRedirect(request, "Warehouse code and name are required.", "error")
   }
 
   try {
@@ -40,8 +43,8 @@ export async function POST(request: Request) {
 
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
-        INSERT INTO public.warehouses (id, code, name, address, "createdAt", "updatedAt")
-        VALUES (${warehouseId}, ${code}, ${name}, ${address}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO public.warehouses (id, code, name, street, city, country, "postalCode", "createdAt", "updatedAt")
+        VALUES (${warehouseId}, ${code}, ${name}, ${street}, ${city}, ${country}, ${postalCode}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `)
 
       await tx.$executeRaw(Prisma.sql`
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
           'USER_UPDATED'::"AuditAction",
           'USER'::"AuditEntityType",
           ${warehouseId},
-          ${JSON.stringify({ auditLabel: "WAREHOUSE_LOCATION_CREATED", code, name, address })}::jsonb,
+          ${JSON.stringify({ auditLabel: "WAREHOUSE_LOCATION_CREATED", code, name, street, city, country, postalCode })}::jsonb,
           CURRENT_TIMESTAMP
         )
       `)

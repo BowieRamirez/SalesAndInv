@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="1654" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TITLE -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <mxCell id="title" value="FurniTrack — System Role &amp; Access Flowchart" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+      <mxGeometry x="400" y="10" width="1500" height="40" as="geometry"/>
+    </mxCell>
+    <mxCell id="subtitle" value="Each swimlane shows the actions available to that role in the FurniTrack Sales &amp; Inventory System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+      <mxGeometry x="400" y="48" width="1500" height="24" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SWIMLANE: CUSTOMER -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <mxCell id="sw_customer" value="CUSTOMER" style="swimlane;startSize=30;fillColor=#f0fdf4;strokeColor=#86efac;fontColor=#166534;fontSize=13;fontStyle=1;horizontal=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="90" width="2260" height="130" as="geometry"/>
+    </mxCell>
+    <mxCell id="c1" value="Register / Log In" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="20" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c2" value="Browse Product Catalog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="210" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c3" value="Submit Product Inquiry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="400" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c4" value="Review Quotation&#xa;(Accept / Decline)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="590" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c5" value="Submit Payment&#xa;(Cash/GCash/Card)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="780" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c6" value="Track Order Status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="970" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c7" value="Chat with Sales Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="1160" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c8" value="Cancel Order&#xa;(Before Inventory)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="1350" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c9" value="Request Return" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="1540" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c10" value="Leave Product Review" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="1730" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="c11" value="Update Account Details" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=11;" vertex="1" parent="sw_customer">
+      <mxGeometry x="1920" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <!-- Customer arrows -->
+    <mxCell id="ce1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="c1" target="c2" parent="sw_customer"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ce2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="c2" target="c3" parent="sw_customer"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ce3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="c3" target="c4" parent="sw_customer"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ce4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="c4" target="c5" parent="sw_customer"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ce5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="c5" target="c6" parent="sw_customer"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SWIMLANE: SALES ADMIN -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <mxCell id="sw_sales" value="SALES ADMIN" style="swimlane;startSize=30;fillColor=#eff6ff;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=13;fontStyle=1;horizontal=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="240" width="2260" height="130" as="geometry"/>
+    </mxCell>
+    <mxCell id="s1" value="View New Inquiries&#xa;(RECEIVED)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="20" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s2" value="Review Order Details&#xa;&amp; Customer Message" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="210" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s3" value="Send to Inventory&#xa;for Stock Check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="400" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s4" value="Set Quoted Price&#xa;+ Discount %" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="590" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s5" value="Send Quotation&#xa;to Customer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="780" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s6" value="Revise Quotation&#xa;if Declined" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="970" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s7" value="View Order Detail&#xa;&amp; Download Invoice" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="1160" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s8" value="Chat with Customer&#xa;per Order" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="1350" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s9" value="Approve / Schedule&#xa;Return Requests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="1540" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="s10" value="View Sales&#xa;Audit Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=11;" vertex="1" parent="sw_sales">
+      <mxGeometry x="1730" y="50" width="150" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="se1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="s1" target="s2" parent="sw_sales"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="se2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="s2" target="s3" parent="sw_sales"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="se3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="s3" target="s4" parent="sw_sales"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="se4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="s4" target="s5" parent="sw_sales"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="se5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="s5" target="s6" parent="sw_sales"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SWIMLANE: INVENTORY ADMIN -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <mxCell id="sw_inv" value="INVENTORY ADMIN (OPERATIONS)" style="swimlane;startSize=30;fillColor=#fefce8;strokeColor=#fcd34d;fontColor=#92400e;fontSize=13;fontStyle=1;horizontal=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="390" width="2260" height="130" as="geometry"/>
+    </mxCell>
+    <mxCell id="i1" value="View Orders Pending&#xa;Inventory Check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="20" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i2" value="Check Material&#xa;Availability (BOM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="220" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i3" value="Approve / Reject&#xa;Inventory Check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="420" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i4" value="Manage Raw Materials&#xa;(Add / Adjust Stock)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="620" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i5" value="Manage Warehouse&#xa;Locations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="820" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i6" value="Manage Products&#xa;(Create / Edit / Archive)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="1020" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i7" value="Request Product Edit&#xa;(Needs Executive Approval)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="1220" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i8" value="Manage Suppliers&#xa;Contact Directory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="1420" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i9" value="Approve Build Stage&#xa;(GETTING_READY)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="1620" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="i10" value="Schedule &amp; Complete&#xa;Delivery (SHIPPING)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=11;" vertex="1" parent="sw_inv">
+      <mxGeometry x="1820" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ie1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="i1" target="i2" parent="sw_inv"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ie2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="i2" target="i3" parent="sw_inv"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ie3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="i9" target="i10" parent="sw_inv"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SWIMLANE: ACCOUNTING ADMIN -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <mxCell id="sw_acc" value="ACCOUNTING ADMIN" style="swimlane;startSize=30;fillColor=#fdf4ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=13;fontStyle=1;horizontal=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="540" width="2260" height="130" as="geometry"/>
+    </mxCell>
+    <mxCell id="a1" value="View Orders Pending&#xa;Payment Confirmation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=11;" vertex="1" parent="sw_acc">
+      <mxGeometry x="20" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="a2" value="Review Payment&#xa;Submission Details" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=11;" vertex="1" parent="sw_acc">
+      <mxGeometry x="220" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="a3" value="Verify or Reject&#xa;Payment Record" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=11;" vertex="1" parent="sw_acc">
+      <mxGeometry x="420" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="a4" value="Mark Order as&#xa;Fully Paid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=11;" vertex="1" parent="sw_acc">
+      <mxGeometry x="620" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="a5" value="View Payment&#xa;History &amp; Records" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=11;" vertex="1" parent="sw_acc">
+      <mxGeometry x="820" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="a6" value="View Accounting&#xa;Audit Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=11;" vertex="1" parent="sw_acc">
+      <mxGeometry x="1020" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ae1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="a1" target="a2" parent="sw_acc"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ae2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="a2" target="a3" parent="sw_acc"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ae3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="a3" target="a4" parent="sw_acc"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SWIMLANE: EXECUTIVE ADMIN -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <mxCell id="sw_exec" value="EXECUTIVE ADMIN (ADMIN_MANAGEMENT)" style="swimlane;startSize=30;fillColor=#fff1f2;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=13;fontStyle=1;horizontal=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="690" width="2260" height="130" as="geometry"/>
+    </mxCell>
+    <mxCell id="ex1" value="Manage All Admin&#xa;Accounts (CRUD)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=11;" vertex="1" parent="sw_exec">
+      <mxGeometry x="20" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ex2" value="Approve / Reject&#xa;Product Edit Requests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=11;" vertex="1" parent="sw_exec">
+      <mxGeometry x="220" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ex3" value="View All Audit Logs&#xa;(All Roles)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=11;" vertex="1" parent="sw_exec">
+      <mxGeometry x="420" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ex4" value="View All Customer&#xa;Accounts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=11;" vertex="1" parent="sw_exec">
+      <mxGeometry x="620" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ex5" value="View Archives&#xa;(Deleted Admins)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=11;" vertex="1" parent="sw_exec">
+      <mxGeometry x="820" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ex6" value="Override Any&#xa;Workflow Stage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=11;" vertex="1" parent="sw_exec">
+      <mxGeometry x="1020" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ex7" value="Manage Storefront&#xa;Filters &amp; Categories" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=11;" vertex="1" parent="sw_exec">
+      <mxGeometry x="1220" y="50" width="160" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="exe1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ex1" target="ex2" parent="sw_exec"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="exe2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ex2" target="ex3" parent="sw_exec"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- LEGEND -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <mxCell id="legend_title" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#374151;" vertex="1" parent="1">
+      <mxGeometry x="40" y="850" width="100" height="24" as="geometry"/>
+    </mxCell>
+    <mxCell id="leg1" value="Customer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#86efac;fontColor=#166534;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="40" y="878" width="130" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="leg2" value="Sales Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#93c5fd;fontColor=#1d4ed8;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="185" y="878" width="130" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="leg3" value="Inventory / Operations Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fcd34d;fontColor=#92400e;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="330" y="878" width="180" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="leg4" value="Accounting Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#d8b4fe;fontColor=#7e22ce;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="525" y="878" width="140" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="leg5" value="Executive Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#fca5a5;fontColor=#9f1239;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="680" y="878" width="130" height="30" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

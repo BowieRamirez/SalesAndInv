@@ -3,17 +3,18 @@ import { NextResponse } from "next/server"
 import { Prisma, prisma } from "@furnitrack/db"
 import { getStorefrontSessionUser } from "@/lib/auth/session"
 
-// Statuses where payment has NOT yet been confirmed — cancellation is allowed
+// Statuses where cancellation is allowed
 const CANCELLABLE_STATUSES = new Set([
   "RECEIVED",
   "ACCEPTED",
   "PENDING_INVENTORY_APPROVAL",
-])
-
-// Statuses that mean payment is confirmed or further along — no cancellation
-const PAYMENT_CONFIRMED_STATUSES = new Set([
+  "PENDING_SALES_QUOTATION",
   "WAITING_FOR_PAYMENT",
   "PENDING_ACCOUNTING_APPROVAL",
+])
+
+// Statuses that mean order is in production or beyond — no cancellation
+const NON_CANCELLABLE_STATUSES = new Set([
   "GETTING_READY_FOR_BUILDING",
   "READY_FOR_SHIPMENT",
   "READY_FOR_SHIPPING",
@@ -78,13 +79,10 @@ export async function POST(request: Request) {
     )
   }
 
-  // Block cancellation if payment is confirmed or order is further along
-  if (PAYMENT_CONFIRMED_STATUSES.has(inquiry.status)) {
+  // Block if order is in production or beyond
+  if (NON_CANCELLABLE_STATUSES.has(inquiry.status)) {
     return NextResponse.json(
-      {
-        message:
-          "This order can no longer be cancelled because payment has already been confirmed. Please contact our sales team if you need assistance.",
-      },
+      { message: "This order is already in production and cannot be cancelled. Please contact our sales team." },
       { status: 400 },
     )
   }
@@ -94,6 +92,22 @@ export async function POST(request: Request) {
       { message: "This order cannot be cancelled at its current stage." },
       { status: 400 },
     )
+  }
+
+  // For payment-stage orders, block if customer has already submitted a payment (PENDING or VERIFIED)
+  if (inquiry.status === "WAITING_FOR_PAYMENT" || inquiry.status === "PENDING_ACCOUNTING_APPROVAL") {
+    const paymentRows = await prisma.$queryRaw<Array<{ count: number }>>(Prisma.sql`
+      SELECT COUNT(*)::int AS count
+      FROM public.payment_records
+      WHERE "inquiryId" = ${inquiryId}
+        AND status IN ('PENDING'::"PaymentStatus", 'VERIFIED'::"PaymentStatus")
+    `)
+    if ((paymentRows[0]?.count ?? 0) > 0) {
+      return NextResponse.json(
+        { message: "You have already submitted a payment for this order. It can no longer be cancelled. Please contact our sales team if you need assistance." },
+        { status: 400 },
+      )
+    }
   }
 
   // Cancel the order — set cancelled timestamp/actor and mark as completed with a cancellation note

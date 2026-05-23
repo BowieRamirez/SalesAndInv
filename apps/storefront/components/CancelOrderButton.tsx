@@ -74,7 +74,7 @@ export function CancelOrderButton({ inquiryId, productName }: CancelOrderButtonP
               This cannot be undone.
             </p>
             <p className="mt-2 text-center text-[13px] text-[#6a7282]">
-              Orders that have already been paid cannot be cancelled. If your payment has been confirmed, please contact our sales team instead.
+              You can cancel as long as your payment has not been confirmed by accounting. Once confirmed, cancellation is no longer possible.
             </p>
 
             {error && (

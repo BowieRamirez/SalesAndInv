@@ -12,6 +12,7 @@ type CatalogProductRow = {
   originalPrice: Prisma.Decimal | number | string | null
   badge: string | null
   images: string[] | Prisma.JsonValue | null
+  colorVariants: Prisma.JsonValue | null
   rating: Prisma.Decimal | number | string | null
   reviewCount: number | bigint | null
   widthCm: Prisma.Decimal | number | string
@@ -41,6 +42,20 @@ function asStringArray(value: string[] | Prisma.JsonValue | null): string[] {
   }
 
   return []
+}
+
+function asColorVariants(value: Prisma.JsonValue | null) {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((entry) => {
+    if (entry && typeof entry === "object" && !Array.isArray(entry)) {
+      const v = entry as Record<string, unknown>
+      const name = typeof v.name === "string" ? v.name : null
+      const hex = typeof v.hex === "string" ? v.hex : null
+      const sku = typeof v.sku === "string" ? v.sku : null
+      if (name && hex && sku) return [{ name, hex, sku }]
+    }
+    return []
+  })
 }
 
 function normalizeBadge(value: string | null) {
@@ -84,7 +99,7 @@ function mapProduct(row: CatalogProductRow): Product {
     badge: normalizeBadge(row.badge),
     stockStatus: deriveStockStatus(availableQty, reorderThreshold),
     availableQty,
-    colorVariants: [],
+    colorVariants: asColorVariants(row.colorVariants),
     images: asStringArray(row.images),
     rating: asNumber(row.rating),
     reviewCount: asNumber(row.reviewCount),
@@ -118,6 +133,7 @@ export async function getStorefrontProducts(): Promise<Product[]> {
           p."originalPrice",
           p.badge,
           p.images,
+          p."colorVariants",
           p.rating,
           p."reviewCount",
           p."widthCm",
@@ -132,7 +148,7 @@ export async function getStorefrontProducts(): Promise<Product[]> {
           ON s.id = p."productStockId"
         WHERE p."isPublished" = true
           AND s.state <> 'ARCHIVED'::"StockState"
-        ORDER BY p."createdAt" DESC, p.name ASC /* bust_v3 */
+        ORDER BY p."createdAt" DESC, p.name ASC /* bust_v4 */
       `),
       timeoutAfter<CatalogProductRow[]>(3000, []),
     ])

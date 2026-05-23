@@ -16,6 +16,51 @@ type EditRequestRow = {
   createdAt: Date
 }
 
+type ColorVariant = { name: string; hex: string; sku: string }
+
+function diffColorVariants(before: ColorVariant[], after: ColorVariant[]) {
+  const beforeBySku = new Map(before.map((v) => [v.sku.toLowerCase(), v]))
+  const afterBySku = new Map(after.map((v) => [v.sku.toLowerCase(), v]))
+
+  const added: ColorVariant[] = []
+  const removed: ColorVariant[] = []
+  const changed: Array<{ before: ColorVariant; after: ColorVariant }> = []
+
+  for (const [sku, afterVariant] of afterBySku) {
+    const beforeVariant = beforeBySku.get(sku)
+    if (!beforeVariant) {
+      added.push(afterVariant)
+    } else if (
+      beforeVariant.name !== afterVariant.name ||
+      beforeVariant.hex.toLowerCase() !== afterVariant.hex.toLowerCase()
+    ) {
+      changed.push({ before: beforeVariant, after: afterVariant })
+    }
+  }
+
+  for (const [sku, beforeVariant] of beforeBySku) {
+    if (!afterBySku.has(sku)) {
+      removed.push(beforeVariant)
+    }
+  }
+
+  return { added, removed, changed }
+}
+
+function asColorVariants(value: unknown): ColorVariant[] {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((v) => {
+    if (v && typeof v === "object" && !Array.isArray(v)) {
+      const o = v as Record<string, unknown>
+      const n = typeof o.name === "string" ? o.name : null
+      const h = typeof o.hex === "string" ? o.hex : null
+      const s = typeof o.sku === "string" ? o.sku : null
+      if (n && h && s) return [{ name: n, hex: h, sku: s }]
+    }
+    return []
+  })
+}
+
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/approvals", request.url)
   url.searchParams.set("message", message)
@@ -114,6 +159,7 @@ export async function POST(request: Request) {
       revalidatePath("/approvals")
       revalidatePath("/operations")
 
+      // Log entry for the executive admin (in their audit log)
       await logAudit({
         actorId: currentUser.authUserId,
         action: "PRODUCT_UPDATED",
@@ -124,6 +170,22 @@ export async function POST(request: Request) {
           name: editRequest.productName,
           remarks,
           reviewedBy: currentUser.name,
+          requestedBy: editRequest.requestedByName,
+        },
+      })
+
+      // Mirror entry for the operations admin (in their audit log) so they see their request was rejected
+      await logAudit({
+        actorId: editRequest.requestedById,
+        action: "PRODUCT_UPDATED",
+        entityType: "PRODUCT",
+        entityId: editRequest.productId,
+        metadata: {
+          auditLabel: "MY_PRODUCT_EDIT_REJECTED",
+          name: editRequest.productName,
+          remarks,
+          reviewedBy: currentUser.name,
+          requestedBy: editRequest.requestedByName,
         },
       })
 
@@ -141,6 +203,39 @@ export async function POST(request: Request) {
     const isPublished = Boolean(payload.isPublished)
     const productStockId = String(payload.productStockId ?? "")
     const warehouseId = String(payload.warehouseId ?? "")
+    const colorVariantsRaw = Array.isArray(payload.colorVariants) ? payload.colorVariants : []
+    const colorVariants = colorVariantsRaw.flatMap((v) => {
+      if (v && typeof v === "object") {
+        const o = v as Record<string, unknown>
+        const n = typeof o.name === "string" ? o.name : null
+        const h = typeof o.hex === "string" ? o.hex : null
+        const s = typeof o.sku === "string" ? o.sku : null
+        if (n && h && s) return [{ name: n, hex: h, sku: s }]
+      }
+      return []
+    })
+
+    // Load the current product state BEFORE applying the edit so we can compute a clean diff
+    const beforeProductRows = await prisma.$queryRaw<
+      Array<{ name: string; category: string; price: number; isPublished: boolean; colorVariants: unknown }>
+    >(Prisma.sql`
+      SELECT
+        p.name,
+        p.category,
+        p.price::double precision AS price,
+        p."isPublished",
+        p."colorVariants"
+      FROM public.products p
+      WHERE p.id = ${editRequest.productId}
+      LIMIT 1
+    `)
+    const beforeProduct = beforeProductRows[0]
+    const beforeColorVariants = asColorVariants(beforeProduct?.colorVariants ?? [])
+    const colorVariantsDiff = diffColorVariants(beforeColorVariants, colorVariants)
+    const colorVariantsChanged =
+      colorVariantsDiff.added.length > 0 ||
+      colorVariantsDiff.removed.length > 0 ||
+      colorVariantsDiff.changed.length > 0
 
     if (!name || !category || !description || !Number.isFinite(price)) {
       return buildRedirect(request, "Edit request payload is invalid.", "error")
@@ -159,6 +254,7 @@ export async function POST(request: Request) {
           price = ${new Prisma.Decimal(price)},
           badge = ${badge},
           images = ${JSON.stringify(imageUrls)}::jsonb,
+          "colorVariants" = ${JSON.stringify(colorVariants)}::jsonb,
           description = ${description},
           "isPublished" = ${isPublished},
           "updatedAt" = CURRENT_TIMESTAMP
@@ -193,19 +289,61 @@ export async function POST(request: Request) {
     revalidatePath("/shop")
     revalidatePath("/")
 
+    // Build a structured metadata block describing what changed. Both admins see this.
+    const sharedMetadata: Record<string, unknown> = {
+      name,
+      category,
+      price,
+      isPublished,
+      approvedBy: currentUser.name,
+      requestedBy: editRequest.requestedByName,
+    }
+
+    if (colorVariantsChanged) {
+      sharedMetadata.colorVariantsBefore = beforeColorVariants
+      sharedMetadata.colorVariantsAfter = colorVariants
+      sharedMetadata.colorVariantsAdded = colorVariantsDiff.added
+      sharedMetadata.colorVariantsRemoved = colorVariantsDiff.removed
+      sharedMetadata.colorVariantsChanged = colorVariantsDiff.changed
+      // Human-readable summary for the audit row's "details" column
+      const summaryParts: string[] = []
+      if (colorVariantsDiff.added.length > 0) {
+        summaryParts.push(`+${colorVariantsDiff.added.length} added (${colorVariantsDiff.added.map((v) => v.name).join(", ")})`)
+      }
+      if (colorVariantsDiff.removed.length > 0) {
+        summaryParts.push(`-${colorVariantsDiff.removed.length} removed (${colorVariantsDiff.removed.map((v) => v.name).join(", ")})`)
+      }
+      if (colorVariantsDiff.changed.length > 0) {
+        summaryParts.push(`${colorVariantsDiff.changed.length} updated (${colorVariantsDiff.changed.map((c) => c.after.name).join(", ")})`)
+      }
+      sharedMetadata.colorVariantsSummary = summaryParts.join(" · ")
+    }
+
+    // Log entry attributed to the executive admin who approved.
+    // This shows up in the executive admin's audit log feed.
     await logAudit({
       actorId: currentUser.authUserId,
       action: "PRODUCT_UPDATED",
       entityType: "PRODUCT",
       entityId: editRequest.productId,
       metadata: {
-        auditLabel: "PRODUCT_EDIT_APPROVED",
-        name,
-        category,
-        price,
-        isPublished,
-        approvedBy: currentUser.name,
-        requestedBy: editRequest.requestedByName,
+        ...sharedMetadata,
+        auditLabel: colorVariantsChanged ? "PRODUCT_COLOR_VARIANTS_APPROVED" : "PRODUCT_EDIT_APPROVED",
+      },
+    })
+
+    // Mirror entry attributed to the operations admin who originally requested the edit.
+    // This shows up in the operations admin's audit log feed so they can see their request was approved.
+    await logAudit({
+      actorId: editRequest.requestedById,
+      action: "PRODUCT_UPDATED",
+      entityType: "PRODUCT",
+      entityId: editRequest.productId,
+      metadata: {
+        ...sharedMetadata,
+        auditLabel: colorVariantsChanged
+          ? "MY_COLOR_VARIANTS_EDIT_APPROVED"
+          : "MY_PRODUCT_EDIT_APPROVED",
       },
     })
 

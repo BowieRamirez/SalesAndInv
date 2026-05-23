@@ -130,6 +130,7 @@ const navConfigs: Record<AppRole, NavConfig> = {
       {
         label: "System",
         links: [
+          { name: "Suppliers", href: "/operations?tab=procurement", icon: Truck, tab: "procurement" },
           { name: "Audit Logs", href: "/operations?tab=audit", icon: History, tab: "audit" },
         ],
       },

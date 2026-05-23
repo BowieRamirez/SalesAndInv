@@ -46,7 +46,7 @@ function parseAttachments(value: FormDataEntryValue | null): OrderChatAttachment
       typeof attachment.dataUrl === "string" &&
       attachment.dataUrl.startsWith("data:") &&
       attachment.dataUrl.length <= MAX_DATA_URL_LENGTH &&
-      ["IMAGE", "DOCUMENT", "QUOTATION", "RECEIPT"].includes(attachment.attachmentType)
+      ["IMAGE", "DOCUMENT", "RECEIPT"].includes(attachment.attachmentType)
     )
   })
 }

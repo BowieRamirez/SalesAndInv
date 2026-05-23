@@ -13,7 +13,11 @@ import { DamagedMaterialsTable } from "@/components/inventory/DamagedMaterialsTa
 import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
 import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
 import { ReservedMaterialsAccordion } from "@/components/operations/ReservedMaterialsAccordion"
+import { SuppliersManager } from "@/components/procurement/SuppliersManager"
 import { getInquiryWorkflowRows, type InquiryWorkflowRow } from "@/lib/inquiries"
+import { getAuditLogs } from "@/lib/audit-logs"
+import type { DetailedAuditLog } from "@/lib/audit-logs"
+import { getSuppliers } from "@/lib/procurement"
 import { ROLE_REDIRECT } from "@/lib/rbac"
 import { OPERATIONS_DEFAULT_TAB, OPERATIONS_PRODUCT_CATEGORIES } from "@/lib/operations-products"
 
@@ -25,6 +29,7 @@ type ProductCardData = {
   id: string
   productStockId: string
   name: string
+  productCode: string | null
   category: string
   price: number
   badge: string | null
@@ -45,6 +50,7 @@ type ProductCardData = {
     quantityDisplay: string | null
     notes: string | null
   }>
+  colorVariants: Array<{ name: string; hex: string; sku: string }>
 }
 
 type InventoryRow = {
@@ -58,37 +64,6 @@ type InventoryRow = {
   reservedQty: number
   reorderThreshold: number
   unitOfMeasure: string
-}
-
-type StockRequestSummaryRow = {
-  status: string
-  count: number
-}
-
-type DetailedAuditLog = {
-  id: string
-  action: string
-  entityType: string
-  entityId: string
-  sku: string | null
-  itemName: string | null
-  quantity: number | null
-  details: string | null
-  actorName: string | null
-  createdAt: Date
-}
-
-type DamagedMaterialRow = {
-  id: string
-  materialStockId: string
-  sku: string
-  itemName: string
-  warehouseName: string
-  quantity: number
-  requesterName: string | null
-  projectPurpose: string | null
-  referenceNumber: string | null
-  createdAt: Date
 }
 
 export type ReservedMaterialRow = {
@@ -118,10 +93,23 @@ export type ReservedMaterialDetailRow = {
   reservedQty: number
 }
 
+type DamagedMaterialRow = {
+  id: string
+  materialStockId: string
+  sku: string
+  itemName: string
+  warehouseName: string
+  quantity: number
+  requesterName: string | null
+  projectPurpose: string | null
+  referenceNumber: string | null
+  createdAt: Date
+}
+
 const OPERATIONS_TABS = new Set([
   "design", "new-products", "finished-products", "archived-products", "storefront-filters",
   "locations", "archived-warehouses", "all-stocks", "reserved", "damaged-materials",
-  "inv-approvals", "approvals", "delivery", "audit",
+  "inv-approvals", "approvals", "delivery", "audit", "procurement",
 ])
 
 function getSearchValue(value?: string | string[]) {
@@ -506,6 +494,7 @@ async function getOperationsWorkspaceData() {
         id: string
         productStockId: string
         name: string
+        productCode: string | null
         category: string
         price: Prisma.Decimal | number | string
         badge: string | null
@@ -513,6 +502,7 @@ async function getOperationsWorkspaceData() {
         isPublished: boolean
         state: string
         images: Prisma.JsonValue | null
+        colorVariants: Prisma.JsonValue | null
         warehouseName: string
         sku: string
         availableQty: number
@@ -525,6 +515,7 @@ async function getOperationsWorkspaceData() {
         p.id,
         p."productStockId",
         p.name,
+        p."productCode",
         p.category,
         p.price,
         p.badge,
@@ -532,6 +523,7 @@ async function getOperationsWorkspaceData() {
         p."isPublished",
         s.state::text AS state,
         p.images,
+        p."colorVariants",
         w.name AS "warehouseName",
         s.sku,
         s."availableQty",
@@ -548,7 +540,7 @@ async function getOperationsWorkspaceData() {
         FROM public.product_materials pm
         WHERE pm."productId" = p.id
       ) recipe_counts ON TRUE
-      ORDER BY p."createdAt" DESC, p.name ASC /* bust_v3 */
+      ORDER BY p."createdAt" DESC, p.name ASC /* bust_v4 */
     `,
     prisma.$queryRaw<
       Array<{
@@ -594,6 +586,7 @@ async function getOperationsWorkspaceData() {
     id: product.id,
     productStockId: product.productStockId,
     name: product.name,
+    productCode: product.productCode ?? null,
     category: product.category,
     price: asNumber(product.price),
     badge: product.badge,
@@ -608,6 +601,18 @@ async function getOperationsWorkspaceData() {
     materialSummary: product.materialSummary,
     recipeCount: product.recipeCount,
     recipeDetails: recipeMap[product.id] ?? [],
+    colorVariants: Array.isArray(product.colorVariants)
+      ? product.colorVariants.flatMap((v) => {
+          if (v && typeof v === "object" && !Array.isArray(v)) {
+            const o = v as Record<string, unknown>
+            const n = typeof o.name === "string" ? o.name : null
+            const h = typeof o.hex === "string" ? o.hex : null
+            const s = typeof o.sku === "string" ? o.sku : null
+            if (n && h && s) return [{ name: n, hex: h, sku: s }]
+          }
+          return []
+        })
+      : [],
   }))
 
   return {
@@ -644,14 +649,17 @@ async function getWarehouseSummaries() {
       w.id,
       w.code,
       w.name,
-      w.address,
+      w.street,
+      w.city,
+      w.country,
+      w."postalCode",
       w."archivedAt"::text AS "archivedAt",
       COUNT(s.id)::int AS "itemCount"
     FROM public.warehouses w
     LEFT JOIN public.material_stocks s
       ON s."warehouseId" = w.id
     WHERE w."archivedAt" IS NULL
-    GROUP BY w.id, w.code, w.name, w.address, w."archivedAt"
+    GROUP BY w.id, w.code, w.name, w.street, w.city, w.country, w."postalCode", w."archivedAt"
     ORDER BY w.name ASC
   `)
 }
@@ -662,67 +670,18 @@ async function getArchivedWarehouses() {
       w.id,
       w.code,
       w.name,
-      w.address,
+      w.street,
+      w.city,
+      w.country,
+      w."postalCode",
       w."archivedAt"::text AS "archivedAt",
       COUNT(s.id)::int AS "itemCount"
     FROM public.warehouses w
     LEFT JOIN public.material_stocks s
       ON s."warehouseId" = w.id
     WHERE w."archivedAt" IS NOT NULL
-    GROUP BY w.id, w.code, w.name, w.address, w."archivedAt"
+    GROUP BY w.id, w.code, w.name, w.street, w.city, w.country, w."postalCode", w."archivedAt"
     ORDER BY w."archivedAt" DESC
-  `)
-}
-
-async function getStockRequestSummaries() {
-  return prisma.$queryRaw<StockRequestSummaryRow[]>(Prisma.sql`
-    SELECT
-      status::text AS status,
-      COUNT(*)::int AS count
-    FROM public.stock_requests
-    GROUP BY status
-    ORDER BY status
-  `)
-}
-
-async function getAuditLogs(role: string) {
-  return prisma.$queryRaw<DetailedAuditLog[]>(Prisma.sql`
-    SELECT
-      a.id,
-      COALESCE(a.metadata->>'auditLabel', a.action::text) AS action,
-      a."entityType"::text AS "entityType",
-      a."entityId",
-      a.metadata->>'sku' AS sku,
-      COALESCE(
-        a.metadata->>'itemName',
-        a.metadata->>'name',
-        a.metadata->>'updatedName',
-        a.metadata->>'createdName',
-        a.metadata->>'removedName',
-        a.metadata->>'customerName',
-        a.metadata->>'customerEmail',
-        a.metadata->>'updatedEmail',
-        a.metadata->>'createdEmail',
-        a.metadata->>'removedEmail'
-      ) AS "itemName",
-      NULLIF(a.metadata->>'quantity', '')::int AS quantity,
-      COALESCE(
-        a.metadata->>'updatedEmail',
-        a.metadata->>'createdEmail',
-        a.metadata->>'removedEmail',
-        a.metadata->>'customerEmail',
-        a.metadata->>'referenceNumber',
-        a.metadata->>'category',
-        a.metadata->>'reasonDetails'
-      ) AS details,
-      u.name AS "actorName",
-      a."createdAt"
-    FROM public.audit_logs a
-    LEFT JOIN public.users u ON u.id = a."actorId"
-      OR u."authUserId"::text = a."actorId"
-    WHERE u.role = ${role}::"UserRole"
-    ORDER BY a."createdAt" DESC
-    LIMIT 200
   `)
 }
 
@@ -750,71 +709,8 @@ async function getDamagedMaterialRows() {
 }
 
 async function getReservedMaterialRows() {
+  // Reserved materials are now tracked only via stock_movements (ADJUSTMENT type, 'Reserved for Build Order')
   return prisma.$queryRaw<ReservedMaterialRow[]>(Prisma.sql`
-    WITH active_stock_request_reservations AS (
-      SELECT
-        si.id AS "materialStockId",
-        si.sku,
-        si."itemName",
-        w.name AS "warehouseName",
-        si."unitOfMeasure",
-        COALESCE(SUM(srl."quantityApproved"), 0)::int AS "reservedQty",
-        COUNT(DISTINCT so.id)::int AS "orderCount",
-        STRING_AGG(DISTINCT so."soNumber", ', ' ORDER BY so."soNumber") AS "orderNumbers"
-      FROM public.stock_request_line_items srl
-      INNER JOIN public.stock_requests sr
-        ON sr.id = srl."stockRequestId"
-      INNER JOIN public.sales_orders so
-        ON so.id = sr."salesOrderId"
-      INNER JOIN public.material_stocks si
-        ON si.id = srl."materialStockId"
-      INNER JOIN public.warehouses w
-        ON w.id = si."warehouseId"
-      WHERE srl."quantityApproved" > 0
-        AND sr.status IN ('APPROVED'::"InventoryRequestStatus", 'PARTIALLY_APPROVED'::"InventoryRequestStatus")
-        AND so.status NOT IN ('DELIVERED'::"SalesOrderStatus", 'CANCELLED'::"SalesOrderStatus")
-      GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure"
-    ),
-    active_accounting_reservations AS (
-      SELECT
-        si.id AS "materialStockId",
-        si.sku,
-        si."itemName",
-        w.name AS "warehouseName",
-        si."unitOfMeasure",
-        COALESCE(SUM(sm.quantity), 0)::int AS "reservedQty",
-        COUNT(DISTINCT sm."referenceNumber")::int AS "orderCount",
-        STRING_AGG(
-          DISTINCT COALESCE(p.name || ' - ' || ci."customerName", sm."referenceNumber"),
-          ', '
-          ORDER BY COALESCE(p.name || ' - ' || ci."customerName", sm."referenceNumber")
-        ) AS "orderNumbers"
-      FROM public.stock_movements sm
-      INNER JOIN public.material_stocks si
-        ON si.id = sm."materialStockId"
-      INNER JOIN public.warehouses w
-        ON w.id = si."warehouseId"
-      LEFT JOIN public.customer_inquiries ci
-        ON ci.id = sm."referenceNumber"
-      LEFT JOIN public.products p
-        ON p.id = ci."productId"
-      WHERE sm.type = 'ADJUSTMENT'::"StockMovementType"
-        AND sm."projectPurpose" = 'Reserved for Build Order'
-        AND NOT EXISTS (
-          SELECT 1
-          FROM public.stock_movements consumed
-          WHERE consumed."referenceNumber" = sm."referenceNumber"
-            AND consumed."materialStockId" = sm."materialStockId"
-            AND consumed."projectPurpose" = 'Build Order'
-            AND consumed.type = 'OUT'::"StockMovementType"
-        )
-      GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure"
-    ),
-    combined AS (
-      SELECT * FROM active_stock_request_reservations
-      UNION ALL
-      SELECT * FROM active_accounting_reservations
-    )
     SELECT
       si.id AS "materialStockId",
       si.sku,
@@ -822,14 +718,24 @@ async function getReservedMaterialRows() {
       w.name AS "warehouseName",
       si."unitOfMeasure",
       si."availableQty",
-      COALESCE(SUM(combined."reservedQty"), 0)::int AS "reservedQty",
-      COALESCE(SUM(combined."orderCount"), 0)::int AS "orderCount",
-      STRING_AGG(DISTINCT combined."orderNumbers", ', ' ORDER BY combined."orderNumbers") AS "orderNumbers"
-    FROM combined
-    INNER JOIN public.material_stocks si
-      ON si.id = combined."materialStockId"
-    INNER JOIN public.warehouses w
-      ON w.id = si."warehouseId"
+      COALESCE(SUM(sm.quantity), 0)::int AS "reservedQty",
+      COUNT(DISTINCT sm."referenceNumber")::int AS "orderCount",
+      STRING_AGG(DISTINCT COALESCE(p.name || ' - ' || ci."customerName", sm."referenceNumber"), ', '
+        ORDER BY COALESCE(p.name || ' - ' || ci."customerName", sm."referenceNumber")) AS "orderNumbers"
+    FROM public.stock_movements sm
+    INNER JOIN public.material_stocks si ON si.id = sm."materialStockId"
+    INNER JOIN public.warehouses w ON w.id = si."warehouseId"
+    LEFT JOIN public.customer_inquiries ci ON ci.id = sm."referenceNumber"
+    LEFT JOIN public.products p ON p.id = ci."productId"
+    WHERE sm.type = 'ADJUSTMENT'::"StockMovementType"
+      AND sm."projectPurpose" = 'Reserved for Build Order'
+      AND NOT EXISTS (
+        SELECT 1 FROM public.stock_movements consumed
+        WHERE consumed."referenceNumber" = sm."referenceNumber"
+          AND consumed."materialStockId" = sm."materialStockId"
+          AND consumed."projectPurpose" = 'Build Order'
+          AND consumed.type = 'OUT'::"StockMovementType"
+      )
     GROUP BY si.id, si.sku, si."itemName", w.name, si."unitOfMeasure", si."availableQty"
     ORDER BY "reservedQty" DESC, si."itemName" ASC
   `)
@@ -837,67 +743,34 @@ async function getReservedMaterialRows() {
 
 async function getReservedMaterialDetails() {
   return prisma.$queryRaw<ReservedMaterialDetailRow[]>(Prisma.sql`
-    WITH active_stock_request_reservations AS (
-      SELECT
-        sr.id AS "eventId",
-        si.id AS "materialStockId",
-        si.sku,
-        si."itemName",
-        w.name AS "warehouseName",
-        si."unitOfMeasure",
-        so."soNumber" AS "linkedOrderNo",
-        order_products."productName",
-        so."clientContactName" AS "customerName",
-        sr.status::text AS "reservationStatus",
-        sr."requestedAt" AS "dateReserved",
-        srl."quantityApproved"::int AS "reservedQty"
-      FROM public.stock_request_line_items srl
-      INNER JOIN public.stock_requests sr ON sr.id = srl."stockRequestId"
-      INNER JOIN public.sales_orders so ON so.id = sr."salesOrderId"
-      INNER JOIN public.material_stocks si ON si.id = srl."materialStockId"
-      INNER JOIN public.warehouses w ON w.id = si."warehouseId"
-      LEFT JOIN LATERAL (
-        SELECT STRING_AGG(DISTINCT soli."productName", ', ' ORDER BY soli."productName") AS "productName"
-        FROM public.sales_order_line_items soli
-        WHERE soli."salesOrderId" = so.id
-      ) order_products ON TRUE
-      WHERE srl."quantityApproved" > 0
-        AND sr.status IN ('APPROVED'::"InventoryRequestStatus", 'PARTIALLY_APPROVED'::"InventoryRequestStatus")
-        AND so.status NOT IN ('DELIVERED'::"SalesOrderStatus", 'CANCELLED'::"SalesOrderStatus")
-    ),
-    active_accounting_reservations AS (
-      SELECT
-        sm.id AS "eventId",
-        si.id AS "materialStockId",
-        si.sku,
-        si."itemName",
-        w.name AS "warehouseName",
-        si."unitOfMeasure",
-        sm."referenceNumber" AS "linkedOrderNo",
-        p.name AS "productName",
-        ci."customerName" AS "customerName",
-        'Accounting Reserved' AS "reservationStatus",
-        sm."createdAt" AS "dateReserved",
-        sm.quantity::int AS "reservedQty"
-      FROM public.stock_movements sm
-      INNER JOIN public.material_stocks si ON si.id = sm."materialStockId"
-      INNER JOIN public.warehouses w ON w.id = si."warehouseId"
-      LEFT JOIN public.customer_inquiries ci ON ci.id = sm."referenceNumber"
-      LEFT JOIN public.products p ON p.id = ci."productId"
-      WHERE sm.type = 'ADJUSTMENT'::"StockMovementType"
-        AND sm."projectPurpose" = 'Reserved for Build Order'
-        AND NOT EXISTS (
-          SELECT 1 FROM public.stock_movements consumed
-          WHERE consumed."referenceNumber" = sm."referenceNumber"
-            AND consumed."materialStockId" = sm."materialStockId"
-            AND consumed."projectPurpose" = 'Build Order'
-            AND consumed.type = 'OUT'::"StockMovementType"
-        )
-    )
-    SELECT * FROM active_stock_request_reservations
-    UNION ALL
-    SELECT * FROM active_accounting_reservations
-    ORDER BY "dateReserved" DESC
+    SELECT
+      sm.id AS "eventId",
+      si.id AS "materialStockId",
+      si.sku,
+      si."itemName",
+      w.name AS "warehouseName",
+      si."unitOfMeasure",
+      sm."referenceNumber" AS "linkedOrderNo",
+      p.name AS "productName",
+      ci."customerName" AS "customerName",
+      'Accounting Reserved' AS "reservationStatus",
+      sm."createdAt" AS "dateReserved",
+      sm.quantity::int AS "reservedQty"
+    FROM public.stock_movements sm
+    INNER JOIN public.material_stocks si ON si.id = sm."materialStockId"
+    INNER JOIN public.warehouses w ON w.id = si."warehouseId"
+    LEFT JOIN public.customer_inquiries ci ON ci.id = sm."referenceNumber"
+    LEFT JOIN public.products p ON p.id = ci."productId"
+    WHERE sm.type = 'ADJUSTMENT'::"StockMovementType"
+      AND sm."projectPurpose" = 'Reserved for Build Order'
+      AND NOT EXISTS (
+        SELECT 1 FROM public.stock_movements consumed
+        WHERE consumed."referenceNumber" = sm."referenceNumber"
+          AND consumed."materialStockId" = sm."materialStockId"
+          AND consumed."projectPurpose" = 'Build Order'
+          AND consumed.type = 'OUT'::"StockMovementType"
+      )
+    ORDER BY sm."createdAt" DESC
   `)
 }
 
@@ -920,7 +793,6 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     inventoryRows,
     warehouseSummaries,
     archivedWarehouses,
-    requestSummary,
     auditSummary,
     inventoryInquiries,
     damagedMaterials,
@@ -932,13 +804,15 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     getInventoryRows(),
     getWarehouseSummaries(),
     getArchivedWarehouses(),
-    getStockRequestSummaries(),
-    getAuditLogs(currentUser.role),
+    getAuditLogs([currentUser.id, currentUser.authUserId].filter(Boolean) as string[], 200),
     getInquiryWorkflowRows(["PENDING_INVENTORY_APPROVAL"]),
     getDamagedMaterialRows(),
     getReservedMaterialRows(),
     getReservedMaterialDetails(),
   ])
+
+  // Suppliers data (only fetch when on procurement tab)
+  const suppliers = activeTab === "procurement" ? await getSuppliers() : []
 
   const activeFinishedProducts = finishedProducts.filter((product) => product.state !== "ARCHIVED")
   const archivedFinishedProducts = finishedProducts.filter((product) => product.state === "ARCHIVED")
@@ -1150,10 +1024,15 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
             </div>
             <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
               <h3 className="text-[18px] font-semibold text-[#111827]">Add new warehouse location</h3>
-              <form method="post" action="/api/admin/inventory/warehouses/create" className="mt-5 grid gap-3 lg:grid-cols-[0.7fr_1fr_1.4fr_auto]">
-                <input name="code" placeholder="Warehouse code" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                <input name="name" placeholder="Warehouse name" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
-                <input name="address" placeholder="Address or location" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+              <form method="post" action="/api/admin/inventory/warehouses/create" className="mt-5 space-y-3">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <input name="code" required placeholder="Code (e.g. MAIN)" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                  <input name="name" required placeholder="Warehouse name" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                  <input name="street" placeholder="Street address" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                  <input name="city" placeholder="City" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                  <input name="postalCode" placeholder="Postal code" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                  <input name="country" placeholder="Country" defaultValue="Philippines" className="rounded-xl border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]" />
+                </div>
                 <button type="submit" className="rounded-xl bg-[#111827] px-5 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90">Add warehouse</button>
               </form>
             </section>
@@ -1283,11 +1162,10 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
         {activeTab === "inv-approvals" && (
           <div className="space-y-6">
             <div className="mb-6"><h2 className="text-[20px] font-semibold text-[#111827]">Inventory Approval — Order Stock Check</h2></div>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {[
                 {label:"Orders Waiting",value:inventoryInquiries.length},
                 {label:"Low Stock Items",value:lowStockItems.length},
-                {label:"Stock Request Logs",value:requestSummary.reduce((t,r)=>t+r.count,0)},
               ].map(r=>(
                 <div key={r.label} className="rounded-xl border border-[#e5e7eb] bg-white p-5">
                   <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">{r.label}</p>
@@ -1295,23 +1173,6 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
                 </div>
               ))}
             </div>
-            {requestSummary.length > 0 && (
-              <section className="rounded-xl border border-[#e5e7eb] bg-white p-6">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-left text-[13px]">
-                    <thead><tr className="border-b border-[#e5e7eb] text-[#6b7280]">
-                      <th className="py-3 pr-4 font-medium">Request Status</th><th className="py-3 font-medium">Count</th>
-                    </tr></thead>
-                    <tbody>{requestSummary.map(row=>(
-                      <tr key={row.status} className="border-b border-[#f3f4f6] last:border-b-0">
-                        <td className="py-3 pr-4 text-[#111827]">{row.status.replaceAll("_"," ")}</td>
-                        <td className="py-3 text-[#111827]">{row.count}</td>
-                      </tr>
-                    ))}</tbody>
-                  </table>
-                </div>
-              </section>
-            )}
             <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
               <div className="mb-5">
                 <h2 className="text-[20px] font-semibold text-[#111827]">Customer orders waiting for stock confirmation</h2>
@@ -1352,6 +1213,20 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
           <div className="space-y-6">
             <div className="mb-6"><h2 className="text-[20px] font-semibold text-[#111827]">Audit Logs</h2></div>
             <AuditLogsTable rows={auditSummary} />
+          </div>
+        )}
+
+        {activeTab === "procurement" && (
+          <div className="space-y-6">
+            <SuppliersManager
+              suppliers={suppliers}
+              materials={rawMaterialsInv.map((m) => ({
+                id: m.id,
+                sku: m.sku,
+                itemName: m.itemName,
+                unitOfMeasure: m.unitOfMeasure,
+              }))}
+            />
           </div>
         )}
 

@@ -10,6 +10,7 @@ const ALLOWED_METHODS = new Set(["GCASH", "CASH", "CARD"])
 const BALANCE_PAYABLE_STATUSES = new Set([
   "GETTING_READY_FOR_BUILDING",
   "READY_FOR_SHIPMENT",
+  "READY_FOR_SHIPPING",
 ])
 
 const CUSTOMER_PAID_METHOD_PREFIX = "[[customer_paid_method:"
@@ -82,6 +83,7 @@ export async function POST(request: Request) {
       status: string
       statusNote: string | null
       productPrice: Prisma.Decimal | number | string | null
+      quotedPrice: Prisma.Decimal | number | string | null
       verifiedAmount: Prisma.Decimal | number | string | null
       verifiedRemaining: Prisma.Decimal | number | string | null
     }
@@ -92,6 +94,7 @@ export async function POST(request: Request) {
         ci.status::text AS status,
         ci."statusNote",
         p.price AS "productPrice",
+        ci."quotedPrice",
         pr_v.amount AS "verifiedAmount",
         pr_v."remainingBalance" AS "verifiedRemaining"
       FROM public.customer_inquiries ci
@@ -122,11 +125,16 @@ export async function POST(request: Request) {
       )
     }
 
-    const orderTotal = inquiry.productPrice == null ? 0 : Number(inquiry.productPrice)
+    // Use quotedPrice + VAT as the effective total — falls back to catalog price + VAT
+    const basePrice = inquiry.quotedPrice != null
+      ? Number(inquiry.quotedPrice)
+      : Number(inquiry.productPrice ?? 0)
+    const orderTotal = basePrice * 1.12  // VAT-inclusive
     const alreadyPaid = inquiry.verifiedAmount == null ? 0 : Number(inquiry.verifiedAmount)
-    const remainingBalance = inquiry.verifiedRemaining == null
-      ? Math.max(0, orderTotal - alreadyPaid)
-      : Number(inquiry.verifiedRemaining)
+
+    // Recalculate remaining balance from the correct total — don't trust the stored value
+    // since old records may have been calculated against the wrong (catalog) price
+    const remainingBalance = Math.max(0, orderTotal - alreadyPaid)
 
     if (remainingBalance <= 0) {
       return NextResponse.json(

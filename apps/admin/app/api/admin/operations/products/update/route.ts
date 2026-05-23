@@ -5,8 +5,10 @@ import { getAuthenticatedAppUser } from "@/lib/auth/session"
 import {
   buildProductMaterialSummary,
   collectSelectedMaterialIds,
+  ensureColorVariantSkusAreGlobalUnique,
   generateUniqueProductSlug,
   getExistingRawMaterials,
+  parseColorVariantsFromForm,
   parseDecimal,
   splitLines,
 } from "@/lib/operations-products"
@@ -58,11 +60,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    const existingProduct = await prisma.$queryRaw<Array<{ id: string; productStockId: string; sku: string }>>(Prisma.sql`
+    const existingProduct = await prisma.$queryRaw<Array<{ id: string; productStockId: string; sku: string; colorVariants: unknown }>>(Prisma.sql`
       SELECT
         p.id,
         p."productStockId",
-        si.sku
+        si.sku,
+        p."colorVariants"
       FROM public.products p
       INNER JOIN public.product_stocks si ON si.id = p."productStockId"
       WHERE p.id = ${productId}
@@ -71,6 +74,21 @@ export async function POST(request: Request) {
 
     if (!existingProduct[0] || existingProduct[0].productStockId !== productStockId) {
       return buildRedirect(request, "That finished product could not be found.", "error")
+    }
+
+    const productMainSku = existingProduct[0].sku
+
+    // Parse and validate optional color variants
+    const variantParse = parseColorVariantsFromForm(formData, { productStockSku: productMainSku })
+    if (!variantParse.ok) {
+      return buildRedirect(request, variantParse.error, "error")
+    }
+    const colorVariants = variantParse.variants
+    if (colorVariants.length > 0) {
+      const conflict = await ensureColorVariantSkusAreGlobalUnique(colorVariants, productId)
+      if (conflict) {
+        return buildRedirect(request, conflict, "error")
+      }
     }
 
     const slug = await generateUniqueProductSlug(name, productId)
@@ -109,6 +127,7 @@ export async function POST(request: Request) {
           price = ${new Prisma.Decimal(price)},
           badge = ${badge},
           images = ${JSON.stringify(imageUrls)}::jsonb,
+          "colorVariants" = ${JSON.stringify(colorVariants)}::jsonb,
           description = ${description},
           material = ${materialSummary},
           "isPublished" = ${isPublished},
@@ -149,18 +168,63 @@ export async function POST(request: Request) {
     revalidatePath("/shop")
     revalidatePath("/")
 
+    // Compute color variants diff vs the before state
+    const beforeColors = Array.isArray(existingProduct[0].colorVariants)
+      ? (existingProduct[0].colorVariants as unknown[]).flatMap((v) => {
+          if (v && typeof v === "object" && !Array.isArray(v)) {
+            const o = v as Record<string, unknown>
+            const n = typeof o.name === "string" ? o.name : null
+            const h = typeof o.hex === "string" ? o.hex : null
+            const s = typeof o.sku === "string" ? o.sku : null
+            if (n && h && s) return [{ name: n, hex: h, sku: s }]
+          }
+          return []
+        })
+      : []
+    const beforeBySku = new Map(beforeColors.map((v) => [v.sku.toLowerCase(), v]))
+    const afterBySku = new Map(colorVariants.map((v) => [v.sku.toLowerCase(), v]))
+    const added = colorVariants.filter((v) => !beforeBySku.has(v.sku.toLowerCase()))
+    const removed = beforeColors.filter((v) => !afterBySku.has(v.sku.toLowerCase()))
+    const updated = colorVariants.filter((v) => {
+      const before = beforeBySku.get(v.sku.toLowerCase())
+      return before && (before.name !== v.name || before.hex.toLowerCase() !== v.hex.toLowerCase())
+    })
+    const colorVariantsChanged = added.length > 0 || removed.length > 0 || updated.length > 0
+    let colorVariantsSummary: string | null = null
+    if (colorVariantsChanged) {
+      const parts: string[] = []
+      if (added.length > 0) parts.push(`+${added.length} added (${added.map((v) => v.name).join(", ")})`)
+      if (removed.length > 0) parts.push(`-${removed.length} removed (${removed.map((v) => v.name).join(", ")})`)
+      if (updated.length > 0) parts.push(`${updated.length} updated (${updated.map((v) => v.name).join(", ")})`)
+      colorVariantsSummary = parts.join(" · ")
+    }
+
     await logAudit({
       actorId: currentUser.authUserId,
       action: "PRODUCT_UPDATED",
       entityType: "PRODUCT",
       entityId: productId,
       metadata: {
-        auditLabel: isPublished ? "ADDED_TO_STOREFRONT" : "REMOVED_FROM_STOREFRONT",
+        auditLabel: colorVariantsChanged
+          ? "PRODUCT_COLOR_VARIANTS_UPDATED"
+          : isPublished
+            ? "ADDED_TO_STOREFRONT"
+            : "REMOVED_FROM_STOREFRONT",
         sku: existingProduct[0].sku,
         itemName: name,
         name,
         category,
         isPublished,
+        ...(colorVariantsChanged
+          ? {
+              colorVariantsSummary,
+              colorVariantsBefore: beforeColors,
+              colorVariantsAfter: colorVariants,
+              colorVariantsAdded: added,
+              colorVariantsRemoved: removed,
+              colorVariantsUpdated: updated,
+            }
+          : {}),
       },
     })
 

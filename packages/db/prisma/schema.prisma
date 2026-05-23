@@ -1,5 +1,5 @@
-// FurniTrack reference schema for the minimized 6-role business system.
-// This schema is intended to guide the backend and migrations for the next phase.
+// FurniTrack schema — minimized 6-role business system.
+// Dropped tables: companies, leads, design_requests, design_assets
 
 generator client {
   provider      = "prisma-client-js"
@@ -29,75 +29,11 @@ enum AccountStatus {
   PENDING_ACTIVATION
 }
 
-enum CompanyStatus {
-  ACTIVE
-  INACTIVE
-  BLOCKED
-}
-
-enum LeadStatus {
-  NEW
-  QUALIFIED
-  QUOTED
-  WON
-  LOST
-}
-
-enum OrderType {
-  CUSTOMIZED
-  SUPPLY
-}
-
 enum ApprovalStatus {
   NOT_REQUIRED
   PENDING
   APPROVED
   REJECTED
-}
-
-enum QuotationStatus {
-  DRAFT
-  FOR_INTERNAL_REVIEW
-  INTERNALLY_APPROVED
-  SENT_TO_CLIENT
-  CLIENT_APPROVED
-  CLIENT_REJECTED
-  EXPIRED
-  CONVERTED_TO_SALES_ORDER
-  CANCELLED
-}
-
-enum SalesOrderStatus {
-  DRAFT
-  PENDING_FULFILLMENT
-  PROCESSING
-  READY_FOR_DELIVERY
-  DELIVERED
-  CANCELLED
-}
-
-enum InventoryRequestStatus {
-  NOT_REQUIRED
-  PENDING
-  APPROVED
-  PARTIALLY_APPROVED
-  OUT_OF_STOCK
-  REJECTED
-}
-
-enum StockAvailabilityStatus {
-  AVAILABLE
-  PARTIAL
-  OUT_OF_STOCK
-}
-
-enum AccountingStatus {
-  PENDING_REVIEW
-  WAITING_FOR_DOWN_PAYMENT
-  PARTIALLY_PAID
-  FULLY_PAID
-  FINANCIALLY_CLEARED
-  ON_HOLD
 }
 
 enum PaymentType {
@@ -112,44 +48,11 @@ enum PaymentStatus {
   REJECTED
 }
 
-enum DesignRequestStatus {
-  NOT_REQUIRED
-  PENDING
-  IN_PROGRESS
-  REVISION_REQUESTED
-  SUBMITTED
-  APPROVED
-  CANCELLED
-}
-
-enum DesignAssetType {
-  IMAGE
-  PDF
-  DRAWING_2D
-  MODEL_3D
-}
-
-enum DeliveryStatus {
-  BLOCKED
-  SCHEDULED
-  READY
-  IN_TRANSIT
-  DELIVERED
-  CANCELLED
-}
-
-enum DeliveryReadinessStatus {
-  BLOCKED_BY_APPROVALS
-  BLOCKED_BY_PAYMENT
-  BLOCKED_BY_STOCK
-  BLOCKED_BY_DESIGN
-  READY
-}
-
 enum InquiryStatus {
   RECEIVED
   ACCEPTED
   PENDING_INVENTORY_APPROVAL
+  PENDING_SALES_QUOTATION
   GETTING_READY_FOR_BUILDING
   WAITING_FOR_PAYMENT
   PENDING_ACCOUNTING_APPROVAL
@@ -164,7 +67,6 @@ enum StockState {
   DAMAGED
   ARCHIVED
 }
-
 
 enum StockMovementType {
   IN
@@ -182,8 +84,6 @@ enum AuditAction {
   CLIENT_CREATED
   COMPANY_CODE_ASSIGNED
   COMPANY_CODE_CHANGED
-  QUOTATION_APPROVED
-  QUOTATION_REJECTED
   STOCK_REQUEST_APPROVED
   STOCK_REQUEST_REJECTED
   PAYMENT_UPDATED
@@ -202,12 +102,7 @@ enum AuditAction {
 
 enum AuditEntityType {
   USER
-  COMPANY
-  QUOTATION
-  SALES_ORDER
-  STOCK_REQUEST
   PAYMENT
-  DELIVERY_SCHEDULE
   RETURN_REQUEST
   CHAT
   INVENTORY
@@ -217,12 +112,7 @@ enum AuditEntityType {
 }
 
 enum ApprovalModule {
-  QUOTATION
-  SALES_ORDER
-  STOCK_REQUEST
   PAYMENT
-  DESIGN_REQUEST
-  DELIVERY_SCHEDULE
   CUSTOMER_INQUIRY
 }
 
@@ -234,31 +124,9 @@ enum ApprovalAction {
   FINALIZED
 }
 
-model Company {
-  id            String        @id @default(cuid())
-  code          String        @unique
-  name          String
-  status        CompanyStatus @default(ACTIVE)
-  contactEmail  String?
-  contactPhone  String?
-  billingAddress String?
-  shippingAddress String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-
-  users             User[]
-  leads             Lead[]
-  quotations        Quotation[]
-  salesOrders       SalesOrder[]
-  deliverySchedules DeliverySchedule[]
-
-  @@map("companies")
-}
-
 model User {
   id               String        @id @default(cuid())
   authUserId       String?       @unique @db.Uuid
-  companyId        String?
   name             String
   email            String        @unique
   role             UserRole
@@ -273,19 +141,8 @@ model User {
   updatedAt        DateTime      @updatedAt
   permissions      Json?
 
-  company              Company?          @relation(fields: [companyId], references: [id])
-  leadsCreated         Lead[]            @relation("LeadCreatedBy")
-  quotationsCreated    Quotation[]       @relation("QuotationCreatedBy")
-  salesOrdersCreated   SalesOrder[]      @relation("SalesOrderCreatedBy")
-  stockRequestsRaised  StockRequest[]    @relation("StockRequestRequestedBy")
-  stockRequestsChecked StockRequest[]    @relation("StockRequestDecidedBy")
   paymentsRecorded     PaymentRecord[]   @relation("PaymentRecordedBy")
   paymentsVerified     PaymentRecord[]   @relation("PaymentVerifiedBy")
-  designRequested      DesignRequest[]   @relation("DesignRequestedBy")
-  designAssigned       DesignRequest[]   @relation("DesignAssignedTo")
-  designAssetsUploaded DesignAsset[]     @relation("DesignAssetUploadedBy")
-  deliveryAssigned     DeliverySchedule[] @relation("DeliveryAssignedBy")
-  deliveryConfirmed    DeliverySchedule[] @relation("DeliveryConfirmedBy")
   customerInquiries    CustomerInquiry[]  @relation("CustomerInquiryUser")
   inquiriesSalesReviewed       CustomerInquiry[] @relation("InquirySalesReviewedBy")
   inquiriesInventoryApproved   CustomerInquiry[] @relation("InquiryInventoryApprovedBy")
@@ -295,167 +152,28 @@ model User {
   inquiriesCancelled           CustomerInquiry[] @relation("InquiryCancelledBy")
   orderChatMessages    OrderChatMessage[]
   draftProducts        DraftProduct[]      @relation("DraftProductCreatedBy")
+  quotationsSent       Quotation[]         @relation("QuotationSentBy")
 
-  @@index([companyId, role, status])
+  @@index([role, status])
   @@map("users")
 }
 
-model Lead {
-  id             String     @id @default(cuid())
-  companyId      String?
-  companyName    String
-  contactName    String
-  email          String
-  phone          String?
-  projectAddress String?
-  status         LeadStatus @default(NEW)
-  createdById    String
-  notes          String?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-
-  company    Company?     @relation(fields: [companyId], references: [id])
-  createdBy  User         @relation("LeadCreatedBy", fields: [createdById], references: [id])
-  quotations Quotation[]
-
-  @@index([companyId, status])
-  @@map("leads")
-}
-
-model Quotation {
-  id                    String          @id @default(cuid())
-  quoteNumber           String          @unique
-  companyId             String
-  leadId                String?
-  createdById           String
-  orderType             OrderType
-  status                QuotationStatus @default(DRAFT)
-  internalApproval      ApprovalStatus  @default(PENDING)
-  clientApproval        ApprovalStatus  @default(PENDING)
-  companyCodeSnapshot   String
-  validUntil            DateTime?
-  subtotal              Decimal
-  discountAmount        Decimal         @default(0)
-  vatAmount             Decimal         @default(0)
-  total                 Decimal
-  remarks               String?
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
-
-  company        Company              @relation(fields: [companyId], references: [id])
-  lead           Lead?                @relation(fields: [leadId], references: [id])
-  createdBy      User                 @relation("QuotationCreatedBy", fields: [createdById], references: [id])
-  lineItems      QuotationLineItem[]
-  salesOrder     SalesOrder?
-  paymentRecords PaymentRecord[]
-
-  @@index([companyId, status, companyCodeSnapshot])
-  @@map("quotations")
-}
-
-model QuotationLineItem {
-  id              String   @id @default(cuid())
-  quotationId     String
-  itemCode        String?
-  productName     String
-  description     String?
-  material        String?
-  specifications  String?
-  laborCost       Decimal  @default(0)
-  serviceCost     Decimal  @default(0)
-  unitPrice       Decimal
-  quantity        Int
-  lineTotal       Decimal
-  imageUrl        String?
-  leadTimeDays    Int?
-  requestedDate   DateTime?
-
-  quotation Quotation @relation(fields: [quotationId], references: [id])
-
-  @@map("quotation_line_items")
-}
-
-/// Formal sales orders for B2B / multi-line workflow.
-/// Flow: Quotation → SalesOrder → StockRequest → DesignRequest → PaymentRecord → DeliverySchedule.
-/// For B2C single-product storefront orders see CustomerInquiry.
-/// A sales order can optionally be converted from a CustomerInquiry via convertedFromInquiryId.
-model SalesOrder {
-  id                  String                 @id @default(cuid())
-  soNumber            String                 @unique
-  quotationId         String?                @unique
-  convertedFromInquiryId String?
-  companyId           String
-  createdById         String
-  orderType           OrderType
-  status              SalesOrderStatus       @default(DRAFT)
-  inventoryStatus     InventoryRequestStatus @default(NOT_REQUIRED)
-  designStatus        DesignRequestStatus    @default(NOT_REQUIRED)
-  accountingStatus    AccountingStatus       @default(PENDING_REVIEW)
-  deliveryStatus      DeliveryStatus         @default(BLOCKED)
-  companyCodeSnapshot String
-  clientContactName   String
-  clientContactEmail  String?
-  clientContactPhone  String?
-  projectAddress      String?
-  deliveryAddress     String?
-  requestedDeliveryAt DateTime?
-  subtotal            Decimal
-  discountAmount      Decimal                @default(0)
-  vatAmount           Decimal                @default(0)
-  total               Decimal
-  readyForDeliveryAt  DateTime?
-  createdAt           DateTime               @default(now())
-  updatedAt           DateTime               @updatedAt
-
-  company           Company            @relation(fields: [companyId], references: [id])
-  createdBy         User               @relation("SalesOrderCreatedBy", fields: [createdById], references: [id])
-  quotation         Quotation?         @relation(fields: [quotationId], references: [id])
-  convertedFromInquiry CustomerInquiry? @relation("InquiryConvertedToSalesOrder", fields: [convertedFromInquiryId], references: [id])
-  lineItems         SalesOrderLineItem[]
-  stockRequests     StockRequest[]
-  designRequests    DesignRequest[]
-  paymentRecords    PaymentRecord[]
-  deliverySchedules DeliverySchedule[]
-
-  @@index([companyId, status, companyCodeSnapshot])
-  @@index([convertedFromInquiryId])
-  @@map("sales_orders")
-}
-
-/// Line items for B2B sales_orders. One sales_order can have many products.
-/// Each customer_inquiries row by contrast represents a single-product B2C order via products.id.
-model SalesOrderLineItem {
-  id               String  @id @default(cuid())
-  salesOrderId     String
-  quotationLineId  String?
-  itemCode         String?
-  productName      String
-  description      String?
-  quantity         Int
-  unitPrice        Decimal
-  lineTotal        Decimal
-
-  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])
-
-  @@map("sales_order_line_items")
-}
-
 model Warehouse {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  name        String
-  address     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  code       String   @unique
+  name       String
+  street     String?
+  city       String?
+  country    String   @default("Philippines")
+  postalCode String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  productStocks ProductStock[]
+  productStocks  ProductStock[]
   materialStocks MaterialStock[]
 
   @@map("warehouses")
 }
-
-
-
 
 model ProductStock {
   id               String     @id @default(cuid())
@@ -471,14 +189,13 @@ model ProductStock {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 
-  warehouse       Warehouse         @relation(fields: [warehouseId], references: [id])
-  product         Product?
-  stockMovements  StockMovement[]
+  warehouse      Warehouse       @relation(fields: [warehouseId], references: [id])
+  product        Product?
+  stockMovements StockMovement[]
 
   @@index([warehouseId, state])
   @@map("product_stocks")
 }
-
 
 model MaterialStock {
   id               String     @id @default(cuid())
@@ -494,52 +211,54 @@ model MaterialStock {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 
-  warehouse       Warehouse         @relation(fields: [warehouseId], references: [id])
-  materialFor     ProductMaterial[] @relation("ProductMaterialStockItem")
-  stockMovements  StockMovement[]
-  stockRequestLines StockRequestLine[]
+  warehouse         Warehouse         @relation(fields: [warehouseId], references: [id])
+  materialFor       ProductMaterial[] @relation("ProductMaterialStockItem")
+  stockMovements    StockMovement[]
+  supplierProducts  SupplierProduct[]
 
   @@index([warehouseId, state])
   @@map("material_stocks")
 }
 
 model Product {
-  id            String   @id @default(cuid())
-  productStockId   String   @unique
-  slug          String   @unique
-  name          String
-  category      String
-  material      String
-  price         Decimal
-  originalPrice Decimal?
-  badge         String?
-  images        Json?
-  rating        Decimal  @default(0)
-  reviewCount   Int      @default(0)
-  widthCm       Decimal
-  depthCm       Decimal
-  heightCm      Decimal
-  weightKg      Decimal
-  description   String
-  isPublished   Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String   @id @default(cuid())
+  productStockId String   @unique
+  slug           String   @unique
+  name           String
+  category       String
+  material       String
+  price          Decimal
+  originalPrice  Decimal?
+  badge          String?
+  images         Json?
+  colorVariants  Json     @default("[]")
+  productCode    String?  @unique
+  rating         Decimal  @default(0)
+  reviewCount    Int      @default(0)
+  widthCm        Decimal
+  depthCm        Decimal
+  heightCm       Decimal
+  weightKg       Decimal
+  description    String
+  isPublished    Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  productStock  ProductStock          @relation(fields: [productStockId], references: [id])
-  materials  ProductMaterial[]
-  inquiries  CustomerInquiry[]
+  productStock ProductStock      @relation(fields: [productStockId], references: [id])
+  materials    ProductMaterial[]
+  inquiries    CustomerInquiry[]
 
   @@index([category, isPublished])
   @@map("products")
 }
 
 model DraftProduct {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   createdById String
   name        String?
   payload     Json
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
 
   createdBy User @relation("DraftProductCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
@@ -548,10 +267,8 @@ model DraftProduct {
   @@map("draft_products")
 }
 
-/// B2C single-product orders from the storefront. The active workflow used today.
+/// B2C single-product orders from the storefront.
 /// One inquiry -> one product (via productId). For multi-line B2B orders see SalesOrder.
-/// An inquiry can optionally be promoted to a SalesOrder (formal B2B flow) via the
-/// convertedToSalesOrder relation.
 model CustomerInquiry {
   id             String        @id @default(cuid())
   productId      String
@@ -567,36 +284,39 @@ model CustomerInquiry {
   updatedAt      DateTime      @updatedAt
 
   // Stage transition timestamps
-  salesReviewedAt        DateTime?
-  inventoryApprovedAt    DateTime?
-  customerPaidAt         DateTime?
-  accountingConfirmedAt  DateTime?
-  buildApprovedAt        DateTime?
-  shippingScheduledAt    DateTime?
-  completedAt            DateTime?
-  cancelledAt            DateTime?
+  salesReviewedAt       DateTime?
+  inventoryApprovedAt   DateTime?
+  quotationSentAt       DateTime?
+  quotationRespondedAt  DateTime?
+  quotationAccepted     Boolean?
+  quotedPrice           Decimal?
+  customerPaidAt        DateTime?
+  accountingConfirmedAt DateTime?
+  buildApprovedAt       DateTime?
+  shippingScheduledAt   DateTime?
+  completedAt           DateTime?
+  cancelledAt           DateTime?
 
   // Stage actor IDs (FK to User)
-  salesReviewedById        String?
-  inventoryApprovedById    String?
-  accountingConfirmedById  String?
-  buildApprovedById        String?
-  completedById            String?
-  cancelledById            String?
+  salesReviewedById       String?
+  inventoryApprovedById   String?
+  accountingConfirmedById String?
+  buildApprovedById       String?
+  completedById           String?
+  cancelledById           String?
 
-  product       Product @relation(fields: [productId], references: [id])
-  customerUser  User?   @relation("CustomerInquiryUser", fields: [customerUserId], references: [id])
-  chatMessages  OrderChatMessage[]
+  product      Product          @relation(fields: [productId], references: [id])
+  customerUser User?            @relation("CustomerInquiryUser", fields: [customerUserId], references: [id])
+  chatMessages OrderChatMessage[]
   paymentRecords PaymentRecord[] @relation("InquiryPaymentRecords")
-  convertedToSalesOrders SalesOrder[] @relation("InquiryConvertedToSalesOrder")
+  quotations     Quotation[]     @relation("InquiryQuotations")
 
-  // Relations to actor users
-  salesReviewedBy        User? @relation("InquirySalesReviewedBy", fields: [salesReviewedById], references: [id])
-  inventoryApprovedBy    User? @relation("InquiryInventoryApprovedBy", fields: [inventoryApprovedById], references: [id])
-  accountingConfirmedBy  User? @relation("InquiryAccountingConfirmedBy", fields: [accountingConfirmedById], references: [id])
-  buildApprovedBy        User? @relation("InquiryBuildApprovedBy", fields: [buildApprovedById], references: [id])
-  completedBy            User? @relation("InquiryCompletedBy", fields: [completedById], references: [id])
-  cancelledBy            User? @relation("InquiryCancelledBy", fields: [cancelledById], references: [id])
+  salesReviewedBy       User? @relation("InquirySalesReviewedBy", fields: [salesReviewedById], references: [id])
+  inventoryApprovedBy   User? @relation("InquiryInventoryApprovedBy", fields: [inventoryApprovedById], references: [id])
+  accountingConfirmedBy User? @relation("InquiryAccountingConfirmedBy", fields: [accountingConfirmedById], references: [id])
+  buildApprovedBy       User? @relation("InquiryBuildApprovedBy", fields: [buildApprovedById], references: [id])
+  completedBy           User? @relation("InquiryCompletedBy", fields: [completedById], references: [id])
+  cancelledBy           User? @relation("InquiryCancelledBy", fields: [cancelledById], references: [id])
 
   @@index([customerUserId, status, createdAt])
   @@index([productId, status, createdAt])
@@ -611,8 +331,8 @@ model OrderChatMessage {
   body         String?
   createdAt    DateTime @default(now()) @map("created_at")
 
-  inquiry     CustomerInquiry       @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
-  sender      User?                 @relation(fields: [senderUserId], references: [id], onDelete: SetNull)
+  inquiry     CustomerInquiry      @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  sender      User?                @relation(fields: [senderUserId], references: [id], onDelete: SetNull)
   attachments OrderChatAttachment[]
 
   @@index([inquiryId, createdAt])
@@ -635,17 +355,17 @@ model OrderChatAttachment {
 }
 
 model ProductMaterial {
-  id                  String   @id @default(cuid())
-  productId           String
-  materialStockId         String
-  quantityRequired    Decimal?
-  quantityDisplay     String?
-  dimension           String?
-  notes               String?
-  createdAt           DateTime @default(now())
+  id               String   @id @default(cuid())
+  productId        String
+  materialStockId  String
+  quantityRequired Decimal?
+  quantityDisplay  String?
+  dimension        String?
+  notes            String?
+  createdAt        DateTime @default(now())
 
-  product    Product   @relation(fields: [productId], references: [id])
-  materialStock  MaterialStock @relation("ProductMaterialStockItem", fields: [materialStockId], references: [id])
+  product       Product       @relation(fields: [productId], references: [id])
+  materialStock MaterialStock @relation("ProductMaterialStockItem", fields: [materialStockId], references: [id])
 
   @@index([materialStockId])
   @@map("product_materials")
@@ -653,8 +373,8 @@ model ProductMaterial {
 
 model StockMovement {
   id              String            @id @default(cuid())
-  materialStockId     String?
-  productStockId      String?
+  materialStockId String?
+  productStockId  String?
   type            StockMovementType
   quantity        Int
   requesterName   String?
@@ -668,83 +388,9 @@ model StockMovement {
   @@map("stock_movements")
 }
 
-model StockRequest {
-  id                  String                 @id @default(cuid())
-  salesOrderId        String
-  requestedById       String
-  decidedById         String?
-  status              InventoryRequestStatus @default(PENDING)
-  requestedAt         DateTime               @default(now())
-  decidedAt           DateTime?
-  purpose             String?
-  deductionFormNumber String?
-  remarks             String?
-
-  salesOrder   SalesOrder         @relation(fields: [salesOrderId], references: [id])
-  requestedBy  User               @relation("StockRequestRequestedBy", fields: [requestedById], references: [id])
-  decidedBy    User?              @relation("StockRequestDecidedBy", fields: [decidedById], references: [id])
-  lineItems    StockRequestLine[]
-
-  @@index([salesOrderId, status])
-  @@map("stock_requests")
-}
-
-model StockRequestLine {
-  id                String                  @id @default(cuid())
-  stockRequestId    String
-  materialStockId       String
-  quantityRequested Int
-  quantityApproved  Int                     @default(0)
-  availability      StockAvailabilityStatus @default(AVAILABLE)
-
-  stockRequest StockRequest @relation(fields: [stockRequestId], references: [id])
-  materialStock    MaterialStock    @relation(fields: [materialStockId], references: [id])
-
-  @@map("stock_request_line_items")
-}
-
-model DesignRequest {
-  id               String              @id @default(cuid())
-  salesOrderId     String
-  requestedById    String
-  assignedToId     String?
-  status           DesignRequestStatus @default(PENDING)
-  requestNotes     String?
-  finalSubmittedAt DateTime?
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
-
-  salesOrder   SalesOrder   @relation(fields: [salesOrderId], references: [id])
-  requestedBy  User         @relation("DesignRequestedBy", fields: [requestedById], references: [id])
-  assignedTo   User?        @relation("DesignAssignedTo", fields: [assignedToId], references: [id])
-  assets       DesignAsset[]
-
-  @@index([salesOrderId, status])
-  @@map("design_requests")
-}
-
-model DesignAsset {
-  id              String          @id @default(cuid())
-  designRequestId String
-  uploadedById    String
-  fileName        String
-  fileUrl         String
-  mimeType        String
-  assetType       DesignAssetType
-  isFinal         Boolean         @default(false)
-  createdAt       DateTime        @default(now())
-
-  designRequest DesignRequest @relation(fields: [designRequestId], references: [id])
-  uploadedBy    User          @relation("DesignAssetUploadedBy", fields: [uploadedById], references: [id])
-
-  @@map("design_assets")
-}
-
 model PaymentRecord {
   id               String        @id @default(cuid())
-  salesOrderId     String?
   inquiryId        String?
-  quotationId      String?
   paymentNumber    String?       @unique
   recordedById     String
   paymentType      PaymentType
@@ -760,50 +406,24 @@ model PaymentRecord {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  salesOrder SalesOrder?      @relation(fields: [salesOrderId], references: [id])
   inquiry    CustomerInquiry? @relation("InquiryPaymentRecords", fields: [inquiryId], references: [id], onDelete: Cascade)
-  quotation  Quotation?       @relation(fields: [quotationId], references: [id])
   recordedBy User             @relation("PaymentRecordedBy", fields: [recordedById], references: [id])
   verifiedBy User?            @relation("PaymentVerifiedBy", fields: [verifiedById], references: [id])
 
-  @@index([salesOrderId, status, paymentDate])
   @@index([inquiryId, status, paymentDate])
   @@map("payment_records")
 }
 
-model DeliverySchedule {
-  id                  String                  @id @default(cuid())
-  salesOrderId        String
-  companyId           String
-  assignedById        String
-  confirmedById       String?
-  scheduledAt         DateTime
-  status              DeliveryStatus          @default(BLOCKED)
-  readinessStatus     DeliveryReadinessStatus @default(BLOCKED_BY_APPROVALS)
-  companyCodeSnapshot String
-  notes               String?
-  createdAt           DateTime                @default(now())
-  updatedAt           DateTime                @updatedAt
-
-  salesOrder  SalesOrder @relation(fields: [salesOrderId], references: [id])
-  company     Company    @relation(fields: [companyId], references: [id])
-  assignedBy  User       @relation("DeliveryAssignedBy", fields: [assignedById], references: [id])
-  confirmedBy User?      @relation("DeliveryConfirmedBy", fields: [confirmedById], references: [id])
-
-  @@index([companyId, status, companyCodeSnapshot])
-  @@map("delivery_schedules")
-}
-
 model ApprovalHistory {
-  id           String         @id @default(cuid())
-  module       ApprovalModule
-  recordId     String
-  action       ApprovalAction
-  fromStatus   String?
-  toStatus     String?
-  remarks      String?
-  actedById    String
-  actedAt      DateTime       @default(now())
+  id        String         @id @default(cuid())
+  module    ApprovalModule
+  recordId  String
+  action    ApprovalAction
+  fromStatus String?
+  toStatus   String?
+  remarks    String?
+  actedById  String
+  actedAt    DateTime       @default(now())
 
   @@index([module, recordId, actedAt])
   @@map("approval_history")
@@ -815,13 +435,11 @@ model AuditLog {
   action              AuditAction
   entityType          AuditEntityType
   entityId            String
-  companyId           String?
   companyCodeSnapshot String?
   metadata            Json?
   createdAt           DateTime        @default(now())
 
   @@index([entityType, entityId, createdAt])
-  @@index([companyId, createdAt])
   @@map("audit_logs")
 }
 
@@ -842,20 +460,20 @@ model AdminAccountArchive {
   role           String
   archivedAt     DateTime @default(now())
 
-  actions        AdminActionArchive[]
+  actions AdminActionArchive[]
 
   @@map("admin_account_archives")
 }
 
 model AdminActionArchive {
-  id              String   @id @default(cuid())
-  archiveId       String
-  actionType      String
-  description     String
-  performedAt     DateTime @default(now())
-  metadata        Json?
+  id          String   @id @default(cuid())
+  archiveId   String
+  actionType  String
+  description String
+  performedAt DateTime @default(now())
+  metadata    Json?
 
-  adminArchive    AdminAccountArchive @relation(fields: [archiveId], references: [id])
+  adminArchive AdminAccountArchive @relation(fields: [archiveId], references: [id])
 
   @@index([archiveId, performedAt])
   @@map("admin_action_archives")
@@ -881,4 +499,78 @@ model ReturnRequest {
   @@index([inquiryId])
   @@index([customerUserId])
   @@map("return_requests")
+}
+
+model Quotation {
+  id                        String    @id @default(cuid())
+  inquiryId                 String
+  quotationNumber           String?   @unique
+  revisionNumber            Int       @default(1)
+  sentById                  String?
+  quotedPrice               Decimal
+  quotedPriceBeforeDiscount Decimal?
+  quotationDiscount         Decimal   @default(0)
+  salesNote                 String?
+  status                    String    @default("PENDING")
+  declineReason             String?
+  sentAt                    DateTime  @default(now())
+  respondedAt               DateTime?
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+
+  inquiry CustomerInquiry @relation("InquiryQuotations", fields: [inquiryId], references: [id], onDelete: Cascade)
+  sentBy  User?           @relation("QuotationSentBy", fields: [sentById], references: [id], onDelete: SetNull)
+
+  @@index([inquiryId, createdAt(sort: Desc)])
+  @@map("quotations")
+}
+  id            String   @id @default(cuid())
+  name          String
+  contactPerson String?
+  email         String?
+  phone         String?
+  notes         String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  addresses SupplierAddress[]
+  products  SupplierProduct[]
+
+  @@map("suppliers")
+}
+
+model SupplierAddress {
+  id         String   @id @default(cuid())
+  supplierId String
+  label      String?
+  address    String
+  city       String?
+  province   String?
+  isMain     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  @@index([supplierId])
+  @@map("supplier_addresses")
+}
+
+model SupplierProduct {
+  id              String        @id @default(cuid())
+  supplierId      String
+  materialStockId String?
+  materialName    String
+  unitCost        Decimal?
+  unitOfMeasure   String?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  supplier      Supplier       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  materialStock MaterialStock? @relation(fields: [materialStockId], references: [id], onDelete: SetNull)
+
+  @@index([supplierId])
+  @@map("supplier_products")
 }

@@ -6,7 +6,11 @@ export async function logAudit(params: {
   action: AuditAction
   entityType: AuditEntityType
   entityId: string
-  companyId?: string | null
+  /**
+   * Optional company code snapshot. Stored on `audit_logs.companyCodeSnapshot`.
+   * (The legacy `companyId` column was removed when companies were dropped.)
+   */
+  companyCodeSnapshot?: string | null
   metadata?: Record<string, any>
 }) {
   try {
@@ -14,7 +18,7 @@ export async function logAudit(params: {
 
     await prisma.$executeRaw`
       INSERT INTO public.audit_logs (
-        id, "actorId", action, "entityType", "entityId", "companyId", metadata, "createdAt"
+        id, "actorId", action, "entityType", "entityId", "companyCodeSnapshot", metadata, "createdAt"
       )
       VALUES (
         gen_random_uuid(),
@@ -22,7 +26,7 @@ export async function logAudit(params: {
         ${params.action}::"AuditAction",
         ${params.entityType}::"AuditEntityType",
         ${params.entityId},
-        ${params.companyId || null},
+        ${params.companyCodeSnapshot || null},
         ${metadata}::jsonb,
         CURRENT_TIMESTAMP
       )
