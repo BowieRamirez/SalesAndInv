@@ -313,14 +313,14 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
       {activeTab === "quotations" && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-            <div className="rounded-xl border border-[#fce7f3] bg-[#fdf2f8] p-5">
-              <p className="text-[12px] uppercase tracking-wide text-[#9d174d]">Pending Quotations</p>
-              <p className="mt-2 text-[28px] font-semibold text-[#9d174d]">{quotationQueue.length}</p>
+            <div className="rounded-xl border border-[#e5e7eb] bg-white p-5">
+              <p className="text-[12px] uppercase tracking-wide text-[#6b7280]">Pending Quotations</p>
+              <p className="mt-2 text-[28px] font-semibold text-[#b45309]">{quotationQueue.length}</p>
             </div>
           </div>
 
           {/* Quotation stage — back from inventory, sales sets price */}
-          <section className="rounded-xl border border-[#fce7f3] bg-white p-6 shadow-sm">
+          <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
             <div className="mb-5">
               <h2 className="text-[20px] font-semibold text-[#111827]">Negotiate price & quotes</h2>
               <p className="mt-2 max-w-[760px] text-[14px] leading-[22px] text-[#6b7280]">
@@ -330,7 +330,7 @@ export default async function SalesDashboard({ searchParams }: SalesPageProps) {
             </div>
 
             {quotationQueue.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-[#fce7f3] bg-[#fdf2f8] px-6 py-12 text-center text-[13px] text-[#9d174d]">
+              <div className="rounded-xl border border-dashed border-[#e5e7eb] bg-[#f9fafb] px-6 py-12 text-center text-[13px] text-[#6b7280]">
                 No orders are currently in the quotation stage.
               </div>
             ) : (

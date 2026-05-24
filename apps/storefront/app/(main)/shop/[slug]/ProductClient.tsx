@@ -108,20 +108,28 @@ export function ProductClient({ product, reviews = [] }: ProductClientProps) {
         </span>
       </div>
 
-      <div className="mb-[24px] flex items-end gap-[12px]">
-        <span className="text-[24px] font-medium leading-[28.8px] text-[#1a1a2e]">
-          {formatPeso(product.price)}
-        </span>
-        {product.originalPrice && (
-          <span className="mb-[2px] text-[16px] leading-[24px] text-[#99a1af] line-through">
-            {formatPeso(product.originalPrice)}
+      <div className="mb-[24px]">
+        <p className="mb-[4px] text-[11px] font-medium uppercase tracking-[0.5px] text-[#99a1af]">
+          Base price — starts at
+        </p>
+        <div className="flex items-end gap-[12px]">
+          <span className="text-[24px] font-medium leading-[28.8px] text-[#1a1a2e]">
+            {formatPeso(product.price)}
           </span>
-        )}
-        {savings && (
-          <span className="mb-[4px] text-[12px] font-medium leading-[18px] text-[#fb2c36]">
-            Save {formatPeso(savings)}
-          </span>
-        )}
+          {product.originalPrice && (
+            <span className="mb-[2px] text-[16px] leading-[24px] text-[#99a1af] line-through">
+              {formatPeso(product.originalPrice)}
+            </span>
+          )}
+          {savings && (
+            <span className="mb-[4px] text-[12px] font-medium leading-[18px] text-[#fb2c36]">
+              Save {formatPeso(savings)}
+            </span>
+          )}
+        </div>
+        <p className="mt-[8px] text-[12px] leading-[18px] text-[#99a1af]">
+          Final price may vary based on customization and applicable taxes. Sales will send you a quotation after your inquiry.
+        </p>
       </div>
 
       <div className="mb-[24px]">

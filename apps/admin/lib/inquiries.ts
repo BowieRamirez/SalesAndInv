@@ -28,6 +28,7 @@ type InquiryBaseRow = {
   customerEmail: string
   customerPhone: string
   message: string
+  quantity: number
   status: string
   statusNote: string | null
   total: Prisma.Decimal | number | string | null
@@ -67,6 +68,7 @@ export type InquiryWorkflowRow = Omit<
   shippingScheduledAt: Date | null
   paymentMethod: AccountingPaymentMethod | null
   total: number
+  quantity: number
   quotedPrice: number | null
   quotationAccepted: boolean | null
   quotationDeclineReason: string | null
@@ -336,6 +338,7 @@ function toWorkflowRows(rows: InquiryBaseRow[]): InquiryWorkflowRow[] {
       customerEmail: row.customerEmail,
       customerPhone: row.customerPhone,
       message: row.message,
+      quantity: row.quantity ?? 1,
       status: row.status,
       statusNote: row.statusNote,
       createdAt: row.createdAt,
@@ -384,9 +387,10 @@ export async function getInquiryWorkflowRows(stages?: readonly InquiryWorkflowSt
       ci."customerEmail",
       ci."customerPhone",
       ci.message,
+      COALESCE(ci.quantity, 1)::int AS quantity,
       ci.status::text AS status,
       ci."statusNote",
-      p.price AS total,
+      (p.price * COALESCE(ci.quantity, 1)) AS total,
       ci."quotedPrice",
       ci."quotationAccepted",
       ci."quotationDeclineReason",

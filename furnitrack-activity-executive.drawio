@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Executive Admin" id="ad-executive">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Activity Diagram — EXECUTIVE ADMIN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#9f1239;" vertex="1" parent="1">
+          <mxGeometry x="100" y="20" width="700" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Admin management, approvals, oversight, and audit access" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="100" y="55" width="700" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_start" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="425" y="95" width="30" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" value="Log In to Admin Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="150" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_d1" value="Task&#xa;Type?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=11;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="370" y="225" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch A: Admin account management -->
+        <mxCell id="e_a1" value="Open Admin Accounts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="345" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_a_d" value="Action?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=11;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="70" y="415" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_a2" value="Create Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=11;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="0" y="525" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_a3" value="Edit / Reset" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=11;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="135" y="525" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_a4" value="Archive / Delete" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=11;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="0" y="585" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_a5" value="View Archives" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=11;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="135" y="585" width="120" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch B: Approvals -->
+        <mxCell id="e_b1" value="View Product Edit&#xa;Approval Requests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="345" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_b_d" value="Approve&#xa;Request?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=11;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="370" y="420" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_b2" value="Approve Edit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="280" y="535" width="140" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_b3" value="Reject Edit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#991b1b;fontColor=#991b1b;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="450" y="535" width="140" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_b4" value="Override Workflow Stage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="600" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch C: Oversight & audit -->
+        <mxCell id="e_c1" value="View All Audit Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="345" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c2" value="View All Customer Accounts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="415" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c3" value="Manage Storefront&#xa;Filters &amp; Categories" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="485" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c4" value="Review KPI Dashboards&#xa;&amp; Reports" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="560" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_merge" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="430" y="710" width="20" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_end" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="425" y="780" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_end_in" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="432" y="787" width="16" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="ee0" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_start" target="e1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee1" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e1" target="e_d1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee2" value="Manage Admins" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="e_d1" target="e_a1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee3" value="Approvals" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="e_d1" target="e_b1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee4" value="Oversight" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="e_d1" target="e_c1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="ee5" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a1" target="e_a_d"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee6" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a_d" target="e_a2">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="60" y="545"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee7" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a_d" target="e_a3">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="195" y="545"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee8" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a_d" target="e_a4">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="60" y="605"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee9" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a_d" target="e_a5">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="195" y="605"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee10" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a2" target="e_merge">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="60" y="720"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee11" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a3" target="e_merge">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="195" y="690"/><mxPoint x="440" y="690"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee12" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a4" target="e_merge">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="60" y="720"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee13" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_a5" target="e_merge">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="195" y="720"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ee14" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_b1" target="e_b_d"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee15" value="Yes" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="e_b_d" target="e_b2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee16" value="No" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="e_b_d" target="e_b3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee17" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_b2" target="e_b4">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="350" y="595"/><mxPoint x="440" y="595"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee18" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_b3" target="e_b4">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="520" y="595"/><mxPoint x="440" y="595"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ee19" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_b4" target="e_merge"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="ee20" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_c1" target="e_c2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee21" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_c2" target="e_c3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee22" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_c3" target="e_c4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ee23" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_c4" target="e_merge">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="720"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ee24" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="e_merge" target="e_end"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

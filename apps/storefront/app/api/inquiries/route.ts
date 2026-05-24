@@ -9,6 +9,7 @@ type InquiryPayload = {
   customerEmail?: unknown
   customerPhone?: unknown
   message?: unknown
+  quantity?: unknown
 }
 
 const MAX_NAME_LENGTH = 50
@@ -60,6 +61,7 @@ export async function POST(request: Request) {
     customerEmail: normalizeText(body?.customerEmail).toLowerCase().slice(0, MAX_EMAIL_LENGTH),
     customerPhone: normalizePhone(body?.customerPhone),
     message: normalizeText(body?.message),
+    quantity: Math.min(Math.max(Number.parseInt(String(body?.quantity ?? "1"), 10) || 1, 1), 100),
   }
 
   if (
@@ -114,6 +116,7 @@ export async function POST(request: Request) {
         "customerEmail",
         "customerPhone",
         message,
+        quantity,
         status,
         "inquiryNumber",
         "createdAt",
@@ -127,6 +130,7 @@ export async function POST(request: Request) {
         ${payload.customerEmail.toLowerCase()},
         ${payload.customerPhone},
         ${payload.message},
+        ${payload.quantity},
         'RECEIVED'::"InquiryStatus",
         ${inquiryNumber},
         CURRENT_TIMESTAMP,

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 1 — DFD LEVEL 0 (Context Diagram)                     -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <diagram name="DFD Level 0 — Context" id="dfd-l0">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="t1" value="FurniTrack — DFD Level 0 (Context Diagram)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1000" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2" value="The entire system shown as a single process with all external entities and data flows" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="200" y="55" width="1000" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- CENTRAL PROCESS -->
+        <mxCell id="sys" value="FurniTrack&#xa;Sales &amp; Inventory&#xa;System" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=16;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="530" y="340" width="220" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- EXTERNAL ENTITIES -->
+        <mxCell id="e_cust" value="CUSTOMER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#166534;fontColor=#166534;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="370" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sales" value="SALES ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="200" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ops" value="OPERATIONS&#xa;ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="370" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_acc" value="ACCOUNTING&#xa;ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="540" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_exec" value="EXECUTIVE&#xa;ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="620" y="720" width="150" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sup" value="SUPPLIER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#475569;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="560" width="150" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- CUSTOMER FLOWS -->
+        <mxCell id="f1" value="Browse catalog, submit inquiry, quantity, payment" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=0;entryY=0.4;entryDx=0;entryDy=0;" edge="1" parent="1" source="e_cust" target="sys"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f2" value="Quotation, order status, receipt, delivery notice" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=0;exitY=0.6;exitDx=0;exitDy=0;entryX=1;entryY=0.6;entryDx=0;entryDy=0;" edge="1" parent="1" source="sys" target="e_cust"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- SUPPLIER FLOWS -->
+        <mxCell id="f3" value="Supplier catalog, material info" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="e_sup" target="sys"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f4" value="Purchase orders" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=0;exitY=0.6;exitDx=0;exitDy=0;entryX=1;entryY=0.6;entryDx=0;entryDy=0;" edge="1" parent="1" source="sys" target="e_sup"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- SALES ADMIN FLOWS -->
+        <mxCell id="f5" value="Quotation pricing, discount, approval" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=0;exitY=0.4;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="e_sales" target="sys"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f6" value="New inquiries, order status" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.6;entryDx=0;entryDy=0;" edge="1" parent="1" source="sys" target="e_sales"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- OPERATIONS ADMIN FLOWS -->
+        <mxCell id="f7" value="Stock check, build approval, delivery schedule" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="e_ops" target="sys"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f8" value="Pending orders, inventory alerts" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.4;entryDx=0;entryDy=0;" edge="1" parent="1" source="sys" target="e_ops"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ACCOUNTING ADMIN FLOWS -->
+        <mxCell id="f9" value="Payment verification, approval" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=0;exitY=0.4;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="e_acc" target="sys"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f10" value="Pending payments, payment records" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.6;entryDx=0;entryDy=0;" edge="1" parent="1" source="sys" target="e_acc"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- EXECUTIVE ADMIN FLOWS -->
+        <mxCell id="f11" value="Admin management, approvals, overrides" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="e_exec" target="sys"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f12" value="Reports, audit logs, KPI dashboards" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sys" target="e_exec"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- LEGEND -->
+        <mxCell id="leg_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9ca3af;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="700" width="380" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_t" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="100" y="710" width="200" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_ent" value="External Entity" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#166534;fontColor=#166534;fontSize=10;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="738" width="120" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_proc" value="System Process" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=10;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="738" width="120" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_solid" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="100" y="795" as="sourcePoint"/><mxPoint x="180" y="795" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_sl" value="Input (request)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="190" y="785" width="100" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_dashed" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="100" y="815" as="sourcePoint"/><mxPoint x="180" y="815" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="leg_dl" value="Output (response)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="190" y="805" width="120" height="20" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 2 — DFD LEVEL 1                                        -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <diagram name="DFD Level 1 — Subprocesses" id="dfd-l1">
+    <mxGraphModel dx="1800" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="t1" value="FurniTrack — DFD Level 1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="1200" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2" value="Core subprocesses, data stores, and external entity flows" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="300" y="55" width="1200" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ── EXTERNAL ENTITIES ── -->
+        <mxCell id="ec" value="CUSTOMER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#166534;fontColor=#166534;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="580" width="140" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="es" value="SALES ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="200" width="150" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="eo" value="OPERATIONS&#xa;ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="580" width="150" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea" value="ACCOUNTING&#xa;ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="860" width="150" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="ee" value="EXECUTIVE&#xa;ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1100" width="150" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="esu" value="SUPPLIER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#475569;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1200" width="140" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ── PROCESSES ── -->
+        <mxCell id="p1" value="1.0&#xa;Inquiry &amp;&#xa;Catalog" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="200" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2" value="2.0&#xa;Quotation" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="200" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3" value="3.0&#xa;Payment" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="560" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4" value="4.0&#xa;Inventory &amp;&#xa;Build" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="840" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="p5" value="5.0&#xa;Delivery" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="840" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="p6" value="6.0&#xa;Reports &amp;&#xa;Admin" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1100" width="150" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- ── DATA STORES ── -->
+        <mxCell id="d1" value="D1 | Orders &amp; Inquiries" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;right=0;bottom=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#7c2d12;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="620" y="120" width="200" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="D2 | Products &amp; Catalog" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;right=0;bottom=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#7c2d12;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="620" y="340" width="200" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" value="D3 | Payments" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;right=0;bottom=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#7c2d12;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="620" y="580" width="200" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="d4" value="D4 | Materials &amp; Inventory" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;right=0;bottom=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#7c2d12;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="620" y="840" width="200" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="d5" value="D5 | Users &amp; Audit Logs" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=0;right=0;bottom=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#7c2d12;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1100" width="200" height="44" as="geometry"/>
+        </mxCell>

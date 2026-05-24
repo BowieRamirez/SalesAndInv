@@ -23,6 +23,8 @@ export function SalesLeadCard({ inquiry }: Props) {
   const [statusNote, setStatusNote] = useState(inquiry.workflowNote ?? "")
 
   // Pricing breakdown
+  const qty = inquiry.quantity ?? 1
+  const unitPrice = qty > 0 ? inquiry.total / qty : inquiry.total
   const basePrice = inquiry.total
   const originalPrice = inquiry.productOriginalPrice
   const isSale = inquiry.productBadge === "SALE" && originalPrice != null && originalPrice > basePrice
@@ -49,6 +51,11 @@ export function SalesLeadCard({ inquiry }: Props) {
             <p className="mt-2 text-[13px] text-[#6b7280]">
               {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
             </p>
+            {qty > 1 && (
+              <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-3 py-1 text-[12px] font-semibold text-[#1d4ed8]">
+                Qty: {qty} units
+              </span>
+            )}
             <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
           </div>
 
@@ -146,7 +153,19 @@ export function SalesLeadCard({ inquiry }: Props) {
                 ) : null}
 
                 <div className="flex justify-between text-[#374151]">
-                  <span>Product price</span>
+                  <span>Unit price</span>
+                  <span>{formatPeso(unitPrice)}</span>
+                </div>
+
+                {qty > 1 && (
+                  <div className="flex justify-between text-[#374151]">
+                    <span>Quantity</span>
+                    <span>× {qty}</span>
+                  </div>
+                )}
+
+                <div className="flex justify-between text-[#374151]">
+                  <span>Subtotal{qty > 1 ? ` (${qty} units)` : ""}</span>
                   <span>{formatPeso(basePrice)}</span>
                 </div>
 

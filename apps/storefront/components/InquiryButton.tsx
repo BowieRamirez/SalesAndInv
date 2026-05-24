@@ -47,6 +47,7 @@ export function InquiryButton({
     customerName: customerName ?? "",
     customerEmail: customerEmail ?? "",
     customerPhone: "",
+    quantity: 1,
     message: `Hi FurniTrack, I want to inquire about ${productName}. I would like to discuss custom sizing, finish options, and pricing.`,
   })
 
@@ -105,6 +106,7 @@ export function InquiryButton({
         customerName: formState.customerName,
         customerEmail: formState.customerEmail,
         customerPhone: formState.customerPhone,
+        quantity: formState.quantity,
         message: formState.message,
       }),
     })
@@ -221,6 +223,55 @@ export function InquiryButton({
                   placeholder="639xxxxxxxxx"
                   required
                 />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-[12px] font-medium uppercase tracking-wide text-[#6a7282]">
+                  Quantity
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormState((current) => ({
+                        ...current,
+                        quantity: Math.max(1, current.quantity - 1),
+                      }))
+                    }
+                    className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[12px] border border-[#d1d5dc] text-[20px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f9fafb] disabled:cursor-not-allowed disabled:text-[#d1d5dc]"
+                    disabled={formState.quantity <= 1}
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    value={formState.quantity}
+                    min={1}
+                    max={100}
+                    onChange={(event) => {
+                      const val = Math.min(Math.max(Number.parseInt(event.target.value, 10) || 1, 1), 100)
+                      setFormState((current) => ({ ...current, quantity: val }))
+                    }}
+                    className="w-full rounded-[12px] border border-[#d1d5dc] px-4 py-3 text-center text-[14px] font-semibold text-[#1a1a2e] outline-none transition-colors focus:border-[#1a1a2e]"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormState((current) => ({
+                        ...current,
+                        quantity: Math.min(100, current.quantity + 1),
+                      }))
+                    }
+                    className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[12px] border border-[#d1d5dc] text-[20px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f9fafb] disabled:cursor-not-allowed disabled:text-[#d1d5dc]"
+                    disabled={formState.quantity >= 100}
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="mt-1.5 text-[11px] text-[#99a1af]">
+                  Final price will be confirmed in the quotation. Max 100 units per inquiry.
+                </p>
               </label>
 
               <label className="block">

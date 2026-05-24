@@ -294,6 +294,7 @@ model CustomerInquiry {
   customerEmail  String
   customerPhone  String
   message        String
+  quantity       Int           @default(1)
   status         InquiryStatus @default(RECEIVED)
   statusNote     String?
   inquiryNumber  String?       @unique

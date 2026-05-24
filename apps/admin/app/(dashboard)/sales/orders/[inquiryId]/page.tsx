@@ -70,7 +70,17 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
   const backHref = isChatView ? "/sales?tab=chats" : "/sales?tab=orders"
   const backLabel = isChatView ? "Back to Order Chats" : "Back to Sales Orders"
 
-  // Fetch product materials
+  // Fetch product SKU + materials
+  const productSkuRows = await prisma.$queryRaw<Array<{ sku: string }>>(Prisma.sql`
+    SELECT ps.sku
+    FROM public.customer_inquiries ci
+    INNER JOIN public.products p ON p.id = ci."productId"
+    INNER JOIN public.product_stocks ps ON ps.id = p."productStockId"
+    WHERE ci.id = ${inquiryId}
+    LIMIT 1
+  `)
+  const productSku = productSkuRows[0]?.sku ?? null
+
   const materials = await prisma.$queryRaw<MaterialRow[]>(Prisma.sql`
     SELECT
       pm."materialStockId",
@@ -232,8 +242,8 @@ export default async function SalesOrderDetailPage({ params, searchParams }: Sal
                       <p className="font-semibold text-[#111827]">{inquiry.productName}</p>
                       <p className="text-[11px] text-[#94a3b8]">Finished product</p>
                     </td>
-                    <td className="py-3 pr-4 font-mono text-[#6b7280]">—</td>
-                    <td className="py-3 pr-4 text-[#374151]">1</td>
+                    <td className="py-3 pr-4 font-mono text-[#6b7280]">{productSku ?? "—"}</td>
+                    <td className="py-3 pr-4 text-[#374151]">{inquiry.quantity ?? 1}</td>
                     <td className="py-3 pr-4 text-[#374151]">pcs</td>
                     <td className="py-3 text-right font-semibold text-[#111827]">
                       {formatPeso(hasDiscount ? priceBeforeDiscount! : basePrice)}

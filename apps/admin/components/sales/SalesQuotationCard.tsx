@@ -22,13 +22,15 @@ export function SalesQuotationCard({ inquiry }: Props) {
   const [showModal, setShowModal] = useState(false)
 
   const catalogPrice = inquiry.total
+  const qty = inquiry.quantity ?? 1
+  const unitPrice = qty > 0 ? catalogPrice / qty : catalogPrice
   const originalPrice = inquiry.productOriginalPrice
   const isSale = inquiry.productBadge === "SALE" && originalPrice != null && originalPrice > catalogPrice
 
-  // Default quoted price: last sent or catalog price
+  // Default quoted price: last sent or catalog price — rounded to 2dp to avoid float noise
   const defaultPrice = inquiry.quotedPrice != null
-    ? String(inquiry.quotedPrice)
-    : String(catalogPrice)
+    ? String(Math.round(inquiry.quotedPrice * 100) / 100)
+    : String(Math.round(catalogPrice * 100) / 100)
 
   const [quotedPrice, setQuotedPrice] = useState(defaultPrice)
   const [discountPct, setDiscountPct] = useState("0")
@@ -54,7 +56,11 @@ export function SalesQuotationCard({ inquiry }: Props) {
   const revisionCount = inquiry.quotationRevisionCount ?? 0
 
   function handleOpen() {
-    setQuotedPrice(inquiry.quotedPrice != null ? String(inquiry.quotedPrice) : String(catalogPrice))
+    setQuotedPrice(
+      inquiry.quotedPrice != null
+        ? String(Math.round(inquiry.quotedPrice * 100) / 100)
+        : String(Math.round(catalogPrice * 100) / 100)
+    )
     setDiscountPct("0")
     setSalesNote("")
     setShowModal(true)
@@ -84,6 +90,11 @@ export function SalesQuotationCard({ inquiry }: Props) {
             </p>
             {inquiry.inquiryNumber && (
               <p className="mt-1 font-mono text-[12px] text-[#9ca3af]">{inquiry.inquiryNumber}</p>
+            )}
+            {qty > 1 && (
+              <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-3 py-1 text-[12px] font-semibold text-[#1d4ed8]">
+                Qty: {qty} units · Unit price: {formatPeso(unitPrice)}
+              </span>
             )}
             <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
           </div>
@@ -115,7 +126,15 @@ export function SalesQuotationCard({ inquiry }: Props) {
         {/* Pricing summary */}
         <div className="mt-4 grid gap-3 rounded-[14px] bg-[#f8fafc] p-4 sm:grid-cols-3 border border-[#e5e7eb]">
           <div>
-            <p className="text-[11px] uppercase tracking-wide text-[#94a3b8]">Catalog price</p>
+            <p className="text-[11px] uppercase tracking-wide text-[#94a3b8]">Unit price</p>
+            <p className="mt-1 text-[14px] font-semibold text-[#111827]">{formatPeso(unitPrice)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-wide text-[#94a3b8]">Quantity</p>
+            <p className="mt-1 text-[14px] font-semibold text-[#111827]">{qty} {qty === 1 ? "unit" : "units"}</p>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-wide text-[#94a3b8]">Subtotal (base)</p>
             <p className="mt-1 text-[14px] font-semibold text-[#111827]">{formatPeso(catalogPrice)}</p>
           </div>
           {inquiry.quotedPrice != null && (
@@ -207,32 +226,43 @@ export function SalesQuotationCard({ inquiry }: Props) {
               <p className="mb-3 text-[13px] font-semibold text-[#111827]">Quotation pricing</p>
 
               <div className="space-y-3">
-                {/* Reference prices */}
-                <div className="grid gap-2 rounded-[12px] bg-[#f8fafc] p-3 sm:grid-cols-3 text-[12px]">
-                  <div>
-                    <p className="text-[#94a3b8] uppercase tracking-wide">Catalog price</p>
-                    <p className="mt-0.5 font-semibold text-[#111827]">{formatPeso(catalogPrice)}</p>
+                {/* Order summary — unit price × quantity */}
+                <div className="rounded-[12px] border border-[#e5e7eb] bg-[#f8fafc] p-3 text-[12px]">
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#94a3b8]">Order summary</p>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-[#374151]">
+                      <span>Unit price (catalog)</span>
+                      <span className="font-semibold">{formatPeso(unitPrice)}</span>
+                    </div>
+                    <div className="flex justify-between text-[#374151]">
+                      <span>Quantity</span>
+                      <span className="font-semibold">{qty} {qty === 1 ? "unit" : "units"}</span>
+                    </div>
+                    {isSale && originalPrice && (
+                      <div className="flex justify-between text-[#6b7280]">
+                        <span>Original price (before sale)</span>
+                        <span className="line-through">{formatPeso(originalPrice)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between border-t border-[#e5e7eb] pt-1.5 font-semibold text-[#111827]">
+                      <span>Subtotal ({qty > 1 ? `${qty} × ${formatPeso(unitPrice)}` : "catalog"})</span>
+                      <span>{formatPeso(catalogPrice)}</span>
+                    </div>
+                    {inquiry.quotedPrice != null && (
+                      <div className={`flex justify-between pt-1 ${wasDeclined ? "text-[#6b7280]" : "text-[#111827]"}`}>
+                        <span>Previous quoted price</span>
+                        <span className={`font-semibold ${wasDeclined ? "line-through" : ""}`}>
+                          {formatPeso(inquiry.quotedPrice)}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  {isSale && originalPrice && (
-                    <div>
-                      <p className="text-[#94a3b8] uppercase tracking-wide">Original (before sale)</p>
-                      <p className="mt-0.5 font-semibold text-[#6b7280] line-through">{formatPeso(originalPrice)}</p>
-                    </div>
-                  )}
-                  {inquiry.quotedPrice != null && (
-                    <div>
-                      <p className="text-[#94a3b8] uppercase tracking-wide">Previous quote</p>
-                      <p className={`mt-0.5 font-semibold ${wasDeclined ? "text-[#6b7280] line-through" : "text-[#111827]"}`}>
-                        {formatPeso(inquiry.quotedPrice)}
-                      </p>
-                    </div>
-                  )}
                 </div>
 
                 {/* Quoted price input */}
                 <label className="grid gap-2">
                   <span className="text-[12px] font-medium uppercase tracking-wide text-[#6b7280]">
-                    Quoted price (before VAT &amp; discount)
+                    Quoted price — total for {qty} {qty === 1 ? "unit" : "units"} (before VAT &amp; discount)
                   </span>
                   <input
                     type="number"
@@ -243,6 +273,11 @@ export function SalesQuotationCard({ inquiry }: Props) {
                     placeholder="Enter quoted price"
                     className="w-full rounded-[12px] border border-[#d1d5dc] bg-white px-4 py-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#111827]"
                   />
+                  {qty > 1 && Number.isFinite(parsedQuoted) && parsedQuoted > 0 && (
+                    <p className="text-[11px] text-[#6b7280]">
+                      Per unit: {formatPeso(parsedQuoted / qty)}
+                    </p>
+                  )}
                 </label>
 
                 {/* Discount % input */}
@@ -273,8 +308,14 @@ export function SalesQuotationCard({ inquiry }: Props) {
                 {/* Live breakdown */}
                 {isValidPrice && (
                   <div className="space-y-2 rounded-[12px] border border-[#e5e7eb] bg-[#f8fafc] p-4 text-[13px]">
+                    {qty > 1 && (
+                      <div className="flex justify-between text-[#6b7280]">
+                        <span>Per unit</span>
+                        <span>{formatPeso(parsedQuoted / qty)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-[#374151]">
-                      <span>Quoted price</span>
+                      <span>Quoted price{qty > 1 ? ` (${qty} units)` : ""}</span>
                       <span>{formatPeso(parsedQuoted)}</span>
                     </div>
                     {parsedPct > 0 && (

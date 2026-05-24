@@ -623,7 +623,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\karll\\Documents\\SalesInvSystem\\packages\\db\\src\\generated\\prisma",
+      "value": "C:\\Users\\bowie ramirez\\OneDrive\\Desktop\\Infoman\\SalesInvSystem\\packages\\db\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -641,7 +641,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\karll\\Documents\\SalesInvSystem\\packages\\db\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\bowie ramirez\\OneDrive\\Desktop\\Infoman\\SalesInvSystem\\packages\\db\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

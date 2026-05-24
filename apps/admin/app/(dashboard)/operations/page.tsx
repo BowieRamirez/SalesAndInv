@@ -13,6 +13,7 @@ import { DamagedMaterialsTable } from "@/components/inventory/DamagedMaterialsTa
 import { RawMaterialsManager } from "@/components/inventory/RawMaterialsManager"
 import { AddRawMaterialModal } from "@/components/inventory/AddRawMaterialModal"
 import { OperationsDashboard as OperationsDashboardPanel } from "@/components/operations/OperationsDashboard"
+import { getOperationsDashboardData } from "@/lib/dashboard/operations"
 import { AuditLogsTable } from "@/components/inventory/AuditLogsTable"
 import { ReservedMaterialsAccordion } from "@/components/operations/ReservedMaterialsAccordion"
 import { SuppliersManager } from "@/components/procurement/SuppliersManager"
@@ -305,6 +306,11 @@ function DeliveryQueueCard({
           <p className="mt-2 text-[13px] text-[#6a7282]">
             {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
           </p>
+          {(inquiry.quantity ?? 1) > 1 && (
+            <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-3 py-1 text-[12px] font-semibold text-[#1d4ed8]">
+              Qty: {inquiry.quantity} units
+            </span>
+          )}
           {shippingScheduleLabel ? (
             <div className="mt-4 inline-flex rounded-[16px] bg-[#eff6ff] px-4 py-3 text-[13px] font-medium text-[#1d4ed8]">
               Shipment scheduled for {shippingScheduleLabel}
@@ -317,6 +323,10 @@ function DeliveryQueueCard({
             </div>
           ) : null}
           <div className="mt-4 grid gap-3 rounded-[18px] bg-[#f8fafc] p-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Quantity</p>
+              <p className="mt-1 text-[13px] font-semibold text-[#111827]">{inquiry.quantity ?? 1} {(inquiry.quantity ?? 1) === 1 ? "unit" : "units"}</p>
+            </div>
             <div>
               <p className="text-[11px] uppercase tracking-[0.14em] text-[#94a3b8]">Total</p>
               <p className="mt-1 text-[13px] font-semibold text-[#111827]">{formatPeso(inquiry.total)}</p>
@@ -799,6 +809,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     damagedMaterials,
     reservedMaterials,
     reservedDetails,
+    operationsDashboardData,
   ] = await Promise.all([
     getOperationsWorkspaceData(),
     getInquiryWorkflowRows(["GETTING_READY_FOR_BUILDING", "READY_FOR_SHIPPING"]),
@@ -810,6 +821,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
     getDamagedMaterialRows(),
     getReservedMaterialRows(),
     getReservedMaterialDetails(),
+    activeTab === "dashboard" ? getOperationsDashboardData() : Promise.resolve(null),
   ])
 
   // Suppliers data (only fetch when on suppliers tab)
@@ -895,7 +907,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
         ) : null}
 
         {activeTab === "dashboard" && (
-          <OperationsDashboardPanel />
+          <OperationsDashboardPanel data={operationsDashboardData!} />
         )}
 
         {activeTab === "finished-products" && (
@@ -1158,6 +1170,7 @@ export default async function OperationsDashboard({ searchParams }: OperationsPa
                         customerEmail: inquiry.customerEmail,
                         customerPhone: inquiry.customerPhone,
                         message: inquiry.message,
+                        quantity: inquiry.quantity,
                         workflowStatus: inquiry.workflowStatus,
                         workflowNote: inquiry.workflowNote,
                         createdAt: inquiry.createdAt,

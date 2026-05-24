@@ -50,6 +50,7 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
   const [showRejectConfirm, setShowRejectConfirm] = useState(false)
   const [rejectReason, setRejectReason] = useState("")
   const [materials, setMaterials] = useState<MaterialRow[]>([])
+  const [productSku, setProductSku] = useState<string | null>(null)
   const [loadingMaterials, setLoadingMaterials] = useState(false)
   const [proofs, setProofs] = useState<ProofRow[]>([])
   const [loadingProofs, setLoadingProofs] = useState(false)
@@ -82,7 +83,10 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
     setLoadingMaterials(true)
     fetch(`/api/admin/sales/order-materials?inquiryId=${encodeURIComponent(inquiry.id)}`)
       .then(r => r.json())
-      .then((data: { materials?: MaterialRow[] }) => { setMaterials(data.materials ?? []) })
+      .then((data: { materials?: MaterialRow[]; productSku?: string | null }) => {
+        setMaterials(data.materials ?? [])
+        setProductSku(data.productSku ?? null)
+      })
       .catch(() => {})
       .finally(() => setLoadingMaterials(false))
   }, [isOpen, inquiry.id, materials.length])
@@ -116,6 +120,11 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
             <p className="mt-2 text-[13px] text-[#6b7280]">
               {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
             </p>
+            {(inquiry.quantity ?? 1) > 1 && (
+              <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-3 py-1 text-[12px] font-semibold text-[#1d4ed8]">
+                Qty: {inquiry.quantity} units
+              </span>
+            )}
             <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
             {inquiry.workflowNote && (
               <p className="mt-3 rounded-xl bg-white px-4 py-3 text-[13px] text-[#4b5563]">
@@ -257,8 +266,8 @@ export function PaymentApprovalCard({ inquiry }: { inquiry: InquiryWorkflowRow }
                   <tbody>
                     <tr className="border-b border-[#e5e7eb] bg-[#f8fafc]">
                       <td className="py-2.5 pr-4"><p className="font-semibold text-[#111827]">{inquiry.productName}</p><p className="text-[11px] text-[#94a3b8]">Finished product</p></td>
-                      <td className="py-2.5 pr-4 font-mono text-[#6b7280]">—</td>
-                      <td className="py-2.5 pr-4 text-[#374151]">1</td>
+                      <td className="py-2.5 pr-4 font-mono text-[#6b7280]">{productSku ?? (loadingMaterials ? "…" : "—")}</td>
+                      <td className="py-2.5 pr-4 text-[#374151]">{inquiry.quantity ?? 1}</td>
                       <td className="py-2.5 text-[#374151]">pcs</td>
                     </tr>
                     {loadingMaterials && (

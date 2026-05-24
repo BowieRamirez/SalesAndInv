@@ -20,6 +20,7 @@ type InventoryApprovalCardProps = {
     customerEmail: string
     customerPhone: string
     message: string
+    quantity?: number
     workflowStatus: string
     workflowNote: string | null
     createdAt: Date
@@ -61,6 +62,11 @@ export function InventoryApprovalCard({ inquiry, materials }: InventoryApprovalC
           <p className="mt-2 text-[13px] text-[#6b7280]">
             {inquiry.customerName} · {inquiry.customerEmail} · {inquiry.customerPhone}
           </p>
+          {(inquiry.quantity ?? 1) > 1 && (
+            <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-3 py-1 text-[12px] font-semibold text-[#1d4ed8]">
+              Qty: {inquiry.quantity} units
+            </span>
+          )}
           <p className="mt-3 max-w-[720px] text-[14px] leading-[22px] text-[#1f2937]">{inquiry.message}</p>
           {inquiry.workflowNote && (
             <p className="mt-3 rounded-xl bg-white px-4 py-3 text-[13px] text-[#4b5563]">

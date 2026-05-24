@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Accounting Admin" id="ad-accounting">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="800" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Activity Diagram — ACCOUNTING ADMIN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#7e22ce;" vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="700" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Payment verification and accounting record management" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="50" y="55" width="700" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_start" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="375" y="95" width="30" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a1" value="Log In to Admin Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="290" y="150" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" value="View Orders Pending&#xa;Payment Confirmation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="290" y="220" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_d1" value="Pending&#xa;Payment?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=11;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="320" y="300" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_view_history" value="View Payment History&#xa;&amp; Records" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="555" y="305" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a3" value="Open Payment Submission" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="290" y="410" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Fork: review proof + amount -->
+        <mxCell id="a_fork" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="160" y="490" width="460" height="6" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4a" value="Verify Proof of Payment&#xa;(Receipt / Screenshot)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="100" y="515" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4b" value="Verify Amount &amp;&#xa;Reference Number" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="480" y="515" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_join" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="160" y="600" width="460" height="6" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_d2" value="Payment&#xa;Valid?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=11;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="320" y="625" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a5" value="Reject Payment&#xa;&amp; Notify Customer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#991b1b;fontColor=#991b1b;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="80" y="640" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a6" value="Mark Order as Fully Paid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="290" y="725" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a7" value="Forward Order to Inventory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e5e7eb;strokeColor=#374151;fontColor=#374151;fontSize=12;arcSize=40;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="290" y="795" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_merge" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="380" y="880" width="20" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a8" value="View Accounting Audit Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="290" y="935" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_end" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="375" y="1015" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_end_in" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="382" y="1022" width="16" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="ae0" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a_start" target="a1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae1" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a1" target="a2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae2" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a2" target="a_d1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae3" value="No" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="a_d1" target="a_view_history"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae4" value="Yes" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="a_d1" target="a3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae5" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a3" target="a_fork"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae6" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a_fork" target="a4a">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="200" y="505"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ae7" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a_fork" target="a4b">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="580" y="505"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ae8" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a4a" target="a_join">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="200" y="603"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ae9" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a4b" target="a_join">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="580" y="603"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ae10" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a_join" target="a_d2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae11" value="No" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="a_d2" target="a5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae12" value="Yes" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="a_d2" target="a6"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae13" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a6" target="a7"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae14" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a5" target="a_merge">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="180" y="890"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ae15" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a7" target="a_merge"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae16" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a_view_history" target="a_merge">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="650" y="890"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="ae17" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a_merge" target="a8"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ae18" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="a8" target="a_end"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

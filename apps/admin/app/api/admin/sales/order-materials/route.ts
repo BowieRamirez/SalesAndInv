@@ -10,24 +10,37 @@ export async function GET(request: Request) {
   const inquiryId = searchParams.get("inquiryId")
   if (!inquiryId) return NextResponse.json({ message: "inquiryId required" }, { status: 400 })
 
-  const materials = await prisma.$queryRaw<Array<{
-    itemName: string
-    sku: string
-    quantityDisplay: string | null
-    unitOfMeasure: string
-  }>>(Prisma.sql`
-    SELECT
-      ms."itemName",
-      ms.sku,
-      pm."quantityDisplay",
-      ms."unitOfMeasure"
-    FROM public.customer_inquiries ci
-    INNER JOIN public.products p ON p.id = ci."productId"
-    INNER JOIN public.product_materials pm ON pm."productId" = p.id
-    INNER JOIN public.material_stocks ms ON ms.id = pm."materialStockId"
-    WHERE ci.id = ${inquiryId}
-    ORDER BY ms."itemName" ASC
-  `)
+  const [productSkuRows, materials] = await Promise.all([
+    prisma.$queryRaw<Array<{ sku: string }>>(Prisma.sql`
+      SELECT ps.sku
+      FROM public.customer_inquiries ci
+      INNER JOIN public.products p ON p.id = ci."productId"
+      INNER JOIN public.product_stocks ps ON ps.id = p."productStockId"
+      WHERE ci.id = ${inquiryId}
+      LIMIT 1
+    `),
+    prisma.$queryRaw<Array<{
+      itemName: string
+      sku: string
+      quantityDisplay: string | null
+      unitOfMeasure: string
+    }>>(Prisma.sql`
+      SELECT
+        ms."itemName",
+        ms.sku,
+        pm."quantityDisplay",
+        ms."unitOfMeasure"
+      FROM public.customer_inquiries ci
+      INNER JOIN public.products p ON p.id = ci."productId"
+      INNER JOIN public.product_materials pm ON pm."productId" = p.id
+      INNER JOIN public.material_stocks ms ON ms.id = pm."materialStockId"
+      WHERE ci.id = ${inquiryId}
+      ORDER BY ms."itemName" ASC
+    `),
+  ])
 
-  return NextResponse.json({ materials })
+  return NextResponse.json({
+    productSku: productSkuRows[0]?.sku ?? null,
+    materials,
+  })
 }

@@ -62,15 +62,20 @@ export function ProductCard({ product }: ProductCardProps) {
         </h3>
         
         <div className="flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-[8px]">
-            <span className="font-[family-name:var(--font-inter)] font-normal text-[#fb2c36] text-[14px] leading-[21px]">
-              {formatPeso(product.price)}
+          <div className="flex flex-col gap-[2px]">
+            <span className="font-[family-name:var(--font-inter)] font-normal text-[#99a1af] text-[10px] uppercase tracking-[0.4px] leading-[15px]">
+              Starts at
             </span>
-            {product.originalPrice && (
-              <span className="font-[family-name:var(--font-inter)] font-normal text-[#d1d5dc] text-[12px] leading-[18px] line-through decoration-solid">
-                {formatPeso(product.originalPrice)}
+            <div className="flex items-center gap-[8px]">
+              <span className="font-[family-name:var(--font-inter)] font-normal text-[#fb2c36] text-[14px] leading-[21px]">
+                {formatPeso(product.price)}
               </span>
-            )}
+              {product.originalPrice && (
+                <span className="font-[family-name:var(--font-inter)] font-normal text-[#d1d5dc] text-[12px] leading-[18px] line-through decoration-solid">
+                  {formatPeso(product.originalPrice)}
+                </span>
+              )}
+            </div>
           </div>
           <span className="font-[family-name:var(--font-inter)] font-normal text-[#99a1af] text-[11px] leading-[16.5px]">
             {stockText}

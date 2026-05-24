@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Use Case Diagram" id="furnitrack-uc">
+    <mxGraphModel dx="1800" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="FurniTrack — Use Case Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="400" y="15" width="1200" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="UML use case view of the Sales &amp; Inventory System and its actors" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="400" y="50" width="1200" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- SYSTEM BOUNDARY                                           -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="system_box" value="FurniTrack — Sales &amp; Inventory System" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1f2937;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1f2937;verticalAlign=top;align=center;" vertex="1" parent="1">
+          <mxGeometry x="380" y="90" width="1240" height="1320" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- ACTOR — CUSTOMER (left side)                              -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="actor_customer" value="Customer" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;fontStyle=1;fontColor=#166534;strokeColor=#166534;fillColor=#dcfce7;" vertex="1" parent="1">
+          <mxGeometry x="170" y="500" width="60" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- ACTORS — RIGHT SIDE                                        -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="actor_sales" value="Sales Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;fontStyle=1;fontColor=#1d4ed8;strokeColor=#1d4ed8;fillColor=#dbeafe;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="180" width="60" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_inv" value="Inventory Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;fontStyle=1;fontColor=#92400e;strokeColor=#92400e;fillColor=#fef3c7;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="500" width="60" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_acc" value="Accounting Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;fontStyle=1;fontColor=#7e22ce;strokeColor=#7e22ce;fillColor=#f3e8ff;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="820" width="60" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_exec" value="Executive Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;fontStyle=1;fontColor=#9f1239;strokeColor=#9f1239;fillColor=#ffe4e6;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="1180" width="60" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- USE CASES — CUSTOMER COLUMN                               -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="uc_register" value="Register / Log In" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="140" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_browse" value="Browse Product Catalog" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="230" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_inquiry" value="Submit Product Inquiry" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="320" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_review_quote" value="Review Quotation" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="410" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_pay" value="Submit Payment" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="500" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_track" value="Track Order Status" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="590" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_chat" value="Chat with Sales Team" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="680" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_cancel" value="Cancel Order" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="770" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_return" value="Request Return" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="860" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_review" value="Leave Product Review" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="950" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_account" value="Update Account Details" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="1040" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- USE CASES — SHARED LOGIN (for all admins)                  -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="uc_admin_login" value="Admin Login" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fef2f2;strokeColor=#374151;fontColor=#374151;fontSize=12;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="140" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- USE CASES — SALES ADMIN                                    -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="uc_view_inq" value="View New Inquiries" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="230" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_send_quote" value="Send Quotation" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="310" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_revise_quote" value="Revise Quotation" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="390" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_chat_cust" value="Chat with Customer" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="470" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_approve_return" value="Approve Return Request" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="550" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- USE CASES — INVENTORY ADMIN                                -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="uc_check_stock" value="Check Stock &amp; BOM" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#92400e;fontColor=#92400e;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="650" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_manage_prod" value="Manage Products" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#92400e;fontColor=#92400e;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="730" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_manage_mat" value="Manage Raw Materials" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#92400e;fontColor=#92400e;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="810" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_manage_sup" value="Manage Suppliers" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#92400e;fontColor=#92400e;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="890" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_schedule_del" value="Schedule Delivery" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#92400e;fontColor=#92400e;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="970" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- USE CASES — ACCOUNTING ADMIN                               -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="uc_verify_pay" value="Verify Payment" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fdf4ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="1060" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_pay_history" value="View Payment History" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fdf4ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="1140" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- USE CASES — EXECUTIVE ADMIN                                -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="uc_manage_admin" value="Manage Admin Accounts" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="1230" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_audit" value="View Audit Logs" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#9f1239;fontColor=#9f1239;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="980" y="1310" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- ACTOR — CUSTOMER LINKS                                     -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="l_c1" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_register"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c2" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_browse"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c3" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_inquiry"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c4" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_review_quote"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c5" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_pay"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c6" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_track"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c7" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_chat"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c8" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_cancel"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c9" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_return"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c10" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_review"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_c11" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_customer" target="uc_account"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- SALES ADMIN LINKS                                          -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="l_s0" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_sales" target="uc_admin_login"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_s1" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_sales" target="uc_view_inq"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_s2" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_sales" target="uc_send_quote"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_s3" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_sales" target="uc_revise_quote"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_s4" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_sales" target="uc_chat_cust"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_s5" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_sales" target="uc_approve_return"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- INVENTORY ADMIN LINKS                                      -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="l_i0" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_inv" target="uc_admin_login"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_i1" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_inv" target="uc_check_stock"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_i2" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_inv" target="uc_manage_prod"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_i3" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_inv" target="uc_manage_mat"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_i4" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_inv" target="uc_manage_sup"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_i5" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_inv" target="uc_schedule_del"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- ACCOUNTING ADMIN LINKS                                     -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="l_a0" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_acc" target="uc_admin_login"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_a1" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_acc" target="uc_verify_pay"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_a2" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_acc" target="uc_pay_history"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- EXECUTIVE ADMIN LINKS                                      -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="l_e0" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_exec" target="uc_admin_login"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_e1" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_exec" target="uc_manage_admin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="l_e2" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1" source="actor_exec" target="uc_audit"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- Executive can also do everything other admins do (generalization shown by access to manage products and verify payments via override) -->
+        <mxCell id="l_e3" style="endArrow=none;html=1;rounded=0;strokeColor=#9f1239;dashed=1;" edge="1" parent="1" source="actor_exec" target="uc_manage_prod"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- INCLUDE / EXTEND RELATIONSHIPS                             -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- Submit Inquiry «include» Browse -->
+        <mxCell id="rel_inc1" value="«include»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_inquiry" target="uc_browse">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Submit Payment «include» Review Quotation -->
+        <mxCell id="rel_inc2" value="«include»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_pay" target="uc_review_quote">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Cancel Order «extend» Track Order -->
+        <mxCell id="rel_ext1" value="«extend»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_cancel" target="uc_track">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Request Return «extend» Track Order -->
+        <mxCell id="rel_ext2" value="«extend»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_return" target="uc_track">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Leave Review «extend» Track Order -->
+        <mxCell id="rel_ext3" value="«extend»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_review" target="uc_track">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Send Quotation «include» View New Inquiries -->
+        <mxCell id="rel_inc3" value="«include»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_send_quote" target="uc_view_inq">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Send Quotation «include» Check Stock -->
+        <mxCell id="rel_inc4" value="«include»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_send_quote" target="uc_check_stock">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Revise Quotation «extend» Send Quotation -->
+        <mxCell id="rel_ext4" value="«extend»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_revise_quote" target="uc_send_quote">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Schedule Delivery «include» Verify Payment -->
+        <mxCell id="rel_inc5" value="«include»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1" source="uc_schedule_del" target="uc_verify_pay">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <!-- LEGEND                                                     -->
+        <!-- ═════════════════════════════════════════════════════════ -->
+        <mxCell id="legend_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9ca3af;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1130" width="280" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend_title" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1140" width="200" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_actor" value="Actor" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;fontColor=#374151;strokeColor=#374151;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="110" y="1175" width="40" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_actor_lbl" value="External user&#xa;or system" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="170" y="1175" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_uc" value="Use Case" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=11;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1245" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_uc_lbl" value="System functionality" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="210" y="1245" width="140" height="38" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_assoc_line" style="endArrow=none;html=1;rounded=0;strokeColor=#374151;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="1305" as="sourcePoint"/>
+            <mxPoint x="200" y="1305" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_assoc_lbl" value="Association" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="210" y="1295" width="140" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_inc_line" value="«include» / «extend»" style="endArrow=open;dashed=1;html=1;rounded=0;fontSize=10;fontStyle=2;fontColor=#6b7280;strokeColor=#6b7280;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="1340" as="sourcePoint"/>
+            <mxPoint x="200" y="1340" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_inc_lbl" value="Dependency&#xa;between use cases" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="210" y="1330" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_ext_line" style="endArrow=none;html=1;rounded=0;strokeColor=#9f1239;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="1385" as="sourcePoint"/>
+            <mxPoint x="200" y="1385" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_ext_lbl" value="Override access&#xa;(Executive only)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="210" y="1375" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

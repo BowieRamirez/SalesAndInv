@@ -13,11 +13,15 @@ const AUTH_ROLE_CASE_SQL = Prisma.sql`
     WHEN auth.role = 'SALES' THEN 'SALES'
     WHEN auth.role IN ('INVENTORY', 'OPERATIONS_DESIGN') THEN 'OPERATIONS_DESIGN'
     WHEN auth.role = 'ACCOUNTING' THEN 'ACCOUNTING'
+    WHEN auth.role = 'CUSTOM' THEN 'CUSTOM'
     ELSE 'CLIENT'
   END
 `
 
-async function getManagedAccounts() {
+async function getAllAccounts() {
+  // Fetch every account in neon_auth — no role filter, same as the users page.
+  // This ensures deleted accounts, client accounts, and accounts whose auth role
+  // was cleared after deletion all appear in the archive.
   return prisma.$queryRaw<any[]>(Prisma.sql`
     SELECT
       COALESCE(app.id, auth.id::text) AS id,
@@ -37,7 +41,7 @@ async function getManagedAccounts() {
       ORDER BY CASE WHEN app."authUserId"::text = auth.id::text THEN 0 ELSE 1 END
       LIMIT 1
     ) app ON TRUE
-    WHERE ${AUTH_ROLE_CASE_SQL} <> 'CLIENT'
+    ORDER BY LOWER(auth.email) ASC
   `)
 }
 
@@ -60,13 +64,13 @@ export default async function ArchivesDashboard() {
   }
 
   const [activeAccounts, archivedAccounts] = await Promise.all([
-    getManagedAccounts(),
+    getAllAccounts(),
     getArchivedAccounts(),
   ])
 
   const accountMap = new Map<string, ManagedAccount>()
 
-  // Add active ones
+  // Add all accounts from neon_auth (active, deleted, clients — everyone)
   for (const a of activeAccounts) {
     accountMap.set(a.authUserId, {
       id: a.id,
@@ -81,16 +85,26 @@ export default async function ArchivesDashboard() {
     })
   }
 
-  // Add archived ones if they don't exist
+  // Merge adminAccountArchive records:
+  // - If the account is already in the map, mark it DELETED and update the timestamp
+  // - If it's not in the map (auth record was fully removed), add it
   for (const a of archivedAccounts) {
-    if (!accountMap.has(a.originalUserId)) {
+    const existing = accountMap.get(a.originalUserId)
+    if (existing) {
+      // Override status to DELETED — the archive record is the source of truth for deletion
+      accountMap.set(a.originalUserId, {
+        ...existing,
+        status: "DELETED",
+        updatedAt: new Date(a.archivedAt).toISOString(),
+      })
+    } else {
       accountMap.set(a.originalUserId, {
         id: a.id,
         authUserId: a.originalUserId,
         email: a.email,
         name: a.name,
         role: a.role as AppRole,
-        status: "DELETED", // Archived/deleted
+        status: "DELETED",
         lastLoginAt: null,
         createdAt: null,
         updatedAt: new Date(a.archivedAt).toISOString(),

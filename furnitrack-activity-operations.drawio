@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Operations Admin" id="ad-operations">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Activity Diagram — OPERATIONS ADMIN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#92400e;" vertex="1" parent="1">
+          <mxGeometry x="100" y="20" width="900" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Stock checks, product/material management, build, and delivery" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="100" y="55" width="900" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- START -->
+        <mxCell id="o_start" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="535" y="95" width="30" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o1" value="Log In to Admin Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="450" y="150" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o_d1" value="Task&#xa;Type?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=11;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="480" y="225" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════════════════════════════════════════ -->
+        <!-- BRANCH A — Stock check (LEFT)                         -->
+        <!-- ════════════════════════════════════════════════════ -->
+        <mxCell id="o_a1" value="View Orders Pending&#xa;Inventory Check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="370" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_a2" value="Check Material Availability&#xa;(BOM Lookup)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="445" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_a_d" value="Materials&#xa;Sufficient?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=11;fontStyle=1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="525" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_a3" value="Approve Inventory Check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="630" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_a4" value="Reject &amp; Notify Sales" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#991b1b;fontColor=#991b1b;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="700" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════════════════════════════════════════ -->
+        <!-- BRANCH B — Build &amp; deliver (CENTER)                 -->
+        <!-- ════════════════════════════════════════════════════ -->
+        <mxCell id="o_b1" value="Open Paid Orders Queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="450" y="370" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_b2" value="Build / Prepare Order&#xa;(GETTING_READY)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="450" y="445" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o_fork" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="320" y="540" width="460" height="10" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_b3a" value="Schedule &amp; Dispatch&#xa;Delivery (SHIPPING)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="575" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_b3b" value="Decrement Stock Levels" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="560" y="575" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_join" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="320" y="665" width="460" height="10" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o_b4" value="Mark Order as Delivered" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="450" y="700" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════════════════════════════════════════ -->
+        <!-- BRANCH C — Catalog &amp; materials management (RIGHT)   -->
+        <!-- ════════════════════════════════════════════════════ -->
+        <mxCell id="o_c1" value="Manage Products&#xa;(Create / Edit / Archive)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="370" width="200" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_c2" value="Manage Raw Materials &amp; BOM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="445" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_c3" value="Manage Warehouse Locations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="515" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_c4" value="Manage Suppliers Directory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="585" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_c5" value="Request Product Edit&#xa;(Needs Executive Approval)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="655" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- MERGE -->
+        <mxCell id="o_merge" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="540" y="855" width="20" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- END -->
+        <mxCell id="o_end" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="535" y="930" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_end_in" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="542" y="937" width="16" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- EDGES -->
+        <mxCell id="oe0" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_start" target="o1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe1" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o1" target="o_d1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="oe2" value="Stock Check" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_d1" target="o_a1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="160" y="265"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oe3" value="Build / Deliver" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="o_d1" target="o_b1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe4" value="Catalog / Materials" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_d1" target="o_c1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="950" y="265"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Branch A flow -->
+        <mxCell id="oe5" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_a1" target="o_a2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe6" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_a2" target="o_a_d"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe7" value="Yes" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="o_a_d" target="o_a3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe8" value="No" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_a_d" target="o_a4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="30" y="565"/><mxPoint x="30" y="725"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oe9" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_a3" target="o_merge">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="160" y="800"/><mxPoint x="540" y="865"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oe10" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_a4" target="o_merge">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="400" y="725"/><mxPoint x="400" y="865"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Branch B flow -->
+        <mxCell id="oe11" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_b1" target="o_b2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe12" style="endArrow=none;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_b2" target="o_fork"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe13" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_fork" target="o_b3a"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe14" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_fork" target="o_b3b"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe15" style="endArrow=none;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_b3a" target="o_join"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe16" style="endArrow=none;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_b3b" target="o_join"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe17" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_join" target="o_b4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe18" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_b4" target="o_merge">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="550" y="800"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Branch C flow -->
+        <mxCell id="oe19" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_c1" target="o_c2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe20" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_c2" target="o_c3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe21" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_c3" target="o_c4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe22" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_c4" target="o_c5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="oe23" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="o_c5" target="o_merge">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="950" y="800"/><mxPoint x="950" y="865"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Merge → End -->
+        <mxCell id="oe24" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1" source="o_merge" target="o_end"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

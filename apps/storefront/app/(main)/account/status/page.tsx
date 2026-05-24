@@ -23,6 +23,7 @@ type InquiryRow = {
   productSlug: string
   productId: string
   productPrice: string | number
+  quantity: number
   quotedPrice: string | number | null
   quotationDiscount: string | number | null
   quotedPriceBeforeDiscount: string | number | null
@@ -113,6 +114,7 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
       p.slug AS "productSlug",
       p.id AS "productId",
       p.price::text AS "productPrice",
+      COALESCE(ci.quantity, 1)::int AS quantity,
       ci."quotedPrice"::text AS "quotedPrice",
       COALESCE(ci."quotationDiscount", 0)::text AS "quotationDiscount",
       ci."quotedPriceBeforeDiscount"::text AS "quotedPriceBeforeDiscount",
@@ -300,10 +302,14 @@ export default async function CustomerStatusPage({ searchParams }: CustomerStatu
                           <QuotationResponseCard
                             inquiryId={inquiry.id}
                             productName={inquiry.productName}
+                            inquiryNumber={inquiry.inquiryNumber}
+                            quantity={inquiry.quantity ?? 1}
                             quotedPrice={inquiry.quotedPrice ?? Number(inquiry.productPrice)}
                             quotedPriceBeforeDiscount={inquiry.quotedPriceBeforeDiscount}
                             quotationDiscount={inquiry.quotationDiscount}
                             quotationRevisionCount={inquiry.quotationRevisionCount}
+                            customerMessage={inquiry.customerMessage}
+                            workflowNote={inquiry.workflowNote}
                           />
                         )}
 

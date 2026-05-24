@@ -660,7 +660,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                         <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{selectedProduct.category}</dd>
                       </div>
                       <div>
-                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Selling price</dt>
+                        <dt className="text-[12px] font-semibold uppercase tracking-wide text-[#94a3b8]">Base price</dt>
                         <dd className="mt-1 text-[15px] font-semibold text-[#0f172a]">{formatPeso(selectedProduct.price)}</dd>
                       </div>
                       <div>
@@ -876,7 +876,7 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                     </label>
 
                     <label className="grid gap-2">
-                      <span className="text-[13px] font-semibold text-[#475569]">Selling price (₱) <span className="text-red-500">*</span></span>
+                      <span className="text-[13px] font-semibold text-[#475569]">Base price (₱) <span className="text-red-500">*</span></span>
                       <input
                         name="price"
                         type="number"
