@@ -8,6 +8,8 @@ type ImageDropFieldProps = {
   altPreview?: string
   /** Maximum allowed file size in bytes (default 5 MB) */
   maxSizeBytes?: number
+  /** Called when the image value changes */
+  onChange?: (value: string) => void
 }
 
 const DEFAULT_MAX_BYTES = 5 * 1024 * 1024
@@ -17,6 +19,7 @@ export function ImageDropField({
   defaultValue = "",
   altPreview = "Product image preview",
   maxSizeBytes = DEFAULT_MAX_BYTES,
+  onChange,
 }: ImageDropFieldProps) {
   const [value, setValue] = useState(defaultValue)
   const [isDragging, setIsDragging] = useState(false)
@@ -41,7 +44,9 @@ export function ImageDropField({
 
     const reader = new FileReader()
     reader.onload = () => {
-      setValue(typeof reader.result === "string" ? reader.result : "")
+      const result = typeof reader.result === "string" ? reader.result : ""
+      setValue(result)
+      onChange?.(result)
     }
     reader.onerror = () => setError("Could not read that file. Try again.")
     reader.readAsDataURL(file)
@@ -50,6 +55,7 @@ export function ImageDropField({
   function clearImage() {
     setValue("")
     setError(null)
+    onChange?.("")
 
     if (inputRef.current) {
       inputRef.current.value = ""
@@ -62,11 +68,19 @@ export function ImageDropField({
       <div
         role="button"
         tabIndex={0}
-        onClick={() => inputRef.current?.click()}
+        onClick={() => {
+          if (inputRef.current) {
+            inputRef.current.value = ""
+            inputRef.current.click()
+          }
+        }}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault()
-            inputRef.current?.click()
+            if (inputRef.current) {
+              inputRef.current.value = ""
+              inputRef.current.click()
+            }
           }
         }}
         onDragOver={(event) => {

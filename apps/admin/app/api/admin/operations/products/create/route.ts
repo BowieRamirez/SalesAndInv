@@ -18,7 +18,7 @@ import {
 
 function buildRedirect(request: Request, message: string, tone: "success" | "error") {
   const url = new URL("/operations", request.url)
-  url.searchParams.set("tab", "new-products")
+  url.searchParams.set("tab", "finished-products")
   url.searchParams.set("message", message)
   url.searchParams.set("tone", tone)
   return NextResponse.redirect(url, { status: 303 })

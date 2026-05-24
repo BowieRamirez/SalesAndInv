@@ -1,6 +1,8 @@
 "use client"
 
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import Link from "next/link"
+import { Search } from "lucide-react"
 import { ImageDropField } from "./ImageDropField"
 import { MaterialSelector } from "./MaterialSelector"
 import { ColorVariantsEditor } from "./ColorVariantsEditor"
@@ -137,16 +139,13 @@ function formatDraftTime(value: string) {
 
 export function FinishedProductsManager({ products, rawMaterials, warehouses, categories, isArchivedView, userRole }: FinishedProductsManagerProps) {
   const [search, setSearch] = useState("")
+  const [activeCategory, setActiveCategory] = useState<string>("All Products")
   const [page, setPage] = useState(1)
   const [openProductId, setOpenProductId] = useState<string | null>(null)
   const [editProductId, setEditProductId] = useState<string | null>(null)
-  const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditConfirm, setShowEditConfirm] = useState(false)
   const [drafts, setDrafts] = useState<FinishedProductDraft[]>([])
-  const [activeDraftId, setActiveDraftId] = useState<string | null>(null)
-  const [createFormVersion, setCreateFormVersion] = useState(0)
   const [draftMessage, setDraftMessage] = useState<string | null>(null)
-  const createFormRef = useRef<HTMLFormElement>(null)
   const deferredSearch = useDeferredValue(search)
 
   // ADMIN_MANAGEMENT can edit directly; OPERATIONS_DESIGN submits for approval
@@ -189,19 +188,20 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
     }
   }, [])
 
-  const activeDraft = useMemo(
-    () => drafts.find((draft) => draft.id === activeDraftId) ?? null,
-    [activeDraftId, drafts],
-  )
-
   const filteredProducts = useMemo(() => {
+    let filtered = products
+
+    if (activeCategory !== "All Products") {
+      filtered = filtered.filter((product) => product.category === activeCategory)
+    }
+
     const query = deferredSearch.trim().toLowerCase()
 
     if (!query) {
-      return products
+      return filtered
     }
 
-    return products.filter((product) => {
+    return filtered.filter((product) => {
       const haystack = [
         product.name,
         product.sku,
@@ -215,40 +215,17 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
 
       return haystack.includes(query)
     })
-  }, [deferredSearch, products])
+  }, [deferredSearch, products, activeCategory])
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
   const pageStart = (currentPage - 1) * PAGE_SIZE
   const pagedProducts = filteredProducts.slice(pageStart, pageStart + PAGE_SIZE)
-  const draftSelectedIds = activeDraft?.materials.map((material) => material.id) ?? []
-  const draftQuantities = Object.fromEntries(
-    activeDraft?.materials.map((material) => [material.id, material.quantityDisplay]) ?? [],
-  )
-  const draftNotes = Object.fromEntries(
-    activeDraft?.materials.map((material) => [material.id, material.notes]) ?? [],
-  )
-
-  function openBlankCreateModal() {
-    setActiveDraftId(null)
-    setCreateFormVersion((version) => version + 1)
-    setShowCreateModal(true)
-  }
-
-  function openDraft(draftId: string) {
-    setActiveDraftId(draftId)
-    setCreateFormVersion((version) => version + 1)
-    setShowCreateModal(true)
-  }
 
   async function removeDraft(draftId: string) {
     const previousDrafts = drafts
 
     setDrafts((current) => current.filter((draft) => draft.id !== draftId))
-    if (activeDraftId === draftId) {
-      setActiveDraftId(null)
-      setCreateFormVersion((version) => version + 1)
-    }
 
     try {
       const response = await fetch(`/api/admin/operations/products/drafts/${draftId}`, {
@@ -266,125 +243,94 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
     }
   }
 
-  function collectDraftFromForm(form: HTMLFormElement): FinishedProductDraft {
-    const formData = new FormData(form)
-    const materialIds = formData.getAll("materialIds").map(String)
-    const now = new Date().toISOString()
-
-    return {
-      id: activeDraftId ?? crypto.randomUUID(),
-      savedAt: now,
-      name: readTextValue(formData, "name"),
-      category: readTextValue(formData, "category", categories[0] ?? ""),
-      warehouseId: readTextValue(formData, "warehouseId", warehouses[0]?.id ?? ""),
-      price: readTextValue(formData, "price"),
-      imageUrl: readTextValue(formData, "imageUrl"),
-      description: readTextValue(formData, "description"),
-      openingQty: readTextValue(formData, "openingQty", "0"),
-      reorderThreshold: readTextValue(formData, "reorderThreshold", "10"),
-      widthCm: readTextValue(formData, "widthCm", "0"),
-      depthCm: readTextValue(formData, "depthCm", "0"),
-      heightCm: readTextValue(formData, "heightCm", "0"),
-      weightKg: readTextValue(formData, "weightKg", "0"),
-      unitOfMeasure: readTextValue(formData, "unitOfMeasure", "pcs"),
-      badge: readTextValue(formData, "badge"),
-      isPublished: formData.get("isPublished") === "on",
-      materials: materialIds.map((id) => ({
-        id,
-        quantityDisplay: readTextValue(formData, `quantityDisplay:${id}`),
-        notes: readTextValue(formData, `notes:${id}`),
-      })),
-    }
-  }
-
-  async function saveCreateDraft() {
-    const form = createFormRef.current
-
-    if (!form) {
-      return
-    }
-
-    const nextDraft = collectDraftFromForm(form)
-
-    // Close immediately to feel fast
-    setShowCreateModal(false)
-
-    // Optimistically show draft
-    setDrafts((current) => {
-      const withoutCurrent = current.filter((draft) => draft.id !== nextDraft.id)
-      return [nextDraft, ...withoutCurrent].slice(0, 8)
-    })
-    setActiveDraftId(nextDraft.id)
-    setDraftMessage("Saving draft...")
-
-    try {
-      const response = await fetch("/api/admin/operations/products/drafts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ draft: nextDraft }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Could not save draft.")
-      }
-
-      const data = (await response.json()) as { draft?: FinishedProductDraft }
-      const savedDraft = data.draft ?? nextDraft
-
-      setDrafts((current) => {
-        const withoutCurrent = current.filter((draft) => draft.id !== nextDraft.id && draft.id !== savedDraft.id)
-        return [savedDraft, ...withoutCurrent].slice(0, 8)
-      })
-      setActiveDraftId(savedDraft.id)
-      setDraftMessage("Created new draft.")
-    } catch {
-      setDraftMessage("Draft could not be saved to your account.")
-    }
-  }
-
   return (
     <div className="space-y-6">
-      <section className="rounded-[32px] border border-[#f1f5f9] bg-white p-6 shadow-sm sm:p-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-[28px] font-bold tracking-tight text-[#0f172a]">
-              {isArchivedView ? "Archived Products" : "Product List"}
-            </h2>
-            <p className="text-[14px] text-[#64748b]">
-              {isArchivedView
-                ? "View products that have been archived and hidden from your active catalog."
-                : "Manage your list of products and publish them to your storefront."}
-            </p>
+      <div className="mb-6 lg:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center justify-between">
+        <div>
+          <h2 className="text-[28px] font-bold tracking-tight text-[#0f172a]">
+            {isArchivedView ? "Archived Products" : "Product List"}
+          </h2>
+          <p className="mt-2 text-[14px] text-[#64748b]">
+            {isArchivedView
+              ? "View products that have been archived and hidden from your active catalog."
+              : "Manage your list of products and publish them to your storefront."}
+          </p>
+        </div>
+        {!isArchivedView && (
+          <Link
+            href="/operations/products/new"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-[#0f172a] px-6 py-3.5 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0f172a]/50 focus:ring-offset-2 active:scale-95 shrink-0"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add New Product
+          </Link>
+        )}
+      </div>
+
+      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex flex-wrap items-center gap-3 px-5 py-4">
+          <div className="relative min-w-[260px] flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value)
+                setPage(1)
+              }}
+              placeholder="Search products, SKU, categories..."
+              className="w-full rounded-full border border-slate-200 bg-white py-2 pl-10 pr-4 text-[13px] text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400"
+            />
           </div>
-          <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center lg:w-auto">
-            <div className="relative w-full sm:w-[320px]">
-              <svg className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.target.value)
-                  setPage(1)
-                }}
-                placeholder="Search products, SKU, categories..."
-                className="w-full rounded-2xl border border-[#cbd5e1] bg-[#f8fafc] py-3 pl-11 pr-4 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-              />
-            </div>
-            {!isArchivedView && (
-              <button
-                onClick={openBlankCreateModal}
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-[#0f172a] px-6 py-3.5 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0f172a]/50 focus:ring-offset-2 active:scale-95 shrink-0"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Add New Product
-              </button>
-            )}
-          </div>
+          <span className="ml-auto inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[13px] text-slate-600">
+            {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
+          </span>
+        </div>
+
+        {/* Category Tabs */}
+        <div className="flex items-center overflow-x-auto border-t border-[#e2e8f0] px-5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:-none] [scrollbar-width:none]">
+          <nav className="-mb-px flex gap-6" aria-label="Tabs">
+            <button
+              onClick={() => {
+                setActiveCategory("All Products")
+                setPage(1)
+              }}
+              className={`whitespace-nowrap border-b-2 py-4 px-1 text-[14px] font-semibold transition-colors flex items-center gap-2 ${
+                activeCategory === "All Products"
+                  ? "border-[#0f172a] text-[#0f172a]"
+                  : "border-transparent text-[#64748b] hover:border-[#cbd5e1] hover:text-[#0f172a]"
+              }`}
+            >
+              All Products
+              <span className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[11px] font-bold ${activeCategory === "All Products" ? "bg-[#0f172a] text-white" : "bg-[#f1f5f9] text-[#64748b]"}`}>
+                {products.length}
+              </span>
+            </button>
+            {categories.map((category) => {
+              const count = products.filter(p => p.category === category).length;
+              if (count === 0 && isArchivedView) return null; // Hide empty categories in archived view
+              return (
+                <button
+                  key={category}
+                  onClick={() => {
+                    setActiveCategory(category)
+                    setPage(1)
+                  }}
+                  className={`whitespace-nowrap border-b-2 py-4 px-1 text-[14px] font-semibold transition-colors flex items-center gap-2 ${
+                    activeCategory === category
+                      ? "border-[#0f172a] text-[#0f172a]"
+                      : "border-transparent text-[#64748b] hover:border-[#cbd5e1] hover:text-[#0f172a]"
+                  }`}
+                >
+                  {category}
+                  <span className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[11px] font-bold ${activeCategory === category ? "bg-[#0f172a] text-white" : "bg-[#f1f5f9] text-[#64748b]"}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
       </section>
 
@@ -608,13 +554,12 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
                     </div>
 
                     <div className="mt-6 flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => openDraft(draft.id)}
-                        className="flex-1 rounded-xl bg-[#0f172a] px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md active:scale-95"
+                      <Link
+                        href={`/operations/products/new?draftId=${draft.id}`}
+                        className="flex-1 grid place-items-center rounded-xl bg-[#0f172a] px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md active:scale-95"
                       >
                         Continue Draft
-                      </button>
+                      </Link>
                       <button
                         type="button"
                         onClick={() => removeDraft(draft.id)}
@@ -633,323 +578,6 @@ export function FinishedProductsManager({ products, rawMaterials, warehouses, ca
           </div>
         </section>
       ) : null}
-
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/40 p-4 backdrop-blur-md sm:p-6 lg:p-8">
-          <div className="flex max-h-full w-full max-w-7xl flex-col overflow-hidden rounded-[32px] border border-[#e5e7eb] bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#f1f5f9] bg-[#f8fafc] px-8 py-6">
-              <div>
-                <h2 className="text-[24px] font-bold text-[#0f172a]">Create new product</h2>
-                {activeDraft ? (
-                  <p className="mt-1.5 flex items-center gap-2 text-[13px] font-medium text-[#64748b]">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                    </span>
-                    Restored draft saved {formatDraftTime(activeDraft.savedAt)}
-                  </p>
-                ) : (
-                  <p className="mt-1 text-[13px] text-[#64748b]">
-                    Add a new product to your catalog and configure its stock settings.
-                  </p>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowCreateModal(false)}
-                className="grid h-11 w-11 place-items-center rounded-full bg-white border border-[#e2e8f0] text-[#64748b] transition-all hover:bg-[#f1f5f9] hover:text-[#0f172a] hover:shadow-sm"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <form
-              key={`${activeDraftId ?? "new"}-${createFormVersion}`}
-              ref={createFormRef}
-              method="post"
-              action="/api/admin/operations/products/create"
-              className="flex min-h-0 flex-1 flex-col bg-[#fbfdff]"
-            >
-              <div className="flex-1 overflow-y-auto p-8">
-                {rawMaterials.length === 0 ? (
-                  <div className="mb-6 rounded-2xl border border-dashed border-[#fca5a5] bg-[#fff7f7] p-6 text-[14px] text-[#b91c1c]">
-                    No raw materials exist in inventory yet, so finished products cannot be created. Add the needed
-                    materials in Inventory first.
-                  </div>
-                ) : null}
-
-                <div className="mx-auto max-w-6xl space-y-8">
-                {activeDraft ? <input type="hidden" name="draftId" value={activeDraft.id} /> : null}
-                <div className="grid gap-8 xl:grid-cols-2">
-                  <div className="flex flex-col gap-6 rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
-                    <div className="flex items-center gap-3 border-b border-[#f1f5f9] pb-5">
-                      <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#f0fdf4] text-[#16a34a]">
-                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                        </svg>
-                      </div>
-                      <h3 className="text-[16px] font-bold text-[#0f172a]">
-                        Catalog details
-                      </h3>
-                    </div>
-                    <div className="grid gap-6 md:grid-cols-2">
-                      <label className="grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Product name <span className="text-red-500">*</span></span>
-                        <input
-                          name="name"
-                          required
-                          defaultValue={activeDraft?.name ?? ""}
-                          placeholder="e.g. Executive desk"
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Storefront category <span className="text-red-500">*</span></span>
-                        <select
-                          name="category"
-                          defaultValue={activeDraft?.category ?? categories[0]}
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        >
-                          {categories.map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <label className="grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Warehouse location <span className="text-red-500">*</span></span>
-                        <select
-                          name="warehouseId"
-                          defaultValue={activeDraft?.warehouseId ?? warehouses[0]?.id ?? ""}
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        >
-                          {warehouses.map((warehouse) => (
-                            <option key={warehouse.id} value={warehouse.id}>
-                              {warehouse.name} ({warehouse.code})
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <label className="grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Selling price (₱) <span className="text-red-500">*</span></span>
-                        <input
-                          name="price"
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          required
-                          defaultValue={activeDraft?.price ?? ""}
-                          placeholder="0.00"
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                      <label className="md:col-span-2 grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Product description <span className="text-red-500">*</span></span>
-                        <textarea
-                          name="description"
-                          rows={4}
-                          required
-                          defaultValue={activeDraft?.description ?? ""}
-                          placeholder="Describe the finished product's features, material, and dimensions to appear in the storefront."
-                          className="w-full resize-none rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                      <label className="md:col-span-2 grid gap-2">
-                        <span className="text-[13px] font-semibold text-[#475569]">Product image</span>
-                        <ImageDropField name="imageUrl" defaultValue={activeDraft?.imageUrl ?? ""} />
-                      </label>
-
-                      <div className="md:col-span-2 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] p-5">
-                        <ColorVariantsEditor
-                          defaultValue={activeDraft?.colorVariants ?? []}
-                          productMainSku={null}
-                        />
-                        <p className="mt-2 text-[11px] text-[#94a3b8]">
-                          The product's main SKU is auto-generated on create. Variant SKUs just need to be unique among themselves and not collide with other products' SKUs.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-6 rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
-                    <div className="flex items-center gap-3 border-b border-[#f1f5f9] pb-5">
-                      <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#eff6ff] text-[#0ea5e9]">
-                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                      </div>
-                      <h3 className="text-[16px] font-bold text-[#0f172a]">
-                        Inventory & Stock settings
-                      </h3>
-                    </div>
-                    <div className="grid gap-6 md:grid-cols-2">
-                      <label className="grid gap-2 outline-none">
-                        <span className="flex items-center gap-2 text-[13px] font-semibold text-[#475569]">
-                          Opening stock
-                          <div className="group relative flex items-center justify-center">
-                            <svg className="h-4 w-4 text-[#94a3b8] cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div className="absolute bottom-full left-1/2 mb-2 hidden w-48 -translate-x-1/2 rounded bg-[#0f172a] px-3 py-2 text-center text-[12px] text-white opacity-0 transition-opacity group-hover:block group-hover:opacity-100 z-10">
-                              Initial amount of stock currently available in warehouse
-                            </div>
-                          </div>
-                        </span>
-                        <input
-                          name="openingQty"
-                          type="number"
-                          min="0"
-                          defaultValue={activeDraft?.openingQty ?? 0}
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2 outline-none">
-                        <span className="flex items-center gap-2 text-[13px] font-semibold text-[#475569]">
-                          Reorder threshold
-                          <div className="group relative flex items-center justify-center">
-                            <svg className="h-4 w-4 text-[#94a3b8] cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div className="absolute bottom-full left-1/2 mb-2 hidden w-56 -translate-x-1/2 rounded bg-[#0f172a] px-3 py-2 text-center text-[12px] text-white opacity-0 transition-opacity group-hover:block group-hover:opacity-100 z-10">
-                              Triggers an alert when stock drops below this value
-                            </div>
-                          </div>
-                        </span>
-                        <input
-                          name="reorderThreshold"
-                          type="number"
-                          min="0"
-                          defaultValue={activeDraft?.reorderThreshold ?? 10}
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                      <div className="md:col-span-2 grid grid-cols-3 gap-4">
-                        <label className="grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Width (cm)</span>
-                          <input
-                            name="widthCm"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            defaultValue={activeDraft?.widthCm ?? 0}
-                            className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          />
-                        </label>
-                        <label className="grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Depth (cm)</span>
-                          <input
-                            name="depthCm"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            defaultValue={activeDraft?.depthCm ?? 0}
-                            className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          />
-                        </label>
-                        <label className="grid gap-2 outline-none">
-                          <span className="text-[13px] font-semibold text-[#475569]">Height (cm)</span>
-                          <input
-                            name="heightCm"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            defaultValue={activeDraft?.heightCm ?? 0}
-                            className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                          />
-                        </label>
-                      </div>
-                      <label className="grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Weight (kg)</span>
-                        <input
-                          name="weightKg"
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          defaultValue={activeDraft?.weightKg ?? 0}
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                      <label className="grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Unit metric</span>
-                        <input
-                          name="unitOfMeasure"
-                          defaultValue={activeDraft?.unitOfMeasure ?? "pcs"}
-                          placeholder="e.g. pcs, box, set"
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                      <label className="md:col-span-2 grid gap-2 outline-none">
-                        <span className="text-[13px] font-semibold text-[#475569]">Product badge (Optional)</span>
-                        <input
-                          name="badge"
-                          defaultValue={activeDraft?.badge ?? ""}
-                          placeholder="e.g. NEW, BEST SELLER, 20% OFF"
-                          className="w-full rounded-xl border border-[#cbd5e1] bg-[#f8fafc] px-4 py-3 text-[14px] text-[#0f172a] outline-none transition-colors focus:border-[#0f172a] focus:bg-white focus:ring-1 focus:ring-[#0f172a]"
-                        />
-                      </label>
-                    </div>
-                    <label className="mt-2 flex cursor-pointer items-start gap-4 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-4 transition-colors hover:border-[#0f172a] hover:bg-white">
-                      <div className="flex h-5 items-center">
-                        <input 
-                          type="checkbox" 
-                          name="isPublished" 
-                          defaultChecked={activeDraft?.isPublished ?? true} 
-                          className="h-4 w-4 cursor-pointer rounded border-gray-300 text-[#0f172a] focus:ring-[#0f172a]" 
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[14px] font-semibold text-[#0f172a]">Publish immediately</span>
-                        <span className="text-[13px] text-[#64748b]">Product will be visible on the storefront right after creation.</span>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="rounded-[24px] border border-[#e2e8f0] bg-white p-7 shadow-sm">
-                  <MaterialSelector
-                    materials={rawMaterials}
-                    defaultSelectedIds={draftSelectedIds}
-                    defaultQuantities={draftQuantities}
-                    defaultNotes={draftNotes}
-                  />
-                </div>
-              </div>
-              </div>
-
-              <div className="flex-shrink-0 border-t border-[#e2e8f0] bg-white px-8 py-5">
-                <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="submit"
-                      disabled={rawMaterials.length === 0}
-                      className="inline-flex cursor-pointer appearance-none items-center justify-center gap-2 rounded-xl bg-[#0f172a] px-6 py-3 text-[14px] font-semibold text-white transition-all hover:bg-[#1e293b] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0f172a]/50 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:bg-[#94a3b8]"
-                    >
-                      Create Product
-                    </button>
-                    <button
-                      type="button"
-                      onClick={saveCreateDraft}
-                      className="inline-flex cursor-pointer appearance-none items-center justify-center gap-2 rounded-xl border border-[#cbd5e1] bg-white px-6 py-3 text-[14px] font-semibold text-[#0f172a] transition-all hover:bg-[#f8fafc] hover:border-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#0f172a]/20 focus:ring-offset-2 active:scale-95"
-                    >
-                      Save as Draft
-                    </button>
-                  </div>
-                  {activeDraft ? (
-                    <button
-                      type="button"
-                      onClick={() => removeDraft(activeDraft.id)}
-                      className="inline-flex cursor-pointer appearance-none items-center justify-center gap-2 rounded-xl border border-transparent px-5 py-3 text-[14px] font-semibold text-red-600 transition-all hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500/20 active:scale-95"
-                    >
-                      Delete Draft
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {selectedProduct ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/40 p-4 backdrop-blur-md sm:p-6 lg:p-8">
