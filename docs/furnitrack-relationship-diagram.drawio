@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Relationship Diagram" id="rel-diagram">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="ttl" value="FurniTrack — Table Relationship Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="1200" height="28" as="geometry"/>
+        </mxCell>
+
+        <!--
+          LAYOUT (table boxes, no columns):
+          Row 1 (top):    warehouses
+          Row 2:          product_stocks   material_stocks
+          Row 3 (center): products         [junction: product_materials]
+          Row 4 (core):   users            customer_inquiries           quotations
+          Row 5:          payment_records  order_chat_messages          return_requests
+          Row 6:          order_chat_attachments
+          Row 7:          suppliers        supplier_addresses   supplier_products
+          Row 8:          purchase_orders  purchase_order_items
+          Row 9 (bottom): approval_history audit_logs  storefront_categories  admin_account_archives  admin_action_archives  draft_products
+        -->
+
+        <!-- ── TABLE BOXES ── -->
+        <!-- style shared: rounded=1;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;strokeWidth=2; -->
+
+        <mxCell id="t_wh"   value="warehouses"              style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#7c2d12;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="780"  y="90"   width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_ps"   value="product_stocks"          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#78350f;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="500"  y="200"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_ms"   value="material_stocks"         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#78350f;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="1060" y="200"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_prod" value="products"                style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#166534;fontColor=#14532d;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="500"  y="330"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_pm"   value="product_materials&#xa;(BOM junction)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="780"  y="330"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_dp"   value="draft_products"          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#6b7280;fontColor=#374151;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="280"  y="330"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_usr"  value="users"                   style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#1e3a8a;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="60"   y="480"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_ci"   value="customer_inquiries"      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#166534;fontColor=#14532d;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="700"  y="480"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_qt"   value="quotations"              style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#581c87;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="1060" y="480"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_pr"   value="payment_records"         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#7e22ce;fontColor=#581c87;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="500"  y="620"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_ocm"  value="order_chat_messages"     style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f9ff;strokeColor=#0369a1;fontColor=#0c4a6e;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="780"  y="620"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_rr"   value="return_requests"         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#881337;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="1060" y="620"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_oca"  value="order_chat_attachments"  style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f9ff;strokeColor=#0369a1;fontColor=#0c4a6e;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="780"  y="750"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_sm"   value="stock_movements"         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#78350f;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="1060" y="330"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_sup"  value="suppliers"               style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#1e293b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="280"  y="880"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_sa"   value="supplier_addresses"      style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#1e293b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="60"   y="1000" width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_sp"   value="supplier_products"       style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="280"  y="1000" width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_po"   value="purchase_orders"         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#1e293b;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="500"  y="880"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_poi"  value="purchase_order_items"    style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="500"  y="1000" width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_ah"   value="approval_history"        style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#6b7280;fontColor=#374151;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="700"  y="880"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_al"   value="audit_logs"              style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#6b7280;fontColor=#374151;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="920"  y="880"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_sc"   value="storefront_categories"   style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#6b7280;fontColor=#374151;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="1140" y="880"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_aaa"  value="admin_account_archives"  style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#881337;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="1360" y="880"  width="200" height="44" as="geometry"/></mxCell>
+        <mxCell id="t_aac"  value="admin_action_archives"   style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#9f1239;fontColor=#881337;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="1360" y="1000" width="200" height="44" as="geometry"/></mxCell>
+
+        <!-- ── RELATIONSHIP LINES ── -->
+        <!-- Label format: "1 : M" or "M : M" on the line -->
+
+        <!-- warehouses → product_stocks (1:M) -->
+        <mxCell id="r1" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_wh" target="t_ps"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <!-- warehouses → material_stocks (1:M) -->
+        <mxCell id="r2" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_wh" target="t_ms"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- product_stocks → products (1:1) -->
+        <mxCell id="r3" value="1 : 1" style="endArrow=ERone;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ps" target="t_prod"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- products ↔ material_stocks via product_materials (M:M) -->
+        <mxCell id="r4" value="M : M" style="endArrow=ERmany;startArrow=ERmany;html=1;strokeColor=#3730a3;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#3730a3;dashed=1;" edge="1" parent="1" source="t_prod" target="t_pm"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r5" value="" style="endArrow=ERmany;startArrow=ERmany;html=1;strokeColor=#3730a3;strokeWidth=2;dashed=1;" edge="1" parent="1" source="t_ms" target="t_pm"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- material_stocks → stock_movements (1:M) -->
+        <mxCell id="r6" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ms" target="t_sm"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- users → draft_products (1:M) -->
+        <mxCell id="r7" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_usr" target="t_dp"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- users → customer_inquiries (1:M) -->
+        <mxCell id="r8" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_usr" target="t_ci"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- products → customer_inquiries (1:M) -->
+        <mxCell id="r9" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_prod" target="t_ci"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- customer_inquiries → quotations (1:M) -->
+        <mxCell id="r10" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ci" target="t_qt"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- customer_inquiries → payment_records (1:M) -->
+        <mxCell id="r11" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ci" target="t_pr"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- customer_inquiries → order_chat_messages (1:M) -->
+        <mxCell id="r12" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ci" target="t_ocm"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- customer_inquiries → return_requests (1:1) -->
+        <mxCell id="r13" value="1 : 1" style="endArrow=ERone;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ci" target="t_rr"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- order_chat_messages → order_chat_attachments (1:M) -->
+        <mxCell id="r14" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ocm" target="t_oca"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- users → payment_records (1:M) -->
+        <mxCell id="r15" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="t_usr" target="t_pr"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- suppliers → supplier_addresses (1:M) -->
+        <mxCell id="r16" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_sup" target="t_sa"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- suppliers ↔ material_stocks via supplier_products (M:M) -->
+        <mxCell id="r17" value="M : M" style="endArrow=ERmany;startArrow=ERmany;html=1;strokeColor=#3730a3;strokeWidth=2;fontSize=11;fontStyle=1;fontColor=#3730a3;dashed=1;" edge="1" parent="1" source="t_sup" target="t_sp"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r18" value="" style="endArrow=ERmany;startArrow=ERmany;html=1;strokeColor=#3730a3;strokeWidth=2;dashed=1;" edge="1" parent="1" source="t_ms" target="t_sp"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- suppliers → purchase_orders (1:M) -->
+        <mxCell id="r19" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_sup" target="t_po"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- purchase_orders → purchase_order_items (1:M) -->
+        <mxCell id="r20" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_po" target="t_poi"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- material_stocks → purchase_order_items (1:M) -->
+        <mxCell id="r21" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_ms" target="t_poi"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- admin_account_archives → admin_action_archives (1:M) -->
+        <mxCell id="r22" value="1 : M" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=11;fontStyle=1;fontColor=#374151;" edge="1" parent="1" source="t_aaa" target="t_aac"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ── LEGEND ── -->
+        <mxCell id="leg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d1d5db;strokeWidth=1;dashed=1;" vertex="1" parent="1"><mxGeometry x="60" y="1100" width="700" height="120" as="geometry"/></mxCell>
+        <mxCell id="leg_t" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontStyle=1;fontColor=#374151;" vertex="1" parent="1"><mxGeometry x="80" y="1108" width="200" height="20" as="geometry"/></mxCell>
+
+        <mxCell id="leg_1m" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="80" y="1148" as="sourcePoint"/><mxPoint x="180" y="1148" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="leg_1m_l" value="One-to-Many (1:M)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#374151;" vertex="1" parent="1"><mxGeometry x="190" y="1138" width="180" height="20" as="geometry"/></mxCell>
+
+        <mxCell id="leg_11" style="endArrow=ERone;startArrow=ERone;html=1;strokeColor=#374151;strokeWidth=1.5;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="80" y="1178" as="sourcePoint"/><mxPoint x="180" y="1178" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="leg_11_l" value="One-to-One (1:1)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#374151;" vertex="1" parent="1"><mxGeometry x="190" y="1168" width="180" height="20" as="geometry"/></mxCell>
+
+        <mxCell id="leg_mm" style="endArrow=ERmany;startArrow=ERmany;html=1;strokeColor=#3730a3;strokeWidth=2;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="400" y="1148" as="sourcePoint"/><mxPoint x="500" y="1148" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="leg_mm_l" value="Many-to-Many (M:M) via junction table" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#374151;" vertex="1" parent="1"><mxGeometry x="510" y="1138" width="240" height="20" as="geometry"/></mxCell>
+
+        <mxCell id="leg_junc" value="junction table" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#3730a3;fontColor=#1e1b4b;fontSize=10;fontStyle=1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="400" y="1165" width="100" height="28" as="geometry"/></mxCell>
+        <mxCell id="leg_junc_l" value="Junction / bridge table" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#374151;" vertex="1" parent="1"><mxGeometry x="510" y="1168" width="200" height="20" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

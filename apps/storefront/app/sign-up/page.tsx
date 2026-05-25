@@ -139,9 +139,10 @@ export default function SignUpPage() {
                   name="name"
                   type="text"
                   required
+                  maxLength={30}
                   value={form.name}
                   onChange={(e) =>
-                    setForm((current) => ({ ...current, name: e.target.value }))
+                    setForm((current) => ({ ...current, name: e.target.value.slice(0, 30) }))
                   }
                   placeholder="Enter your full name"
                   className="block w-full rounded-[10px] border border-[#d1d5dc] bg-white py-3 pr-4 pl-10 text-[14px] text-[#1a1a2e] placeholder:text-[#99a1af] transition-all focus:border-[#1a1a2e] focus:ring-1 focus:ring-[#1a1a2e] focus:outline-none"
@@ -165,11 +166,12 @@ export default function SignUpPage() {
                   name="email"
                   type="email"
                   required
+                  maxLength={50}
                   value={form.email}
                   onChange={(e) =>
                     setForm((current) => ({
                       ...current,
-                      email: e.target.value,
+                      email: e.target.value.slice(0, 50),
                     }))
                   }
                   placeholder="Enter your email"

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Customer Sequence" id="seq-customer">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Sequence Diagram — CUSTOMER" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#166534;" vertex="1" parent="1"><mxGeometry x="100" y="20" width="900" height="30" as="geometry"/></mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="lf_cust" value=":Customer" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dcfce7;strokeColor=#166534;fontColor=#166534;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="60" y="80" width="140" height="1260" as="geometry"/></mxCell>
+        <mxCell id="lf_sf" value=":Storefront UI" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f0f9ff;strokeColor=#0369a1;fontColor=#0369a1;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="280" y="80" width="140" height="1260" as="geometry"/></mxCell>
+        <mxCell id="lf_api" value=":API / System" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f3f4f6;strokeColor=#374151;fontColor=#374151;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="500" y="80" width="140" height="1260" as="geometry"/></mxCell>
+        <mxCell id="lf_db" value=":Database" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#c2410c;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="720" y="80" width="140" height="1260" as="geometry"/></mxCell>
+
+        <!-- 1. Register / Login -->
+        <mxCell id="m1" value="1: Register / Log In" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="180" as="sourcePoint"/><mxPoint x="350" y="180" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m2" value="2: POST /api/auth/sign-in" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="210" as="sourcePoint"/><mxPoint x="570" y="210" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m3" value="3: Verify credentials" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="240" as="sourcePoint"/><mxPoint x="790" y="240" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m4" value="4: Session token" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="270" as="sourcePoint"/><mxPoint x="570" y="270" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m5" value="5: Redirect to storefront" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="300" as="sourcePoint"/><mxPoint x="200" y="300" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 2. Browse Catalog -->
+        <mxCell id="m6" value="6: Browse product catalog" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="360" as="sourcePoint"/><mxPoint x="350" y="360" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m7" value="7: GET /api/products" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="390" as="sourcePoint"/><mxPoint x="570" y="390" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m8" value="8: SELECT products" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="420" as="sourcePoint"/><mxPoint x="790" y="420" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m9" value="9: Product list" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="450" as="sourcePoint"/><mxPoint x="200" y="450" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 3. Submit Inquiry -->
+        <mxCell id="m10" value="10: Submit inquiry (product, qty, message)" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="510" as="sourcePoint"/><mxPoint x="350" y="510" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m11" value="11: POST /api/inquiries" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="540" as="sourcePoint"/><mxPoint x="570" y="540" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m12" value="12: INSERT customer_inquiries" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="570" as="sourcePoint"/><mxPoint x="790" y="570" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m13" value="13: Inquiry number confirmed" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="600" as="sourcePoint"/><mxPoint x="200" y="600" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 4. Review Quotation -->
+        <mxCell id="m14" value="14: Receive quotation notification" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="660" as="sourcePoint"/><mxPoint x="200" y="660" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m15" value="15: Accept quotation" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="700" as="sourcePoint"/><mxPoint x="570" y="700" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m16" value="16: UPDATE quotationAccepted = true" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="730" as="sourcePoint"/><mxPoint x="790" y="730" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 5. Submit Payment -->
+        <mxCell id="m17" value="17: Submit payment (method, amount)" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="790" as="sourcePoint"/><mxPoint x="570" y="790" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m18" value="18: INSERT payment_records (PENDING)" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="820" as="sourcePoint"/><mxPoint x="790" y="820" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m19" value="19: Payment submitted confirmation" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="850" as="sourcePoint"/><mxPoint x="200" y="850" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 6. Track Order -->
+        <mxCell id="m20" value="20: Track order status" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="910" as="sourcePoint"/><mxPoint x="570" y="910" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m21" value="21: SELECT inquiry status" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="940" as="sourcePoint"/><mxPoint x="790" y="940" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m22" value="22: Status + delivery date" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="970" as="sourcePoint"/><mxPoint x="200" y="970" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 7. Leave Review -->
+        <mxCell id="m23" value="23: Leave product review (rating, comment)" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="1030" as="sourcePoint"/><mxPoint x="570" y="1030" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m24" value="24: INSERT product_reviews" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="1060" as="sourcePoint"/><mxPoint x="790" y="1060" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m25" value="25: Review posted" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="1090" as="sourcePoint"/><mxPoint x="200" y="1090" as="targetPoint"/></mxGeometry></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

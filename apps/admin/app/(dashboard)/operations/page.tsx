@@ -93,6 +93,7 @@ export type ReservedMaterialDetailRow = {
   reservationStatus: string
   dateReserved: Date
   reservedQty: number
+  orderQuantity: number
 }
 
 type DamagedMaterialRow = {
@@ -105,6 +106,7 @@ type DamagedMaterialRow = {
   requesterName: string | null
   projectPurpose: string | null
   referenceNumber: string | null
+  inquiryNumber: string | null
   createdAt: Date
 }
 
@@ -708,12 +710,15 @@ async function getDamagedMaterialRows() {
       sm."requesterName",
       sm."projectPurpose",
       sm."referenceNumber",
+      ci."inquiryNumber",
       sm."createdAt"
     FROM public.stock_movements sm
     INNER JOIN public.material_stocks si
       ON si.id = sm."materialStockId"
     INNER JOIN public.warehouses w
       ON w.id = si."warehouseId"
+    LEFT JOIN public.customer_inquiries ci
+      ON ci.id = sm."referenceNumber"
     WHERE sm.type = 'DAMAGE'::"StockMovementType"
     ORDER BY sm."createdAt" DESC
   `)
@@ -766,7 +771,8 @@ async function getReservedMaterialDetails() {
       ci."customerName" AS "customerName",
       'Accounting Reserved' AS "reservationStatus",
       sm."createdAt" AS "dateReserved",
-      sm.quantity::int AS "reservedQty"
+      sm.quantity::int AS "reservedQty",
+      COALESCE(ci.quantity, 1)::int AS "orderQuantity"
     FROM public.stock_movements sm
     INNER JOIN public.material_stocks si ON si.id = sm."materialStockId"
     INNER JOIN public.warehouses w ON w.id = si."warehouseId"

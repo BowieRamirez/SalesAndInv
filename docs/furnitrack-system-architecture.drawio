@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="System Architecture" id="furnitrack-arch">
+    <mxGraphModel dx="1400" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="ttl" value="FurniTrack — System Architecture Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="200" y="18" width="1000" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- ROW 1 — USERS (top)                                    -->
+        <!-- ══════════════════════════════════════════════════════ -->
+
+        <!-- Customer -->
+        <mxCell id="u_cust" value="Customer" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=12;fontStyle=1;fontColor=#166534;strokeColor=#166534;fillColor=#166534;" vertex="1" parent="1">
+          <mxGeometry x="100" y="80" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Admin roles group label -->
+        <mxCell id="u_admin_lbl" value="Admin Users" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontStyle=1;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="700" y="60" width="600" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Sales Admin -->
+        <mxCell id="u_sales" value="Sales Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=0;fontColor=#1d4ed8;strokeColor=#1d4ed8;fillColor=#1d4ed8;" vertex="1" parent="1">
+          <mxGeometry x="700" y="80" width="40" height="65" as="geometry"/>
+        </mxCell>
+        <!-- Operations Admin -->
+        <mxCell id="u_ops" value="Operations Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=0;fontColor=#92400e;strokeColor=#92400e;fillColor=#92400e;" vertex="1" parent="1">
+          <mxGeometry x="820" y="80" width="40" height="65" as="geometry"/>
+        </mxCell>
+        <!-- Accounting Admin -->
+        <mxCell id="u_acc" value="Accounting Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=0;fontColor=#7e22ce;strokeColor=#7e22ce;fillColor=#7e22ce;" vertex="1" parent="1">
+          <mxGeometry x="940" y="80" width="40" height="65" as="geometry"/>
+        </mxCell>
+        <!-- Executive Admin -->
+        <mxCell id="u_exec" value="Executive Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=0;fontColor=#9f1239;strokeColor=#9f1239;fillColor=#9f1239;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="80" width="40" height="65" as="geometry"/>
+        </mxCell>
+        <!-- Supplier -->
+        <mxCell id="u_sup" value="Supplier" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=0;fontColor=#475569;strokeColor=#475569;fillColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="80" width="40" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- ROW 2 — FRONTEND APPS                                  -->
+        <!-- ══════════════════════════════════════════════════════ -->
+
+        <!-- Storefront -->
+        <mxCell id="sf" value="&lt;b&gt;Storefront&lt;/b&gt;&#xa;Next.js 16 · React 19&#xa;Tailwind CSS v4&#xa;Port 3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#166534;fontColor=#166534;fontSize=12;strokeWidth=2;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Admin Dashboard -->
+        <mxCell id="adm" value="&lt;b&gt;Admin Dashboard&lt;/b&gt;&#xa;Next.js 16 · React 19&#xa;Tailwind CSS v4 · Recharts&#xa;Port 3001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=12;strokeWidth=2;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="800" y="280" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- ROW 3 — BACKEND / API LAYER                            -->
+        <!-- ══════════════════════════════════════════════════════ -->
+
+        <mxCell id="api" value="&lt;b&gt;Next.js API Routes&lt;/b&gt;&#xa;Server Actions · Route Handlers&#xa;RBAC Middleware · Prisma ORM&#xa;Business Logic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#92400e;fontColor=#92400e;fontSize=12;strokeWidth=2;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="430" y="480" width="240" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- ROW 4 — SERVICES                                       -->
+        <!-- ══════════════════════════════════════════════════════ -->
+
+        <!-- Neon PostgreSQL -->
+        <mxCell id="db" value="&lt;b&gt;Neon PostgreSQL 17&lt;/b&gt;&#xa;24 Tables · Branching&#xa;aws-ap-southeast-1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#c2410c;fontSize=12;strokeWidth=2;size=10;" vertex="1" parent="1">
+          <mxGeometry x="200" y="700" width="180" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Neon Auth -->
+        <mxCell id="auth" value="&lt;b&gt;Neon Auth&lt;/b&gt;&#xa;Better Auth&#xa;Session Management&#xa;Role Verification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#c2410c;fontSize=12;strokeWidth=2;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="430" y="700" width="180" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Resend Email -->
+        <mxCell id="email" value="&lt;b&gt;Resend&lt;/b&gt;&#xa;Transactional Email&#xa;Password Reset&#xa;Notifications" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#c2410c;fontSize=12;strokeWidth=2;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="660" y="700" width="180" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Shared Packages -->
+        <mxCell id="pkgs" value="&lt;b&gt;Shared Packages&lt;/b&gt;&#xa;@furnitrack/db (Prisma)&#xa;@furnitrack/validators (Zod)&#xa;@furnitrack/ui (shadcn)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf4ff;strokeColor=#7e22ce;fontColor=#7e22ce;fontSize=12;strokeWidth=2;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="890" y="700" width="200" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- ROW 5 — HOSTING                                        -->
+        <!-- ══════════════════════════════════════════════════════ -->
+
+        <mxCell id="host" value="&lt;b&gt;Vercel&lt;/b&gt; — Hosts &amp; Deploys both apps&#xa;Turborepo · pnpm workspaces · Node.js ≥ 20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#475569;fontSize=12;strokeWidth=2;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="300" y="880" width="500" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- ARROWS                                                  -->
+        <!-- ══════════════════════════════════════════════════════ -->
+
+        <!-- Customer → Storefront -->
+        <mxCell id="f1" value="Browse catalog&#xa;Submit inquiry &amp; payment" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;align=center;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="u_cust" target="sf"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Storefront → Customer (response) -->
+        <mxCell id="f2" value="Quotation · Order status&#xa;Delivery notice" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;align=center;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="sf" target="u_cust"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Admin roles → Admin Dashboard -->
+        <mxCell id="f3" value="Manage orders, inventory,&#xa;payments, reports" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;align=center;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="u_sales" target="adm"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3b" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.4;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="u_ops" target="adm"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3c" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.6;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="u_acc" target="adm"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3d" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="u_exec" target="adm"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3e" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.95;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="u_sup" target="adm"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Storefront ↔ API -->
+        <mxCell id="f4" value="API calls" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;align=center;" edge="1" parent="1" source="sf" target="api"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Admin Dashboard ↔ API -->
+        <mxCell id="f5" value="API calls" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;fontColor=#374151;align=center;" edge="1" parent="1" source="adm" target="api"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- API → DB -->
+        <mxCell id="f6" value="Prisma queries" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#c2410c;strokeWidth=1.5;fontSize=10;fontColor=#c2410c;align=center;" edge="1" parent="1" source="api" target="db"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- API → Auth -->
+        <mxCell id="f7" value="Auth checks" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#c2410c;strokeWidth=1.5;fontSize=10;fontColor=#c2410c;align=center;" edge="1" parent="1" source="api" target="auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- API → Email -->
+        <mxCell id="f8" value="Send emails" style="endArrow=classic;html=1;strokeColor=#c2410c;strokeWidth=1.5;fontSize=10;fontColor=#c2410c;align=center;" edge="1" parent="1" source="api" target="email"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- API → Shared Packages -->
+        <mxCell id="f9" value="Uses" style="endArrow=classic;html=1;strokeColor=#7e22ce;strokeWidth=1.5;fontSize=10;fontColor=#7e22ce;dashed=1;align=center;" edge="1" parent="1" source="api" target="pkgs"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Hosting → Storefront -->
+        <mxCell id="f10" value="Deploys" style="endArrow=classic;html=1;strokeColor=#475569;strokeWidth=1.5;fontSize=10;fontColor=#475569;dashed=1;exitX=0.2;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="host" target="sf"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Hosting → Admin Dashboard -->
+        <mxCell id="f11" value="Deploys" style="endArrow=classic;html=1;strokeColor=#475569;strokeWidth=1.5;fontSize=10;fontColor=#475569;dashed=1;exitX=0.8;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="host" target="adm"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

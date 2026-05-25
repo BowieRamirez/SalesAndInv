@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Operations Admin Sequence" id="seq-operations">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Sequence Diagram — OPERATIONS ADMIN" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#92400e;" vertex="1" parent="1"><mxGeometry x="100" y="20" width="900" height="30" as="geometry"/></mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="lf_ops" value=":Operations Admin" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fef3c7;strokeColor=#92400e;fontColor=#92400e;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="60" y="80" width="140" height="1160" as="geometry"/></mxCell>
+        <mxCell id="lf_adm" value=":Admin Dashboard" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f0f9ff;strokeColor=#0369a1;fontColor=#0369a1;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="280" y="80" width="140" height="1160" as="geometry"/></mxCell>
+        <mxCell id="lf_api" value=":API / System" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f3f4f6;strokeColor=#374151;fontColor=#374151;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="500" y="80" width="140" height="1160" as="geometry"/></mxCell>
+        <mxCell id="lf_db" value=":Database" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#c2410c;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="720" y="80" width="140" height="1160" as="geometry"/></mxCell>
+
+        <!-- 1. Login -->
+        <mxCell id="m1" value="1: Log in to Admin Dashboard" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="180" as="sourcePoint"/><mxPoint x="350" y="180" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m2" value="2: Verify session / role = OPERATIONS_DESIGN" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="210" as="sourcePoint"/><mxPoint x="570" y="210" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m3" value="3: Dashboard loaded" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="240" as="sourcePoint"/><mxPoint x="200" y="240" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 2. Stock Check -->
+        <mxCell id="m4" value="4: View orders pending inventory check" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="300" as="sourcePoint"/><mxPoint x="570" y="300" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m5" value="5: SELECT inquiries + product_materials + material_stocks" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="330" as="sourcePoint"/><mxPoint x="790" y="330" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m6" value="6: BOM + stock availability" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="360" as="sourcePoint"/><mxPoint x="200" y="360" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 3. Approve Inventory -->
+        <mxCell id="m7" value="7: Approve inventory check" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="420" as="sourcePoint"/><mxPoint x="570" y="420" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m8" value="8: UPDATE status = PENDING_SALES_QUOTATION, INSERT approval_history" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="450" as="sourcePoint"/><mxPoint x="790" y="450" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m9" value="9: Approved confirmation" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="480" as="sourcePoint"/><mxPoint x="200" y="480" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 4. Build Order -->
+        <mxCell id="m10" value="10: Approve build stage (GETTING_READY)" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="540" as="sourcePoint"/><mxPoint x="570" y="540" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m11" value="11: UPDATE status = GETTING_READY_FOR_BUILDING, INSERT stock_movements (reserve)" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="570" as="sourcePoint"/><mxPoint x="790" y="570" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m12" value="12: Build approved" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="600" as="sourcePoint"/><mxPoint x="200" y="600" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 5. Schedule Delivery -->
+        <mxCell id="m13" value="13: Schedule delivery date" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="660" as="sourcePoint"/><mxPoint x="570" y="660" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m14" value="14: UPDATE shippingScheduledAt, status = READY_FOR_SHIPMENT" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="690" as="sourcePoint"/><mxPoint x="790" y="690" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m15" value="15: Delivery scheduled" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="720" as="sourcePoint"/><mxPoint x="200" y="720" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 6. Mark Delivered -->
+        <mxCell id="m16" value="16: Mark order as delivered (COMPLETED)" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="780" as="sourcePoint"/><mxPoint x="570" y="780" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m17" value="17: UPDATE completedAt, INSERT stock_movements (OUT), UPDATE material_stocks" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="810" as="sourcePoint"/><mxPoint x="790" y="810" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m18" value="18: Order completed" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="840" as="sourcePoint"/><mxPoint x="200" y="840" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 7. Manage Products -->
+        <mxCell id="m19" value="19: Create / edit finished product" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="900" as="sourcePoint"/><mxPoint x="570" y="900" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m20" value="20: INSERT/UPDATE products + product_stocks" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="930" as="sourcePoint"/><mxPoint x="790" y="930" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m21" value="21: Product saved" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="960" as="sourcePoint"/><mxPoint x="200" y="960" as="targetPoint"/></mxGeometry></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,342 @@
+// FurniTrack — Schema Diagram
+// Paste into dbdiagram.io → shows all tables with columns + data types
+// No ref: lines = schema view only (no relationship arrows)
+
+Table users {
+  id text [pk, note: 'Primary key']
+  authUserId uuid [unique, null, note: 'Auth provider link']
+  name text [not null]
+  email text [not null, unique]
+  role varchar [not null, note: 'ADMIN_MANAGEMENT | SALES | OPERATIONS_DESIGN | ACCOUNTING | CUSTOM | CLIENT']
+  status varchar [not null, default: 'ACTIVE', note: 'ACTIVE | BLOCKED | EXPIRED | PENDING_ACTIVATION']
+  accessStartsAt timestamp [null]
+  accessExpiresAt timestamp [null]
+  lastLoginAt timestamp [null]
+  emailVerifiedAt timestamp [null]
+  phone text [null]
+  address text [null]
+  permissions jsonb [null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table warehouses {
+  id text [pk]
+  code text [not null, unique]
+  name text [not null]
+  street text [null]
+  city text [null]
+  country text [not null, default: 'Philippines']
+  postalCode text [null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table product_stocks {
+  id text [pk]
+  warehouseId text [not null, note: 'FK → warehouses']
+  sku text [not null, unique]
+  itemName text [not null]
+  description text [null]
+  unitOfMeasure text [not null, default: 'pcs']
+  availableQty integer [not null, default: 0]
+  reservedQty integer [not null, default: 0]
+  reorderThreshold integer [not null, default: 10]
+  state varchar [not null, default: 'AVAILABLE', note: 'AVAILABLE | RESERVED | DAMAGED | ARCHIVED']
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table material_stocks {
+  id text [pk]
+  warehouseId text [not null, note: 'FK → warehouses']
+  sku text [not null, unique]
+  itemName text [not null]
+  description text [null]
+  unitOfMeasure text [not null, default: 'pcs']
+  availableQty integer [not null, default: 0]
+  reservedQty integer [not null, default: 0]
+  reorderThreshold integer [not null, default: 10]
+  state varchar [not null, default: 'AVAILABLE', note: 'AVAILABLE | RESERVED | DAMAGED | ARCHIVED']
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table products {
+  id text [pk]
+  productStockId text [not null, unique, note: 'FK → product_stocks']
+  slug text [not null, unique]
+  name text [not null]
+  category text [not null]
+  material text [not null]
+  price decimal [not null]
+  originalPrice decimal [null]
+  badge text [null, note: 'BEST_SELLER | SALE | NEW']
+  images jsonb [null]
+  colorVariants jsonb [not null, default: '[]']
+  productCode text [unique, null]
+  rating decimal [not null, default: 0]
+  reviewCount integer [not null, default: 0]
+  widthCm decimal [not null]
+  depthCm decimal [not null]
+  heightCm decimal [not null]
+  weightKg decimal [not null]
+  description text [not null]
+  isPublished boolean [not null, default: true]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table draft_products {
+  id text [pk]
+  createdById text [not null, note: 'FK → users']
+  name text [null]
+  payload jsonb [not null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+  deletedAt timestamp [null]
+}
+
+Table customer_inquiries {
+  id text [pk]
+  productId text [not null, note: 'FK → products']
+  customerUserId text [null, note: 'FK → users']
+  customerName text [not null]
+  customerEmail text [not null]
+  customerPhone text [not null]
+  message text [not null]
+  quantity integer [not null, default: 1]
+  status varchar [not null, default: 'RECEIVED', note: 'RECEIVED | ACCEPTED | PENDING_INVENTORY_APPROVAL | PENDING_SALES_QUOTATION | GETTING_READY_FOR_BUILDING | WAITING_FOR_PAYMENT | PENDING_ACCOUNTING_APPROVAL | READY_FOR_SHIPMENT | COMPLETED']
+  statusNote text [null]
+  inquiryNumber text [unique, null]
+  quotedPrice decimal [null]
+  quotedPriceBeforeDiscount decimal [null]
+  quotationRevisionCount integer [not null, default: 0]
+  quotationDiscount decimal [not null, default: 0]
+  quotationAccepted boolean [null]
+  salesReviewedAt timestamp [null]
+  inventoryApprovedAt timestamp [null]
+  quotationSentAt timestamp [null]
+  quotationRespondedAt timestamp [null]
+  customerPaidAt timestamp [null]
+  accountingConfirmedAt timestamp [null]
+  buildApprovedAt timestamp [null]
+  shippingScheduledAt timestamp [null]
+  completedAt timestamp [null]
+  cancelledAt timestamp [null]
+  salesReviewedById text [null, note: 'FK → users']
+  inventoryApprovedById text [null, note: 'FK → users']
+  accountingConfirmedById text [null, note: 'FK → users']
+  buildApprovedById text [null, note: 'FK → users']
+  completedById text [null, note: 'FK → users']
+  cancelledById text [null, note: 'FK → users']
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table quotations {
+  id text [pk]
+  inquiryId text [not null, note: 'FK → customer_inquiries']
+  quotationNumber text [unique, null]
+  revisionNumber integer [not null, default: 1]
+  sentById text [null, note: 'FK → users']
+  quotedPrice decimal [not null]
+  quotedPriceBeforeDiscount decimal [null]
+  quotationDiscount decimal [not null, default: 0]
+  salesNote text [null]
+  status text [not null, default: 'PENDING', note: 'PENDING | ACCEPTED | DECLINED']
+  declineReason text [null]
+  sentAt timestamp [not null, default: `now()`]
+  respondedAt timestamp [null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table payment_records {
+  id text [pk]
+  inquiryId text [null, note: 'FK → customer_inquiries']
+  paymentNumber text [unique, null]
+  recordedById text [not null, note: 'FK → users']
+  paymentType varchar [not null, note: 'DOWN_PAYMENT | PARTIAL_PAYMENT | FULL_PAYMENT']
+  paymentMethod text [null]
+  status varchar [not null, default: 'PENDING', note: 'PENDING | VERIFIED | REJECTED']
+  amount decimal [not null]
+  remainingBalance decimal [not null]
+  paymentDate timestamp [not null]
+  referenceNumber text [null]
+  remarks text [null]
+  verifiedAt timestamp [null]
+  verifiedById text [null, note: 'FK → users']
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table order_chat_messages {
+  id text [pk]
+  inquiry_id text [not null, note: 'FK → customer_inquiries']
+  sender_user_id text [null, note: 'FK → users']
+  sender_role text [not null, note: 'CLIENT | SALES | SYSTEM']
+  body text [null]
+  created_at timestamp [not null, default: `now()`]
+}
+
+Table order_chat_attachments {
+  id text [pk]
+  message_id text [not null, note: 'FK → order_chat_messages']
+  file_name text [not null]
+  mime_type text [not null]
+  attachment_type text [not null]
+  data_url text [not null]
+  created_at timestamp [not null, default: `now()`]
+}
+
+Table product_materials {
+  id text [pk]
+  productId text [not null, note: 'FK → products']
+  materialStockId text [not null, note: 'FK → material_stocks']
+  quantityRequired decimal [null]
+  quantityDisplay text [null]
+  dimension text [null]
+  notes text [null]
+  createdAt timestamp [not null, default: `now()`]
+}
+
+Table stock_movements {
+  id text [pk]
+  materialStockId text [null, note: 'FK → material_stocks']
+  productStockId text [null, note: 'FK → product_stocks']
+  type varchar [not null, note: 'IN | OUT | ADJUSTMENT | TRANSFER | DAMAGE']
+  quantity integer [not null]
+  requesterName text [null]
+  projectPurpose text [null]
+  referenceNumber text [null]
+  createdAt timestamp [not null, default: `now()`]
+}
+
+Table return_requests {
+  id text [pk]
+  inquiryId text [not null, note: 'FK → customer_inquiries']
+  customerUserId text [null, note: 'FK → users']
+  status text [not null, note: 'SUBMITTED | APPROVED_FOR_PICKUP | PICKED_UP_COMPLETED']
+  reason text [not null]
+  details text [null]
+  imageUrls jsonb [null]
+  salesNote text [null]
+  pickupScheduledAt timestamp [null]
+  approvedById text [null, note: 'FK → users']
+  approvedAt timestamp [null]
+  completedById text [null, note: 'FK → users']
+  completedAt timestamp [null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table suppliers {
+  id text [pk]
+  name text [not null]
+  contactPerson text [null]
+  email text [null]
+  phone text [null]
+  notes text [null]
+  isActive boolean [not null, default: true]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table supplier_addresses {
+  id text [pk]
+  supplierId text [not null, note: 'FK → suppliers']
+  label text [null]
+  address text [not null]
+  city text [null]
+  province text [null]
+  country text [null]
+  postalCode text [null]
+  isMain boolean [not null, default: false]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table supplier_products {
+  id text [pk]
+  supplierId text [not null, note: 'FK → suppliers']
+  materialStockId text [null, note: 'FK → material_stocks']
+  materialName text [not null]
+  unitCost decimal [null]
+  unitOfMeasure text [null]
+  notes text [null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table purchase_orders {
+  id text [pk]
+  poNumber text [not null, unique]
+  supplierId text [null, note: 'FK → suppliers']
+  requestedById text [not null, note: 'FK → users']
+  approvedById text [null, note: 'FK → users']
+  status varchar [not null, default: 'DRAFT', note: 'DRAFT | PENDING_APPROVAL | APPROVED | REJECTED | ORDERED | GOODS_RECEIVED | CANCELLED']
+  totalAmount decimal [not null, default: 0]
+  remarks text [null]
+  expectedDeliveryAt timestamp [null]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table purchase_order_items {
+  id text [pk]
+  purchaseOrderId text [not null, note: 'FK → purchase_orders']
+  materialStockId text [not null, note: 'FK → material_stocks']
+  quantityOrdered integer [not null]
+  quantityReceived integer [not null, default: 0]
+  unitCost decimal [null]
+  lineTotal decimal [not null, default: 0]
+  createdAt timestamp [not null, default: `now()`]
+}
+
+Table approval_history {
+  id text [pk]
+  module varchar [not null, note: 'PAYMENT | CUSTOMER_INQUIRY']
+  recordId text [not null]
+  action varchar [not null, note: 'SUBMITTED | APPROVED | REJECTED | RETURNED_FOR_REVISION | FINALIZED']
+  fromStatus text [null]
+  toStatus text [null]
+  remarks text [null]
+  actedById text [not null, note: 'FK → users']
+  actedAt timestamp [not null, default: `now()`]
+}
+
+Table audit_logs {
+  id text [pk]
+  actorId text [null, note: 'FK → users']
+  action text [not null]
+  entityType text [not null]
+  entityId text [not null]
+  metadata jsonb [null]
+  createdAt timestamp [not null, default: `now()`]
+}
+
+Table storefront_categories {
+  id text [pk]
+  name text [not null, unique]
+  createdAt timestamp [not null, default: `now()`]
+  updatedAt timestamp [not null]
+}
+
+Table admin_account_archives {
+  id text [pk]
+  originalUserId text [not null, unique]
+  name text [not null]
+  email text [not null]
+  role text [not null]
+  archivedAt timestamp [not null, default: `now()`]
+}
+
+Table admin_action_archives {
+  id text [pk]
+  archiveId text [not null, note: 'FK → admin_account_archives']
+  actionType text [not null]
+  description text [not null]
+  performedAt timestamp [not null, default: `now()`]
+  metadata jsonb [null]
+}

@@ -68,6 +68,17 @@ export async function POST(request: Request) {
 
       const movementType = reasonCategory === "DAMAGE" ? "DAMAGE" : "OUT"
 
+      // Auto-generate a DMG reference number for damage entries that have no reference
+      let finalReferenceNumber = referenceNumber || null
+      if (movementType === "DAMAGE" && !finalReferenceNumber) {
+        const yearStr = new Date().getFullYear().toString()
+        const seqRows = await tx.$queryRaw<Array<{ next_val: number }>>(Prisma.sql`
+          SELECT nextval('public.inquiry_number_seq')::int AS next_val
+        `)
+        const nextSeq = seqRows[0]?.next_val ?? 1
+        finalReferenceNumber = `DMG-${yearStr}-${String(nextSeq).padStart(5, "0")}`
+      }
+
       await tx.$executeRaw(Prisma.sql`
         INSERT INTO public.stock_movements (
           id,
@@ -85,7 +96,7 @@ export async function POST(request: Request) {
           ${materialStockId},
           ${movementType}::"StockMovementType",
           ${quantity},
-          ${referenceNumber || null},
+          ${finalReferenceNumber},
           ${reasonDetails || null},
           CURRENT_TIMESTAMP
         )
@@ -112,7 +123,7 @@ export async function POST(request: Request) {
             sku: existingItem[0].sku,
             itemName: existingItem[0].itemName,
             quantity,
-            referenceNumber: referenceNumber || null,
+            referenceNumber: finalReferenceNumber,
             reasonCategory,
             reasonDetails,
           })}::jsonb,

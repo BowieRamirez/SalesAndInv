@@ -89,6 +89,11 @@ export function ReservedMaterialsAccordion({ materials, details }: Props) {
                     <td className="py-3 pr-4">
                       <p className="font-semibold text-[#111827]">{group.productName}</p>
                       <p className="mt-0.5 font-mono text-[12px] text-[#6b7280]">{group.linkedOrderNo}</p>
+                      {group.materials[0]?.orderQuantity && group.materials[0].orderQuantity > 1 && (
+                        <span className="mt-1 inline-flex items-center rounded-full bg-[#eff6ff] px-2 py-0.5 text-[10px] font-semibold text-[#1d4ed8]">
+                          Qty: {group.materials[0].orderQuantity} units
+                        </span>
+                      )}
                     </td>
                     <td className="py-3 pr-4 text-[#4b5563]">{group.customerName || "-"}</td>
                     <td className="py-3 pr-4">
@@ -122,6 +127,7 @@ export function ReservedMaterialsAccordion({ materials, details }: Props) {
                                   const stock = materialTotals.get(detail.materialStockId)
                                   const availableQty = stock?.availableQty ?? 0
                                   const totalStock = availableQty + (stock?.reservedQty ?? detail.reservedQty)
+                                  const orderQty = detail.orderQuantity ?? 1
 
                                   return (
                                     <tr key={`${detail.eventId}:${detail.materialStockId}`} className="border-b border-[#f3f4f6] last:border-b-0">
@@ -136,6 +142,11 @@ export function ReservedMaterialsAccordion({ materials, details }: Props) {
                                       </td>
                                       <td className="py-2.5 pr-4 text-right font-semibold text-[#dc2626]">
                                         {detail.reservedQty} {detail.unitOfMeasure}
+                                        {orderQty > 1 && (
+                                          <p className="text-[10px] font-normal text-[#9ca3af]">
+                                            for {orderQty} units
+                                          </p>
+                                        )}
                                       </td>
                                     </tr>
                                   )

@@ -224,38 +224,53 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
     if (!selectedReceipt) return
 
     const doc = new jsPDF()
+    const formatPdfPeso = (val: number) =>
+      "PHP " + val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-    // Header
+    const quotedBase = selectedReceipt.quotedPrice ?? selectedReceipt.total
+    const vatAmount = quotedBase * 0.12
+    const totalWithVat = quotedBase + vatAmount
+    const downPayment = totalWithVat * 0.7
+    const qty = selectedReceipt.quantity ?? 1
+
+    // ── Header ──
     doc.setFontSize(22)
     doc.setFont("helvetica", "bold")
     doc.text("FurniTrack", 14, 20)
-    
-    doc.setFontSize(14)
-    doc.setFont("helvetica", "normal")
-    doc.text("Official Receipt", 14, 30)
 
     doc.setFontSize(10)
+    doc.setFont("helvetica", "normal")
+    doc.setTextColor(100)
+    doc.text("Queens Arts and Trends Corp.", 14, 27)
+    doc.text("001B Carlos cor Dizon St, San Bartolome, Novaliches, QC", 14, 33)
+    doc.text("Tel: 0906 015 5922  |  www.queensartsandtrends.com", 14, 39)
+
+    doc.setFontSize(18)
+    doc.setFont("helvetica", "bold")
+    doc.setTextColor(0)
+    doc.text("Official Receipt", 140, 20)
+
+    doc.setFontSize(9)
+    doc.setFont("helvetica", "normal")
     doc.setTextColor(100)
     doc.text(
       selectedReceipt.paymentNumber
         ? `Payment #${selectedReceipt.paymentNumber}`
         : `Order #${selectedReceipt.id.slice(-8).toUpperCase()}`,
-      14,
-      38,
+      140, 27,
     )
     if (selectedReceipt.inquiryNumber) {
-      doc.text(`Order: ${selectedReceipt.inquiryNumber}`, 14, 44)
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 50)
+      doc.text(`Order: ${selectedReceipt.inquiryNumber}`, 140, 33)
+      doc.text(`Date: ${new Date(selectedReceipt.paymentVerifiedAt ?? selectedReceipt.updatedAt).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" })}`, 140, 39)
     } else {
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 44)
+      doc.text(`Date: ${new Date(selectedReceipt.paymentVerifiedAt ?? selectedReceipt.updatedAt).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" })}`, 140, 33)
     }
 
-    // Reset color
     doc.setTextColor(0)
 
-    // Customer Info
+    // ── Customer Info ──
     autoTable(doc, {
-      startY: 55,
+      startY: 50,
       head: [["Customer Information", ""]],
       body: [
         ["Name:", selectedReceipt.customerName],
@@ -263,40 +278,65 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
         ["Phone:", selectedReceipt.customerPhone || "N/A"],
       ],
       theme: "plain",
-      headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold" },
+      headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold", fontSize: 9 },
       styles: { cellPadding: 3, fontSize: 10 },
-      columnStyles: { 0: { fontStyle: "bold", cellWidth: 40 } },
+      columnStyles: { 0: { fontStyle: "bold", cellWidth: 45 } },
     })
 
-    const formatPdfPeso = (val: number) => {
-      return "PHP " + val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    }
-
-    // Order Details
+    // ── Order Details ──
     autoTable(doc, {
-      startY: (doc as any).lastAutoTable.finalY + 10,
+      startY: (doc as any).lastAutoTable.finalY + 8,
       head: [["Order Details", ""]],
       body: [
         ["Product:", selectedReceipt.productName],
-        ["Total Amount:", formatPdfPeso(selectedReceipt.total)],
-        ["Amount Paid:", formatPdfPeso(selectedReceipt.paid)],
-        ["Remaining Balance:", formatPdfPeso(selectedReceipt.remainingBalance)],
-        ["Payment Status:", formatPaymentStatus(selectedReceipt.paymentStatus)],
+        ["Quantity:", `${qty} ${qty === 1 ? "unit" : "units"}`],
         ["Payment Method:", selectedReceipt.paymentMethod ? formatAccountingPaymentMethod(selectedReceipt.paymentMethod) : "N/A"],
-        ["Approval Note:", selectedReceipt.workflowNote || "None"],
       ],
       theme: "plain",
-      headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold" },
+      headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold", fontSize: 9 },
       styles: { cellPadding: 3, fontSize: 10 },
-      columnStyles: { 0: { fontStyle: "bold", cellWidth: 40 } },
+      columnStyles: { 0: { fontStyle: "bold", cellWidth: 45 } },
     })
 
-    // Footer
-    const finalY = (doc as any).lastAutoTable.finalY + 30
-    doc.setFontSize(10)
+    // ── Payment Summary ──
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 8,
+      head: [["Payment Summary", ""]],
+      body: [
+        ["Quoted price:", formatPdfPeso(quotedBase)],
+        ["VAT (12%):", formatPdfPeso(vatAmount)],
+        ["Total (VAT inclusive):", formatPdfPeso(totalWithVat)],
+        ["Down payment (70%):", formatPdfPeso(downPayment)],
+        ["Amount Paid:", formatPdfPeso(selectedReceipt.paid)],
+        ["Remaining Balance:", formatPdfPeso(selectedReceipt.remainingBalance)],
+        ["Payment Status:", selectedReceipt.paymentStatus.split("_").map((p) => p.charAt(0) + p.slice(1).toLowerCase()).join(" ")],
+      ],
+      theme: "plain",
+      headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold", fontSize: 9 },
+      styles: { cellPadding: 3, fontSize: 10 },
+      columnStyles: { 0: { fontStyle: "bold", cellWidth: 55 } },
+    })
+
+    // ── Approval Note ──
+    if (selectedReceipt.workflowNote) {
+      autoTable(doc, {
+        startY: (doc as any).lastAutoTable.finalY + 8,
+        head: [["Approval Note", ""]],
+        body: [["", selectedReceipt.workflowNote]],
+        theme: "plain",
+        headStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold", fontSize: 9 },
+        styles: { cellPadding: 3, fontSize: 10 },
+        columnStyles: { 0: { cellWidth: 0 } },
+      })
+    }
+
+    // ── Footer ──
+    const finalY = (doc as any).lastAutoTable.finalY + 20
+    doc.setFontSize(9)
     doc.setFont("helvetica", "italic")
-    doc.setTextColor(100)
+    doc.setTextColor(120)
     doc.text("Thank you for your business!", 14, finalY)
+    doc.text("FurniTrack — Queens Arts and Trends Corp.", 14, finalY + 6)
 
     doc.save(
       `Receipt_${selectedReceipt.paymentNumber ?? selectedReceipt.id.slice(-8).toUpperCase()}.pdf`,
@@ -463,68 +503,141 @@ export function PaymentRecordsTable({ rows }: { rows: InquiryWorkflowRow[] }) {
       </section>
 
       {selectedReceipt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/45 px-4 overflow-y-auto pt-20 pb-10">
-          <div className="w-full max-w-md rounded-2xl border border-[#dbe4f0] bg-white p-8 shadow-2xl">
-            <div className="mb-6 flex justify-between items-center border-b border-[#e5e7eb] pb-4">
-              <div>
-                <h3 className="text-[18px] font-bold text-[#111827]">Payment Receipt</h3>
-                <p className="text-[12px] text-[#6b7280]">
-                  {selectedReceipt.paymentNumber
-                    ? `Payment #${selectedReceipt.paymentNumber}`
-                    : `Order #${selectedReceipt.id.slice(-8).toUpperCase()}`}
-                  {selectedReceipt.inquiryNumber ? ` · ${selectedReceipt.inquiryNumber}` : ""}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-[14px] font-medium text-[#111827]">{new Date(selectedReceipt.updatedAt).toLocaleDateString()}</p>
-                <p className="text-[12px] text-[#6b7280]">FurniTrack Admin</p>
-              </div>
-            </div>
-            
-            <div className="space-y-4 text-[13px]">
-              <div className="flex justify-between">
-                <span className="text-[#6b7280]">Customer Name</span>
-                <span className="font-medium text-[#111827]">{selectedReceipt.customerName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#6b7280]">Email</span>
-                <span className="font-medium text-[#111827]">{selectedReceipt.customerEmail}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#6b7280]">Phone</span>
-                <span className="font-medium text-[#111827]">{selectedReceipt.customerPhone}</span>
-              </div>
-              <div className="border-t border-dashed border-[#e5e7eb] my-3"></div>
-              <div className="flex justify-between">
-                <span className="text-[#6b7280]">Product</span>
-                <span className="font-medium text-[#111827]">{selectedReceipt.productName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#6b7280]">Payment Method</span>
-                <span className="font-medium text-[#111827]">
-                  {selectedReceipt.paymentMethod ? formatAccountingPaymentMethod(selectedReceipt.paymentMethod) : "N/A"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#6b7280]">Approval Note</span>
-                <span className="font-medium text-[#111827] max-w-[200px] text-right">
-                  {selectedReceipt.workflowNote || "None"}
-                </span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/45 px-4 overflow-y-auto pt-10 pb-10">
+          <div className="w-full max-w-lg rounded-2xl border border-[#dbe4f0] bg-white shadow-2xl">
+
+            {/* Dark header */}
+            <div className="rounded-t-2xl bg-[#111827] px-8 py-6 text-white">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-[20px] font-bold tracking-tight">FurniTrack</p>
+                  <p className="mt-0.5 text-[11px] text-[#9ca3af]">Queens Arts and Trends Corp.</p>
+                  <p className="text-[10px] text-[#6b7280]">001B Carlos cor Dizon St, Novaliches, QC</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[13px] font-semibold">Official Receipt</p>
+                  <p className="mt-0.5 text-[11px] text-[#9ca3af]">
+                    {selectedReceipt.paymentNumber ? `#${selectedReceipt.paymentNumber}` : `#${selectedReceipt.id.slice(-8).toUpperCase()}`}
+                  </p>
+                  {selectedReceipt.inquiryNumber && (
+                    <p className="text-[11px] text-[#9ca3af]">Order: {selectedReceipt.inquiryNumber}</p>
+                  )}
+                  <p className="text-[11px] text-[#9ca3af]">
+                    {selectedReceipt.paymentVerifiedAt
+                      ? new Date(selectedReceipt.paymentVerifiedAt).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" })
+                      : new Date(selectedReceipt.updatedAt).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" })}
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8 flex gap-3">
+            <div className="px-8 py-6 space-y-5">
+
+              {/* Customer info */}
+              <div>
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#94a3b8]">Customer Information</p>
+                <div className="rounded-xl bg-[#f8fafc] px-4 py-3 space-y-2 text-[13px]">
+                  <div className="flex justify-between">
+                    <span className="text-[#6b7280]">Name</span>
+                    <span className="font-semibold text-[#111827]">{selectedReceipt.customerName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#6b7280]">Email</span>
+                    <span className="font-medium text-[#111827]">{selectedReceipt.customerEmail}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#6b7280]">Phone</span>
+                    <span className="font-medium text-[#111827]">{selectedReceipt.customerPhone}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Order details */}
+              <div>
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#94a3b8]">Order Details</p>
+                <div className="rounded-xl bg-[#f8fafc] px-4 py-3 space-y-2 text-[13px]">
+                  <div className="flex justify-between">
+                    <span className="text-[#6b7280]">Product</span>
+                    <span className="font-semibold text-[#111827]">{selectedReceipt.productName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#6b7280]">Quantity</span>
+                    <span className="font-medium text-[#111827]">{selectedReceipt.quantity ?? 1} {(selectedReceipt.quantity ?? 1) === 1 ? "unit" : "units"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#6b7280]">Payment Method</span>
+                    <span className="font-medium text-[#111827]">
+                      {selectedReceipt.paymentMethod ? formatAccountingPaymentMethod(selectedReceipt.paymentMethod) : "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment summary */}
+              <div>
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#94a3b8]">Payment Summary</p>
+                <div className="rounded-xl border border-[#e5e7eb] px-4 py-3 space-y-2 text-[13px]">
+                  <div className="flex justify-between text-[#374151]">
+                    <span>Quoted price</span>
+                    <span>{formatPeso(selectedReceipt.quotedPrice ?? selectedReceipt.total)}</span>
+                  </div>
+                  <div className="flex justify-between text-[#374151]">
+                    <span>VAT (12%)</span>
+                    <span>{formatPeso((selectedReceipt.quotedPrice ?? selectedReceipt.total) * 0.12)}</span>
+                  </div>
+                  <div className="flex justify-between border-t border-[#e5e7eb] pt-2 font-bold text-[#111827]">
+                    <span>Total (VAT inclusive)</span>
+                    <span>{formatPeso((selectedReceipt.quotedPrice ?? selectedReceipt.total) * 1.12)}</span>
+                  </div>
+                  <div className="border-t border-dashed border-[#e5e7eb] pt-2 space-y-1.5">
+                    <div className="flex justify-between text-[#374151]">
+                      <span>Down payment (70%)</span>
+                      <span>{formatPeso((selectedReceipt.quotedPrice ?? selectedReceipt.total) * 1.12 * 0.7)}</span>
+                    </div>
+                    <div className="flex justify-between text-[#374151]">
+                      <span>Amount Paid</span>
+                      <span className="font-semibold text-[#166534]">{formatPeso(selectedReceipt.paid)}</span>
+                    </div>
+                    <div className="flex justify-between text-[#374151]">
+                      <span>Remaining Balance</span>
+                      <span className={`font-semibold ${selectedReceipt.remainingBalance > 0 ? "text-[#b45309]" : "text-[#166534]"}`}>
+                        {formatPeso(selectedReceipt.remainingBalance)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-[#374151]">
+                      <span>Payment Status</span>
+                      <span className="font-semibold text-[#111827]">{formatPaymentStatus(selectedReceipt.paymentStatus)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Approval note */}
+              {selectedReceipt.workflowNote && (
+                <div className="rounded-xl bg-[#fffbeb] border border-[#fde68a] px-4 py-3">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#92400e] mb-1">Approval Note</p>
+                  <p className="text-[12px] text-[#78350f]">{selectedReceipt.workflowNote}</p>
+                </div>
+              )}
+
+              <p className="text-center text-[11px] text-[#9ca3af]">
+                Thank you for your business! — FurniTrack / Queens Arts and Trends Corp.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 border-t border-[#e5e7eb] px-8 py-4">
               <button
                 type="button"
                 onClick={handleDownloadPdf}
-                className="w-full rounded-xl border border-[#d1d5db] bg-white px-4 py-3 text-[13px] font-medium text-[#111827] transition-colors hover:bg-[#f8fafc]"
+                className="flex-1 rounded-xl border border-[#d1d5db] bg-white px-4 py-3 text-[13px] font-medium text-[#111827] transition-colors hover:bg-[#f8fafc]"
               >
                 Download PDF
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedReceipt(null)}
-                className="w-full rounded-xl bg-[#111827] px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
+                className="flex-1 rounded-xl bg-[#111827] px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-[#111827]/90"
               >
                 Close Receipt
               </button>

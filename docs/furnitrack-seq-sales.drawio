@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-24T00:00:00.000Z" agent="Kiro" version="24.0.0">
+  <diagram name="Sales Admin Sequence" id="seq-sales">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Sequence Diagram — SALES ADMIN" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#1d4ed8;" vertex="1" parent="1"><mxGeometry x="100" y="20" width="900" height="30" as="geometry"/></mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="lf_sales" value=":Sales Admin" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dbeafe;strokeColor=#1d4ed8;fontColor=#1d4ed8;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="60" y="80" width="140" height="1160" as="geometry"/></mxCell>
+        <mxCell id="lf_adm" value=":Admin Dashboard" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f0f9ff;strokeColor=#0369a1;fontColor=#0369a1;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="280" y="80" width="140" height="1160" as="geometry"/></mxCell>
+        <mxCell id="lf_api" value=":API / System" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f3f4f6;strokeColor=#374151;fontColor=#374151;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="500" y="80" width="140" height="1160" as="geometry"/></mxCell>
+        <mxCell id="lf_db" value=":Database" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff7ed;strokeColor=#c2410c;fontColor=#c2410c;fontSize=13;fontStyle=1;strokeWidth=2;size=40;" vertex="1" parent="1"><mxGeometry x="720" y="80" width="140" height="1160" as="geometry"/></mxCell>
+
+        <!-- 1. Login -->
+        <mxCell id="m1" value="1: Log in to Admin Dashboard" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="180" as="sourcePoint"/><mxPoint x="350" y="180" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m2" value="2: Verify session / role = SALES" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="210" as="sourcePoint"/><mxPoint x="570" y="210" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m3" value="3: Dashboard loaded" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="240" as="sourcePoint"/><mxPoint x="200" y="240" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 2. View Inquiries -->
+        <mxCell id="m4" value="4: View new inquiries queue" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="300" as="sourcePoint"/><mxPoint x="570" y="300" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m5" value="5: SELECT customer_inquiries WHERE status=RECEIVED" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="330" as="sourcePoint"/><mxPoint x="790" y="330" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m6" value="6: Inquiry list" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="360" as="sourcePoint"/><mxPoint x="200" y="360" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 3. Endorse to Inventory -->
+        <mxCell id="m7" value="7: Endorse inquiry to inventory" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="420" as="sourcePoint"/><mxPoint x="570" y="420" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m8" value="8: UPDATE status = PENDING_INVENTORY_APPROVAL" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="450" as="sourcePoint"/><mxPoint x="790" y="450" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m9" value="9: Endorsed confirmation" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="480" as="sourcePoint"/><mxPoint x="200" y="480" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 4. Send Quotation -->
+        <mxCell id="m10" value="10: Set price + discount, send quotation" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="540" as="sourcePoint"/><mxPoint x="570" y="540" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m11" value="11: INSERT quotations, UPDATE status = PENDING_SALES_QUOTATION" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="570" as="sourcePoint"/><mxPoint x="790" y="570" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m12" value="12: Quotation sent" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="600" as="sourcePoint"/><mxPoint x="200" y="600" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 5. Monitor Order -->
+        <mxCell id="m13" value="13: Monitor order through workflow stages" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="660" as="sourcePoint"/><mxPoint x="570" y="660" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m14" value="14: SELECT inquiry + payment status" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="690" as="sourcePoint"/><mxPoint x="790" y="690" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m15" value="15: Order details + current stage" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="720" as="sourcePoint"/><mxPoint x="200" y="720" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 6. Handle Return -->
+        <mxCell id="m16" value="16: Approve return request" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="780" as="sourcePoint"/><mxPoint x="570" y="780" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m17" value="17: UPDATE return_requests status = APPROVED_FOR_PICKUP" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="810" as="sourcePoint"/><mxPoint x="790" y="810" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m18" value="18: Return approved" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="840" as="sourcePoint"/><mxPoint x="200" y="840" as="targetPoint"/></mxGeometry></mxCell>
+
+        <!-- 7. View Audit Logs -->
+        <mxCell id="m19" value="19: View sales audit logs" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="200" y="900" as="sourcePoint"/><mxPoint x="570" y="900" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m20" value="20: SELECT audit_logs WHERE actorId = salesId" style="endArrow=classic;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="930" as="sourcePoint"/><mxPoint x="790" y="930" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m21" value="21: Audit log entries" style="endArrow=open;dashed=1;html=1;strokeColor=#374151;strokeWidth=1.5;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="790" y="960" as="sourcePoint"/><mxPoint x="200" y="960" as="targetPoint"/></mxGeometry></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

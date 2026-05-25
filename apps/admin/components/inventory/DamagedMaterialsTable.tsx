@@ -16,6 +16,7 @@ type DamagedMaterialRow = {
   requesterName: string | null
   projectPurpose: string | null
   referenceNumber: string | null
+  inquiryNumber: string | null
   createdAt: Date
 }
 
@@ -116,7 +117,9 @@ export function DamagedMaterialsTable({ rows }: { rows: DamagedMaterialRow[] }) 
                     <td className="px-4 py-4 text-[13px] text-slate-600">{row.warehouseName}</td>
                     <td className="px-4 py-4 text-[13px] text-slate-900 font-medium">{row.quantity}</td>
                     <td className="px-4 py-4 text-[13px] text-slate-600">{row.projectPurpose ?? row.requesterName ?? "Customer return"}</td>
-                    <td className="px-4 py-4 text-[11px] font-mono text-slate-500">{row.referenceNumber ?? "—"}</td>
+                    <td className="px-4 py-4 text-[13px] font-mono text-slate-700">
+                      {row.inquiryNumber ?? (row.referenceNumber ? row.referenceNumber.slice(-8).toUpperCase() : "—")}
+                    </td>
                   </tr>
                 ))
               )}

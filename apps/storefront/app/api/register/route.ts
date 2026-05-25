@@ -107,6 +107,20 @@ export async function POST(request: Request) {
     )
   }
 
+  if (name.length > 30) {
+    return NextResponse.json(
+      { message: "Full name must be 30 characters or less." },
+      { status: 400 }
+    )
+  }
+
+  if (email.length > 50) {
+    return NextResponse.json(
+      { message: "Email must be 50 characters or less." },
+      { status: 400 }
+    )
+  }
+
   if (password.length < 8) {
     return NextResponse.json(
       { message: "Use a password with at least 8 characters." },
@@ -132,7 +146,7 @@ export async function POST(request: Request) {
 
   if (existingIdentity) {
     return NextResponse.json(
-      { message: "That email already has an account. Please sign in instead." },
+      { message: "Email already exists. Please sign in instead." },
       { status: 409 }
     )
   }
